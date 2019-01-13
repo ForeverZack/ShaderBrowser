@@ -1,0 +1,183 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{ed8091dc-bf6e-4e05-95e5-92d131cebb8c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\GL">
+      <UniqueIdentifier>{8530a1d4-c074-490e-b63a-9d5f85fc299f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Plugins">
+      <UniqueIdentifier>{0ade1afd-c03f-491b-b42e-4a630a192194}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Plugins\Image">
+      <UniqueIdentifier>{4f7ce3ec-10b0-4dff-acf9-ef184afb5b7a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Browser">
+      <UniqueIdentifier>{60ccb76f-057b-42c2-9776-3c0b355615a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Browser\Components">
+      <UniqueIdentifier>{31f9c651-0af5-49fe-9e4e-7dda735ef649}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Browser\System">
+      <UniqueIdentifier>{16ce4d9f-822e-4d11-8d38-715750e39158}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Browser\Components\Render">
+      <UniqueIdentifier>{db0f988e-a917-4986-a8dd-aeb199864894}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Common">
+      <UniqueIdentifier>{11617ae7-2a26-444c-96ec-f70b8af647f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Common\Tools">
+      <UniqueIdentifier>{64745fd8-f88b-42fe-b03e-b3b0ba86fe0a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Common\Components">
+      <UniqueIdentifier>{6c5eccc6-3599-4ff8-865d-e7f73d024a0e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Common\System">
+      <UniqueIdentifier>{83688584-cdb0-44cc-a9c2-11783b43cd9d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Browser\Entitys">
+      <UniqueIdentifier>{3e2ac61d-e24b-4c8e-a5a2-8d5c96b18fd5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Plugins\glad">
+      <UniqueIdentifier>{b53da055-0a3f-428a-b89d-dcdb6469977c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Browser\Components\Transfrom">
+      <UniqueIdentifier>{6eb2511c-5343-411d-a5d4-11ad71522bd8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Browser\Components\Mesh">
+      <UniqueIdentifier>{b92940ab-9de6-4322-961b-27806d3bf5ad}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Plugins\Image\stb_image.cpp">
+      <Filter>src\Plugins\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GL\GLProgram.cpp">
+      <Filter>src\GL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Browser\System\RenderSystem.cpp">
+      <Filter>src\Browser\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Browser\Components\Render\BaseRender.cpp">
+      <Filter>src\Browser\Components\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GL\Texture2D.cpp">
+      <Filter>src\GL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Browser\Components\Render\Material.cpp">
+      <Filter>src\Browser\Components\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GL\Image.cpp">
+      <Filter>src\GL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Common\Tools\Utils.cpp">
+      <Filter>src\Common\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Common\System\AutoReleasePool.cpp">
+      <Filter>src\Common\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Common\Components\Reference.cpp">
+      <Filter>src\Common\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Browser\Components\BaseComponent.cpp">
+      <Filter>src\Browser\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Common\System\ECSManager.cpp">
+      <Filter>src\Common\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Browser\Entitys\BaseEntity.cpp">
+      <Filter>src\Browser\Entitys</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Plugins\glad\src\glad.c">
+      <Filter>src\Plugins\glad</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Browser\Components\Render\Pass.cpp">
+      <Filter>src\Browser\Components\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GL\GLDefine.cpp">
+      <Filter>src\GL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Browser\Components\Transform\Transform.cpp">
+      <Filter>src\Browser\Components\Transfrom</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Browser\System\TransformSystem.cpp">
+      <Filter>src\Browser\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Browser\Components\Mesh\MeshFilter.cpp">
+      <Filter>src\Browser\Components\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Browser\System\MeshSystem.cpp">
+      <Filter>src\Browser\System</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Plugins\Image\stb_image.h">
+      <Filter>src\Plugins\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GL\GLProgram.h">
+      <Filter>src\GL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GL\GLDefine.h">
+      <Filter>src\GL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Browser\System\RenderSystem.h">
+      <Filter>src\Browser\System</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Browser\Components\Render\BaseRender.h">
+      <Filter>src\Browser\Components\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GL\Texture2D.h">
+      <Filter>src\GL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Browser\Components\Render\Material.h">
+      <Filter>src\Browser\Components\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GL\Image.h">
+      <Filter>src\GL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Common\Tools\Utils.h">
+      <Filter>src\Common\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Common\System\AutoReleasePool.h">
+      <Filter>src\Common\System</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Common\Components\Reference.h">
+      <Filter>src\Common\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Browser\Components\BaseComponent.h">
+      <Filter>src\Browser\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Common\System\BaseSystem.h">
+      <Filter>src\Common\System</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Common\System\ECSManager.h">
+      <Filter>src\Common\System</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Browser\Entitys\BaseEntity.h">
+      <Filter>src\Browser\Entitys</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Common\CommonDefine.h">
+      <Filter>src\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Browser\Components\Render\Pass.h">
+      <Filter>src\Browser\Components\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Browser\Components\Transform\Transform.h">
+      <Filter>src\Browser\Components\Transfrom</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Browser\System\TransformSystem.h">
+      <Filter>src\Browser\System</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Browser\Components\Mesh\MeshFilter.h">
+      <Filter>src\Browser\Components\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Browser\System\MeshSystem.h">
+      <Filter>src\Browser\System</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
