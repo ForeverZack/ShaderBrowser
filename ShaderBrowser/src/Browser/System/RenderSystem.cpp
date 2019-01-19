@@ -148,7 +148,7 @@ namespace browser
 			glBindVertexArray(0);
 
 			// 4.绘制
-			material->useMaterial();
+			material->useMaterial(meshFilter);
 			glBindVertexArray(vao);
             //typedef void (APIENTRYP PFNGLDRAWELEMENTSPROC)(GLenum mode, GLsizei count, GLenum type, const void *indices);
             glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_SHORT, (void*)0);

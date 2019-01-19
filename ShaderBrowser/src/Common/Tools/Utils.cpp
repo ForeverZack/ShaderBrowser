@@ -49,7 +49,7 @@ namespace common
 		return const_cast<const GLchar*>(source);
 	}
 
-	TextureData Utils::createTextureData(const char* uniformName, Texture2D* texture)
+    TextureData Utils::createTextureData(const std::string& uniformName, Texture2D* texture)
 	{
 		TextureData textureData;
 		textureData.texture = texture;
@@ -57,6 +57,19 @@ namespace common
 
 		return textureData;
 	}
+    
+    VertexAttribDeclaration* Utils::createVertexAttribDeclaration(GLuint location, GLint size, GLenum type, GLboolean normalized, GLsizei stride)
+    {
+        VertexAttribDeclaration* declaration = new VertexAttribDeclaration();
+        declaration->index = location;
+        declaration->size = size;
+        declaration->type = type;
+        declaration->normalized = normalized;
+        declaration->stride = stride;
+        
+        return declaration;
+    }
+
 
 
 }

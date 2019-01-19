@@ -37,7 +37,7 @@ namespace common
 			});
 		}
 
-		REGISTER_PROPERTY_GET(std::vector<BaseSystem*>, m_vSystems, Systems)
+		REGISTER_PROPERTY_CONSTREF_GET(std::vector<BaseSystem*>, m_vSystems, Systems)
 	private:
 		// BaseSystem队列
 		std::vector<BaseSystem*> m_vSystems;

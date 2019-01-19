@@ -7,12 +7,14 @@
 #include "Pass.h"
 #include "../../../GL/GLProgram.h"
 #include "../../../Common/Tools/Utils.h"
+#include "../Mesh/MeshFilter.h"
 
 using namespace std;
 using namespace customGL;
 
 namespace browser
 {
+    
 	class Material
 	{
 	public:
@@ -29,11 +31,11 @@ namespace browser
         // 添加pass
         void addPass(Pass* pass);
 		// 使用材质的第几个Pass
-		void useMaterial(int index = 0);
+		void useMaterial(MeshFilter* meshFilter, int index = 0);
 
 
         // 返回Pass队列
-        REGISTER_PROPERTY_GET(std::vector<Pass*>, m_vPass, Pass)
+        REGISTER_PROPERTY_CONSTREF_GET(std::vector<Pass*>, m_vPass, Pass)
 
 	private:
 		// Pass队列

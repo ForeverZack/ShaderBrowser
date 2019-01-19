@@ -21,6 +21,9 @@
 ## 2018.12.30~2018.12.31 <br>
 完善Transform组件，实现了在逻辑阶段中获取设置组件属性的功能，与unity的结果完全相同。对于之前heading-pitch-bank旋转的问题，应该是glm是列主序的矩阵，需要左乘，所以实际使用时顺序是z-y-x，所以得到的是一个 物体->惯性 的矩阵，后面将开始camera的封装，以及对模型的使用封装等。<br>
 
+## 2019.1.11~2019.1.13 <br>
+封装了MeshFilter组件，整理优化了纹理的uniform，理顺了纹理单元的逻辑(需要用glUniform1i来对纹理单元进行绑定，并且只需要绑定一次即可)。在这期间，发现之前使用unordered_map时，使用了const char*来作为它的key值，这样做会造成问题(需要自己去实现unordered_map的hash方法和比较方法)，所以现在已经全部替换为std::string来作为key值。对于MeshFilter组件，后面会继续完善，实现从模型文件中获取顶点数据和纹理信息。
+
 ## 后续工作 <br>
 1）Transform(控制位置、缩放、旋转)、MeshFilter(保存网格顶点信息，但要处理好BaseRender的关系)、Custom（用户逻辑层面）等<br>
 2）各种缓存机制，以及对缓存对象的引用计数控制（eg：ProgramCache, MaterialCache, TextureCache）<br>
@@ -35,4 +38,5 @@
 12）对VAO生成和materialID的生成的处理。 <br>
 13）提取出BaseRender中的数据部分，独立出来看作是unity的MeshFilter组件，用这个来保管数据（这个数据应该是模型的原始数据，一个模型只用加载一次即可）。 <br>
 14）异步加载资源的处理。 <br>
+15）对内存的管理与检查。 <br>
 等等<br>

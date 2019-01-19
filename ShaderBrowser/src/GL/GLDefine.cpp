@@ -130,53 +130,53 @@ namespace customGL {
         _value.tex2D.textureId = textureId;
     }
     
-    void UniformValue::updateGLProgramUniformValue(GLProgram* glProgram, const char* uniformName)
+    void UniformValue::updateGLProgramUniformValue(GLProgram* glProgram, std::string uniformName)
     {
         switch (m_eType)
         {
             case UniformValueType_Int:
                 // int
-                glProgram->setUniformWithInt(uniformName, _value.intValue);
+                glProgram->setUniformWithInt(uniformName.c_str(), _value.intValue);
                 break;
                 
             case UniformValueType_Float:
                 // float
-                glProgram->setUniformWithFloat(uniformName, _value.floatValue);
+                glProgram->setUniformWithFloat(uniformName.c_str(), _value.floatValue);
                 break;
                 
             case UniformValueType_Mat3:
                 // mat3
-                glProgram->setUniformWithMat3(uniformName, _value.mat3);
+                glProgram->setUniformWithMat3(uniformName.c_str(), _value.mat3);
                 break;
                 
             case UniformValueType_Mat4:
                 // mat4
-                glProgram->setUniformWithMat4(uniformName, _value.mat4);
+                glProgram->setUniformWithMat4(uniformName.c_str(), _value.mat4);
                 break;
                 
             case UniformValueType_FloatV:
                 // floatV
-                glProgram->setUniformWithFloatV(uniformName, _value.floatv.size, _value.floatv.pointer);
+                glProgram->setUniformWithFloatV(uniformName.c_str(), _value.floatv.size, _value.floatv.pointer);
                 break;
                 
             case UniformValueType_Vec2:
                 // vec2
-                glProgram->setUniformWithVec2(uniformName, _value.v4f.pointer.x, _value.v4f.pointer.y);
+                glProgram->setUniformWithVec2(uniformName.c_str(), _value.v4f.pointer.x, _value.v4f.pointer.y);
                 break;
                 
             case UniformValueType_Vec3:
                 // vec3
-                glProgram->setUniformWithVec3(uniformName, _value.v4f.pointer.x, _value.v4f.pointer.y, _value.v4f.pointer.z);
+                glProgram->setUniformWithVec3(uniformName.c_str(), _value.v4f.pointer.x, _value.v4f.pointer.y, _value.v4f.pointer.z);
                 break;
                 
             case UniformValueType_Vec4:
                 // vec4
-                glProgram->setUniformWithVec4(uniformName, _value.v4f.pointer.x, _value.v4f.pointer.y, _value.v4f.pointer.z, _value.v4f.pointer.w);
+                glProgram->setUniformWithVec4(uniformName.c_str(), _value.v4f.pointer.x, _value.v4f.pointer.y, _value.v4f.pointer.z, _value.v4f.pointer.w);
                 break;
                 
             case UniformValueType_Sampler2D:
                 // texture2D
-                glProgram->setUniformWithTex2D(uniformName, _value.tex2D.textureId);
+                glProgram->setUniformWithTex2D(uniformName.c_str(), _value.tex2D.textureId);
                 break;
                 
             default:

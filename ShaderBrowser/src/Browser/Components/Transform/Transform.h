@@ -50,7 +50,10 @@ namespace browser
         #define TRANS_SET_VEC3(vec3, x, y, z) vec3.x = x; vec3.y = y; vec3.z = z;
         // 定义向量vec4赋值方法
         #define TRANS_SET_VEC4(vec4, x, y, z, w) vec4.x = x; vec4.y = y; vec4.z = z; vec4.w = w;
-        // 定义本地属性修改方法
+		// 定义本地属性修改方法
+		#define REGISTER_TRANS_PROPERTY_SET(varType, varName, funName)\
+            public: virtual void set##funName(varType var) {varName = var; this->m_bTransDirty=true;}
+        // 定义本地属性修改获取方法
         #define REGISTER_TRANS_PROPERTY_GET_SET(varType, varName, funName)\
             public: virtual varType get##funName(void)    {return varName;}\
             public: virtual void set##funName(varType var) {varName = var; this->m_bTransDirty=true;}
@@ -72,7 +75,8 @@ namespace browser
         // 获取\设置本地坐标系下的属性
         // 设置位置(相对于父节点)
         void setPosition(float x, float y, float z);
-        REGISTER_TRANS_PROPERTY_GET_SET(glm::vec3, m_oObjectPos, Position)
+		REGISTER_TRANS_PROPERTY_SET(glm::vec3, m_oObjectPos, Position)
+		REGISTER_PROPERTY_CONSTREF_GET(glm::vec3, m_oObjectPos, Position)
         REGISTER_TRANS_PROPERTY_GET_SET(float, m_oObjectPos.x, PositionX)
         REGISTER_TRANS_PROPERTY_GET_SET(float, m_oObjectPos.y, PositionY)
         REGISTER_TRANS_PROPERTY_GET_SET(float, m_oObjectPos.z, PositionZ)
@@ -82,22 +86,23 @@ namespace browser
         REGISTER_PROPERTY_GET(glm::vec3, m_oEulerAngle, EulerAngle)
         // 设置缩放
         void setScale(float x, float y, float z);
-        REGISTER_TRANS_PROPERTY_GET_SET(glm::vec3, m_oScale, Scale)
+		REGISTER_TRANS_PROPERTY_SET(glm::vec3, m_oScale, Scale)
+		REGISTER_PROPERTY_CONSTREF_GET(glm::vec3, m_oScale, Scale)
         REGISTER_TRANS_PROPERTY_GET_SET(float, m_oScale.x, ScaleX)
         REGISTER_TRANS_PROPERTY_GET_SET(float, m_oScale.y, ScaleY)
         REGISTER_TRANS_PROPERTY_GET_SET(float, m_oScale.z, ScaleZ)
         // 四元数
         void setQuaternion(float x, float y, float z, float w);
         void setQuaternion(const glm::quat& quaternion);
-        REGISTER_PROPERTY_GET(glm::quat, m_oQuaternion, Quaternion)
+		REGISTER_PROPERTY_CONSTREF_GET(glm::quat, m_oQuaternion, Quaternion)
         // 获取model矩阵
-        REGISTER_PROPERTY_GET(glm::mat4, m_oModelMatrix, ModelMatrix)
+		REGISTER_PROPERTY_CONSTREF_GET(glm::mat4, m_oModelMatrix, ModelMatrix)
         // name
         REGISTER_PROPERTY_GET_SET(std::string, m_sName, Name)
 		// parent
 		REGISTER_PROPERTY_GET(Transform*, m_oParent, Parent)
 		// children
-		REGISTER_PROPERTY_GET(std::vector<Transform*>, m_vChildren, Children)
+		REGISTER_PROPERTY_CONSTREF_GET(std::vector<Transform*>, m_vChildren, Children)
         
         // 获取\设置全局坐标系下的属性(并不建议过多使用，因为每次使用都会遍历父级节点，更新他们的model矩阵)
         // 获取世界坐标系下的位置

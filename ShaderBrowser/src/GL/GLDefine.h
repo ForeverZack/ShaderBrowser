@@ -128,6 +128,11 @@ namespace customGL
 		TextureData() 
 		{
 		}
+        TextureData(const TextureData& data)
+        {
+            texture = data.texture;
+            uniformName = data.uniformName;
+        }
 		TextureData(const TextureData&& data)
 		{
 			texture = data.texture;
@@ -141,7 +146,7 @@ namespace customGL
 		// 2D纹理
 		Texture2D* texture;
 		// 对应uniform名称
-		const char* uniformName;
+        std::string uniformName;
 	};
 	
 
@@ -192,7 +197,7 @@ namespace customGL
         
         
         // 更新设置GLProgram的数值
-        void updateGLProgramUniformValue(GLProgram* glProgram, const char* location);
+        void updateGLProgramUniformValue(GLProgram* glProgram, std::string uniformName);
         
     protected:
         // uniform数值类型

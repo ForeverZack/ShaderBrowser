@@ -27,9 +27,9 @@ using namespace common;
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-//#include <assimp/Importer.hpp>
-//#include <assimp/scene.h>
-//#include <assimp/postprocess.h>
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 // 函数需要先声明一下，否则在定义之前调用会编译出错
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -88,36 +88,37 @@ GLushort indices[] = {
 void testVal()
 {
 	// 载入纹理
-	Texture2D* texture2D = Texture2D::create("./res/texture/awesomeface.png");
-	texture2D->retain();
+	Texture2D* texture1 = Texture2D::create("./res/texture/awesomeface.png");
+	texture1->retain();
+    Texture2D* texture2 = Texture2D::create("./res/texture/HelloWorld.png");
+    texture2->retain();
 
     // MeshFilter
     // (GLuint location, GLint size, GLenum type, GLboolean normalized, GLsizei stride, void* data)
-    GLuint colorsLocation[] = {GLProgram::VERTEX_ATTR_COLOR};
-    GLuint coordsLocation[] = {GLProgram::VERTEX_ATTR_TEX_COORD};
-    MeshFilter* meshFilter = MeshFilter::create(6);
-    meshFilter->addVertexAttribute(GLProgram::VERTEX_ATTR_POSITION, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), vertices);
-    meshFilter->addVertexAttribute(GLProgram::VERTEX_ATTR_COLOR, 4, GL_FLOAT, GL_FALSE, sizeof(VertexData), colors);
-    meshFilter->addVertexAttribute(GLProgram::VERTEX_ATTR_TEX_COORD, 2, GL_FLOAT, GL_FALSE, sizeof(VertexData), coords);
-    meshFilter->setIndicesInfo(indices, 6);
-    meshFilter->setupVAO();
+    MeshFilter* mesh = MeshFilter::create(6);
+    mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_POSITION, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), vertices);
+    mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_COLOR, 4, GL_FLOAT, GL_FALSE, sizeof(VertexData), colors);
+    mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_TEX_COORD, 2, GL_FLOAT, GL_FALSE, sizeof(VertexData), coords);
+    mesh->setIndicesInfo(indices, 6);
+    mesh->addTexture("CGL_TEXTURE0", texture1);
+    mesh->addTexture("CGL_TEXTURE1", texture2);
+    mesh->setupVAO();
 
-
-	TextureData data = (Utils::createTextureData("CGL_TEXTURE0", texture2D));
 
 	// 着色器程序
 	GLProgram* program = GLProgram::create("./res/shaders/triangles.vert", "./res/shaders/triangles.frag");
     // pass
     Pass* pass = Pass::createPass(program);
-    pass->setUniformV4f("CGL_COLOR", glm::vec4(1.0f, 0.0f, 0, 1.0f));
-    pass->setUniformV4f("CGL_COLOR1", glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
+//    pass->setUniformV4f("CGL_COLOR", glm::vec4(1.0f, 0.0f, 0, 1.0f));
+//    pass->setUniformV4f("CGL_COLOR1", glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
 //        pass->setUniformMat4("matTest", glm::mat4(1.0f, 0.5f, 0.0f, 1.0f,         //Shader中mat4[0][1] = 0.5f;
 //                                              0.0f, 0.0f, 0.0f, 0.0f,
 //                                              0.0f, 0.0f, 0.0f, 0.0f,
 //                                              0.0f, 0.0f, 0.0f, 0.0f));
 //    static float m[4] = {1.0f, 1.0f, 0.0f, 1.0f};
 //    pass->setUniformFloatV("cusTest", 4, m);
-    pass->setUniformTex2D("CGL_TEXTURE0", texture2D->getTextureId());
+//    pass->setUniformTex2D("CGL_TEXTURE0", texture1->getTextureId());
+//    pass->setUniformTex2D("CGL_TEXTURE1", texture2->getTextureId());
 	// 材质
 	Material* material = Material::createMaterial();
     material->addPass(pass);
@@ -134,7 +135,7 @@ void testVal()
 	entity->addComponent(renderCom);
     
     // meshFilter
-    entity->addComponent(meshFilter);
+    entity->addComponent(mesh);
 
     // Transform组件
     browser::Transform* scene = new browser::Transform();
@@ -171,11 +172,9 @@ void testVal()
 //    BROWSER_LOG_MAT4(node->getModelMatrix());
 //    node->setEulerAngle(45, 45, 45);
 
-	//// test
-	//Texture2D* tex = Texture2D::create("");
 
-//    Assimp::Importer importer;
-//    const aiScene *scene = importer.ReadFile("./res/models/nanosuit/nanosuit.obj", aiProcess_Triangulate | aiProcess_FlipUVs);
+    Assimp::Importer importer;
+    const aiScene *scene1 = importer.ReadFile("./res/models/nanosuit/nanosuit.obj", aiProcess_Triangulate | aiProcess_FlipUVs);
 }
 
 int main()

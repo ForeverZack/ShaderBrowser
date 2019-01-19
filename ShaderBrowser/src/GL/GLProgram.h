@@ -4,14 +4,12 @@
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <unordered_map>
+#include <string>
 
 namespace customGL
 {
     // 最大支持的纹理单元数量
     static const int MAX_ACTIVE_TEXTURE = 16;
-
-	// 预定义Uniform变量个数
-	static const int UNIFORM_MAX_COUNT = 2;
     
 	class GLProgram
 	{
@@ -30,6 +28,20 @@ namespace customGL
 			// 最大值
 			VERTEX_ATTR_MAXCOUNT,
 		};
+        
+        // 预定义的uniform变量枚举
+        enum
+        {
+            // 纹理0: 主纹理
+            UNIFORM_CGL_TEXUTRE0 = 0,
+            // 纹理1
+            UNIFORM_CGL_TEXUTRE1,
+            //
+            
+            
+            // 预定义Uniform变量个数
+            UNIFORM_MAX_COUNT
+        };
 
 		// 预定义的顶点着色器属性名称
 		static const char* ATTRIBUTE_NAME_POSITION;
@@ -51,18 +63,18 @@ namespace customGL
 		// 更新预定义uniform位置
 		void updatePreDefinedUniformsLocation();
 		// 设置uniform
-        void setUniformWithInt(const char* uniformName, int value);
-        void setUniformWithFloat(const char* uniformName, float value);
-        void setUniformWithMat3(const char* uniformName, const glm::mat3& value);
-        void setUniformWithMat4(const char* uniformName, const glm::mat4& value);
-        void setUniformWithFloatV(const char* uniformName, int size, const float* fv);
-        void setUniformWithVec2(const char* uniformName, GLfloat f1, GLfloat f2);
-        void setUniformWithVec3(const char* uniformName, GLfloat f1, GLfloat f2, GLfloat f3);
-		void setUniformWithVec4(const char* uniformName, GLfloat f1, GLfloat f2, GLfloat f3, GLfloat f4);
-        void setUniformWithTex2D(const char* uniformName, GLuint textureId);
+        void setUniformWithInt(const std::string& uniformName, int value);
+        void setUniformWithFloat(const std::string& uniformName, float value);
+        void setUniformWithMat3(const std::string& uniformName, const glm::mat3& value);
+        void setUniformWithMat4(const std::string& uniformName, const glm::mat4& value);
+        void setUniformWithFloatV(const std::string& uniformName, int size, const float* fv);
+        void setUniformWithVec2(const std::string& uniformName, GLfloat f1, GLfloat f2);
+        void setUniformWithVec3(const std::string& uniformName, GLfloat f1, GLfloat f2, GLfloat f3);
+		void setUniformWithVec4(const std::string& uniformName, GLfloat f1, GLfloat f2, GLfloat f3, GLfloat f4);
+        void setUniformWithTex2D(const std::string& uniformName, GLuint textureId);
         
         // 获取uniform的位置
-        GLint getUniformLocation(const char* uniformName);
+        GLint getUniformLocation(const std::string& uniformName);
 
 	private:
 		// 初始化着色器程序
@@ -81,12 +93,12 @@ namespace customGL
 		GLuint m_uVertShader;
 		// 片段着色器
 		GLuint m_uFragShader;
-		// uniform位置
-        std::unordered_map<const char*, GLint> m_mUniformLocations;
+        // uniform位置  注意:char*不可以用来做key值，除非自己重写他的比较方法和hash方法。
+        std::unordered_map<std::string, GLint> m_mUniformLocations;
         // textureId队列
         GLuint m_vTexIds[MAX_ACTIVE_TEXTURE];
 		// 纹理单元
-		std::unordered_map<const char*, GLuint> m_mTextureUnits;
+		std::unordered_map<std::string, GLuint> m_mTextureUnits;
 		// 纹理单元计数
 		GLuint m_uTextureUnitIndex;
 	};

@@ -4,6 +4,7 @@
 #include <glad/glad.h>
 #include <iostream>
 #include "../../GL/GLDefine.h"
+
 using namespace std;
 using namespace customGL;
 
@@ -17,6 +18,10 @@ namespace common
 	// 注册只读方法
 	#define REGISTER_PROPERTY_GET(varType, varName, funName)\
 	public: virtual varType get##funName(void)	{return varName;}
+	// 注册只读方法(返回 const &)
+	#define REGISTER_PROPERTY_CONSTREF_GET(varType, varName, funName)\
+	public: virtual const varType& get##funName(void)	{return varName;}
+
 
 	// 注册只写方法
 	#define REGISTER_PROPERTY_SET(varType, varName, funName)\
@@ -50,8 +55,12 @@ namespace common
 		static const GLchar* readFile(const char* filename);
 
         // 创建TextureData
-		static TextureData createTextureData(const char* uniformName, Texture2D* texture);
+        static TextureData createTextureData(const std::string& uniformName, Texture2D* texture);
 
+        // 创建VertexAttribDeclaration
+        static VertexAttribDeclaration* createVertexAttribDeclaration(GLuint location, GLint size, GLenum type, GLboolean normalized, GLsizei stride);
+        
+        
 	};
 }
 

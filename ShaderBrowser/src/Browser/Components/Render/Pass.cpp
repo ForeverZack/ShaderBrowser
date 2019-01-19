@@ -1,4 +1,5 @@
 #include "Pass.h"
+#include "../../../GL/Texture2D.h"
 
 namespace browser
 {
@@ -26,7 +27,7 @@ namespace browser
 		m_oGLProgram = program;
 	}
     
-    void Pass::setUniformInt(const char* uniformName, int value)
+    void Pass::setUniformInt(const std::string& uniformName, int value)
     {
         auto itor = m_mUniforms.find(uniformName);
         if (itor == m_mUniforms.end())
@@ -41,7 +42,7 @@ namespace browser
             uniformValue.setInt(value);
         }
     }
-    void Pass::setUniformFloat(const char* uniformName, float value)
+    void Pass::setUniformFloat(const std::string& uniformName, float value)
     {
         auto itor = m_mUniforms.find(uniformName);
         if (itor == m_mUniforms.end())
@@ -56,7 +57,7 @@ namespace browser
             uniformValue.setFloat(value);
         }
     }
-    void Pass::setUniformMat3(const char* uniformName, glm::mat3 value)
+    void Pass::setUniformMat3(const std::string& uniformName, glm::mat3 value)
     {
         auto itor = m_mUniforms.find(uniformName);
         if (itor == m_mUniforms.end())
@@ -71,7 +72,7 @@ namespace browser
             uniformValue.setMat3(value);
         }
     }
-    void Pass::setUniformMat4(const char* uniformName, glm::mat4 value)
+    void Pass::setUniformMat4(const std::string& uniformName, glm::mat4 value)
     {
         auto itor = m_mUniforms.find(uniformName);
         if (itor == m_mUniforms.end())
@@ -87,7 +88,7 @@ namespace browser
         }
     }
     
-    void Pass::setUniformFloatV(const char* uniformName, int size, const float* value)
+    void Pass::setUniformFloatV(const std::string& uniformName, int size, const float* value)
     {
         auto itor = m_mUniforms.find(uniformName);
         if (itor == m_mUniforms.end())
@@ -103,7 +104,7 @@ namespace browser
         }
     }
     
-    void Pass::setUniformV2f(const char* uniformName, glm::vec2 value)
+    void Pass::setUniformV2f(const std::string& uniformName, glm::vec2 value)
     {
         auto itor = m_mUniforms.find(uniformName);
         if (itor == m_mUniforms.end())
@@ -119,7 +120,7 @@ namespace browser
         }
     }
     
-    void Pass::setUniformV3f(const char* uniformName, glm::vec3 value)
+    void Pass::setUniformV3f(const std::string& uniformName, glm::vec3 value)
     {
         auto itor = m_mUniforms.find(uniformName);
         if (itor == m_mUniforms.end())
@@ -135,7 +136,7 @@ namespace browser
         }
     }
 
-	void Pass::setUniformV4f(const char* uniformName, glm::vec4 value)
+	void Pass::setUniformV4f(const std::string& uniformName, glm::vec4 value)
 	{
 		auto itor = m_mUniforms.find(uniformName);
 		if (itor == m_mUniforms.end())
@@ -151,7 +152,7 @@ namespace browser
 		}
 	}
     
-    void Pass::setUniformTex2D(const char* uniformName, GLuint textureId)
+    void Pass::setUniformTex2D(const std::string& uniformName, GLuint textureId)
     {
         auto itor = m_mUniforms.find(uniformName);
         if (itor == m_mUniforms.end())
@@ -167,8 +168,17 @@ namespace browser
         }
     }
 
-	void Pass::usePass()
+	void Pass::usePass(MeshFilter* meshFilter)
 	{
+        // 应用网格过滤器中的纹理
+        const std::vector<TextureData>& textureInfos = meshFilter->getTextures();
+        Texture2D* texture;
+        for (auto itor = textureInfos.cbegin(); itor!=textureInfos.cend(); ++itor)
+        {
+            texture = itor->texture;
+            setUniformTex2D(itor->uniformName.c_str(), texture->getTextureId());
+        }
+        
 		// 注意在更新uniform变量的值之前，要先使用着色器glUseProgram
 		m_oGLProgram->useProgram();
 

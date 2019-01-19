@@ -55,17 +55,20 @@ namespace browser
         void addVertexAttribute(GLuint location, GLint size, GLenum type, GLboolean normalized, GLsizei stride, void* data);
         // 设置顶点索引信息
         void setIndicesInfo(GLushort* data, unsigned int length);
+        // 添加纹理属性
+        void addTexture(const std::string& uniformName, Texture2D* texture);
         // 根据location获取顶点属性
         VertexAttribDeclaration* getVertexAttribDeclaration(GLuint location);
         
         // 向RenderSystem注册vao
         void setupVAO();
         
-        REGISTER_PROPERTY_GET(unsigned int, m_uVAO, VAO);
-        REGISTER_PROPERTY_GET(unsigned int, m_uVertexCount, VertexCount);
-        REGISTER_PROPERTY_GET(std::vector<VertexData>, m_vVertices, Vertices);
-        REGISTER_PROPERTY_GET(unsigned int, m_uIndexCount, IndexCount);
-        REGISTER_PROPERTY_GET(std::vector<GLushort>, m_vIndices, Indices);
+        REGISTER_PROPERTY_GET(unsigned int, m_uVAO, VAO)
+        REGISTER_PROPERTY_GET(unsigned int, m_uVertexCount, VertexCount)
+		REGISTER_PROPERTY_CONSTREF_GET(std::vector<VertexData>, m_vVertices, Vertices)
+        REGISTER_PROPERTY_GET(unsigned int, m_uIndexCount, IndexCount)
+		REGISTER_PROPERTY_CONSTREF_GET(std::vector<GLushort>, m_vIndices, Indices)
+		REGISTER_PROPERTY_CONSTREF_GET(std::vector<TextureData>, m_vTextures, Textures)
         
     private:
         // 填充顶点数组的数据内容
@@ -82,9 +85,8 @@ namespace browser
         unsigned int m_uIndexCount;
         // 索引数组
         std::vector<GLushort> m_vIndices;
-        
 		// 纹理数组
-		//std::vector<TextureData>
+        std::vector<TextureData> m_vTextures;
         
 
         // 顶点属性格式（设置vao时需要用到）

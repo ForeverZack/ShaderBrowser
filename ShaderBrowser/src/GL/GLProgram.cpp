@@ -12,13 +12,13 @@ namespace customGL
 	//  预定义的uniform变量
 	// 创建shader时写入shader文件头的uniform字符串
 	const char* SHADER_UNIFORMS =
-		"uniform vec4 CGL_COLOR;\n"
-		"uniform vec4 CGL_COLOR1;\n";
+		"uniform sampler2D CGL_TEXTURE0;\n"
+		"uniform sampler2D CGL_TEXTURE1;\n";
 	 // uniform变量名称
 	const char* GLProgram::SHADER_UNIFORMS_ARRAY[] =
 	{
-		"CGL_COLOR",
-		"CGL_COLOR1"
+		"CGL_TEXTURE0",
+		"CGL_TEXTURE1"
 	};
 
 	GLProgram* GLProgram::create(const char* vertSrc, const char* fragSrc)
@@ -206,77 +206,78 @@ namespace customGL
 	{
 		for (int i = 0; i < UNIFORM_MAX_COUNT; ++i)
 		{
-			const char* uniformName = SHADER_UNIFORMS_ARRAY[i];
-			GLint location = glGetUniformLocation(m_uProgram, uniformName);
+            std::string uniformName(SHADER_UNIFORMS_ARRAY[i]);
+			GLint location = glGetUniformLocation(m_uProgram, uniformName.c_str());
             
             m_mUniformLocations.emplace(uniformName, location);
 		}
 	}
     
-    GLint GLProgram::getUniformLocation(const char* uniformName)
+    GLint GLProgram::getUniformLocation(const std::string& uniformName)
     {
-        if (m_mUniformLocations.find(uniformName) == m_mUniformLocations.end())
+        std::string str_uniformName(uniformName);
+        if (m_mUniformLocations.find(str_uniformName) == m_mUniformLocations.end())
         {
-            GLint location = glGetUniformLocation(m_uProgram, uniformName);
+            GLint location = glGetUniformLocation(m_uProgram, str_uniformName.c_str());
             
-            m_mUniformLocations.emplace(uniformName, location);
+            m_mUniformLocations.emplace(str_uniformName, location);
             
             // shader中声明但未使用的变量，opengl会自动优化移除它，所以这些uniform的location也为-1，使用glUniformXXX设置位置为-1的变量并不会报错
             common::BROWSER_WARNING(location>=0, "Cannot find uniform location in function GLProgram::getUniformLocation");
         }
         
-        GLint location = m_mUniformLocations[uniformName];
+        GLint location = m_mUniformLocations[str_uniformName];
         return location;
     }
     
-    void GLProgram::setUniformWithInt(const char* uniformName, int value)
+    void GLProgram::setUniformWithInt(const std::string& uniformName, int value)
     {
         GLint location = getUniformLocation(uniformName);
         glUniform1i(location, value);
     }
-    void GLProgram::setUniformWithFloat(const char* uniformName, float value)
+    void GLProgram::setUniformWithFloat(const std::string& uniformName, float value)
     {
         GLint location = getUniformLocation(uniformName);
         glUniform1f(location, value);
     }
-    void GLProgram::setUniformWithMat3(const char* uniformName, const glm::mat3& value)
+    void GLProgram::setUniformWithMat3(const std::string& uniformName, const glm::mat3& value)
     {
         GLint location = getUniformLocation(uniformName);
 //        typedef void (APIENTRYP PFNGLUNIFORMMATRIX3FVPROC)(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
         glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(value));
     }
-    void GLProgram::setUniformWithMat4(const char* uniformName, const glm::mat4& value)
+    void GLProgram::setUniformWithMat4(const std::string& uniformName, const glm::mat4& value)
     {
         GLint location = getUniformLocation(uniformName);
 //        typedef void (APIENTRYP PFNGLUNIFORMMATRIX4FVPROC)(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
         glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
     }
     
-    void GLProgram::setUniformWithFloatV(const char* uniformName, int size, const float* fv)
+    void GLProgram::setUniformWithFloatV(const std::string& uniformName, int size, const float* fv)
     {
         GLint location = getUniformLocation(uniformName);
         glUniform1fv(location, size, fv);
     }
     
-    void GLProgram::setUniformWithVec2(const char* uniformName, GLfloat f1, GLfloat f2)
+    void GLProgram::setUniformWithVec2(const std::string& uniformName, GLfloat f1, GLfloat f2)
     {
         GLint location = getUniformLocation(uniformName);
         glUniform2f(location, f1, f2);
     }
     
-    void GLProgram::setUniformWithVec3(const char* uniformName, GLfloat f1, GLfloat f2, GLfloat f3)
+    void GLProgram::setUniformWithVec3(const std::string& uniformName, GLfloat f1, GLfloat f2, GLfloat f3)
     {
         GLint location = getUniformLocation(uniformName);
         glUniform3f(location, f1, f2, f3);
     }
 
-	void GLProgram::setUniformWithVec4(const char* uniformName, GLfloat f1, GLfloat f2, GLfloat f3, GLfloat f4)
+	void GLProgram::setUniformWithVec4(const std::string& uniformName, GLfloat f1, GLfloat f2, GLfloat f3, GLfloat f4)
 	{
 		GLint location = getUniformLocation(uniformName);
 		glUniform4f(location, f1, f2, f3, f4);
 	}
     
-    void GLProgram::setUniformWithTex2D(const char* uniformName, GLuint textureId)
+    void GLProgram::setUniformWithTex2D(const std::string& uniformName, GLuint textureId)
     {
 		// 自动生成纹理单元
 		GLuint textureUnit;
@@ -290,9 +291,9 @@ namespace customGL
 			m_mTextureUnits[uniformName] = textureUnit;
 
 			// 注意！！！！ 还要通过使用glUniform1i设置每个采样器的方式告诉OpenGL每个着色器采样器属于哪个纹理单元。我们只需要设置一次即可
-			setUniformWithInt(uniformName, textureUnit);
+			setUniformWithInt(uniformName.c_str(), textureUnit);
 		}
-
+        
         common::BROWSER_ASSERT(textureUnit<MAX_ACTIVE_TEXTURE, "texture unit value is too big, it is out off support range in function GLProgram::setUniformWithTex2d");
         
         if (m_vTexIds[textureUnit] != textureId)

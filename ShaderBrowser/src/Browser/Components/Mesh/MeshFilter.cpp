@@ -25,11 +25,11 @@ namespace browser
         // 组件所属系统
         m_eBelongSystem = SystemType::Mesh;
         
-        
         // 清空
         m_mVertexAttribDeclarations.clear();
         m_vIndices.clear();
         m_vVertices.clear();
+        m_vTextures.clear();
 	}
 
 	MeshFilter::~MeshFilter()
@@ -61,6 +61,12 @@ namespace browser
         }
     }
     
+    void MeshFilter::addTexture(const std::string& uniformName, Texture2D* texture)
+    {
+        TextureData data = Utils::createTextureData(uniformName, texture);
+        m_vTextures.push_back(data);
+    }
+    
     void MeshFilter::setIndicesInfo(GLushort* data, unsigned int length)
     {
         m_uIndexCount = length;
@@ -75,12 +81,7 @@ namespace browser
         fillVertexsParam(location, data);
         
         // 将顶点属性记录下来，用来设置vao
-        VertexAttribDeclaration* declaration = new VertexAttribDeclaration();
-        declaration->index = location;
-        declaration->size = size;
-        declaration->type = type;
-        declaration->normalized = normalized;
-        declaration->stride = stride;
+        VertexAttribDeclaration* declaration = Utils::createVertexAttribDeclaration(location, size, type, normalized, stride);
         m_mVertexAttribDeclarations.emplace(location, declaration);
     }
     
