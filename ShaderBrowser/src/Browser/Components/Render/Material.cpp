@@ -6,9 +6,10 @@ namespace browser
 	Material* Material::createMaterial()
 	{
 		Material* material = new Material();
-		
+        
 		material->init();
-
+        material->autorelease();
+        
 		return material;
 	}
 
@@ -32,10 +33,10 @@ namespace browser
         m_vPass.push_back(pass);
     }
 
-	void Material::useMaterial(MeshFilter* meshFilter, int index/* = 0*/)
+	void Material::useMaterial(Mesh* mesh, int index/* = 0*/)
 	{
         common::BROWSER_ASSERT(m_vPass.size()>index && m_vPass[index], "cannot found pass in function Material::useMaterial");
-        m_vPass[index]->usePass(meshFilter);
+        m_vPass[index]->usePass(mesh);
 	}
     
 

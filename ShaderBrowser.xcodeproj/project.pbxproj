@@ -7,10 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1405E89F21F426F400FBDD71 /* Mesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1405E89D21F426F400FBDD71 /* Mesh.cpp */; };
+		1405E8A321F432FF00FBDD71 /* ComponentEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1405E8A221F432FF00FBDD71 /* ComponentEvent.cpp */; };
 		1452D79521E99742001AD1CA /* MeshSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1452D79421E99742001AD1CA /* MeshSystem.cpp */; };
 		148177B621D8A86D0037E11D /* Transform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 148177B421D8A86C0037E11D /* Transform.cpp */; };
 		148177B921D8CB5E0037E11D /* TransformSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 148177B821D8CB5E0037E11D /* TransformSystem.cpp */; };
 		148E896221CDE448006A71FD /* libassimp.4.1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 14FF768421C4B6D80008462D /* libassimp.4.1.0.dylib */; settings = {ATTRIBUTES = (Required, ); }; };
+		149C01FF21F4AF910011DAE2 /* GLProgramCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 149C01FE21F4AF910011DAE2 /* GLProgramCache.cpp */; };
 		14B902F121BA9CCB00554B0B /* libglfw3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 14B902F021BA9CCB00554B0B /* libglfw3.a */; };
 		14B902F321BA9CD900554B0B /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14B902F221BA9CD900554B0B /* OpenGL.framework */; };
 		14B902F521BA9CE500554B0B /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14B902F421BA9CE500554B0B /* CoreVideo.framework */; };
@@ -49,6 +52,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1405E89D21F426F400FBDD71 /* Mesh.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Mesh.cpp; sourceTree = "<group>"; };
+		1405E89E21F426F400FBDD71 /* Mesh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Mesh.h; sourceTree = "<group>"; };
+		1405E8A121F432FF00FBDD71 /* ComponentEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ComponentEvent.h; sourceTree = "<group>"; };
+		1405E8A221F432FF00FBDD71 /* ComponentEvent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ComponentEvent.cpp; sourceTree = "<group>"; };
 		14275C0A21B8A8580027A8BB /* ShaderBrowser */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ShaderBrowser; sourceTree = BUILT_PRODUCTS_DIR; };
 		1452D79321E99703001AD1CA /* MeshSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MeshSystem.h; sourceTree = "<group>"; };
 		1452D79421E99742001AD1CA /* MeshSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MeshSystem.cpp; sourceTree = "<group>"; };
@@ -56,6 +63,8 @@
 		148177B521D8A86C0037E11D /* Transform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Transform.h; sourceTree = "<group>"; };
 		148177B721D8CB5E0037E11D /* TransformSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TransformSystem.h; sourceTree = "<group>"; };
 		148177B821D8CB5E0037E11D /* TransformSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TransformSystem.cpp; sourceTree = "<group>"; };
+		149C01FD21F4AA320011DAE2 /* GLProgramCache.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GLProgramCache.h; sourceTree = "<group>"; };
+		149C01FE21F4AF910011DAE2 /* GLProgramCache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GLProgramCache.cpp; sourceTree = "<group>"; };
 		14B902F021BA9CCB00554B0B /* libglfw3.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libglfw3.a; path = ShaderBrowser/src/Plugins/GLFW/lib/mac/libglfw3.a; sourceTree = "<group>"; };
 		14B902F221BA9CD900554B0B /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		14B902F421BA9CE500554B0B /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
@@ -119,6 +128,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1405E8A021F432FF00FBDD71 /* Event */ = {
+			isa = PBXGroup;
+			children = (
+				1405E8A121F432FF00FBDD71 /* ComponentEvent.h */,
+				1405E8A221F432FF00FBDD71 /* ComponentEvent.cpp */,
+			);
+			path = Event;
+			sourceTree = "<group>";
+		};
 		14275C0121B8A8580027A8BB = {
 			isa = PBXGroup;
 			children = (
@@ -151,6 +169,15 @@
 				148177B421D8A86C0037E11D /* Transform.cpp */,
 			);
 			path = Transform;
+			sourceTree = "<group>";
+		};
+		149C01FB21F4AA320011DAE2 /* Cache */ = {
+			isa = PBXGroup;
+			children = (
+				149C01FD21F4AA320011DAE2 /* GLProgramCache.h */,
+				149C01FE21F4AF910011DAE2 /* GLProgramCache.cpp */,
+			);
+			path = Cache;
 			sourceTree = "<group>";
 		};
 		14B902EF21BA9CCB00554B0B /* Frameworks */ = {
@@ -281,6 +308,7 @@
 		14B9065D21BABC8F00554B0B /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				1405E8A021F432FF00FBDD71 /* Event */,
 				14E723E321E8C31E002A8A89 /* Mesh */,
 				148177B321D8A86C0037E11D /* Transform */,
 				14B9065F21BABC8F00554B0B /* Render */,
@@ -326,6 +354,7 @@
 		14B9066921BABC8F00554B0B /* System */ = {
 			isa = PBXGroup;
 			children = (
+				149C01FB21F4AA320011DAE2 /* Cache */,
 				14B9066A21BABC8F00554B0B /* ECSManager.h */,
 				14B9066C21BABC8F00554B0B /* ECSManager.cpp */,
 				14B9066D21BABC8F00554B0B /* AutoReleasePool.h */,
@@ -362,6 +391,8 @@
 		14E723E321E8C31E002A8A89 /* Mesh */ = {
 			isa = PBXGroup;
 			children = (
+				1405E89D21F426F400FBDD71 /* Mesh.cpp */,
+				1405E89E21F426F400FBDD71 /* Mesh.h */,
 				14E723E721E8C33B002A8A89 /* MeshFilter.h */,
 				14E723E421E8C31E002A8A89 /* MeshFilter.cpp */,
 			);
@@ -432,14 +463,17 @@
 				14B9068221BABC8F00554B0B /* RenderSystem.cpp in Sources */,
 				14B9068B21BABC8F00554B0B /* GLProgram.cpp in Sources */,
 				14B9068C21BABC8F00554B0B /* Texture2D.cpp in Sources */,
+				1405E8A321F432FF00FBDD71 /* ComponentEvent.cpp in Sources */,
 				148177B921D8CB5E0037E11D /* TransformSystem.cpp in Sources */,
 				14B9068721BABC8F00554B0B /* AutoReleasePool.cpp in Sources */,
+				1405E89F21F426F400FBDD71 /* Mesh.cpp in Sources */,
 				14B9068421BABC8F00554B0B /* BaseRender.cpp in Sources */,
 				14B9068921BABC8F00554B0B /* Reference.cpp in Sources */,
 				14B9068621BABC8F00554B0B /* Utils.cpp in Sources */,
 				14B9068321BABC8F00554B0B /* Material.cpp in Sources */,
 				14B9067C21BABC8F00554B0B /* stb_image.cpp in Sources */,
 				14B9067D21BABC8F00554B0B /* glad.c in Sources */,
+				149C01FF21F4AF910011DAE2 /* GLProgramCache.cpp in Sources */,
 				14B9068121BABC8F00554B0B /* BaseEntity.cpp in Sources */,
 				1452D79521E99742001AD1CA /* MeshSystem.cpp in Sources */,
 				14B9068D21BABC8F00554B0B /* main.cpp in Sources */,

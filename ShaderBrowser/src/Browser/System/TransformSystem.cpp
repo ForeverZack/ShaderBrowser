@@ -26,6 +26,17 @@ namespace browser
 	{
         m_oScene = nullptr;
 	}
+    
+    void TransformSystem::setScene(Transform* scene)
+    {
+        if(m_oScene)
+        {
+            m_oScene->release();
+        }
+        
+        m_oScene = scene;
+        m_oScene->retain();
+    }
 
 	void TransformSystem::update(float deltaTime)
 	{

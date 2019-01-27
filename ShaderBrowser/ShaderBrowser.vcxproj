@@ -20,6 +20,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Browser\Components\BaseComponent.cpp" />
+    <ClCompile Include="src\Browser\Components\Event\ComponentEvent.cpp" />
+    <ClCompile Include="src\Browser\Components\Mesh\Mesh.cpp" />
     <ClCompile Include="src\Browser\Components\Mesh\MeshFilter.cpp" />
     <ClCompile Include="src\Browser\Components\Render\BaseRender.cpp" />
     <ClCompile Include="src\Browser\Components\Render\Material.cpp" />
@@ -31,6 +33,7 @@
     <ClCompile Include="src\Browser\System\TransformSystem.cpp" />
     <ClCompile Include="src\Common\Components\Reference.cpp" />
     <ClCompile Include="src\Common\System\AutoReleasePool.cpp" />
+    <ClCompile Include="src\Common\System\Cache\GLProgramCache.cpp" />
     <ClCompile Include="src\Common\System\ECSManager.cpp" />
     <ClCompile Include="src\Common\Tools\Utils.cpp" />
     <ClCompile Include="src\GL\GLDefine.cpp" />
@@ -43,6 +46,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Browser\Components\BaseComponent.h" />
+    <ClInclude Include="src\Browser\Components\Event\ComponentEvent.h" />
+    <ClInclude Include="src\Browser\Components\Mesh\Mesh.h" />
     <ClInclude Include="src\Browser\Components\Mesh\MeshFilter.h" />
     <ClInclude Include="src\Browser\Components\Render\BaseRender.h" />
     <ClInclude Include="src\Browser\Components\Render\Material.h" />
@@ -56,6 +61,7 @@
     <ClInclude Include="src\Common\Components\Reference.h" />
     <ClInclude Include="src\Common\System\AutoReleasePool.h" />
     <ClInclude Include="src\Common\System\BaseSystem.h" />
+    <ClInclude Include="src\Common\System\Cache\GLProgramCache.h" />
     <ClInclude Include="src\Common\System\ECSManager.h" />
     <ClInclude Include="src\Common\Tools\Utils.h" />
     <ClInclude Include="src\GL\GLDefine.h" />

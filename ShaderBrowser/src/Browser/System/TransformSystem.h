@@ -23,9 +23,9 @@ namespace browser
 		// 每帧更新
 		void update(float deltaTime);
         
+        // 设置场景节点
+        void setScene(Transform* scene);
         
-        
-        REGISTER_PROPERTY_GET_SET(Transform*, m_oScene, Scene)
 	private:
         Transform* m_oScene;
 	};

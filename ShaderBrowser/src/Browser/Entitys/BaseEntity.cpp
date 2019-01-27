@@ -71,6 +71,16 @@ namespace browser
 			}
 		}
 	}
+    
+    void BaseEntity::deliverComponentMessage(ComponentEvent event, BaseComponentMessage* msg)
+    {
+        BaseComponent* component;
+        for (int i=0; i<m_vComponents.size(); ++i)
+        {
+            component = m_vComponents[i];
+            component->handleEvent(event, msg);
+        }
+    }
 
 	void BaseEntity::markSpecialComponent(BaseComponent* component, bool bEmpty/* = false*/)
 	{
@@ -83,13 +93,15 @@ namespace browser
 			break;
                 
         case SystemType::Mesh:
-            //Transform组件
+            //MeshFilter组件
             MARK_SPECIAL_COMPONENT(m_oMeshFilterComponent, component, bEmpty);
+            deliverComponentMessage(ComponentEvent::MeshFilter_AddComponent, nullptr);
             break;
 
 		case SystemType::RenderSystem:
 			// 渲染组件
 			MARK_SPECIAL_COMPONENT(m_oRenderComponent, component, bEmpty);
+            deliverComponentMessage(ComponentEvent::Render_AddComponent, nullptr);
 			break;
 		}
 	}

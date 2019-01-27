@@ -168,10 +168,10 @@ namespace browser
         }
     }
 
-	void Pass::usePass(MeshFilter* meshFilter)
+	void Pass::usePass(Mesh* mesh)
 	{
         // 应用网格过滤器中的纹理
-        const std::vector<TextureData>& textureInfos = meshFilter->getTextures();
+        const std::vector<TextureData>& textureInfos = mesh->getTextures();
         Texture2D* texture;
         for (auto itor = textureInfos.cbegin(); itor!=textureInfos.cend(); ++itor)
         {

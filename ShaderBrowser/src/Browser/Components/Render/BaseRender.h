@@ -6,13 +6,16 @@
 #include "../../../GL/GLDefine.h"
 #include "../../../Common/Tools/Utils.h"
 #include "../BaseComponent.h"
+#include "../Mesh/Mesh.h"
 
 using namespace std;
 using namespace customGL;
+using namespace common;
 
 namespace browser
 {
 	class Material;
+    class Pass;
 
 	class BaseRender : public BaseComponent
 	{
@@ -22,14 +25,21 @@ namespace browser
 
 	public:
 		// init
-		void init(Material* material);
+		void init();
         
-		REGISTER_PROPERTY_GET(Material*, m_oMaterial, Material)
+        Material* getMaterialByMesh(Mesh* mesh);
+        
+    protected:
+        // 处理组件事件
+        void handleEvent(ComponentEvent event, BaseComponentMessage* msg);
+        
+        // 添加材质
+        void addMaterial(std::string name, Material* material);
         
 	private:
-		// 材质
-		Material* m_oMaterial;
-
+        // 材质map
+        std::unordered_map<std::string, Material*> m_mMaterials;
+        
 	};
 }
 

@@ -49,6 +49,12 @@
     <Filter Include="src\Browser\Components\Mesh">
       <UniqueIdentifier>{b92940ab-9de6-4322-961b-27806d3bf5ad}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Common\System\Cache">
+      <UniqueIdentifier>{e9e4fbe4-f94e-4854-8c12-ee336aa066a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Browser\Components\Event">
+      <UniqueIdentifier>{bab64273-31a4-47c1-b247-2efe3a0c9d37}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -114,6 +120,15 @@
     <ClCompile Include="src\Browser\System\MeshSystem.cpp">
       <Filter>src\Browser\System</Filter>
     </ClCompile>
+    <ClCompile Include="src\Browser\Components\Mesh\Mesh.cpp">
+      <Filter>src\Browser\Components\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Common\System\Cache\GLProgramCache.cpp">
+      <Filter>src\Common\System\Cache</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Browser\Components\Event\ComponentEvent.cpp">
+      <Filter>src\Browser\Components\Event</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Plugins\Image\stb_image.h">
@@ -178,6 +193,15 @@
     </ClInclude>
     <ClInclude Include="src\Browser\System\MeshSystem.h">
       <Filter>src\Browser\System</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Browser\Components\Mesh\Mesh.h">
+      <Filter>src\Browser\Components\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Common\System\Cache\GLProgramCache.h">
+      <Filter>src\Common\System\Cache</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Browser\Components\Event\ComponentEvent.h">
+      <Filter>src\Browser\Components\Event</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

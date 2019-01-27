@@ -6,11 +6,15 @@
 #include "../../../GL/GLDefine.h"
 #include "../../../GL/GLProgram.h"
 #include "../../../Common/Tools/Utils.h"
-#include "../Mesh/MeshFilter.h"
+#include "../Mesh/Mesh.h"
 
 
 using namespace std;
 using namespace customGL;
+
+/*
+	注意：pass是可复用的对象，他的作用类似于cocos的glProgramState，用来保存uniform变量的值（两个pass可能会使用同一个glProgram，但其中的uniform可能不相同）
+*/
 
 namespace browser
 {
@@ -38,7 +42,7 @@ namespace browser
 		void setUniformV4f(const std::string& uniformName, glm::vec4 value);
         void setUniformTex2D(const std::string& uniformName, GLuint textureId);
 		// 使用材质
-		void usePass(MeshFilter* meshFilter);
+		void usePass(Mesh* mesh);
 
 
 		REGISTER_PROPERTY_GET(GLProgram*, m_oGLProgram, GLProgram)

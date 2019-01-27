@@ -116,44 +116,53 @@ namespace browser
 		int indexCount;
 		BaseRender* render;
         MeshFilter* meshFilter;
+		Mesh* mesh;
 		for (auto itor = m_mComponentsList.begin(); itor != m_mComponentsList.end(); ++itor)
 		{
 			const std::list<BaseComponent*>& renderList = itor->second;
 			render = static_cast<BaseRender*>(*(renderList.begin()));
             meshFilter = static_cast<MeshFilter*>(render->getBelongEntity()->getMeshFilter());
-            vao = meshFilter->getVAO();
-			material = render->getMaterial();
-            
-            
-            // 顶点属性
-            const std::vector<VertexData>& vertices = meshFilter->getVertices();
-            vertCount = meshFilter->getVertexCount();
-            // 顶点索引数组
-            const std::vector<GLushort>& indices = meshFilter->getIndices();
-            indexCount = meshFilter->getIndexCount();
 
-			// 1.绑定对应的vao
-			glBindVertexArray(vao);
-			
-            // 2.传递顶点数据
-            glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[RenderSystem_Vertices_Buffer]);
-			glBufferData(GL_ARRAY_BUFFER, vertCount*sizeof(VertexData), &vertices[0], GL_STATIC_DRAW);
-            
-            // 3.传递索引数组
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_uVBOs[RenderSystem_Indices_Buffer]);
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLushort)*indexCount, &indices[0], GL_STATIC_DRAW);
-            
-            
-			glBindBuffer(GL_ARRAY_BUFFER, 0);
-			glBindVertexArray(0);
+			// 遍历mesh
+			const std::vector<Mesh*>& meshes = meshFilter->getMeshes();
+			for (int i = 0; i < meshes.size(); ++i)
+			{
+				mesh = meshes[i];
+				vao = mesh->getVAO();
+				material = render->getMaterialByMesh(mesh);
 
-			// 4.绘制
-			material->useMaterial(meshFilter);
-			glBindVertexArray(vao);
-            //typedef void (APIENTRYP PFNGLDRAWELEMENTSPROC)(GLenum mode, GLsizei count, GLenum type, const void *indices);
-            glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_SHORT, (void*)0);
-            //            glDrawArrays(GL_TRIANGLES, 0, vertCount);
-            glBindVertexArray(0);
+
+				// 顶点属性
+				const std::vector<VertexData>& vertices = mesh->getVertices();
+				vertCount = mesh->getVertexCount();
+				// 顶点索引数组
+				const std::vector<GLushort>& indices = mesh->getIndices();
+				indexCount = mesh->getIndexCount();
+
+				// 1.绑定对应的vao
+				glBindVertexArray(vao);
+
+				// 2.传递顶点数据
+				glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[RenderSystem_Vertices_Buffer]);
+				glBufferData(GL_ARRAY_BUFFER, vertCount * sizeof(VertexData), &vertices[0], GL_STATIC_DRAW);
+
+				// 3.传递索引数组
+				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_uVBOs[RenderSystem_Indices_Buffer]);
+				glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLushort)*indexCount, &indices[0], GL_STATIC_DRAW);
+
+
+				glBindBuffer(GL_ARRAY_BUFFER, 0);
+				glBindVertexArray(0);
+
+				// 4.绘制
+				material->useMaterial(mesh);
+				glBindVertexArray(vao);
+				//typedef void (APIENTRYP PFNGLDRAWELEMENTSPROC)(GLenum mode, GLsizei count, GLenum type, const void *indices);
+				glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_SHORT, (void*)0);
+				//            glDrawArrays(GL_TRIANGLES, 0, vertCount);
+				glBindVertexArray(0);
+			}
+            
         }
 	}
 

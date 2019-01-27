@@ -6,6 +6,7 @@
 #include "GL/GLProgram.h"
 #include "Browser/Components/Transform/Transform.h"
 #include "Browser/Components/Mesh/MeshFilter.h"
+#include "Browser/Components/Mesh/Mesh.h"
 #include "Browser/Components/Render/BaseRender.h"
 #include "Browser/Components/Render/Material.h"
 #include "Browser/Components/Render/Pass.h"
@@ -15,6 +16,7 @@
 #include "Common/System/AutoReleasePool.h"
 #include "GL/Texture2D.h"
 #include "Common/System/ECSManager.h"
+#include "Common/System/Cache/GLProgramCache.h"
 #ifdef __APPLE__
 #include <unistd.h>
 #endif
@@ -30,6 +32,7 @@ using namespace common;
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include <chrono>
 
 // 函数需要先声明一下，否则在定义之前调用会编译出错
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -42,6 +45,9 @@ void testVal();
 // settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
+
+// 上一次更新的时间戳
+std::chrono::steady_clock::time_point _lastUpdate;
 
 
 //test
@@ -95,7 +101,7 @@ void testVal()
 
     // MeshFilter
     // (GLuint location, GLint size, GLenum type, GLboolean normalized, GLsizei stride, void* data)
-    MeshFilter* mesh = MeshFilter::create(6);
+    browser::Mesh* mesh = Mesh::create(6);
     mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_POSITION, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), vertices);
     mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_COLOR, 4, GL_FLOAT, GL_FALSE, sizeof(VertexData), colors);
     mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_TEX_COORD, 2, GL_FLOAT, GL_FALSE, sizeof(VertexData), coords);
@@ -103,12 +109,16 @@ void testVal()
     mesh->addTexture("CGL_TEXTURE0", texture1);
     mesh->addTexture("CGL_TEXTURE1", texture2);
     mesh->setupVAO();
+	
+	MeshFilter* meshFilter = MeshFilter::create();
+	meshFilter->addMesh(mesh);
 
 
 	// 着色器程序
 	GLProgram* program = GLProgram::create("./res/shaders/triangles.vert", "./res/shaders/triangles.frag");
+    GLProgramCache::getInstance()->addGLProgram(DEFAULT_GLPROGRAM_NAME, program);
     // pass
-    Pass* pass = Pass::createPass(program);
+//    Pass* pass = Pass::createPass(program);
 //    pass->setUniformV4f("CGL_COLOR", glm::vec4(1.0f, 0.0f, 0, 1.0f));
 //    pass->setUniformV4f("CGL_COLOR1", glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
 //        pass->setUniformMat4("matTest", glm::mat4(1.0f, 0.5f, 0.0f, 1.0f,         //Shader中mat4[0][1] = 0.5f;
@@ -119,15 +129,12 @@ void testVal()
 //    pass->setUniformFloatV("cusTest", 4, m);
 //    pass->setUniformTex2D("CGL_TEXTURE0", texture1->getTextureId());
 //    pass->setUniformTex2D("CGL_TEXTURE1", texture2->getTextureId());
-	// 材质
-	Material* material = Material::createMaterial();
-    material->addPass(pass);
+//    // 材质
+//    Material* material = Material::createMaterial();
+//    material->addPass(pass);
 	// 组件：渲染组件
 	BaseRender* renderCom = new BaseRender();
-	renderCom->init(material);
-//    renderCom->addVertexAttrib(vertices, 6, GLProgram::VERTEX_ATTR_POSITION, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), (void*)0);
-//    renderCom->addVertexAttrib(colors, 6, GLProgram::VERTEX_ATTR_COLOR, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), (void*)0);
-//    renderCom->addVertexAttrib(coords, 6, GLProgram::VERTEX_ATTR_TEX_COORD, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), (void*)0);
+    renderCom->init();
 //    // 设置顶点索引数组
 //    renderCom->setIndicesInfo(indices, 6);
 	// 将组件加入渲染系统队列
@@ -135,7 +142,7 @@ void testVal()
 	entity->addComponent(renderCom);
     
     // meshFilter
-    entity->addComponent(mesh);
+    entity->addComponent(meshFilter);
 
     // Transform组件
     browser::Transform* scene = new browser::Transform();
@@ -189,6 +196,7 @@ int main()
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	// 渲染循环
+    _lastUpdate = std::chrono::steady_clock::now();
 	while (!glfwWindowShouldClose(window))
 	{
 		mainLoop(window);
@@ -251,10 +259,13 @@ void destory()
 
 }
 
-
 void mainLoop(GLFWwindow *window)
 {
-	float deltaTime = 0;
+    // 计算deltaTime
+    auto now = std::chrono::steady_clock::now();
+    float deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(now - _lastUpdate).count() / 1000000.0f;
+    deltaTime = deltaTime<0 ? 0 : deltaTime;
+    _lastUpdate = now;
 
 	// 1.input
 	processInput(window);
@@ -262,6 +273,7 @@ void mainLoop(GLFWwindow *window)
 	// 2.render
     ECSManager::getInstance()->updateSystem(SystemType::Transform, deltaTime);  // 更新transform
 	ECSManager::getInstance()->updateSystem(SystemType::RenderSystem, deltaTime);   // 更新渲染系统
+    BROWSER_LOG(deltaTime);
 
 	// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 	glfwSwapBuffers(window);

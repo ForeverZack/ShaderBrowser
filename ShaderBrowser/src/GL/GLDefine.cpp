@@ -4,6 +4,12 @@
 
 namespace customGL {
     
+    // 默认GLProgram名称
+    extern const char* DEFAULT_GLPROGRAM_NAME = "ShaderBrowser_DefaultGLProgram";
+    
+    // 默认材质名称
+    extern const char* DEFAULT_MATERIAL_NAME = "ShaderBrowser_DefaultMaterial";
+    
     // 坐标轴X
     extern const glm::vec3 GLM_AXIS_X = glm::vec3(1.0f, 0.0f, 0.0f);
     // 坐标轴Y

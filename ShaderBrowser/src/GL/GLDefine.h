@@ -11,6 +11,7 @@ namespace customGL
     class GLProgram;
 	class Texture2D;
     
+    
 //    // 顶点数据结构体
 //    struct V3F_C4F_T2F
 //    {
@@ -35,6 +36,10 @@ namespace customGL
 //        int indexCount;
 //    };
     
+    // 默认的GLProgram名称
+    extern const char* DEFAULT_GLPROGRAM_NAME;
+    // 默认材质名称
+    extern const char* DEFAULT_MATERIAL_NAME;
     // 坐标轴X
     extern const glm::vec3 GLM_AXIS_X;
     // 坐标轴Y
