@@ -129,6 +129,9 @@
     <ClCompile Include="src\Browser\Components\Event\ComponentEvent.cpp">
       <Filter>src\Browser\Components\Event</Filter>
     </ClCompile>
+    <ClCompile Include="src\Common\Tools\FileUtils.cpp">
+      <Filter>src\Common\Tools</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Plugins\Image\stb_image.h">
@@ -207,6 +210,9 @@
       <Filter>src\Common\System\Cache</Filter>
     </ClInclude>
     <ClInclude Include="src\Common\Tools\BaseSingleton.h">
+      <Filter>src\Common\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Common\Tools\FileUtils.h">
       <Filter>src\Common\Tools</Filter>
     </ClInclude>
   </ItemGroup>

@@ -9,15 +9,14 @@ namespace common
 	{
 	public:
 		static C* getInstance();
+        
 	public:
-		BaseSingleton()
-		{
-		}
-		virtual ~BaseSingleton()
-		{
-		}
+		BaseSingleton() {}
+		virtual ~BaseSingleton() {}
+        
 	protected:
 		static C* m_oInstance;
+        
 	};
 
 	//是隐式地在该编译单元为模板的所有特化提供其静态成员的定义，例如在首次使用 BaseSingleton<int>, BaseSingleton<float>, BaseSingleton<char>...会隐式提供静态成员的定义

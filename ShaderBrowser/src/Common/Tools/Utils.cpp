@@ -22,11 +22,13 @@ namespace common
 	const GLchar* Utils::readFile(const char* filename)
 	{
 #ifdef WIN32
+        // WIN32
 		FILE* infile;
 		fopen_s(&infile, filename, "rb");
 #else
+        // macOS
 		FILE* infile = fopen(filename, "rb");
-#endif // WIN32
+#endif
 
 		if (!infile) {
 #ifdef _DEBUG

@@ -33,6 +33,7 @@ using namespace common;
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <chrono>
+#include "Common/Tools/FileUtils.h"
 
 // 函数需要先声明一下，否则在定义之前调用会编译出错
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -93,6 +94,10 @@ GLushort indices[] = {
 };
 void testVal()
 {
+//    std::string path = FileUtils::getInstance()->convertToAbsolutePath("./res/texture/awesomeface1.png");
+    std::string path = FileUtils::getInstance()->convertToAbsolutePath("res");
+	bool isPathExist = FileUtils::getInstance()->isDirectoryExist(path);
+
 	// 载入纹理
 	Texture2D* texture1 = Texture2D::create("./res/texture/awesomeface.png");
 	texture1->retain();

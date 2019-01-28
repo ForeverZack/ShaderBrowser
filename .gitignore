@@ -4,3 +4,8 @@
 *.tlog
 *.pdb
 *.db
+*.opendb
+*.pdb
+*.ilk
+*.log
+*.idb
