@@ -4,17 +4,6 @@
 
 namespace browser
 {
-	static RenderSystem* m_oInstance = nullptr;
-
-	RenderSystem* RenderSystem::getInstance()
-	{
-		if (!m_oInstance)
-		{
-			m_oInstance = new RenderSystem();
-		}
-		return m_oInstance;
-	}
-
 	RenderSystem::RenderSystem()
 	{
 		m_iPriority = 0;
@@ -110,6 +99,11 @@ namespace browser
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		// TODO: 以后需要实现合批
+		// 思考：什么情况下才可以合批
+		// 1. 排序
+		// 2. 阴影投射阶段，使用系统内置的shader，在cpu中计算裁剪坐标系下的坐标位置，所以全部可以合批，需要从光源和camera两个角度获取深度贴图，得到最后的shadermap（camera方向）。具体可以参考unity的framedebug
+		// 3. 延迟渲染不透明物体（G-Buffer）：相同的mesh，使用了相同的纹理和Pass(实际上只要Pass里使用的GLProgram和uniform变量一样)，就可以合批
+		// 4. 正向渲染透明物体
 		Material* material;
 		GLuint vao;
 		int vertCount;

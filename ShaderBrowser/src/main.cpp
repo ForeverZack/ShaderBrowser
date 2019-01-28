@@ -116,7 +116,7 @@ void testVal()
 
 	// 着色器程序
 	GLProgram* program = GLProgram::create("./res/shaders/triangles.vert", "./res/shaders/triangles.frag");
-    GLProgramCache::getInstance()->addGLProgram(DEFAULT_GLPROGRAM_NAME, program);
+    GLProgramCache::getInstance()->addGLProgram(GLProgram::DEFAULT_GLPROGRAM_NAME, program);
     // pass
 //    Pass* pass = Pass::createPass(program);
 //    pass->setUniformV4f("CGL_COLOR", glm::vec4(1.0f, 0.0f, 0, 1.0f));
@@ -134,7 +134,7 @@ void testVal()
 //    material->addPass(pass);
 	// 组件：渲染组件
 	BaseRender* renderCom = new BaseRender();
-    renderCom->init();
+    // renderCom->init();
 //    // 设置顶点索引数组
 //    renderCom->setIndicesInfo(indices, 6);
 	// 将组件加入渲染系统队列
@@ -273,7 +273,7 @@ void mainLoop(GLFWwindow *window)
 	// 2.render
     ECSManager::getInstance()->updateSystem(SystemType::Transform, deltaTime);  // 更新transform
 	ECSManager::getInstance()->updateSystem(SystemType::RenderSystem, deltaTime);   // 更新渲染系统
-    BROWSER_LOG(deltaTime);
+    //BROWSER_LOG(deltaTime);
 
 	// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 	glfwSwapBuffers(window);

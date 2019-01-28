@@ -37,9 +37,9 @@ namespace customGL
 //    };
     
     // 默认的GLProgram名称
-    extern const char* DEFAULT_GLPROGRAM_NAME;
+    //extern const char* DEFAULT_GLPROGRAM_NAME;
     // 默认材质名称
-    extern const char* DEFAULT_MATERIAL_NAME;
+    //extern const char* DEFAULT_MATERIAL_NAME;
     // 坐标轴X
     extern const glm::vec3 GLM_AXIS_X;
     // 坐标轴Y

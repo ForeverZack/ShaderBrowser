@@ -14,6 +14,10 @@ namespace customGL
 	class GLProgram
 	{
 	public:
+		// 默认GLProgram名称
+		static const char* DEFAULT_GLPROGRAM_NAME;
+
+	public:
 		// 预定义的顶点着色器属性位置枚举( layout (location = n) )
 		enum
 		{

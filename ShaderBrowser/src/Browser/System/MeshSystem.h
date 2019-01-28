@@ -2,16 +2,16 @@
 
 #include <vector>
 #include "../../Common/System/BaseSystem.h"
+#include "../../Common/Tools/BaseSingleton.h"
 
 using namespace common;
 
 namespace browser
 {
     
-	class MeshSystem : public common::BaseSystem
+	class MeshSystem : public common::BaseSystem, public BaseSingleton<MeshSystem>
 	{
-	public:
-		static MeshSystem* getInstance();
+
 	public:
 		MeshSystem();
 		~MeshSystem() {};

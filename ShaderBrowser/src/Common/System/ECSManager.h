@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <algorithm> 
 #include "BaseSystem.h"
+#include "../Tools/BaseSingleton.h"
 
 namespace common
 {
@@ -43,11 +44,8 @@ namespace common
 		std::vector<BaseSystem*> m_vSystems;
 	};
 
-	class ECSManager
+	class ECSManager : public BaseSingleton<ECSManager>
 	{
-	public:
-		static ECSManager* getInstance();
-
 	public:
 		ECSManager();
 		~ECSManager();

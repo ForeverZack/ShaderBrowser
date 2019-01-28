@@ -61,8 +61,10 @@
     <ClInclude Include="src\Common\Components\Reference.h" />
     <ClInclude Include="src\Common\System\AutoReleasePool.h" />
     <ClInclude Include="src\Common\System\BaseSystem.h" />
+    <ClInclude Include="src\Common\System\Cache\BaseCache.h" />
     <ClInclude Include="src\Common\System\Cache\GLProgramCache.h" />
     <ClInclude Include="src\Common\System\ECSManager.h" />
+    <ClInclude Include="src\Common\Tools\BaseSingleton.h" />
     <ClInclude Include="src\Common\Tools\Utils.h" />
     <ClInclude Include="src\GL\GLDefine.h" />
     <ClInclude Include="src\GL\GLProgram.h" />

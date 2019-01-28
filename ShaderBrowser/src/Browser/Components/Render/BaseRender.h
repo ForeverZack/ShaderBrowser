@@ -33,6 +33,8 @@ namespace browser
         // 处理组件事件
         void handleEvent(ComponentEvent event, BaseComponentMessage* msg);
         
+		// 创建材质(根据shader名字)
+		Material* createMaterial(std::string programName);
         // 添加材质
         void addMaterial(std::string name, Material* material);
         

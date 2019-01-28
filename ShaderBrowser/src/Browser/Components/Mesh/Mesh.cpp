@@ -1,6 +1,7 @@
 #include "Mesh.h"
 #include "./../../../GL/GLProgram.h"
 #include "./../../System/RenderSystem.h"
+#include "../Render/Material.h"
 
 using namespace customGL;
 
@@ -20,7 +21,7 @@ namespace browser
         , m_bGenVAO(false)
         , m_uVertexCount(0)
         , m_uIndexCount(0)
-        , m_sMaterialName(DEFAULT_MATERIAL_NAME)
+        , m_sMaterialName(Material::DEFAULT_MATERIAL_NAME)
 	{
         // 清空
         m_mVertexAttribDeclarations.clear();

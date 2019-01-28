@@ -3,14 +3,12 @@
 
 #include <vector>
 #include "../Components/Reference.h"
+#include "../Tools/BaseSingleton.h"
 
 namespace common
 {
-	class AutoReleasePool
+	class AutoReleasePool : public BaseSingleton<AutoReleasePool>
 	{
-	public:
-		static AutoReleasePool* getInstance();
-
 	public:
 		AutoReleasePool();
 		~AutoReleasePool();

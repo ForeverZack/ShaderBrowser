@@ -18,6 +18,10 @@ namespace browser
     class Material : public Reference
 	{
 	public:
+		// 默认材质名称
+		static const char* DEFAULT_MATERIAL_NAME;
+
+	public:
 		// TODO: 这里的vao应该是生成material之后自动生成的(可以从缓存中找)
 		static Material* createMaterial();
 

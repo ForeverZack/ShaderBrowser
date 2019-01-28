@@ -3,17 +3,6 @@
 
 namespace browser
 {
-	static TransformSystem* m_oInstance = nullptr;
-
-	TransformSystem* TransformSystem::getInstance()
-	{
-		if (!m_oInstance)
-		{
-			m_oInstance = new TransformSystem();
-		}
-		return m_oInstance;
-	}
-
 	TransformSystem::TransformSystem()
         : m_oScene(nullptr)
 	{

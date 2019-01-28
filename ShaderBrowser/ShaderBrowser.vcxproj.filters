@@ -203,5 +203,11 @@
     <ClInclude Include="src\Browser\Components\Event\ComponentEvent.h">
       <Filter>src\Browser\Components\Event</Filter>
     </ClInclude>
+    <ClInclude Include="src\Common\System\Cache\BaseCache.h">
+      <Filter>src\Common\System\Cache</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Common\Tools\BaseSingleton.h">
+      <Filter>src\Common\Tools</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

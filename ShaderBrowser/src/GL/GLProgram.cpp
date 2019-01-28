@@ -4,6 +4,9 @@
 
 namespace customGL
 {
+	// 默认GLProgram名称
+	const char* GLProgram::DEFAULT_GLPROGRAM_NAME = "ShaderBrowser_DefaultGLProgram";
+
 	// 预定义的顶点着色器属性名称
 	const char* GLProgram::ATTRIBUTE_NAME_POSITION = "a_position";
 	const char* GLProgram::ATTRIBUTE_NAME_COLOR = "a_color";

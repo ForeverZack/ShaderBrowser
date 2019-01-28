@@ -30,7 +30,7 @@ namespace browser
 		void removeComponent(BaseComponent* component);
 		// 根据类型移除组件(注意，以为是按系统类型移除的，所以可能会同时移除多个组件)
 		void removeComponents(SystemType type);
-        // 传递组件消息
+        // 传递组件消息(在同一个Entity内部传递)
         // 注意:这里的BaseComponentMessage是一个Reference，每帧结束时会自动清除，并且这套消息机制是实时的，接收者会立刻处理
         void deliverComponentMessage(ComponentEvent event, BaseComponentMessage* msg);
 

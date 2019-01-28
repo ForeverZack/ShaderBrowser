@@ -4,16 +4,15 @@
 #include "../../Common/Tools/Utils.h"
 #include "../../Common/System/BaseSystem.h"
 #include "../../Browser/Components/Transform/Transform.h"
+#include "../../Common/Tools/BaseSingleton.h"
 
 using namespace common;
 
 namespace browser
 {
     
-	class TransformSystem : public common::BaseSystem
+	class TransformSystem : public common::BaseSystem, public BaseSingleton<TransformSystem>
 	{
-	public:
-		static TransformSystem* getInstance();
 	public:
 		TransformSystem();
 		~TransformSystem() {};

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "BaseCache.h"
 #include <unordered_map>
 #include "../../../GL/GLProgram.h"
 
@@ -7,11 +8,8 @@ using namespace customGL;
 
 namespace common
 {
-	class GLProgramCache
+	class GLProgramCache : public BaseMapCache<std::string, GLProgram, GLProgramCache>
 	{
-    public:
-        static GLProgramCache* getInstance();
-
 	public:
 		GLProgramCache();
 		~GLProgramCache();
@@ -22,8 +20,6 @@ namespace common
         // 获取
         GLProgram* getGLProgram(std::string name);
 
-	private:
-        std::unordered_map<std::string, GLProgram*> m_vPrograms;
 	};
 }
 

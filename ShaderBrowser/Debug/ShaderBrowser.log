@@ -1,18 +1,26 @@
 ﻿  main.cpp
-glfw3.lib(context.obj) : warning LNK4099: 未找到 PDB“glfw.pdb”(使用“glfw3.lib(context.obj)”或在“F:\OpenGL\ShaderBrowser\Debug\glfw.pdb”中寻找)；正在链接对象，如同没有调试信息一样
-glfw3.lib(init.obj) : warning LNK4099: 未找到 PDB“glfw.pdb”(使用“glfw3.lib(init.obj)”或在“F:\OpenGL\ShaderBrowser\Debug\glfw.pdb”中寻找)；正在链接对象，如同没有调试信息一样
-glfw3.lib(input.obj) : warning LNK4099: 未找到 PDB“glfw.pdb”(使用“glfw3.lib(input.obj)”或在“F:\OpenGL\ShaderBrowser\Debug\glfw.pdb”中寻找)；正在链接对象，如同没有调试信息一样
-glfw3.lib(monitor.obj) : warning LNK4099: 未找到 PDB“glfw.pdb”(使用“glfw3.lib(monitor.obj)”或在“F:\OpenGL\ShaderBrowser\Debug\glfw.pdb”中寻找)；正在链接对象，如同没有调试信息一样
-glfw3.lib(vulkan.obj) : warning LNK4099: 未找到 PDB“glfw.pdb”(使用“glfw3.lib(vulkan.obj)”或在“F:\OpenGL\ShaderBrowser\Debug\glfw.pdb”中寻找)；正在链接对象，如同没有调试信息一样
-glfw3.lib(window.obj) : warning LNK4099: 未找到 PDB“glfw.pdb”(使用“glfw3.lib(window.obj)”或在“F:\OpenGL\ShaderBrowser\Debug\glfw.pdb”中寻找)；正在链接对象，如同没有调试信息一样
-glfw3.lib(win32_init.obj) : warning LNK4099: 未找到 PDB“glfw.pdb”(使用“glfw3.lib(win32_init.obj)”或在“F:\OpenGL\ShaderBrowser\Debug\glfw.pdb”中寻找)；正在链接对象，如同没有调试信息一样
-glfw3.lib(win32_joystick.obj) : warning LNK4099: 未找到 PDB“glfw.pdb”(使用“glfw3.lib(win32_joystick.obj)”或在“F:\OpenGL\ShaderBrowser\Debug\glfw.pdb”中寻找)；正在链接对象，如同没有调试信息一样
-glfw3.lib(win32_monitor.obj) : warning LNK4099: 未找到 PDB“glfw.pdb”(使用“glfw3.lib(win32_monitor.obj)”或在“F:\OpenGL\ShaderBrowser\Debug\glfw.pdb”中寻找)；正在链接对象，如同没有调试信息一样
-glfw3.lib(win32_time.obj) : warning LNK4099: 未找到 PDB“glfw.pdb”(使用“glfw3.lib(win32_time.obj)”或在“F:\OpenGL\ShaderBrowser\Debug\glfw.pdb”中寻找)；正在链接对象，如同没有调试信息一样
-glfw3.lib(win32_thread.obj) : warning LNK4099: 未找到 PDB“glfw.pdb”(使用“glfw3.lib(win32_thread.obj)”或在“F:\OpenGL\ShaderBrowser\Debug\glfw.pdb”中寻找)；正在链接对象，如同没有调试信息一样
-glfw3.lib(win32_window.obj) : warning LNK4099: 未找到 PDB“glfw.pdb”(使用“glfw3.lib(win32_window.obj)”或在“F:\OpenGL\ShaderBrowser\Debug\glfw.pdb”中寻找)；正在链接对象，如同没有调试信息一样
-glfw3.lib(wgl_context.obj) : warning LNK4099: 未找到 PDB“glfw.pdb”(使用“glfw3.lib(wgl_context.obj)”或在“F:\OpenGL\ShaderBrowser\Debug\glfw.pdb”中寻找)；正在链接对象，如同没有调试信息一样
-glfw3.lib(egl_context.obj) : warning LNK4099: 未找到 PDB“glfw.pdb”(使用“glfw3.lib(egl_context.obj)”或在“F:\OpenGL\ShaderBrowser\Debug\glfw.pdb”中寻找)；正在链接对象，如同没有调试信息一样
-glfw3.lib(osmesa_context.obj) : warning LNK4099: 未找到 PDB“glfw.pdb”(使用“glfw3.lib(osmesa_context.obj)”或在“F:\OpenGL\ShaderBrowser\Debug\glfw.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+  MeshSystem.cpp
+  正在生成代码...
+  正在编译...
+  ECSManager.cpp
+f:\opengl\shaderbrowser\shaderbrowser\src\common\system\ecsmanager.cpp(17): warning C4800: “common::BaseSystem *”: 将值强制为布尔值“true”或“false”(性能警告)
+  GLProgramCache.cpp
+f:\opengl\shaderbrowser\shaderbrowser\src\common\system\cache\glprogramcache.cpp(19): warning C4800: “customGL::GLProgram *”: 将值强制为布尔值“true”或“false”(性能警告)
+f:\opengl\shaderbrowser\shaderbrowser\src\common\system\cache\glprogramcache.cpp(30): warning C4800: “customGL::GLProgram *”: 将值强制为布尔值“true”或“false”(性能警告)
+  AutoReleasePool.cpp
+  Reference.cpp
+  TransformSystem.cpp
+  RenderSystem.cpp
+f:\opengl\shaderbrowser\shaderbrowser\src\browser\system\rendersystem.cpp(122): warning C4018: “<”: 有符号/无符号不匹配
+  BaseEntity.cpp
+f:\opengl\shaderbrowser\shaderbrowser\src\browser\entitys\baseentity.cpp(22): warning C4800: “browser::BaseComponent *”: 将值强制为布尔值“true”或“false”(性能警告)
+f:\opengl\shaderbrowser\shaderbrowser\src\browser\entitys\baseentity.cpp(78): warning C4018: “<”: 有符号/无符号不匹配
+  BaseRender.cpp
+  MeshFilter.cpp
+  Mesh.cpp
+f:\opengl\shaderbrowser\shaderbrowser\src\browser\components\mesh\mesh.cpp(110): warning C4018: “<”: 有符号/无符号不匹配
+f:\opengl\shaderbrowser\shaderbrowser\src\browser\components\mesh\mesh.cpp(117): warning C4018: “<”: 有符号/无符号不匹配
+f:\opengl\shaderbrowser\shaderbrowser\src\browser\components\mesh\mesh.cpp(124): warning C4018: “<”: 有符号/无符号不匹配
+  正在生成代码...
   ShaderBrowser.vcxproj -> F:\OpenGL\ShaderBrowser\Debug\ShaderBrowser.exe
   ShaderBrowser.vcxproj -> F:\OpenGL\ShaderBrowser\Debug\ShaderBrowser.pdb (Full PDB)

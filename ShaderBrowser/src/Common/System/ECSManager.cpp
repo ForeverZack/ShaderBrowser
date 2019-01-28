@@ -2,16 +2,6 @@
 
 namespace common
 {
-	static ECSManager* m_oInstance = nullptr;
-	ECSManager* ECSManager::getInstance()
-	{
-		if (!m_oInstance)
-		{
-			m_oInstance = new ECSManager();
-		}
-		return m_oInstance;
-	}
-
 	ECSManager::ECSManager()
 	{	
 

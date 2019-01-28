@@ -3,6 +3,9 @@
 
 namespace browser
 {
+	// Ä¬ÈÏ²ÄÖÊÃû³Æ
+	const char* Material::DEFAULT_MATERIAL_NAME = "ShaderBrowser_DefaultMaterial";
+
 	Material* Material::createMaterial()
 	{
 		Material* material = new Material();

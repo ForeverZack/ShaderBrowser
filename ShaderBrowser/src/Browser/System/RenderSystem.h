@@ -6,13 +6,14 @@
 #include "../../Common/System/BaseSystem.h"
 #include "../Components/Render/BaseRender.h"
 #include "../../GL/GLProgram.h"
+#include "../../Common/Tools/BaseSingleton.h"
 
 namespace browser
 {
     // VBO 最大size
     static const int VBO_SIZE = 65536;
     
-	class RenderSystem : public common::BaseSystem
+	class RenderSystem : public common::BaseSystem, public BaseSingleton<RenderSystem>
 	{
 		// vbo缓存类型
 		enum VertexBufferType
@@ -36,8 +37,6 @@ namespace browser
             RenderSystem_Buffer_Maxcount,
 		};
 
-	public:
-		static RenderSystem* getInstance();
 	public:
 		RenderSystem();
 		~RenderSystem() {};

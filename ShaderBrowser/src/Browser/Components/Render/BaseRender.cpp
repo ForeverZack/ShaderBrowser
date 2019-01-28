@@ -24,13 +24,8 @@ namespace browser
 
 	void BaseRender::init()
 	{
-        GLProgram* defaultProgram = GLProgramCache::getInstance()->getGLProgram(DEFAULT_GLPROGRAM_NAME);
-        Pass* defaultPass = Pass::createPass(defaultProgram);
-        
-        Material* material = Material::createMaterial();
-        material->addPass(defaultPass);
-        
-        addMaterial(DEFAULT_MATERIAL_NAME, material);
+        Material* material = createMaterial(GLProgram::DEFAULT_GLPROGRAM_NAME);
+        addMaterial(Material::DEFAULT_MATERIAL_NAME, material);
 	}
     
     Material* BaseRender::getMaterialByMesh(Mesh* mesh)
@@ -43,6 +38,19 @@ namespace browser
         
         return nullptr;
     }
+
+	Material* BaseRender::createMaterial(std::string programName)
+	{
+		// 缓存中获取glProgram
+		GLProgram* program = GLProgramCache::getInstance()->getGLProgram(programName);
+		// （注意！！！Pass中会存储uniform的值，所以要考虑好pass能不能复用，可以给场景物体一个isStatic选项，让他们可以合批noMVP。cocos中只有使用了noMVP的才能复用，所以暂时不对pass做cache处理）
+		Pass* pass = Pass::createPass(program);
+
+		Material* material = Material::createMaterial();
+		material->addPass(pass);
+
+		return material;
+	}
     
     void BaseRender::addMaterial(std::string name, Material* material)
     {
@@ -79,6 +87,13 @@ namespace browser
                 BROWSER_LOG("Render_AddComponent Message received");
             }
             break;
+
+		case ComponentEvent::MeshFilter_AddMesh:
+			{
+				// MeshFilter组件添加Mesh
+				BROWSER_LOG("MeshFilter_AddMesh Message received");
+			}
+			break;
                 
         default:
             break;

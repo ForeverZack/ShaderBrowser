@@ -95,13 +95,13 @@ namespace browser
         case SystemType::Mesh:
             //MeshFilter组件
             MARK_SPECIAL_COMPONENT(m_oMeshFilterComponent, component, bEmpty);
-            deliverComponentMessage(ComponentEvent::MeshFilter_AddComponent, nullptr);
+            deliverComponentMessage(ComponentEvent::MeshFilter_AddComponent, new MeshFilterAddComponentMessage(this));
             break;
 
 		case SystemType::RenderSystem:
 			// 渲染组件
 			MARK_SPECIAL_COMPONENT(m_oRenderComponent, component, bEmpty);
-            deliverComponentMessage(ComponentEvent::Render_AddComponent, nullptr);
+            deliverComponentMessage(ComponentEvent::Render_AddComponent, new RenderAddComponentMessage(this));
 			break;
 		}
 	}
