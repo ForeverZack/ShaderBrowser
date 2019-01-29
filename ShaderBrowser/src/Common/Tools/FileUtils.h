@@ -6,6 +6,14 @@
 
 namespace common
 {
+	/************************************************************************/
+	/* 目前仅支持使用路径全名，或者在已经添加搜索路径下查找。并且搜索路径格式仅能查找到"搜索路径"+filename的文件。
+		例如： res/texture/awesomeface.png
+		可查找到文件的使用格式：
+			"res/texture/awesomeface.png", " texture/awesomeface.png", 绝对路径
+	*/
+	/************************************************************************/
+
 	class FileUtils : public BaseSingleton<FileUtils>
 	{
 	public:
@@ -14,17 +22,23 @@ namespace common
 
 	public:
 		// 添加搜索路径
-		void addSearchPath(std::string path);
+		void addSearchPath(const std::string& path);
 
-		// 相对路径转绝对路径
-		std::string convertToAbsolutePath(std::string path);
+		// 获取文件绝对路径
+		std::string getAbsolutePathForFilename(const std::string& filename);
 
-		// 判断路径是否存在
-		bool isDirectoryExist(std::string path);
+		// 获取文件的绝对路径 和 该文件所在的目录路径
+		std::string getAbsolutePathForFilename(const std::string& filename, std::string& directoryPath);
+
+		// 判断路径或者文件是否存在
+		bool isDirectoryOrFileExist(const std::string& path);
 
 	private:
-		// 获取当前路径
-		//std::string getCurrentDirectory();
+
+		// 相对路径转绝对路径
+		std::string convertToAbsolutePath(const std::string& path);
+
+		
 
 
 	private:

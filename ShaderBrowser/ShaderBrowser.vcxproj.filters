@@ -132,6 +132,9 @@
     <ClCompile Include="src\Common\Tools\FileUtils.cpp">
       <Filter>src\Common\Tools</Filter>
     </ClCompile>
+    <ClCompile Include="src\Common\System\Cache\TextureCache.cpp">
+      <Filter>src\Common\System\Cache</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Plugins\Image\stb_image.h">
@@ -214,6 +217,12 @@
     </ClInclude>
     <ClInclude Include="src\Common\Tools\FileUtils.h">
       <Filter>src\Common\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Common\System\Cache\TextureCache.h">
+      <Filter>src\Common\System\Cache</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Common\System\Cache\BaseAsyncLoader.h">
+      <Filter>src\Common\System\Cache</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

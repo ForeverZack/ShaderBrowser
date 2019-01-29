@@ -17,6 +17,7 @@ namespace common
     public:
         // 添加
         void addGLProgram(std::string name, GLProgram* program);
+		void addGLProgram(std::string name, const std::string& vertFilename, const std::string& fragFilename);
         // 获取
         GLProgram* getGLProgram(std::string name);
 

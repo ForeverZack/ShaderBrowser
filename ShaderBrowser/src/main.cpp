@@ -17,6 +17,7 @@
 #include "GL/Texture2D.h"
 #include "Common/System/ECSManager.h"
 #include "Common/System/Cache/GLProgramCache.h"
+#include "Common/System/Cache/TextureCache.h"
 #ifdef __APPLE__
 #include <unistd.h>
 #endif
@@ -95,14 +96,19 @@ GLushort indices[] = {
 void testVal()
 {
 //    std::string path = FileUtils::getInstance()->convertToAbsolutePath("./res/texture/awesomeface1.png");
-    std::string path = FileUtils::getInstance()->convertToAbsolutePath("res");
-	bool isPathExist = FileUtils::getInstance()->isDirectoryExist(path);
+    //std::string path = FileUtils::getInstance()->convertToAbsolutePath("res");
+	//FileUtils::getInstance()->addSearchPath(".");
+	//FileUtils::getInstance()->addSearchPath("res");
+	//std::string directoryPath;
+	//std::string filepath = FileUtils::getInstance()->getAbsolutePathForFilename("texture/awesomeface.png", directoryPath);
+
+	//// 创建纹理
+	//TextureCache::getInstance()->addTexture("./res/texture/awesomeface.png");
+	//TextureCache::getInstance()->addTexture("texture/HelloWorld.png");
 
 	// 载入纹理
-	Texture2D* texture1 = Texture2D::create("./res/texture/awesomeface.png");
-	texture1->retain();
-    Texture2D* texture2 = Texture2D::create("./res/texture/HelloWorld.png");
-    texture2->retain();
+	Texture2D* texture1 = TextureCache::getInstance()->getTexture("res/texture/awesomeface.png");
+    Texture2D* texture2 = TextureCache::getInstance()->getTexture("texture/HelloWorld.png");
 
     // MeshFilter
     // (GLuint location, GLint size, GLenum type, GLboolean normalized, GLsizei stride, void* data)
@@ -120,8 +126,10 @@ void testVal()
 
 
 	// 着色器程序
-	GLProgram* program = GLProgram::create("./res/shaders/triangles.vert", "./res/shaders/triangles.frag");
-    GLProgramCache::getInstance()->addGLProgram(GLProgram::DEFAULT_GLPROGRAM_NAME, program);
+	//GLProgram* program = GLProgram::create("./res/shaders/triangles.vert", "./res/shaders/triangles.frag");
+    //GLProgramCache::getInstance()->addGLProgram(GLProgram::DEFAULT_GLPROGRAM_NAME, program);
+	GLProgramCache::getInstance()->addGLProgram(GLProgram::DEFAULT_GLPROGRAM_NAME, "shaders/triangles.vert", "shaders/triangles.frag");
+
     // pass
 //    Pass* pass = Pass::createPass(program);
 //    pass->setUniformV4f("CGL_COLOR", glm::vec4(1.0f, 0.0f, 0, 1.0f));
@@ -185,17 +193,32 @@ void testVal()
 //    node->setEulerAngle(45, 45, 45);
 
 
-    Assimp::Importer importer;
-    const aiScene *scene1 = importer.ReadFile("./res/models/nanosuit/nanosuit.obj", aiProcess_Triangulate | aiProcess_FlipUVs);
+    //Assimp::Importer importer;
+    //const aiScene *scene1 = importer.ReadFile("./res/models/nanosuit/nanosuit.obj", aiProcess_Triangulate | aiProcess_FlipUVs);
 }
 
 int main()
 {
 	GLFWwindow* window = init();
 
+	int total = 0;
+	TextureCache::getInstance()->addTextureAsync("texture/awesomeface.png", [&](Texture2D* texture) {
+		++total;
+		if (total == 2)
+		{
+			testVal();
+		}
+	});
+	TextureCache::getInstance()->addTextureAsync("texture/HelloWorld.png", [&](Texture2D* texture) {
+		++total;
+		if (total == 2)
+		{
+			testVal();
+		}
+	});
 
-	// test
-	testVal();
+	//// test
+	//testVal();
 
 	// uncomment this call to draw in wireframe polygons.
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -246,6 +269,10 @@ GLFWwindow* init()
 		return nullptr;
 	}
 
+	// 添加搜索路径
+	FileUtils::getInstance()->addSearchPath(".");
+	FileUtils::getInstance()->addSearchPath("res");
+
 	// 注册基本系统
 	ECSManager::getInstance()->registerSystem(browser::RenderSystem::getInstance());	// 渲染系统
     ECSManager::getInstance()->registerSystem(browser::TransformSystem::getInstance()); // Transform
@@ -275,6 +302,9 @@ void mainLoop(GLFWwindow *window)
 	// 1.input
 	processInput(window);
 
+	// temp
+	TextureCache::getInstance()->update(deltaTime);
+
 	// 2.render
     ECSManager::getInstance()->updateSystem(SystemType::Transform, deltaTime);  // 更新transform
 	ECSManager::getInstance()->updateSystem(SystemType::RenderSystem, deltaTime);   // 更新渲染系统
@@ -294,6 +324,8 @@ void processInput(GLFWwindow *window)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
+
+
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes

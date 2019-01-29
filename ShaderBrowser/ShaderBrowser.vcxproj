@@ -34,6 +34,7 @@
     <ClCompile Include="src\Common\Components\Reference.cpp" />
     <ClCompile Include="src\Common\System\AutoReleasePool.cpp" />
     <ClCompile Include="src\Common\System\Cache\GLProgramCache.cpp" />
+    <ClCompile Include="src\Common\System\Cache\TextureCache.cpp" />
     <ClCompile Include="src\Common\System\ECSManager.cpp" />
     <ClCompile Include="src\Common\Tools\FileUtils.cpp" />
     <ClCompile Include="src\Common\Tools\Utils.cpp" />
@@ -62,8 +63,10 @@
     <ClInclude Include="src\Common\Components\Reference.h" />
     <ClInclude Include="src\Common\System\AutoReleasePool.h" />
     <ClInclude Include="src\Common\System\BaseSystem.h" />
+    <ClInclude Include="src\Common\System\Cache\BaseAsyncLoader.h" />
     <ClInclude Include="src\Common\System\Cache\BaseCache.h" />
     <ClInclude Include="src\Common\System\Cache\GLProgramCache.h" />
+    <ClInclude Include="src\Common\System\Cache\TextureCache.h" />
     <ClInclude Include="src\Common\System\ECSManager.h" />
     <ClInclude Include="src\Common\Tools\BaseSingleton.h" />
     <ClInclude Include="src\Common\Tools\FileUtils.h" />

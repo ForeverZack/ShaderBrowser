@@ -7,12 +7,15 @@
 #include "../Common/Components/Reference.h"
 #include "../../../Common/Tools/Utils.h"
 
+using namespace common;
+
 namespace customGL
 {
 	class Texture2D : public common::Reference
 	{
 	public:
 		static Texture2D* create(std::string fileName);
+		static Texture2D* create(Image* image);
 	public:
 		Texture2D();
 		~Texture2D();
@@ -30,6 +33,7 @@ namespace customGL
         REGISTER_PROPERTY_GET(unsigned int, m_uTextureId, TextureId);
         
 	private:
+		bool initWithImage(Image* image);
 		bool initWithFile(std::string fileName);
 
 	private:

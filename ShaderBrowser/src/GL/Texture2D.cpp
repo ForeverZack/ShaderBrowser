@@ -15,6 +15,18 @@ namespace customGL
 		return nullptr;
 	}
 
+	Texture2D* Texture2D::create(Image* image)
+	{
+		Texture2D* texture = new Texture2D();
+		if (texture->initWithImage(image))
+		{
+			texture->autorelease();
+			return texture;
+		}
+
+		return nullptr;
+	}
+
 	Texture2D::Texture2D()
 		: m_uTextureId(-1)
 		, m_oImage(nullptr)
@@ -35,12 +47,13 @@ namespace customGL
         }
 	}
 
-	bool Texture2D::initWithFile(std::string fileName)
+	bool Texture2D::initWithImage(Image* image)
 	{
-		// 纹理数据 TODO: 从cache中获得
-		m_oImage = Image::create(fileName.c_str());
+		m_oImage = image;
+
 		if (!m_oImage)
 		{
+			BROWSER_ASSERT(false, "Texture init fail in function Texture2D::initWithFile");
 			return false;
 		}
 
@@ -55,23 +68,30 @@ namespace customGL
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, m_eWrapTypeT);
 		// 4.设置纹理数据
 		/*
-			第一个参数指定了纹理目标(Target)。设置为GL_TEXTURE_2D意味着会生成与当前绑定的纹理对象在同一个目标上的纹理（任何绑定到GL_TEXTURE_1D和GL_TEXTURE_3D的纹理不会受到影响）。
-			第二个参数为纹理指定多级渐远纹理的级别，如果你希望单独手动设置每个多级渐远纹理的级别的话。这里我们填0，也就是基本级别。
-			第三个参数告诉OpenGL我们希望把纹理储存为何种格式。我们的图像只有RGB值，因此我们也把纹理储存为RGB值。
-			第四个和第五个参数设置最终的纹理的宽度和高度。我们之前加载图像的时候储存了它们，所以我们使用对应的变量。
-			下个参数应该总是被设为0（历史遗留的问题）。
-			第七第八个参数定义了源图的格式和数据类型。我们使用RGB值加载这个图像，并把它们储存为char(byte)数组，我们将会传入对应值。
-			最后一个参数是真正的图像数据。
+		第一个参数指定了纹理目标(Target)。设置为GL_TEXTURE_2D意味着会生成与当前绑定的纹理对象在同一个目标上的纹理（任何绑定到GL_TEXTURE_1D和GL_TEXTURE_3D的纹理不会受到影响）。
+		第二个参数为纹理指定多级渐远纹理的级别，如果你希望单独手动设置每个多级渐远纹理的级别的话。这里我们填0，也就是基本级别。
+		第三个参数告诉OpenGL我们希望把纹理储存为何种格式。我们的图像只有RGB值，因此我们也把纹理储存为RGB值。
+		第四个和第五个参数设置最终的纹理的宽度和高度。我们之前加载图像的时候储存了它们，所以我们使用对应的变量。
+		下个参数应该总是被设为0（历史遗留的问题）。
+		第七第八个参数定义了源图的格式和数据类型。我们使用RGB值加载这个图像，并把它们储存为char(byte)数组，我们将会传入对应值。
+		最后一个参数是真正的图像数据。
 		*/
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_oImage->getWidth(), m_oImage->getHeight(), 0, m_oImage->getType(), GL_UNSIGNED_BYTE, m_oImage->getData());
-        
-        // 为当前绑定的纹理自动生成所有需要的多级渐远纹理
-        glGenerateMipmap(GL_TEXTURE_2D);
-        
-//        // 释放image数据
-//        m_oImage->deleteImage();
+
+		// 为当前绑定的纹理自动生成所有需要的多级渐远纹理
+		glGenerateMipmap(GL_TEXTURE_2D);
+
+		// 释放image数据
+		m_oImage->deleteImage();
 
 		return true;
+	}
+
+	bool Texture2D::initWithFile(std::string fileName)
+	{
+		// 纹理数据 TODO: 从cache中获得
+		m_oImage = Image::create(fileName.c_str());
+		return initWithImage(m_oImage);
 	}
     
     void Texture2D::setTexParameters(GLenum wrapS, GLenum wrapT, GLenum filterMin, GLenum filterMag)

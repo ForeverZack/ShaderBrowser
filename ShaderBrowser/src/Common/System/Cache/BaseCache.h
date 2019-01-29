@@ -19,7 +19,7 @@ public:
 	}
 	virtual ~BaseMapCache() {}
 
-public:
+protected:
 	// map操作
 	bool add(K key, T* val)
 	{
@@ -86,7 +86,7 @@ public:
 	}
 	virtual ~BaseVectorCache() {}
 
-public:
+protected:
 	// vector操作
 	void add(T* val)
 	{

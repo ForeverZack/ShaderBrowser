@@ -7,6 +7,7 @@
     // macOS
     #include <unistd.h>
 #endif
+#include "Utils.h"
 
 namespace common
 {
@@ -22,12 +23,62 @@ namespace common
 	{
 	}
 
-	void FileUtils::addSearchPath(std::string path)
+	void FileUtils::addSearchPath(const std::string& path)
 	{
-		
+		// 绝对路径
+		std::string absolutePath = convertToAbsolutePath(path);
+
+		for (auto itor = m_vSearchPath.cbegin(); itor != m_vSearchPath.cend(); ++itor)
+		{
+			if ((*itor) == absolutePath)
+			{
+				BROWSER_LOG("path has already been added into serch path vector in function FileUtils::addSearchPath");
+				return;
+			}
+		}
+
+		m_vSearchPath.push_back(absolutePath);
 	}
 
-	bool FileUtils::isDirectoryExist(std::string path)
+	std::string FileUtils::getAbsolutePathForFilename(const std::string& filename)
+	{
+		std::string file_path = convertToAbsolutePath(filename);
+		if (isDirectoryOrFileExist(file_path))
+		{
+			return file_path;
+		}
+
+		for (int i = 0; i < m_vSearchPath.size(); ++i)
+		{
+			const std::string& search_path = m_vSearchPath[i];
+			file_path = convertToAbsolutePath(search_path + "/" + filename);
+			if (isDirectoryOrFileExist(file_path))
+			{
+				return file_path;
+			}
+		}
+
+		// 文件没有找到
+		return "";
+	}
+
+	std::string FileUtils::getAbsolutePathForFilename(const std::string& filename, std::string& directoryPath)
+	{
+		std::string file_path = getAbsolutePathForFilename(filename);
+		if (file_path != "")
+		{
+			size_t pos = file_path.find_last_of("/");
+			directoryPath = file_path.substr(0, pos+1);
+		}
+		else
+		{
+			directoryPath = "";
+		}
+
+		return file_path;
+	}
+
+	bool FileUtils::isDirectoryOrFileExist(const std::string& path)
 	{
         if (access(path.c_str(), 0) == -1)
         {
@@ -36,7 +87,7 @@ namespace common
 		return true;
 	}
 
-	std::string FileUtils::convertToAbsolutePath(std::string path)
+	std::string FileUtils::convertToAbsolutePath(const std::string& path)
 	{
 		//filePathbuf变量是保存着相对路径的char型数组,dir用来保存绝对路径
 		char dir[MAX_FILE_DIRECTORY_LENGTH] = "";
@@ -61,10 +112,6 @@ namespace common
 		return std::string(dir);
 	}
 
-	//std::string FileUtils::getCurrentDirectory()
-	//{
-
-	//}
 
 
 }
