@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Browser\Components\BaseComponent.cpp" />
+    <ClCompile Include="src\Browser\Components\Camera\Camera.cpp" />
     <ClCompile Include="src\Browser\Components\Event\ComponentEvent.cpp" />
     <ClCompile Include="src\Browser\Components\Mesh\Mesh.cpp" />
     <ClCompile Include="src\Browser\Components\Mesh\MeshFilter.cpp" />
@@ -28,6 +29,7 @@
     <ClCompile Include="src\Browser\Components\Render\Pass.cpp" />
     <ClCompile Include="src\Browser\Components\Transform\Transform.cpp" />
     <ClCompile Include="src\Browser\Entitys\BaseEntity.cpp" />
+    <ClCompile Include="src\Browser\System\CameraSystem.cpp" />
     <ClCompile Include="src\Browser\System\MeshSystem.cpp" />
     <ClCompile Include="src\Browser\System\RenderSystem.cpp" />
     <ClCompile Include="src\Browser\System\TransformSystem.cpp" />
@@ -48,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Browser\Components\BaseComponent.h" />
+    <ClInclude Include="src\Browser\Components\Camera\Camera.h" />
     <ClInclude Include="src\Browser\Components\Event\ComponentEvent.h" />
     <ClInclude Include="src\Browser\Components\Mesh\Mesh.h" />
     <ClInclude Include="src\Browser\Components\Mesh\MeshFilter.h" />
@@ -56,6 +59,7 @@
     <ClInclude Include="src\Browser\Components\Render\Pass.h" />
     <ClInclude Include="src\Browser\Components\Transform\Transform.h" />
     <ClInclude Include="src\Browser\Entitys\BaseEntity.h" />
+    <ClInclude Include="src\Browser\System\CameraSystem.h" />
     <ClInclude Include="src\Browser\System\MeshSystem.h" />
     <ClInclude Include="src\Browser\System\RenderSystem.h" />
     <ClInclude Include="src\Browser\System\TransformSystem.h" />

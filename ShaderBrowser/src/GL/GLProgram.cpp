@@ -16,12 +16,18 @@ namespace customGL
 	// 创建shader时写入shader文件头的uniform字符串
 	const char* SHADER_UNIFORMS =
 		"uniform sampler2D CGL_TEXTURE0;\n"
-		"uniform sampler2D CGL_TEXTURE1;\n";
+		"uniform sampler2D CGL_TEXTURE1;\n"
+		"uniform mat4 CGL_MODEL_MATRIX;\n"
+		"uniform mat4 CGL_VIEW_MATRIX;\n"
+		"uniform mat4 CGL_PROJECTION_MATRIX;\n";
 	 // uniform变量名称
 	const char* GLProgram::SHADER_UNIFORMS_ARRAY[] =
 	{
 		"CGL_TEXTURE0",
-		"CGL_TEXTURE1"
+		"CGL_TEXTURE1",
+		"CGL_MODEL_MATRIX",
+		"CGL_VIEW_MATRIX",
+		"CGL_PROJECTION_MATRIX"
 	};
 
 	GLProgram* GLProgram::create(const char* vertSrc, const char* fragSrc)

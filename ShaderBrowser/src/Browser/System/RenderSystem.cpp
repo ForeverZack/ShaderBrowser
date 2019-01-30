@@ -114,8 +114,8 @@ namespace browser
 		for (auto itor = m_mComponentsList.begin(); itor != m_mComponentsList.end(); ++itor)
 		{
 			const std::list<BaseComponent*>& renderList = itor->second;
-			render = static_cast<BaseRender*>(*(renderList.begin()));
-            meshFilter = static_cast<MeshFilter*>(render->getBelongEntity()->getMeshFilter());
+			render = dynamic_cast<BaseRender*>(*(renderList.begin()));
+            meshFilter = dynamic_cast<MeshFilter*>(render->getBelongEntity()->getMeshFilter());
 
 			// 遍历mesh
 			const std::vector<Mesh*>& meshes = meshFilter->getMeshes();

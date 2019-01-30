@@ -61,9 +61,12 @@ namespace common
 		loadResourceAsync(full_path, callback);
 	}
 
-	void TextureCache::addTexturesAsync(std::string filepaths[], std::function<void(Texture2D*)> callback)
+	void TextureCache::addTexturesAsync(std::vector<std::string> filepaths, std::function<void(Texture2D*)> callback)
 	{
-		
+		for (int i = 0; i < filepaths.size(); ++i)
+		{
+			addTextureAsync(filepaths[i], callback);
+		}
 	}
 
 	void TextureCache::update(float dt)

@@ -5,6 +5,7 @@
 #include <iostream>
 #include "GL/GLProgram.h"
 #include "Browser/Components/Transform/Transform.h"
+#include "Browser/Components/Camera/Camera.h"
 #include "Browser/Components/Mesh/MeshFilter.h"
 #include "Browser/Components/Mesh/Mesh.h"
 #include "Browser/Components/Render/BaseRender.h"
@@ -13,6 +14,8 @@
 #include "Browser/System/RenderSystem.h"
 #include "Browser/System/TransformSystem.h"
 #include "Browser/System/MeshSystem.h"
+#include "Common/Tools/FileUtils.h"
+#include "Browser/System/CameraSystem.h"
 #include "Common/System/AutoReleasePool.h"
 #include "GL/Texture2D.h"
 #include "Common/System/ECSManager.h"
@@ -34,7 +37,6 @@ using namespace common;
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <chrono>
-#include "Common/Tools/FileUtils.h"
 
 // 函数需要先声明一下，否则在定义之前调用会编译出错
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -106,6 +108,27 @@ void testVal()
 	//TextureCache::getInstance()->addTexture("./res/texture/awesomeface.png");
 	//TextureCache::getInstance()->addTexture("texture/HelloWorld.png");
 
+	// Transform组件
+	BaseEntity* sceneEntity = BaseEntity::create("scene");
+	sceneEntity->retain();
+	browser::Transform* scene = sceneEntity->getTransform();
+	browser::TransformSystem::getInstance()->setScene(scene);   //设置场景节点
+
+	//=============================创建相机===================================
+	// 相机Entity
+	BaseEntity* mainCameraEntity = BaseEntity::create("MainCamera");
+	sceneEntity->addChild(mainCameraEntity);
+	// 相机Camera组件
+	browser::Camera* mainCamera = Camera::create(Camera::ProjectionType::Perspective, 0.3f, 1000.0f, SCR_WIDTH, SCR_HEIGHT, 60.0f);
+	mainCameraEntity->addComponent(mainCamera);
+	// 设置相机位置
+	mainCameraEntity->getTransform()->setPosition(0, 0, -3);
+	// 设置主相机
+	CameraSystem::getInstance()->setMainCamera(mainCamera);
+	//=============================创建相机==================================
+
+
+
 	// 载入纹理
 	Texture2D* texture1 = TextureCache::getInstance()->getTexture("res/texture/awesomeface.png");
     Texture2D* texture2 = TextureCache::getInstance()->getTexture("texture/HelloWorld.png");
@@ -151,29 +174,24 @@ void testVal()
 //    // 设置顶点索引数组
 //    renderCom->setIndicesInfo(indices, 6);
 	// 将组件加入渲染系统队列
-	BaseEntity* entity = new BaseEntity();
+	BaseEntity* entity = BaseEntity::create();
+	sceneEntity->addChild(entity);
 	entity->addComponent(renderCom);
-    
     // meshFilter
     entity->addComponent(meshFilter);
 
-    // Transform组件
-    browser::Transform* scene = new browser::Transform();
-    scene->setName("scene");
-    scene->setPosition(glm::vec3(0, 0, 0));
-    scene->Rotate(glm::vec3(45, 45, 30));
-    browser::TransformSystem::getInstance()->setScene(scene);   //设置场景节点
-//    glm::mat4 mat = transCom->getModelMatrix();
-//    BROWSER_LOG_MAT4(mat);
-    browser::Transform* node = new browser::Transform();
-    node->setName("node");
-//    node->setPosition(11,2,3);
-//    node->setScale(1, 2, 3);
-//    node->setEulerAngle(90, 90, 0);
-    node->Rotate(glm::vec3(45, 45, 45), customGL::Space::Self);
-    node->Rotate(glm::vec3(30, 300, 45), customGL::Space::World);
+
+////    glm::mat4 mat = transCom->getModelMatrix();
+////    BROWSER_LOG_MAT4(mat);
+//    browser::Transform* node = new browser::Transform();
+//    node->setName("node");
+////    node->setPosition(11,2,3);
+////    node->setScale(1, 2, 3);
+////    node->setEulerAngle(90, 90, 0);
 //    node->Rotate(glm::vec3(45, 45, 45), customGL::Space::Self);
-    scene->addChild(node);
+//    node->Rotate(glm::vec3(30, 300, 45), customGL::Space::World);
+////    node->Rotate(glm::vec3(45, 45, 45), customGL::Space::Self);
+//    scene->addChild(node);
     
 //    glm::quat aa = glm::quat(-0.406684f, -0.335421f, -0.337035f, -0.78007f);
 ////    node->setQuaternion(aa);
@@ -181,7 +199,7 @@ void testVal()
 ////    node->setQuaternion(-0.335421f, -0.337035f, -0.78007f, -0.406684f);
 ////    node->setGlobalQuaternion(-0.335421f, -0.337035f, -0.78007f, -0.406684f);
 //    node->setGlobalQuaternion(aa);
-//    BROWSER_LOG("============分割线===============");
+//    BROWSER_LOG("=============================");
 //    BROWSER_LOG_QUATERNION(node->getGlobalQuaternion());
 //    BROWSER_LOG_QUATERNION(node->getQuaternion());
 //    BROWSER_LOG_VEC3(glm::degrees(node->getEulerAngle()));
@@ -193,8 +211,10 @@ void testVal()
 //    node->setEulerAngle(45, 45, 45);
 
 
-    //Assimp::Importer importer;
-    //const aiScene *scene1 = importer.ReadFile("./res/models/nanosuit/nanosuit.obj", aiProcess_Triangulate | aiProcess_FlipUVs);
+ //   Assimp::Importer importer;
+	//const aiScene *scene1 = importer.ReadFile("./res/models/nanosuit/nanosuit.obj", aiProcess_Triangulate | aiProcess_FlipUVs);
+	//Assimp::Importer importer2;
+	//const aiScene *scene2 = importer2.ReadFile("./res/models/Fighter/fighter char.FBX", aiProcess_Triangulate | aiProcess_FlipUVs);
 }
 
 int main()
@@ -202,20 +222,14 @@ int main()
 	GLFWwindow* window = init();
 
 	int total = 0;
-	TextureCache::getInstance()->addTextureAsync("texture/awesomeface.png", [&](Texture2D* texture) {
+	TextureCache::getInstance()->addTexturesAsync({ "texture/awesomeface.png", "texture/HelloWorld.png" }, [&](Texture2D* texture) {
 		++total;
 		if (total == 2)
 		{
 			testVal();
 		}
 	});
-	TextureCache::getInstance()->addTextureAsync("texture/HelloWorld.png", [&](Texture2D* texture) {
-		++total;
-		if (total == 2)
-		{
-			testVal();
-		}
-	});
+
 
 	//// test
 	//testVal();
@@ -277,10 +291,12 @@ GLFWwindow* init()
 	ECSManager::getInstance()->registerSystem(browser::RenderSystem::getInstance());	// 渲染系统
     ECSManager::getInstance()->registerSystem(browser::TransformSystem::getInstance()); // Transform
     ECSManager::getInstance()->registerSystem(browser::MeshSystem::getInstance()); // Mesh
+	ECSManager::getInstance()->registerSystem(browser::CameraSystem::getInstance());	//Camera
 	// 初始化系统
 	ECSManager::getInstance()->initSystem(SystemType::RenderSystem);    // 渲染系统
     ECSManager::getInstance()->initSystem(SystemType::Transform);    // Transform
-    ECSManager::getInstance()->initSystem(SystemType::Mesh);    // Transform
+	ECSManager::getInstance()->initSystem(SystemType::Mesh);    // Mesh
+	ECSManager::getInstance()->initSystem(SystemType::Camera);    // Mesh
 
 
 	return window;
@@ -306,7 +322,8 @@ void mainLoop(GLFWwindow *window)
 	TextureCache::getInstance()->update(deltaTime);
 
 	// 2.render
-    ECSManager::getInstance()->updateSystem(SystemType::Transform, deltaTime);  // 更新transform
+	ECSManager::getInstance()->updateSystem(SystemType::Transform, deltaTime);  // 更新transform
+	ECSManager::getInstance()->updateSystem(SystemType::Camera, deltaTime);  // 更新camera
 	ECSManager::getInstance()->updateSystem(SystemType::RenderSystem, deltaTime);   // 更新渲染系统
     //BROWSER_LOG(deltaTime);
 
@@ -325,6 +342,43 @@ void processInput(GLFWwindow *window)
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
 
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+	{
+		browser::Camera* camera = dynamic_cast<browser::Camera*>(CameraSystem::getInstance()->getMainCamera());
+		if (camera)
+		{
+			browser::Transform* transform = camera->getBelongEntity()->getTransform();
+			transform->setPositionZ(transform->getPositionZ() + 0.1);
+		}
+	}
+	else if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+	{
+		browser::Camera* camera = dynamic_cast<browser::Camera*>(CameraSystem::getInstance()->getMainCamera());
+		if (camera)
+		{
+			BaseEntity* entity = camera->getBelongEntity();
+			browser::Transform* transform = entity->getTransform();
+			transform->setPositionZ(transform->getPositionZ() - 0.1);
+		}
+	}
+	else if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+	{
+		browser::Camera* camera = dynamic_cast<browser::Camera*>(CameraSystem::getInstance()->getMainCamera());
+		if (camera)
+		{
+			browser::Transform* transform = camera->getBelongEntity()->getTransform();
+			transform->setPositionX(transform->getPositionX() - 0.1);
+		}
+	}
+	else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+	{
+		browser::Camera* camera = dynamic_cast<browser::Camera*>(CameraSystem::getInstance()->getMainCamera());
+		if (camera)
+		{
+			browser::Transform* transform = camera->getBelongEntity()->getTransform();
+			transform->setPositionX(transform->getPositionX() + 0.1);
+		}
+	}
 
 }
 

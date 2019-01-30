@@ -193,6 +193,25 @@ namespace browser
         child->m_oParent = this;
         TRANS_DIRTY(child, true);
     }
+
+	void Transform::removeChild(Transform* child)
+	{
+		bool hasFound = false;
+
+		for (auto itor = m_vChildren.begin(); itor != m_vChildren.end(); ++itor)
+		{
+			if (*itor == child)
+			{
+				hasFound = true;
+				m_vChildren.erase(itor);
+				child->m_oParent = nullptr;
+				TRANS_DIRTY(child, true);
+				break;
+			}
+		}
+
+		BROWSER_ASSERT(hasFound, "Transform did not have this child, it can't be removed in function Transform::removeChild");
+	}
     
     glm::vec3 Transform::getGlobalPosition()
     {
@@ -299,7 +318,7 @@ namespace browser
         return getParentTransformModelMatrix(parentDirty);
     }
     
-    glm::mat4 Transform::getTransformModelMatrix()
+    const glm::mat4& Transform::getTransformModelMatrix()
     {
         bool parentDirty = false;
         // 获取父节点的model矩阵

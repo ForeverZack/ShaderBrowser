@@ -7,7 +7,7 @@ namespace browser
 		: m_eBelongSystem(SystemType::CustomSystem)
 		, m_oBelongEntity(nullptr)
 	{
-//        this->autorelease();
+        this->autorelease();
 	}
 
 	BaseComponent::~BaseComponent()

@@ -34,7 +34,10 @@
 		14B9068B21BABC8F00554B0B /* GLProgram.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B9067621BABC8F00554B0B /* GLProgram.cpp */; };
 		14B9068C21BABC8F00554B0B /* Texture2D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B9067721BABC8F00554B0B /* Texture2D.cpp */; };
 		14B9068D21BABC8F00554B0B /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B9067B21BABC8F00554B0B /* main.cpp */; };
+		14BE47A32201EE0500EFE57C /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14BE47A12201EE0500EFE57C /* Camera.cpp */; };
+		14BE47A62201EE6600EFE57C /* CameraSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14BE47A42201EE6600EFE57C /* CameraSystem.cpp */; };
 		14C1CCFF21FF517000470798 /* FileUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14C1CCFE21FF517000470798 /* FileUtils.cpp */; };
+		14D46D22220096D900E21D4C /* TextureCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14D46D20220096D900E21D4C /* TextureCache.cpp */; };
 		14E349D221C647AA00EB5785 /* Pass.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14E349D121C647AA00EB5785 /* Pass.cpp */; };
 		14E349D421C658CA00EB5785 /* GLDefine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14E349D321C658CA00EB5785 /* GLDefine.cpp */; };
 		14E723E621E8C31E002A8A89 /* MeshFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14E723E421E8C31E002A8A89 /* MeshFilter.cpp */; };
@@ -104,10 +107,17 @@
 		14B9067921BABC8F00554B0B /* Image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Image.h; sourceTree = "<group>"; };
 		14B9067A21BABC8F00554B0B /* GLProgram.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLProgram.h; sourceTree = "<group>"; };
 		14B9067B21BABC8F00554B0B /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = main.cpp; sourceTree = "<group>"; };
+		14BE47A12201EE0500EFE57C /* Camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Camera.cpp; sourceTree = "<group>"; };
+		14BE47A22201EE0500EFE57C /* Camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Camera.h; sourceTree = "<group>"; };
+		14BE47A42201EE6600EFE57C /* CameraSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CameraSystem.cpp; sourceTree = "<group>"; };
+		14BE47A52201EE6600EFE57C /* CameraSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CameraSystem.h; sourceTree = "<group>"; };
 		14C1CCFD21FF517000470798 /* FileUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileUtils.h; sourceTree = "<group>"; };
 		14C1CCFE21FF517000470798 /* FileUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileUtils.cpp; sourceTree = "<group>"; };
 		14C1CD0021FF517A00470798 /* BaseSingleton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BaseSingleton.h; sourceTree = "<group>"; };
 		14C1CD0121FF519700470798 /* BaseCache.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BaseCache.h; sourceTree = "<group>"; };
+		14D46D20220096D900E21D4C /* TextureCache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextureCache.cpp; sourceTree = "<group>"; };
+		14D46D21220096D900E21D4C /* TextureCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureCache.h; sourceTree = "<group>"; };
+		14D46D232200970F00E21D4C /* BaseAsyncLoader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BaseAsyncLoader.h; sourceTree = "<group>"; };
 		14E349D021C647AA00EB5785 /* Pass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Pass.h; sourceTree = "<group>"; };
 		14E349D121C647AA00EB5785 /* Pass.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Pass.cpp; sourceTree = "<group>"; };
 		14E349D321C658CA00EB5785 /* GLDefine.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GLDefine.cpp; sourceTree = "<group>"; };
@@ -179,7 +189,10 @@
 		149C01FB21F4AA320011DAE2 /* Cache */ = {
 			isa = PBXGroup;
 			children = (
+				14D46D232200970F00E21D4C /* BaseAsyncLoader.h */,
 				14C1CD0121FF519700470798 /* BaseCache.h */,
+				14D46D21220096D900E21D4C /* TextureCache.h */,
+				14D46D20220096D900E21D4C /* TextureCache.cpp */,
 				149C01FD21F4AA320011DAE2 /* GLProgramCache.h */,
 				149C01FE21F4AF910011DAE2 /* GLProgramCache.cpp */,
 			);
@@ -301,6 +314,8 @@
 		14B9065A21BABC8F00554B0B /* System */ = {
 			isa = PBXGroup;
 			children = (
+				14BE47A52201EE6600EFE57C /* CameraSystem.h */,
+				14BE47A42201EE6600EFE57C /* CameraSystem.cpp */,
 				148177B721D8CB5E0037E11D /* TransformSystem.h */,
 				148177B821D8CB5E0037E11D /* TransformSystem.cpp */,
 				14B9065C21BABC8F00554B0B /* RenderSystem.h */,
@@ -314,6 +329,7 @@
 		14B9065D21BABC8F00554B0B /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				14BE47A02201EE0500EFE57C /* Camera */,
 				1405E8A021F432FF00FBDD71 /* Event */,
 				14E723E321E8C31E002A8A89 /* Mesh */,
 				148177B321D8A86C0037E11D /* Transform */,
@@ -395,6 +411,15 @@
 				14E349D321C658CA00EB5785 /* GLDefine.cpp */,
 			);
 			path = GL;
+			sourceTree = "<group>";
+		};
+		14BE47A02201EE0500EFE57C /* Camera */ = {
+			isa = PBXGroup;
+			children = (
+				14BE47A22201EE0500EFE57C /* Camera.h */,
+				14BE47A12201EE0500EFE57C /* Camera.cpp */,
+			);
+			path = Camera;
 			sourceTree = "<group>";
 		};
 		14E723E321E8C31E002A8A89 /* Mesh */ = {
@@ -484,7 +509,10 @@
 				14B9067C21BABC8F00554B0B /* stb_image.cpp in Sources */,
 				14B9067D21BABC8F00554B0B /* glad.c in Sources */,
 				149C01FF21F4AF910011DAE2 /* GLProgramCache.cpp in Sources */,
+				14D46D22220096D900E21D4C /* TextureCache.cpp in Sources */,
 				14B9068121BABC8F00554B0B /* BaseEntity.cpp in Sources */,
+				14BE47A32201EE0500EFE57C /* Camera.cpp in Sources */,
+				14BE47A62201EE6600EFE57C /* CameraSystem.cpp in Sources */,
 				1452D79521E99742001AD1CA /* MeshSystem.cpp in Sources */,
 				14B9068D21BABC8F00554B0B /* main.cpp in Sources */,
 				14E349D421C658CA00EB5785 /* GLDefine.cpp in Sources */,

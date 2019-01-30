@@ -78,6 +78,7 @@ namespace browser
             {
                 // Entity添加了MeshFilter组件
                 BROWSER_LOG("MeshFilter_AddComponent Message received");
+				// TODO: 从MeshFilter中读取mesh数据，来生成Material
             }
             break;
                 
@@ -85,6 +86,7 @@ namespace browser
             {
                 // Entity添加了Render组件
                 BROWSER_LOG("Render_AddComponent Message received");
+				// TODO: 从MeshFilter中读取mesh数据，来生成Material
             }
             break;
 
@@ -92,6 +94,7 @@ namespace browser
 			{
 				// MeshFilter组件添加Mesh
 				BROWSER_LOG("MeshFilter_AddMesh Message received");
+				// TODO: 读取mesh数据，来生成Material
 			}
 			break;
                 

@@ -40,7 +40,12 @@ namespace customGL
             UNIFORM_CGL_TEXUTRE0 = 0,
             // 纹理1
             UNIFORM_CGL_TEXUTRE1,
-            //
+			// model matrix
+			UNIFORM_CGL_MODEL_MATRIX,
+            // view matrix
+			UNIFORM_CGL_VIEW_MATRIX,
+			// projection matrix
+			UNIFORM_CGL_PROJECTION_MATRIX,
             
             
             // 预定义Uniform变量个数

@@ -65,6 +65,8 @@ namespace browser
 	public:
         // 添加子节点
         void addChild(Transform* child);
+		// 移除子节点
+		void removeChild(Transform* child);
         
         // 遍历节点
         void visit(const glm::mat4& parentMMatrix, bool bDirty);
@@ -133,7 +135,7 @@ namespace browser
         glm::mat4 getParentTransformModelMatrix();
         glm::mat4 getParentTransformModelMatrix(bool& parentDirty);  // 这里的parentDirty引用，是为了把它的标记值传出去，表示父级节点的model矩阵是否改变
         // 获取自身的model矩阵
-        glm::mat4 getTransformModelMatrix();
+		const glm::mat4& getTransformModelMatrix();
 
 		// 更新自身的model矩阵
 		void updateSelfModelMatrix(const glm::mat4& parentMMatrix);

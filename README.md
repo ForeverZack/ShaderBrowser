@@ -45,6 +45,12 @@
 完善FileUtils，添加异步加载资源逻辑，因为是模板写的基类加载器，所以还有待完善，增强兼容性。注意一下，当返回一个const&时(常量引用)，必须要使用常量引用
 来接收时，才不会创建对象副本。否则仍然会调用拷贝构造函数来创建对象副本。如果使用普通引用(非常量)来接收，则编译会报错。	<br>
 
+## 2019.1.30 <br>
+添加Camera组件，并随之往shader中添加了ViewMatrix和ProjectionMatrix(关于这两个矩阵如何传入，后面还要修改)。完善了BaseEntity的一些方法，理清了场景树(由TransformSystem来控制)，
+后面将对这个组件进行更具体的修改，如添加四叉树或者八叉树的管理来优化物体的可见性检测等。这里要注意BaseEntity中的MARK_SPECIAL_COMPONENT函数，其中用到了一个指针引用
+(T* &)的参数，来给成员变量赋值，注意这里一定要是引用才可以，不然成员变量的指针仍然无法被赋值。后面对于多次调用的dynamic_cast类型转换，尝试在初始化时赋值，减少转换开销。
+另外Model矩阵后面也需要传入shader，真正的利用起Transform系统。并且从现版本开始，正式使用Refrence来自动释放BaseComponent，当使用component时，需多加注意！！     <br>
+
 ## 后续工作 <br>
 1）Transform(控制位置、缩放、旋转)、MeshFilter(保存网格顶点信息，但要处理好BaseRender的关系)、Custom（用户逻辑层面）等<br>
 2）各种缓存机制，以及对缓存对象的引用计数控制（eg：ProgramCache, MaterialCache, TextureCache）<br>

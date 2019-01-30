@@ -13,6 +13,8 @@ namespace common
         Transform,
         // 网格系统
         Mesh,
+		// 相机
+		Camera,
 
 		// 自定义的系统
 		CustomSystem,

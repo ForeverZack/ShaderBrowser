@@ -1,5 +1,7 @@
 #include "Pass.h"
 #include "../../../GL/Texture2D.h"
+#include "../Camera/Camera.h"
+#include "../../System/CameraSystem.h"
 
 namespace browser
 {
@@ -187,6 +189,11 @@ namespace browser
 		{
             itor->second.updateGLProgramUniformValue(m_oGLProgram, itor->first);
 		}
+		// TODO: 设置view matrix 和 projection matrix
+		Camera* mainCamera = dynamic_cast<Camera*>(CameraSystem::getInstance()->getMainCamera());
+		m_oGLProgram->setUniformWithMat4(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_VIEW_MATRIX], mainCamera->getViewMatrix());
+		m_oGLProgram->setUniformWithMat4(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_PROJECTION_MATRIX], mainCamera->getProjectionMatrix());
+
 	}
 
 

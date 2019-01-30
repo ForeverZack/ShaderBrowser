@@ -12,7 +12,7 @@ out V2FData
 
 void main() 
 { 
-    gl_Position = a_position;
+    gl_Position = CGL_PROJECTION_MATRIX * CGL_VIEW_MATRIX * a_position;
     v2f.color = a_color;
     v2f.coord = a_coord;
 //    v2f_color = a_color;

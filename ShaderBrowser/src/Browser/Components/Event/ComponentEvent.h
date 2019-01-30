@@ -17,6 +17,8 @@ namespace browser
     
 	class BaseEntity;
     class Mesh;
+	class BaseComponent;
+	class Transform;
     
     // 组件之间通讯的事件
     enum ComponentEvent
@@ -37,6 +39,18 @@ namespace browser
 		MeshFilter_RemoveComponent,
         // 添加Mesh
         MeshFilter_AddMesh,
+
+		// Camera组件的事件:
+		// 添加Render组件
+		Camera_AddComponent,
+
+		// Transform组件的事件:
+		// 添加Transform组件的事件
+		Transform_AddComponent,
+		// 移除Transform组件的事件
+		Transform_RemoveComponent,
+
+
     };
 
 
@@ -45,8 +59,8 @@ namespace browser
     class MeshFilterAddMeshMessage : public BaseComponentMessage
     {
     public:
-        MeshFilterAddMeshMessage(Mesh* mesh);
-        ~MeshFilterAddMeshMessage();
+		MeshFilterAddMeshMessage(Mesh* mesh) : m_oMesh(mesh) {}
+		~MeshFilterAddMeshMessage() {}
 		REGISTER_PROPERTY_GET(Mesh*, m_oMesh, Mesh)
 	protected:
         Mesh* m_oMesh;
@@ -56,8 +70,8 @@ namespace browser
 	class RenderAddComponentMessage : public BaseComponentMessage
 	{
 	public:
-		RenderAddComponentMessage(BaseEntity* entity);
-		~RenderAddComponentMessage() {};
+		RenderAddComponentMessage(BaseEntity* entity) : m_oEntity(entity) {}
+		~RenderAddComponentMessage() {}
 		REGISTER_PROPERTY_GET(BaseEntity*, m_oEntity, Entity)
 	protected:
 		BaseEntity* m_oEntity;
@@ -67,15 +81,34 @@ namespace browser
 	class MeshFilterAddComponentMessage : public BaseComponentMessage
 	{
 	public:
-		MeshFilterAddComponentMessage(BaseEntity* entity);
-		~MeshFilterAddComponentMessage() {};
+		MeshFilterAddComponentMessage(BaseEntity* entity) : m_oEntity(entity) {}
+		~MeshFilterAddComponentMessage() {}
 		REGISTER_PROPERTY_GET(BaseEntity*, m_oEntity, Entity)
 	protected:
 		BaseEntity* m_oEntity;
 	};
 
-
+	// Entity添加Transform组件事件
+	class TransformAddComponentMessage : public BaseComponentMessage
+	{
+	public:
+		TransformAddComponentMessage(Transform* transform) : m_oTransform(transform) {}
+		~TransformAddComponentMessage() {}
+		REGISTER_PROPERTY_GET(Transform*, m_oTransform, Transform)
+	protected:
+		Transform* m_oTransform;
+	};
     
+	// Entity添加Camera组件事件
+	class CameraAddComponentMessage : public BaseComponentMessage
+	{
+	public:
+		CameraAddComponentMessage(Transform* transform) : m_oTransform(transform) {}
+		~CameraAddComponentMessage() {}
+		REGISTER_PROPERTY_GET(Transform*, m_oTransform, Transform)
+	protected:
+		Transform* m_oTransform;
+	};
     
 }
 
