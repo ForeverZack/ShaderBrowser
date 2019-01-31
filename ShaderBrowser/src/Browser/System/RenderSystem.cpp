@@ -1,6 +1,7 @@
 #include "RenderSystem.h"
 #include "../Components/Render/Material.h"
 #include "../Components/Mesh/MeshFilter.h"
+#include "CameraSystem.h"
 
 namespace browser
 {
@@ -92,7 +93,15 @@ namespace browser
         glBindVertexArray(0);
     }
 
+
+
 	void RenderSystem::update(float deltaTime)
+	{
+		// 渲染主相机场景
+		renderScene(CameraSystem::getInstance()->getMainCamera());
+	}
+
+	void RenderSystem::renderScene(Camera* camera)
 	{
 		//	清理FrameBuffer
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -109,13 +118,17 @@ namespace browser
 		int vertCount;
 		int indexCount;
 		BaseRender* render;
-        MeshFilter* meshFilter;
+		Transform* transform;
+		MeshFilter* meshFilter;
 		Mesh* mesh;
+		BaseEntity* entity;
 		for (auto itor = m_mComponentsList.begin(); itor != m_mComponentsList.end(); ++itor)
 		{
 			const std::list<BaseComponent*>& renderList = itor->second;
 			render = dynamic_cast<BaseRender*>(*(renderList.begin()));
-            meshFilter = dynamic_cast<MeshFilter*>(render->getBelongEntity()->getMeshFilter());
+			entity = render->getBelongEntity();
+			meshFilter = entity->getMeshFilter();
+			transform = entity->getTransform();
 
 			// 遍历mesh
 			const std::vector<Mesh*>& meshes = meshFilter->getMeshes();
@@ -149,19 +162,15 @@ namespace browser
 				glBindVertexArray(0);
 
 				// 4.绘制
-				material->useMaterial(mesh);
+				material->useMaterial(mesh, transform, camera);
 				glBindVertexArray(vao);
 				//typedef void (APIENTRYP PFNGLDRAWELEMENTSPROC)(GLenum mode, GLsizei count, GLenum type, const void *indices);
 				glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_SHORT, (void*)0);
 				//            glDrawArrays(GL_TRIANGLES, 0, vertCount);
 				glBindVertexArray(0);
 			}
-            
-        }
-	}
 
-	void RenderSystem::batchRenderScene()
-	{
+		}
 
 	}
 

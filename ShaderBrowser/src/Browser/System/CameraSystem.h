@@ -3,6 +3,7 @@
 #include <vector>
 #include "../../Common/System/BaseSystem.h"
 #include "../../Common/Tools/BaseSingleton.h"
+#include "../Components/Camera/Camera.h"
 
 using namespace common;
 
@@ -19,10 +20,10 @@ namespace browser
 		void update(float deltaTime);
 
 
-		REGISTER_PROPERTY_GET_SET(BaseComponent*, m_oMainCamera, MainCamera)
+		REGISTER_PROPERTY_GET_SET(Camera*, m_oMainCamera, MainCamera)
 
 	private:
 		// Ö÷ÉãÏñ»ú
-		BaseComponent* m_oMainCamera;
+		Camera* m_oMainCamera;
 	};
 }

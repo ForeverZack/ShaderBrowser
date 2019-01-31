@@ -12,6 +12,8 @@ namespace browser
 {
     // VBO 最大size
     static const int VBO_SIZE = 65536;
+
+	class Camera;
     
 	class RenderSystem : public common::BaseSystem, public BaseSingleton<RenderSystem>
 	{
@@ -47,8 +49,8 @@ namespace browser
 		void clearRenders();
 		// 每帧更新
 		void update(float deltaTime);
-		// 绘制
-		void batchRenderScene();
+		// 绘制场景
+		void renderScene(Camera* camera);
         
         // 设置vao和vbo
         void setupVAO(GLuint vao);

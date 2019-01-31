@@ -170,7 +170,7 @@ namespace browser
         }
     }
 
-	void Pass::usePass(Mesh* mesh)
+	void Pass::usePass(Mesh* mesh, Transform* transform, Camera* camera)
 	{
         // 应用网格过滤器中的纹理
         const std::vector<TextureData>& textureInfos = mesh->getTextures();
@@ -189,10 +189,11 @@ namespace browser
 		{
             itor->second.updateGLProgramUniformValue(m_oGLProgram, itor->first);
 		}
-		// TODO: 设置view matrix 和 projection matrix
-		Camera* mainCamera = dynamic_cast<Camera*>(CameraSystem::getInstance()->getMainCamera());
-		m_oGLProgram->setUniformWithMat4(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_VIEW_MATRIX], mainCamera->getViewMatrix());
-		m_oGLProgram->setUniformWithMat4(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_PROJECTION_MATRIX], mainCamera->getProjectionMatrix());
+		// 设置model矩阵
+		m_oGLProgram->setUniformWithMat4(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_MODEL_MATRIX], transform->getModelMatrix());
+		// 设置view矩阵,projection矩阵
+		m_oGLProgram->setUniformWithMat4(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_VIEW_MATRIX], camera->getViewMatrix());
+		m_oGLProgram->setUniformWithMat4(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_PROJECTION_MATRIX], camera->getProjectionMatrix());
 
 	}
 

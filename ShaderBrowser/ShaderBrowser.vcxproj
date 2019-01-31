@@ -134,7 +134,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)\ShaderBrowser\src\Plugins\GLFW\include;$(SolutionDir)\ShaderBrowser\src\Plugins\glm\include;$(SolutionDir)\ShaderBrowser\src\Plugins\glad\include;$(SolutionDir)\ShaderBrowser\src\Plugins\assimp\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\ShaderBrowser\src;$(SolutionDir)\ShaderBrowser\src\Plugins\GLFW\include;$(SolutionDir)\ShaderBrowser\src\Plugins\glm\include;$(SolutionDir)\ShaderBrowser\src\Plugins\glad\include;$(SolutionDir)\ShaderBrowser\src\Plugins\assimp\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)ShaderBrowser\src\Plugins\GLFW\lib\win32;$(SolutionDir)ShaderBrowser\src\Plugins\assimp\lib\win32;$(LibraryPath)</LibraryPath>
     <LibraryWPath>$(LibraryWPath)</LibraryWPath>
   </PropertyGroup>

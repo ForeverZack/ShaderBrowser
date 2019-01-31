@@ -69,6 +69,9 @@ namespace common
 		// 从对应的系统中移除组件
 		bool removeComponentFromSystem(BaseEntity* entity, BaseComponent* component);
 
+		// 移除实体
+		bool removeEntityFromSystem(BaseEntity* entity, SystemType type);
+
 		// 刷新
 		void update(float deltaTime);
 

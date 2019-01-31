@@ -7,6 +7,7 @@
 #include "../../../GL/GLProgram.h"
 #include "../../../Common/Tools/Utils.h"
 #include "../Mesh/Mesh.h"
+#include "../Camera/Camera.h"
 
 
 using namespace std;
@@ -42,7 +43,7 @@ namespace browser
 		void setUniformV4f(const std::string& uniformName, glm::vec4 value);
         void setUniformTex2D(const std::string& uniformName, GLuint textureId);
 		// 使用材质
-		void usePass(Mesh* mesh);
+		void usePass(Mesh* mesh, Transform* transform, Camera* camera);
 
 
 		REGISTER_PROPERTY_GET(GLProgram*, m_oGLProgram, GLProgram)

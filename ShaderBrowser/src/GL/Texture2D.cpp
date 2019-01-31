@@ -41,6 +41,8 @@ namespace customGL
 
 	Texture2D::~Texture2D()
 	{
+		BROWSER_LOG("~Texture2D");
+
 		if (m_uTextureId)
 		{
 			glDeleteTextures(1, &m_uTextureId);

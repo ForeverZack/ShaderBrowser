@@ -643,6 +643,7 @@
 					"\"$(SRCROOT)/ShaderBrowser/src/Plugins/GLFW/include\"",
 					"\"$(SRCROOT)/ShaderBrowser/src/Plugins/glm/include\"",
 					"\"$(SRCROOT)/ShaderBrowser/src/Plugins/assimp/include\"",
+					"\"$(SRCROOT)/ShaderBrowser/src\"",
 				);
 				LD_RUNPATH_SEARCH_PATHS = /Users/zack/OpenGL/ShaderBrowser/ShaderBrowser/src/Plugins/assimp/lib/mac;
 				LIBRARY_SEARCH_PATHS = (

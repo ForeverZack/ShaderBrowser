@@ -23,9 +23,12 @@ namespace browser
 		void update(float deltaTime);
         
         // 设置场景节点
-        void setScene(Transform* scene);
+        void setScene(BaseEntity* scene);
         
+		
+		REGISTER_PROPERTY_GET(BaseEntity*, m_oScene, Scene);
+
 	private:
-        Transform* m_oScene;
+		BaseEntity* m_oScene;
 	};
 }

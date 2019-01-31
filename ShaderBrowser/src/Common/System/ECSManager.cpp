@@ -70,6 +70,17 @@ namespace common
 		return false;
 	}
 
+	bool ECSManager::removeEntityFromSystem(BaseEntity* entity, SystemType type)
+	{
+		BaseSystem* system = getSystem(type);
+		if (system)
+		{
+			system->removeEntity(entity);
+			return true;
+		}
+		return false;
+	}
+
 	bool ECSManager::removeComponentFromSystem(BaseEntity* entity, BaseComponent* component)
 	{
 		BaseSystem* system = getSystem(component->getBelongSystem());
@@ -77,7 +88,7 @@ namespace common
 		{
 			return system->removeComponent(entity, component);
 		}
-		BROWSER_LOG("ECSManager::addComponentToSystem() : fail to remove component from system");
+		BROWSER_LOG("ECSManager::removeComponentFromSystem() : fail to remove component from system");
 		return false;
 	}
 

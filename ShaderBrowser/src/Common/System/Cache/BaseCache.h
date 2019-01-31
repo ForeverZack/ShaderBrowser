@@ -64,6 +64,7 @@ namespace common
 			auto itor = m_mContents.find(key);
 			if (itor != m_mContents.end())
 			{
+				itor->second->release();
 				m_mContents.erase(itor);
 				return true;
 			}

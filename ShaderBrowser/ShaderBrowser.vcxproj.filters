@@ -37,9 +37,6 @@
     <Filter Include="src\Common\System">
       <UniqueIdentifier>{83688584-cdb0-44cc-a9c2-11783b43cd9d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\Browser\Entitys">
-      <UniqueIdentifier>{3e2ac61d-e24b-4c8e-a5a2-8d5c96b18fd5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\Plugins\glad">
       <UniqueIdentifier>{b53da055-0a3f-428a-b89d-dcdb6469977c}</UniqueIdentifier>
     </Filter>
@@ -57,6 +54,9 @@
     </Filter>
     <Filter Include="src\Browser\Components\Camera">
       <UniqueIdentifier>{b4f4b9b8-4e60-4bab-8586-b9894b9d41d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Browser\Entitys">
+      <UniqueIdentifier>{3e2ac61d-e24b-4c8e-a5a2-8d5c96b18fd5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

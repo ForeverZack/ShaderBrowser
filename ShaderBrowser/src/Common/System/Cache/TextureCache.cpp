@@ -98,6 +98,13 @@ namespace common
 		}
 
 	}
+
+	void TextureCache::removeTexture(std::string filepath)
+	{
+		const std::string full_path = FileUtils::getInstance()->getAbsolutePathForFilename(filepath);
+
+		remove(full_path);
+	}
 	
 
 

@@ -46,7 +46,7 @@ namespace browser
 
 	Camera::~Camera()
 	{
-
+		BROWSER_LOG("~Camera");
 	}
 
 	void Camera::updateCamera(float deltaTime)

@@ -31,7 +31,7 @@ namespace browser
 
 	Transform::~Transform()
 	{
-        
+		BROWSER_LOG("~Transform");
 	}
     
     void Transform::setPosition(float x, float y, float z)

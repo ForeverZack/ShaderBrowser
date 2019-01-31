@@ -72,6 +72,17 @@ namespace common
 			}
 			return true;
 		}
+		// 移除组件
+		virtual bool removeEntity(BaseEntity* entity)
+		{
+			auto itor = m_mComponentsList.find(entity);
+			if (itor != m_mComponentsList.end())
+			{
+				m_mComponentsList.erase(itor);
+				return true;
+			}
+			return false;
+		}
 		// 初始化
 		virtual void init() {}
 		// 每帧刷新

@@ -51,6 +51,10 @@
 (T* &)的参数，来给成员变量赋值，注意这里一定要是引用才可以，不然成员变量的指针仍然无法被赋值。后面对于多次调用的dynamic_cast类型转换，尝试在初始化时赋值，减少转换开销。
 另外Model矩阵后面也需要传入shader，真正的利用起Transform系统。并且从现版本开始，正式使用Refrence来自动释放BaseComponent，当使用component时，需多加注意！！     <br>
 
+## 2019.1.31 <br>
+丰富了Entity的接口，修改了部分渲染逻辑，传入了model矩阵，真正的串起了之前的所有系统。另外添加了代码根目录进头文件路径，以后不需要".."或者"."这样写一大堆点了，后面会集中修改。
+接下来会添加模型的读取和模型cache的封装等，然后开始使用模型文件来进行渲染。    <br>
+
 ## 后续工作 <br>
 1）Transform(控制位置、缩放、旋转)、MeshFilter(保存网格顶点信息，但要处理好BaseRender的关系)、Custom（用户逻辑层面）等<br>
 2）各种缓存机制，以及对缓存对象的引用计数控制（eg：ProgramCache, MaterialCache, TextureCache）<br>

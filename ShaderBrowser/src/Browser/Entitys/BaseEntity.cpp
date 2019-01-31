@@ -26,6 +26,16 @@ namespace browser
 	BaseEntity::~BaseEntity()
 	{
         BROWSER_LOG("~BaseEntity");
+
+		// clear
+		for (auto itor = m_vComponents.begin(); itor != m_vComponents.end(); ++itor)
+		{
+			// 1.将Entity从system中移除
+			ECSManager::getInstance()->removeEntityFromSystem(this, (*itor)->getBelongSystem());
+			// 2.移除Component
+			(*itor)->release();
+		}
+
 	}
 
 	void BaseEntity::addChild(BaseEntity* entity)
@@ -46,6 +56,24 @@ namespace browser
 		BROWSER_ASSERT(transform, "Cannot find Transform component on child entity in function BaseEntity::addChild(BaseEntity* entity)");
 		m_oTransformComponent->removeChild(transform);
 		entity->release();
+	}
+
+	void BaseEntity::setPosition(float x, float y, float z)
+	{
+		BROWSER_ASSERT(m_oTransformComponent, "Cannot find Transform component on parent entity in function BaseEntity::setPosition");
+		m_oTransformComponent->setPosition(x, y, z);
+	}
+
+	void BaseEntity::setEulerAngle(float x, float y, float z)
+	{
+		BROWSER_ASSERT(m_oTransformComponent, "Cannot find Transform component on parent entity in function BaseEntity::setEulerAngle");
+		m_oTransformComponent->setEulerAngle(x, y, z);
+	}
+
+	void BaseEntity::setScale(float x, float y, float z)
+	{
+		BROWSER_ASSERT(m_oTransformComponent, "Cannot find Transform component on parent entity in function BaseEntity::setScale");
+		m_oTransformComponent->setScale(x, y, z);
 	}
 
 	bool BaseEntity::isRenderable()

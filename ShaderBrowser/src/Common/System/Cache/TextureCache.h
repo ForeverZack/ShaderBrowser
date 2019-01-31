@@ -24,6 +24,9 @@ namespace common
         // 获取
         Texture2D* getTexture(std::string name);
 
+		// 移除纹理资源
+		void removeTexture(std::string name);
+
 
 		// TODO: 临时
 		void update(float dt);

@@ -36,10 +36,10 @@ namespace browser
         m_vPass.push_back(pass);
     }
 
-	void Material::useMaterial(Mesh* mesh, int index/* = 0*/)
+	void Material::useMaterial(Mesh* mesh, Transform* transform, Camera* camera, int index/* = 0*/)
 	{
         common::BROWSER_ASSERT(m_vPass.size()>index && m_vPass[index], "cannot found pass in function Material::useMaterial");
-        m_vPass[index]->usePass(mesh);
+        m_vPass[index]->usePass(mesh, transform, camera);
 	}
     
 

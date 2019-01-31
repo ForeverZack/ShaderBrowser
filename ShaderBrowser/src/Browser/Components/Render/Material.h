@@ -8,6 +8,7 @@
 #include "../../../GL/GLProgram.h"
 #include "../../../Common/Tools/Utils.h"
 #include "../Mesh/Mesh.h"
+#include "../Camera/Camera.h"
 
 using namespace std;
 using namespace customGL;
@@ -36,7 +37,7 @@ namespace browser
         void addPass(Pass* pass);
 		// 使用材质的第几个Pass
 		// TODO: 这里实际上应该根据pass的类型来决定，而不是根据index ( 这里的类型也跟渲染队列有关，比方说如果在进行阴影深度贴图的渲染，应该使用对应的简单的pass )
-		void useMaterial(Mesh* mesh, int index = 0);
+		void useMaterial(Mesh* mesh, Transform* transform, Camera* camera, int index = 0);
 
 
         // 返回Pass队列

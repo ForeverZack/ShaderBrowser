@@ -108,16 +108,19 @@ void testVal()
 	//TextureCache::getInstance()->addTexture("./res/texture/awesomeface.png");
 	//TextureCache::getInstance()->addTexture("texture/HelloWorld.png");
 
-	// Transform组件
-	BaseEntity* sceneEntity = BaseEntity::create("scene");
-	sceneEntity->retain();
-	browser::Transform* scene = sceneEntity->getTransform();
+	//// 测试自动释放
+	//BaseEntity* test = BaseEntity::create("test");
+
+
+	// 创建场景根节点
+	BaseEntity* scene = BaseEntity::create("scene");
+	scene->retain();
 	browser::TransformSystem::getInstance()->setScene(scene);   //设置场景节点
 
 	//=============================创建相机===================================
 	// 相机Entity
 	BaseEntity* mainCameraEntity = BaseEntity::create("MainCamera");
-	sceneEntity->addChild(mainCameraEntity);
+	scene->addChild(mainCameraEntity);
 	// 相机Camera组件
 	browser::Camera* mainCamera = Camera::create(Camera::ProjectionType::Perspective, 0.3f, 1000.0f, SCR_WIDTH, SCR_HEIGHT, 60.0f);
 	mainCameraEntity->addComponent(mainCamera);
@@ -144,40 +147,25 @@ void testVal()
     mesh->addTexture("CGL_TEXTURE1", texture2);
     mesh->setupVAO();
 	
-	MeshFilter* meshFilter = MeshFilter::create();
-	meshFilter->addMesh(mesh);
-
 
 	// 着色器程序
 	//GLProgram* program = GLProgram::create("./res/shaders/triangles.vert", "./res/shaders/triangles.frag");
     //GLProgramCache::getInstance()->addGLProgram(GLProgram::DEFAULT_GLPROGRAM_NAME, program);
 	GLProgramCache::getInstance()->addGLProgram(GLProgram::DEFAULT_GLPROGRAM_NAME, "shaders/triangles.vert", "shaders/triangles.frag");
 
-    // pass
-//    Pass* pass = Pass::createPass(program);
-//    pass->setUniformV4f("CGL_COLOR", glm::vec4(1.0f, 0.0f, 0, 1.0f));
-//    pass->setUniformV4f("CGL_COLOR1", glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
-//        pass->setUniformMat4("matTest", glm::mat4(1.0f, 0.5f, 0.0f, 1.0f,         //Shader中mat4[0][1] = 0.5f;
-//                                              0.0f, 0.0f, 0.0f, 0.0f,
-//                                              0.0f, 0.0f, 0.0f, 0.0f,
-//                                              0.0f, 0.0f, 0.0f, 0.0f));
-//    static float m[4] = {1.0f, 1.0f, 0.0f, 1.0f};
-//    pass->setUniformFloatV("cusTest", 4, m);
-//    pass->setUniformTex2D("CGL_TEXTURE0", texture1->getTextureId());
-//    pass->setUniformTex2D("CGL_TEXTURE1", texture2->getTextureId());
-//    // 材质
-//    Material* material = Material::createMaterial();
-//    material->addPass(pass);
-	// 组件：渲染组件
-	BaseRender* renderCom = new BaseRender();
-    // renderCom->init();
-//    // 设置顶点索引数组
-//    renderCom->setIndicesInfo(indices, 6);
+
 	// 将组件加入渲染系统队列
 	BaseEntity* entity = BaseEntity::create();
-	sceneEntity->addChild(entity);
+	scene->addChild(entity);
+	entity->setEulerAngle(0, 45, 0);
+	entity->setScale(2, 1, 1);
+	entity->setPosition(0, 1, 0);
+	// 组件：渲染组件
+	BaseRender* renderCom = new BaseRender();
 	entity->addComponent(renderCom);
     // meshFilter
+	MeshFilter* meshFilter = MeshFilter::create();
+	meshFilter->addMesh(mesh);
     entity->addComponent(meshFilter);
 
 
@@ -222,11 +210,12 @@ int main()
 	GLFWwindow* window = init();
 
 	int total = 0;
-	TextureCache::getInstance()->addTexturesAsync({ "texture/awesomeface.png", "texture/HelloWorld.png" }, [&](Texture2D* texture) {
+	TextureCache::getInstance()->addTexturesAsync({ "texture/awesomeface.png", "texture/HelloWorld.png", "models/Fighter/Fighter.png" }, [&](Texture2D* texture) {
 		++total;
-		if (total == 2)
+		if (total == 3)
 		{
 			testVal();
+			TextureCache::getInstance()->removeTexture("models/Fighter/Fighter.png");
 		}
 	});
 
@@ -342,43 +331,33 @@ void processInput(GLFWwindow *window)
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
 
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+
+	browser::Camera* camera = CameraSystem::getInstance()->getMainCamera();
+	if (camera)
 	{
-		browser::Camera* camera = dynamic_cast<browser::Camera*>(CameraSystem::getInstance()->getMainCamera());
-		if (camera)
+		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 		{
 			browser::Transform* transform = camera->getBelongEntity()->getTransform();
 			transform->setPositionZ(transform->getPositionZ() + 0.1);
 		}
-	}
-	else if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-	{
-		browser::Camera* camera = dynamic_cast<browser::Camera*>(CameraSystem::getInstance()->getMainCamera());
-		if (camera)
+		else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
 		{
 			BaseEntity* entity = camera->getBelongEntity();
 			browser::Transform* transform = entity->getTransform();
 			transform->setPositionZ(transform->getPositionZ() - 0.1);
 		}
-	}
-	else if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-	{
-		browser::Camera* camera = dynamic_cast<browser::Camera*>(CameraSystem::getInstance()->getMainCamera());
-		if (camera)
+		else if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
 		{
 			browser::Transform* transform = camera->getBelongEntity()->getTransform();
 			transform->setPositionX(transform->getPositionX() - 0.1);
 		}
-	}
-	else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-	{
-		browser::Camera* camera = dynamic_cast<browser::Camera*>(CameraSystem::getInstance()->getMainCamera());
-		if (camera)
+		else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 		{
 			browser::Transform* transform = camera->getBelongEntity()->getTransform();
 			transform->setPositionX(transform->getPositionX() + 0.1);
 		}
 	}
+	
 
 }
 
