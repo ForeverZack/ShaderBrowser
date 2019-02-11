@@ -24,6 +24,14 @@ namespace browser
 			// 透视投影
 			Perspective,
 		};
+        // 渲染路径类型
+        enum RenderPathType
+        {
+            // 前向渲染
+            Forward = 0,
+            // 延迟渲染
+            Deffered,
+        };
 
 	public:
 		static Camera* create(ProjectionType type=ProjectionType::Ortho, float nearPlane=0.3f, float farPlane=1000.0f, int viewportWidth=800, int viewportHeight=600, float FOV=60.0f);
@@ -47,6 +55,7 @@ namespace browser
 
 		REGISTER_PROPERTY_CONSTREF_GET(glm::mat4, m_oViewMatrix, ViewMatrix)
 		REGISTER_PROPERTY_CONSTREF_GET(glm::mat4, m_oProjectionMatrix, ProjectionMatrix)
+        REGISTER_PROPERTY_GET_SET(RenderPathType, m_eRenderPathType, RenderPathType)
 
 	protected:
 		// view matrix 相关
@@ -68,6 +77,9 @@ namespace browser
 		int m_iViewportHeight;
 		// projection matrix
 		glm::mat4 m_oProjectionMatrix;
+        
+        // 渲染路径
+        RenderPathType m_eRenderPathType;
 	};
 }
 

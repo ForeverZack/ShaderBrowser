@@ -177,74 +177,28 @@ namespace browser
 		// 2. 阴影投射阶段，使用系统内置的shader，在cpu中计算裁剪坐标系下的坐标位置，所以全部可以合批，需要从光源和camera两个角度获取深度贴图，得到最后的shadermap（camera方向）。具体可以参考unity的framedebug
 		// 3. 延迟渲染不透明物体（G-Buffer）：相同的mesh，使用了相同的纹理和Pass(实际上只要Pass里使用的GLProgram和uniform变量一样)，就可以合批
 		// 4. 正向渲染透明物体
-		Material* material;
-		GLuint vao;
-		size_t vertCount;
-		int indexCount;
-		BaseRender* render;
-		Transform* transform;
-		MeshFilter* meshFilter;
-		Mesh* mesh;
-		BaseEntity* entity;
-		for (auto itor = m_mComponentsList.begin(); itor != m_mComponentsList.end(); ++itor)
-		{
-			const std::list<BaseComponent*>& renderList = itor->second;
-			render = dynamic_cast<BaseRender*>(*(renderList.begin()));
-			entity = render->getBelongEntity();
-			meshFilter = entity->getMeshFilter();
-			transform = entity->getTransform();
-            
-            // 是否需要渲染
-            if (!entity->getIsVisible() || !entity->checkVisibility(camera, true))
+        if (camera)
+        {
+            switch(camera->getRenderPathType())
             {
-                continue;
+                case Camera::RenderPathType::Forward:
+                    {
+                        // 前向渲染
+                        forwardRenderScene(camera);
+                    }
+                    break;
+                    
+                case Camera::RenderPathType::Deffered:
+                    {
+                        // 延迟渲染
+                    }
+                    break;
             }
-
-			// 遍历messh
-			const std::vector<Mesh*>& meshes = meshFilter->getMeshes();
-			for (int i = 0; i < meshes.size(); ++i)
-			{
-				mesh = meshes[i];
-				vao = mesh->getVAO();
-				material = render->getMaterialByMesh(mesh);
-
-
-				// 顶点属性
-				const std::vector<VertexData>& vertices = mesh->getVertices();
-				vertCount = mesh->getVertexCount();
-				// 顶点索引数组
-				const std::vector<GLushort>& indices = mesh->getIndices();
-				indexCount = mesh->getIndexCount();
-
-				// 1.绑定对应的vao
-				glBindVertexArray(vao);
-
-				// 2.传递顶点数据
-				glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[RenderSystem_Vertices_Buffer]);
-				glBufferData(GL_ARRAY_BUFFER, vertCount * sizeof(VertexData), &vertices[0], GL_STATIC_DRAW);
-
-				// 3.传递索引数组
-				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_uVBOs[RenderSystem_Indices_Buffer]);
-				glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLushort)*indexCount, &indices[0], GL_STATIC_DRAW);
-
-
-				glBindBuffer(GL_ARRAY_BUFFER, 0);
-				glBindVertexArray(0);
-
-				// 4.绘制
-				material->useMaterial(mesh, transform, camera);
-				glBindVertexArray(vao);
-				//typedef void (APIENTRYP PFNGLDRAWELEMENTSPROC)(GLenum mode, GLsizei count, GLenum type, const void *indices);
-				glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_SHORT, (void*)0);
-				//            glDrawArrays(GL_TRIANGLES, 0, vertCount);
-				glBindVertexArray(0);
-                
-                // 增加1次draw call
-                ++m_uDrawCalls;
-			}
-
-		}
+        }
+		
         
+        GLuint vao;
+        size_t vertCount;
         // 绘制调试信息
         // 1.包围盒
         // 开启深度测试
@@ -360,6 +314,77 @@ namespace browser
     
 
 	}
+    
+    void RenderSystem::forwardRenderScene(Camera* camera)
+    {
+        Material* material;
+        GLuint vao;
+        size_t vertCount;
+        int indexCount;
+        BaseRender* render;
+        Transform* transform;
+        MeshFilter* meshFilter;
+        Mesh* mesh;
+        BaseEntity* entity;
+        for (auto itor = m_mComponentsList.begin(); itor != m_mComponentsList.end(); ++itor)
+        {
+            const std::list<BaseComponent*>& renderList = itor->second;
+            render = dynamic_cast<BaseRender*>(*(renderList.begin()));
+            entity = render->getBelongEntity();
+            meshFilter = entity->getMeshFilter();
+            transform = entity->getTransform();
+            
+            // 是否需要渲染
+            if (!entity->getIsVisible() || !entity->checkVisibility(camera, true))
+            {
+                continue;
+            }
+            
+            // 遍历messh
+            const std::vector<Mesh*>& meshes = meshFilter->getMeshes();
+            for (int i = 0; i < meshes.size(); ++i)
+            {
+                mesh = meshes[i];
+                vao = mesh->getVAO();
+                material = render->getMaterialByMesh(mesh);
+                
+                
+                // 顶点属性
+                const std::vector<VertexData>& vertices = mesh->getVertices();
+                vertCount = mesh->getVertexCount();
+                // 顶点索引数组
+                const std::vector<GLushort>& indices = mesh->getIndices();
+                indexCount = mesh->getIndexCount();
+                
+                // 1.绑定对应的vao
+                glBindVertexArray(vao);
+                
+                // 2.传递顶点数据
+                glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[RenderSystem_Vertices_Buffer]);
+                glBufferData(GL_ARRAY_BUFFER, vertCount * sizeof(VertexData), &vertices[0], GL_STATIC_DRAW);
+                
+                // 3.传递索引数组
+                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_uVBOs[RenderSystem_Indices_Buffer]);
+                glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLushort)*indexCount, &indices[0], GL_STATIC_DRAW);
+                
+                
+                glBindBuffer(GL_ARRAY_BUFFER, 0);
+                glBindVertexArray(0);
+                
+                // 4.绘制
+                material->useMaterial(mesh, transform, camera);
+                glBindVertexArray(vao);
+                //typedef void (APIENTRYP PFNGLDRAWELEMENTSPROC)(GLenum mode, GLsizei count, GLenum type, const void *indices);
+                glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_SHORT, (void*)0);
+                //            glDrawArrays(GL_TRIANGLES, 0, vertCount);
+                glBindVertexArray(0);
+                
+                // 增加1次draw call
+                ++m_uDrawCalls;
+            }
+            
+        }
+    }
 
 
 }

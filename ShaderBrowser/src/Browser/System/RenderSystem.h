@@ -51,6 +51,8 @@ namespace browser
 		void update(float deltaTime);
 		// 绘制场景
 		void renderScene(Camera* camera);
+        // 前向渲染
+        void forwardRenderScene(Camera* camera);
         
         // 设置vao和vbo
         void setupVAO(GLuint vao);
