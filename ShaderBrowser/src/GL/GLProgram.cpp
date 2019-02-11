@@ -1,25 +1,35 @@
 #include "GLProgram.h"
-#include "../Common/Tools/Utils.h"
+#include "Common/Tools/Utils.h"
+#include "GLStateCache.h"
 #include <glm/gtc/type_ptr.hpp>
 
 namespace customGL
 {
 	// 默认GLProgram名称
 	const char* GLProgram::DEFAULT_GLPROGRAM_NAME = "ShaderBrowser_DefaultGLProgram";
+    // 默认的line着色器
+    const char* GLProgram::DEFAULT_LINES_GLPROGRAM_NAME = "ShaderBrowser_DefaultLinesGLProgram";
 
 	// 预定义的顶点着色器属性名称
 	const char* GLProgram::ATTRIBUTE_NAME_POSITION = "a_position";
 	const char* GLProgram::ATTRIBUTE_NAME_COLOR = "a_color";
 	const char* GLProgram::ATTRIBUTE_NAME_COORD = "a_coord";
+    const char* GLProgram::ATTRIBUTE_NAME_NORMAL = "a_normal";
+    const char* GLProgram::ATTRIBUTE_NAME_TANGENT = "a_tangent";
 
 	//  预定义的uniform变量
 	// 创建shader时写入shader文件头的uniform字符串
 	const char* SHADER_UNIFORMS =
+        // 定义一些基本的数据结构
+        "struct DirectionalLight { vec3 direction; float intensity; vec4 color; };\n"
+    
+        // shader中可以使用的内置的uniform变量名字(不一定会有值,看具体怎么使用)
 		"uniform sampler2D CGL_TEXTURE0;\n"
 		"uniform sampler2D CGL_TEXTURE1;\n"
 		"uniform mat4 CGL_MODEL_MATRIX;\n"
 		"uniform mat4 CGL_VIEW_MATRIX;\n"
-		"uniform mat4 CGL_PROJECTION_MATRIX;\n";
+		"uniform mat4 CGL_PROJECTION_MATRIX;\n"
+    "uniform DirectionalLight CGL_DIRECTIONAL_LIGHT;\n";
 	 // uniform变量名称
 	const char* GLProgram::SHADER_UNIFORMS_ARRAY[] =
 	{
@@ -27,7 +37,8 @@ namespace customGL
 		"CGL_TEXTURE1",
 		"CGL_MODEL_MATRIX",
 		"CGL_VIEW_MATRIX",
-		"CGL_PROJECTION_MATRIX"
+		"CGL_PROJECTION_MATRIX",
+        "CGL_DIRECTIONAL_LIGHT"
 	};
 
 	GLProgram* GLProgram::create(const char* vertSrc, const char* fragSrc)
@@ -84,7 +95,9 @@ namespace customGL
 		{
 			{GLProgram::ATTRIBUTE_NAME_POSITION, GLProgram::VERTEX_ATTR_POSITION},
 			{GLProgram::ATTRIBUTE_NAME_COLOR, GLProgram::VERTEX_ATTR_COLOR},
-			{GLProgram::ATTRIBUTE_NAME_COORD, GLProgram::VERTEX_ATTR_TEX_COORD}
+			{GLProgram::ATTRIBUTE_NAME_COORD, GLProgram::VERTEX_ATTR_TEX_COORD},
+            {GLProgram::ATTRIBUTE_NAME_NORMAL, GLProgram::VERTEX_ATTR_NORMAL},
+            {GLProgram::ATTRIBUTE_NAME_TANGENT, GLProgram::VERTEX_ATTR_TANGENT}
 		};
 
 		const int size = sizeof(attribute_locations) / sizeof(attribute_locations[0]);
@@ -305,12 +318,8 @@ namespace customGL
         
         common::BROWSER_ASSERT(textureUnit<MAX_ACTIVE_TEXTURE, "texture unit value is too big, it is out off support range in function GLProgram::setUniformWithTex2d");
         
-        if (m_vTexIds[textureUnit] != textureId)
-        {
-            m_vTexIds[textureUnit] = textureId;
-            glActiveTexture(GL_TEXTURE0 + textureUnit);
-            glBindTexture(GL_TEXTURE_2D, textureId);
-        }
+        // 绑定纹理到opengl
+        GLStateCache::getInstance()->bindTexture2DN(textureUnit, textureId);
     }
     
 }

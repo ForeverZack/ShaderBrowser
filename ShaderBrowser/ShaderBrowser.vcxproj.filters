@@ -58,6 +58,12 @@
     <Filter Include="src\Browser\Entitys">
       <UniqueIdentifier>{3e2ac61d-e24b-4c8e-a5a2-8d5c96b18fd5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Browser\Components\BoundBox">
+      <UniqueIdentifier>{e202359c-4dbb-450a-a573-53cff300e7dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Browser\Components\Light">
+      <UniqueIdentifier>{465da903-baee-49dc-97be-871c08d01e7c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -142,6 +148,39 @@
       <Filter>src\Browser\Components\Camera</Filter>
     </ClCompile>
     <ClCompile Include="src\Browser\System\CameraSystem.cpp">
+      <Filter>src\Browser\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GL\Model.cpp">
+      <Filter>src\GL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GL\GLStateCache.cpp">
+      <Filter>src\GL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Common\System\Cache\ModelCache.cpp">
+      <Filter>src\Common\System\Cache</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Browser\Components\BoundBox\AABBBoundBox.cpp">
+      <Filter>src\Browser\Components\BoundBox</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Browser\Components\BoundBox\BaseBoundBox.cpp">
+      <Filter>src\Browser\Components\BoundBox</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Browser\System\BoundBoxSystem.cpp">
+      <Filter>src\Browser\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Browser\Components\Light\BaseLight.cpp">
+      <Filter>src\Browser\Components\Light</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Browser\Components\Light\DirectionalLight.cpp">
+      <Filter>src\Browser\Components\Light</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Browser\Components\Light\PointLight.cpp">
+      <Filter>src\Browser\Components\Light</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Browser\Components\Light\SpotLight.cpp">
+      <Filter>src\Browser\Components\Light</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Browser\System\LightSystem.cpp">
       <Filter>src\Browser\System</Filter>
     </ClCompile>
   </ItemGroup>
@@ -237,6 +276,39 @@
       <Filter>src\Browser\Components\Camera</Filter>
     </ClInclude>
     <ClInclude Include="src\Browser\System\CameraSystem.h">
+      <Filter>src\Browser\System</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GL\Model.h">
+      <Filter>src\GL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GL\GLStateCache.h">
+      <Filter>src\GL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Common\System\Cache\ModelCache.h">
+      <Filter>src\Common\System\Cache</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Browser\Components\BoundBox\AABBBoundBox.h">
+      <Filter>src\Browser\Components\BoundBox</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Browser\Components\BoundBox\BaseBoundBox.h">
+      <Filter>src\Browser\Components\BoundBox</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Browser\System\BoundBoxSystem.h">
+      <Filter>src\Browser\System</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Browser\Components\Light\BaseLight.h">
+      <Filter>src\Browser\Components\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Browser\Components\Light\DirectionalLight.h">
+      <Filter>src\Browser\Components\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Browser\Components\Light\PointLight.h">
+      <Filter>src\Browser\Components\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Browser\Components\Light\SpotLight.h">
+      <Filter>src\Browser\Components\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Browser\System\LightSystem.h">
       <Filter>src\Browser\System</Filter>
     </ClInclude>
   </ItemGroup>

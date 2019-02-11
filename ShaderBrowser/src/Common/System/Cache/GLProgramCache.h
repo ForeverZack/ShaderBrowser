@@ -2,7 +2,7 @@
 
 #include "BaseCache.h"
 #include <unordered_map>
-#include "../../../GL/GLProgram.h"
+#include "GL/GLProgram.h"
 
 using namespace customGL;
 
@@ -15,6 +15,8 @@ namespace common
 		~GLProgramCache();
         
     public:
+        // 初始化
+        void init();
         // 添加
         void addGLProgram(std::string name, GLProgram* program);
 		void addGLProgram(std::string name, const std::string& vertFilename, const std::string& fragFilename);

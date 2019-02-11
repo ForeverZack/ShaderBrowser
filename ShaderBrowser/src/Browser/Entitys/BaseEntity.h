@@ -5,6 +5,7 @@
 #include "Browser/Components/BaseComponent.h"
 #include "Browser/Components/Mesh/MeshFilter.h"
 #include "Browser/Components/Transform/Transform.h"
+#include "Browser/Components/BoundBox/BaseBoundBox.h"
 
 namespace browser
 {
@@ -43,9 +44,15 @@ namespace browser
 
 		// 判断组件是否可渲染
 		bool isRenderable();
+        // 可见性检测
+        bool checkVisibility(Camera* camera, bool reCalculate = false);
         
 		REGISTER_PROPERTY_GET(MeshFilter*, m_oMeshFilterComponent, MeshFilter);
 		REGISTER_PROPERTY_GET(Transform*, m_oTransformComponent, Transform);
+        REGISTER_PROPERTY_GET(BaseBoundBox*, m_oBoundBox, BoundBox);
+        REGISTER_PROPERTY_GET_SET(bool, m_bIsVisible, IsVisible);
+        REGISTER_PROPERTY_GET_SET(bool, m_bIsAxisVisible, IsAxisVisible);
+        REGISTER_PROPERTY_GET_SET(bool, m_bIsBoundBoxVisible, IsBoundBoxVisible)
 
 	private:
 		// 添加\移除组件时，标记或者去标记特殊的组件
@@ -77,6 +84,15 @@ namespace browser
 		BaseComponent* m_oRenderComponent;
 		// 网格过滤器组件
 		MeshFilter* m_oMeshFilterComponent;
+        // 包围盒
+        BaseBoundBox* m_oBoundBox;
+        
+        // 是否可见
+        bool m_bIsVisible;
+        // 是否显示坐标轴
+        bool m_bIsAxisVisible;
+        // 是否显示包围盒
+        bool m_bIsBoundBoxVisible;
 	};
 
 

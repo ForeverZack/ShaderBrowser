@@ -1,9 +1,9 @@
 #pragma once
 
 #include <vector>
-#include "../../Common/System/BaseSystem.h"
-#include "../../Common/Tools/BaseSingleton.h"
-#include "../Components/Camera/Camera.h"
+#include "Common/System/BaseSystem.h"
+#include "Common/Tools/BaseSingleton.h"
+#include "Browser/Components/Camera/Camera.h"
 
 using namespace common;
 
@@ -16,14 +16,14 @@ namespace browser
 		~CameraSystem() {};
 
 	public:
-		// 每帧刷新
+		// 姣忓抚鍒锋柊
 		void update(float deltaTime);
 
 
 		REGISTER_PROPERTY_GET_SET(Camera*, m_oMainCamera, MainCamera)
 
 	private:
-		// 主摄像机
+		// 涓绘憚鍍忔満
 		Camera* m_oMainCamera;
 	};
 }

@@ -1,5 +1,5 @@
 #include "CameraSystem.h"
-#include "../Components/Camera/Camera.h"
+#include "Browser/Components/Camera/Camera.h"
 
 namespace browser
 {

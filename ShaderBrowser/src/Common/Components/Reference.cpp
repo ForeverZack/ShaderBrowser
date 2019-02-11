@@ -1,6 +1,6 @@
 #include "Reference.h"
-#include "../System/AutoReleasePool.h"
-#include "../Tools/Utils.h"
+#include "Common/System/AutoReleasePool.h"
+#include "Common/Tools/Utils.h"
 
 namespace common
 {
@@ -8,12 +8,18 @@ namespace common
 	Reference::Reference()
 		: m_iRefenceCount(0)
 	{
-
 	}
 
 	Reference::~Reference()
 	{
 	}
+    
+    Reference* Reference::clone()
+    {
+        BROWSER_LOG("Reference has no clone function in child's class, you must check your stack in function Reference::clone");
+        
+        return nullptr;
+    }
 
 	void Reference::retain()
 	{

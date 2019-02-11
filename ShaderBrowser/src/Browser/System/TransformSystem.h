@@ -1,10 +1,10 @@
 #pragma once
 
 #include <vector>
-#include "../../Common/Tools/Utils.h"
-#include "../../Common/System/BaseSystem.h"
-#include "../../Browser/Components/Transform/Transform.h"
-#include "../../Common/Tools/BaseSingleton.h"
+#include "Common/Tools/Utils.h"
+#include "Common/System/BaseSystem.h"
+#include "Browser/Components/Transform/Transform.h"
+#include "Common/Tools/BaseSingleton.h"
 
 using namespace common;
 

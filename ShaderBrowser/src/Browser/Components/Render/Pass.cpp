@@ -1,7 +1,5 @@
 #include "Pass.h"
-#include "../../../GL/Texture2D.h"
-#include "../Camera/Camera.h"
-#include "../../System/CameraSystem.h"
+#include "GL/Texture2D.h"
 
 namespace browser
 {

@@ -3,7 +3,7 @@
 
 #include <glad/glad.h>
 #include <string>
-#include "../Common/Tools/Utils.h"
+#include "Common/Tools/Utils.h"
 
 namespace customGL
 {
@@ -36,6 +36,8 @@ namespace customGL
 		unsigned char* m_Datas;
 		// 图片通道类型
 		GLenum m_eType;
+        
+        std::string name;
 	};
 }
 

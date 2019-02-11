@@ -2,8 +2,8 @@
 
 #include <unordered_map>
 #include <vector>
-#include "../../Tools/Utils.h"
-#include "../../Tools/BaseSingleton.h"
+#include "Common/Tools/Utils.h"
+#include "Common/Tools/BaseSingleton.h"
 
 using namespace common;
 

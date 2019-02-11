@@ -1,6 +1,6 @@
 #include "TextureCache.h"
-#include "../../Tools/Utils.h"
-#include "../../Tools/FileUtils.h"
+#include "Common/Tools/Utils.h"
+#include "Common/Tools/FileUtils.h"
 #include <vector>
 
 namespace common
@@ -20,8 +20,7 @@ namespace common
 		const std::string full_path = FileUtils::getInstance()->getAbsolutePathForFilename(filepath);
 	
 		Texture2D* texture = Texture2D::create(full_path);
-		// TODO: 这里暂时先retain一下
-		texture->retain();
+        texture->retain();
 
 		add(full_path, texture);
 	}
@@ -80,7 +79,7 @@ namespace common
 			if (asyncData->loadSuccess)
 			{
 				Texture2D* texture = Texture2D::create(responses[i]->data);
-				texture->retain();
+                texture->retain();
 				add(asyncData->fullpath, texture);
 
 				if (asyncData->callback)
@@ -102,10 +101,23 @@ namespace common
 	void TextureCache::removeTexture(std::string filepath)
 	{
 		const std::string full_path = FileUtils::getInstance()->getAbsolutePathForFilename(filepath);
-
+        
+        Texture2D* texture = get(full_path);
+        texture->release();
+        
 		remove(full_path);
-	}
+    }
 	
-
+    void TextureCache::removeTexture(Texture2D* texture)
+    {
+        texture->release();
+            
+        removeByValue(texture);
+    }
+    
+    void TextureCache::removeFromCache(Texture2D* texture)
+    {
+        removeByValue(texture);
+    }
 
 }

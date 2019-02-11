@@ -1,6 +1,6 @@
 #include "MeshFilter.h"
-#include "./../../../GL/GLProgram.h"
-#include "./../../System/RenderSystem.h"
+#include "GL/GLProgram.h"
+#include "Browser/System/RenderSystem.h"
 
 using namespace customGL;
 
@@ -27,9 +27,18 @@ namespace browser
 	{
 	}
     
+    Reference* MeshFilter::clone()
+    {
+        MeshFilter* meshFilter = new MeshFilter();
+        meshFilter->m_vMeshes = m_vMeshes;
+        
+        return meshFilter;
+    }
+    
 	void MeshFilter::addMesh(Mesh* mesh)
 	{
 		m_vMeshes.push_back(mesh);
+        mesh->retain();
 	}
 
 

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../../../Common/Components/Reference.h"
-#include "../../../Common/CommonDefine.h"
-#include "../../../Common/Tools/Utils.h"
+#include "Common/Components/Reference.h"
+#include "Common/CommonDefine.h"
+#include "Common/Tools/Utils.h"
 
 using namespace common;
 
@@ -19,6 +19,7 @@ namespace browser
     class Mesh;
 	class BaseComponent;
 	class Transform;
+    class MeshFilter;
     
     // 组件之间通讯的事件
     enum ComponentEvent
@@ -50,6 +51,9 @@ namespace browser
 		// 移除Transform组件的事件
 		Transform_RemoveComponent,
 
+        // BoundBox组件的事件
+        // 添加BoundBox
+        BoundBox_AddComponent,
 
     };
 
@@ -59,11 +63,11 @@ namespace browser
     class MeshFilterAddMeshMessage : public BaseComponentMessage
     {
     public:
-		MeshFilterAddMeshMessage(Mesh* mesh) : m_oMesh(mesh) {}
+		MeshFilterAddMeshMessage(MeshFilter* meshFilter) : m_oMeshFilter(meshFilter) {}
 		~MeshFilterAddMeshMessage() {}
-		REGISTER_PROPERTY_GET(Mesh*, m_oMesh, Mesh)
+		REGISTER_PROPERTY_GET(MeshFilter*, m_oMeshFilter, MeshFilter)
 	protected:
-        Mesh* m_oMesh;
+        MeshFilter* m_oMeshFilter;
     };
 
 	// Entity添加Render组件事件
@@ -81,11 +85,11 @@ namespace browser
 	class MeshFilterAddComponentMessage : public BaseComponentMessage
 	{
 	public:
-		MeshFilterAddComponentMessage(BaseEntity* entity) : m_oEntity(entity) {}
+		MeshFilterAddComponentMessage(MeshFilter* meshFilter) : m_oMeshFilter(meshFilter) {}
 		~MeshFilterAddComponentMessage() {}
-		REGISTER_PROPERTY_GET(BaseEntity*, m_oEntity, Entity)
+		REGISTER_PROPERTY_GET(MeshFilter*, m_oMeshFilter, MeshFilter)
 	protected:
-		BaseEntity* m_oEntity;
+		MeshFilter* m_oMeshFilter;
 	};
 
 	// Entity添加Transform组件事件
@@ -109,6 +113,19 @@ namespace browser
 	protected:
 		Transform* m_oTransform;
 	};
+    
+    // Entity添加BoundBox
+    class BoundBoxAddComponentMessage : public BaseComponentMessage
+    {
+    public:
+        BoundBoxAddComponentMessage(Transform* transform, MeshFilter* meshFilter) : m_oTransform(transform), m_oMeshFilter(meshFilter) {}
+        ~BoundBoxAddComponentMessage() {}
+        REGISTER_PROPERTY_GET(Transform*, m_oTransform, Transform)
+        REGISTER_PROPERTY_GET(MeshFilter*, m_oMeshFilter, MeshFilter)
+    protected:
+        Transform* m_oTransform;
+        MeshFilter* m_oMeshFilter;
+    };
     
 }
 

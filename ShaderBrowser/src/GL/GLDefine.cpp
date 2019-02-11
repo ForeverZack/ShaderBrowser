@@ -1,6 +1,6 @@
 #include "GLDefine.h"
 #include "GLProgram.h"
-#include "../Common/Tools/Utils.h"
+#include "Common/Tools/Utils.h"
 
 namespace customGL {
     
@@ -25,6 +25,11 @@ namespace customGL {
     extern const glm::vec4 GLM_VEC4_ZERO = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
     // 1向量
     extern const glm::vec3 GLM_VEC3_ONE = glm::vec3(1.0f, 1.0f, 1.0f);
+    // 颜色 (非归一化)
+    extern const glm::vec4 GLM_COLOR_WHITE = glm::vec4(255, 255, 255, 255); // 白色
+    extern const glm::vec4 GLM_COLOR_RED = glm::vec4(255, 0, 0, 255);   // 红色
+    extern const glm::vec4 GLM_COLOR_GREEN = glm::vec4(0, 255, 0, 255); // 绿色
+    extern const glm::vec4 GLM_COLOR_BLUE = glm::vec4(0, 0, 255, 255);  // 蓝色
     // 单位四元数
     extern const glm::quat GLM_QUAT_UNIT = glm::quat(1.0f, 0, 0, 0);
     

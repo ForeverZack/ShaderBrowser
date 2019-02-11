@@ -6,7 +6,7 @@ namespace common
 	{
         if (!condition)
         {
-            std::cout << msg << endl;
+            std::cout << "ERROR: " << msg << endl;
             assert(condition);
         }
     }
@@ -15,7 +15,7 @@ namespace common
     {
         if (!condition)
         {
-            std::cout << msg << endl;
+            std::cout << "WARNING: " << msg << endl;
         }
     }
 

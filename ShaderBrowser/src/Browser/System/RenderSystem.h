@@ -3,10 +3,10 @@
 
 #include <glad/glad.h>
 #include <unordered_map>
-#include "../../Common/System/BaseSystem.h"
-#include "../Components/Render/BaseRender.h"
-#include "../../GL/GLProgram.h"
-#include "../../Common/Tools/BaseSingleton.h"
+#include "Common/System/BaseSystem.h"
+#include "Browser/Components/Render/BaseRender.h"
+#include "GL/GLProgram.h"
+#include "Common/Tools/BaseSingleton.h"
 
 namespace browser
 {
@@ -55,10 +55,20 @@ namespace browser
         // 设置vao和vbo
         void setupVAO(GLuint vao);
         void setupVAO(GLuint vao, const std::unordered_map<GLuint, VertexAttribDeclaration*>& declarations);
+        
+        
+        REGISTER_PROPERTY_GET_SET(unsigned int, m_uDrawCalls, DrawCalls)
 	
 	private:
 		// vbos
 		unsigned int m_uVBOs[RenderSystem_Buffer_Maxcount];
+        // 绘制所用的draw call次数
+        unsigned int m_uDrawCalls;
+        
+        // 坐标轴模型
+        browser::Mesh* m_oAxisMesh;
+        // 坐标轴缩放矩阵
+        glm::mat4 m_oAxisScaleMatrix;
 	};
 }
 

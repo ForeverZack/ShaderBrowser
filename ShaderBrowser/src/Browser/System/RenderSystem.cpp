@@ -1,10 +1,46 @@
 #include "RenderSystem.h"
-#include "../Components/Render/Material.h"
-#include "../Components/Mesh/MeshFilter.h"
+#include "Browser/Components/Render/Material.h"
+#include "Browser/Components/Mesh/MeshFilter.h"
+#include "Browser/Components/BoundBox/BaseBoundBox.h"
 #include "CameraSystem.h"
+#include "Common/System/Cache/GLProgramCache.h"
+#include "GL/GLStateCache.h"
 
 namespace browser
 {
+    
+    // 坐标轴
+    // 显示缩放
+    #define SHOW_AXIS_SCALE 0.5
+    // vertices
+    glm::vec3 axis_vertices[] = {
+        // x_axis
+        glm::vec3(0.0f, 0.0f, 0.0f),
+        glm::vec3(1.0f, 0.0f, 0.0f),
+        // y_axis
+        glm::vec3(0.0f, 0.0f, 0.0f),
+        glm::vec3(0.0f, 1.0f, 0.0f),
+        // z_axis
+        glm::vec3(0.0f, 0.0f, 0.0f),
+        glm::vec3(0.0f, 0.0f, 1.0f)
+    };
+    // colors
+    glm::vec4 axis_colors[] = {
+        // x_axis
+        glm::vec4(1.0f, 0.0f, 0.0f, 1.0f),
+        glm::vec4(1.0f, 0.0f, 0.0f, 1.0f),
+        // y_axis
+        glm::vec4(0.0f, 1.0f, 0.0f, 1.0f),
+        glm::vec4(0.0f, 1.0f, 0.0f, 1.0f),
+        // z_axis
+        glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+        glm::vec4(0.0f, 0.0f, 1.0f, 1.0f)
+    };
+    // 包围盒
+    // 包围盒默认颜色
+    #define SHOW_BOUND_BOX_COLOR glm::vec4(1.0f, 1.0f, 1.0f, 1.0f)
+    
+    
 	RenderSystem::RenderSystem()
 	{
 		m_iPriority = 0;
@@ -19,6 +55,16 @@ namespace browser
 		// 生成VBO
 		glGenBuffers(RenderSystem_Buffer_Maxcount, m_uVBOs);
         
+
+        // 生成坐标轴模型
+        m_oAxisMesh = Mesh::create(6);
+        m_oAxisMesh->addVertexAttribute(GLProgram::VERTEX_ATTR_POSITION, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), axis_vertices);
+        m_oAxisMesh->addVertexAttribute(GLProgram::VERTEX_ATTR_COLOR, 4, GL_FLOAT, GL_FALSE, sizeof(VertexData), axis_colors);
+        m_oAxisMesh->setupVAO();
+        m_oAxisMesh->retain();
+        // 坐标轴缩放矩阵
+        glm::vec3 axis_scale(SHOW_AXIS_SCALE, SHOW_AXIS_SCALE, SHOW_AXIS_SCALE);
+        m_oAxisScaleMatrix = glm::scale(GLM_MAT4_UNIT, axis_scale);
 	}
 
 	void RenderSystem::clearRenders()
@@ -83,6 +129,18 @@ namespace browser
                         glVertexAttribPointer(declaration->index, declaration->size, declaration->type, declaration->normalized, declaration->stride, (void*)offsetof(VertexData, uv_main));
                     }
                     break;
+                case GLProgram::VERTEX_ATTR_NORMAL:
+                    {
+                        // 4.法线
+                        glVertexAttribPointer(declaration->index, declaration->size, declaration->type, declaration->normalized, declaration->stride, (void*)offsetof(VertexData, normal));
+                    }
+                    break;
+                case GLProgram::VERTEX_ATTR_TANGENT:
+                    {
+                        // 5.切线
+                        glVertexAttribPointer(declaration->index, declaration->size, declaration->type, declaration->normalized, declaration->stride, (void*)offsetof(VertexData, tangent));
+                    }
+                    break;
             }
             
             glEnableVertexAttribArray(declaration->index);
@@ -97,6 +155,9 @@ namespace browser
 
 	void RenderSystem::update(float deltaTime)
 	{
+        // 重置draw call
+        m_uDrawCalls = 0;
+        
 		// 渲染主相机场景
 		renderScene(CameraSystem::getInstance()->getMainCamera());
 	}
@@ -105,7 +166,10 @@ namespace browser
 	{
 		//	清理FrameBuffer
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        
+        // 开启深度测试
+        GLStateCache::getInstance()->openDepthTest();
 
 		// TODO: 以后需要实现合批
 		// 思考：什么情况下才可以合批
@@ -115,7 +179,7 @@ namespace browser
 		// 4. 正向渲染透明物体
 		Material* material;
 		GLuint vao;
-		int vertCount;
+		size_t vertCount;
 		int indexCount;
 		BaseRender* render;
 		Transform* transform;
@@ -129,8 +193,14 @@ namespace browser
 			entity = render->getBelongEntity();
 			meshFilter = entity->getMeshFilter();
 			transform = entity->getTransform();
+            
+            // 是否需要渲染
+            if (!entity->getIsVisible() || !entity->checkVisibility(camera, true))
+            {
+                continue;
+            }
 
-			// 遍历mesh
+			// 遍历messh
 			const std::vector<Mesh*>& meshes = meshFilter->getMeshes();
 			for (int i = 0; i < meshes.size(); ++i)
 			{
@@ -168,9 +238,126 @@ namespace browser
 				glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_SHORT, (void*)0);
 				//            glDrawArrays(GL_TRIANGLES, 0, vertCount);
 				glBindVertexArray(0);
+                
+                // 增加1次draw call
+                ++m_uDrawCalls;
 			}
 
 		}
+        
+        // 绘制调试信息
+        // 1.包围盒
+        // 开启深度测试
+        GLStateCache::getInstance()->openDepthTest();
+        {
+            BaseEntity* entity = nullptr;
+            Transform* transform = nullptr;
+            BaseBoundBox* boundBox = nullptr;
+            GLProgram* linesProgram = GLProgramCache::getInstance()->getGLProgram(GLProgram::DEFAULT_LINES_GLPROGRAM_NAME);
+            for(auto itor = m_mComponentsList.begin(); itor!=m_mComponentsList.end(); ++itor)
+            {
+                entity = itor->first;
+                if (entity->isRenderable() && entity->getIsVisible() && entity->getIsBoundBoxVisible() && entity->checkVisibility(camera))
+                {
+                    vao = m_oAxisMesh->getVAO();    // TODO: 这里使用的是模型坐标轴的vao,后面看看要不要换掉
+                    transform = entity->getTransform();
+                    boundBox = entity->getBoundBox();
+                    
+                    BROWSER_ASSERT(boundBox, "Entity have no BoundBox compoent, block in function RenderSystem::renderScene(Camera* camera)");
+                    // 显示包围盒的顶点
+                    boundBox->calculateDisplayVertices();
+                    
+                    // 顶点属性
+                    const std::vector<glm::vec3>& vertices = boundBox->getDisplayVertices();
+                    vertCount = vertices.size();
+                    
+                    // 在CPU中处理顶点位置
+                    VertexData* trans_vertices = (VertexData*)malloc(sizeof(VertexData) * vertCount);
+                    for(int i=0; i<vertCount; ++i)
+                    {
+                        trans_vertices[i].position = glm::vec4(vertices[i], 1.0f);
+                        trans_vertices[i].color = SHOW_BOUND_BOX_COLOR;
+                    }
+                    
+                    // 1.绑定对应的vao
+                    glBindVertexArray(vao);
+                    
+                    // 2.传递顶点数据
+                    glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[RenderSystem_Vertices_Buffer]);
+                    glBufferData(GL_ARRAY_BUFFER, vertCount * sizeof(VertexData), trans_vertices, GL_STATIC_DRAW);
+                    
+                    glBindBuffer(GL_ARRAY_BUFFER, 0);
+                    glBindVertexArray(0);
+                    
+                    // 4.绘制
+                    linesProgram->useProgram();
+                    linesProgram->setUniformWithMat4(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_VIEW_MATRIX], camera->getViewMatrix());
+                    linesProgram->setUniformWithMat4(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_PROJECTION_MATRIX], camera->getProjectionMatrix());
+                    glBindVertexArray(vao);
+                    //typedef void (APIENTRYP PFNGLDRAWELEMENTSPROC)(GLenum mode, GLsizei count, GLenum type, const void *indices);
+                    glDrawArrays(GL_LINES, 0, (int)vertCount);
+                    glBindVertexArray(0);
+                    
+                    // 释放cpu的顶点数组
+                    free(trans_vertices);
+                }
+            }
+        }
+        // 2.坐标轴
+        // 关闭深度测试
+        GLStateCache::getInstance()->closeDepthTest();
+        {
+            BaseEntity* entity = nullptr;
+            Transform* transform = nullptr;
+            GLProgram* linesProgram = GLProgramCache::getInstance()->getGLProgram(GLProgram::DEFAULT_LINES_GLPROGRAM_NAME);
+            for(auto itor = m_mComponentsList.begin(); itor!=m_mComponentsList.end(); ++itor)
+            {
+                entity = itor->first;
+                transform = entity->getTransform();
+                
+//                if (entity->getIsVisible() && entity->getIsAxisVisible() && entity->checkVisibility(camera))
+                if (entity->getIsVisible() && entity->getIsAxisVisible())
+                {
+                    vao = m_oAxisMesh->getVAO();
+                    
+                    
+                    // 顶点属性
+                    const std::vector<VertexData>& vertices = m_oAxisMesh->getVertices();
+                    vertCount = m_oAxisMesh->getVertexCount();
+                    
+                    // 在CPU中处理顶点位置
+                    VertexData* trans_vertices = (VertexData*)malloc(sizeof(VertexData) * vertCount);
+                    for(int i=0; i<vertCount; ++i)
+                    {
+                        trans_vertices[i].position = transform->getNoScaleModelMatrix() * m_oAxisScaleMatrix * vertices[i].position;
+                        trans_vertices[i].color = vertices[i].color;
+                    }
+                    
+                    // 1.绑定对应的vao
+                    glBindVertexArray(vao);
+                    
+                    // 2.传递顶点数据
+                    glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[RenderSystem_Vertices_Buffer]);
+                    glBufferData(GL_ARRAY_BUFFER, vertCount * sizeof(VertexData), trans_vertices, GL_STATIC_DRAW);
+                    
+                    glBindBuffer(GL_ARRAY_BUFFER, 0);
+                    glBindVertexArray(0);
+                    
+                    // 4.绘制
+                    linesProgram->useProgram();
+                    linesProgram->setUniformWithMat4(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_VIEW_MATRIX], camera->getViewMatrix());
+                    linesProgram->setUniformWithMat4(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_PROJECTION_MATRIX], camera->getProjectionMatrix());
+                    glBindVertexArray(vao);
+                    //typedef void (APIENTRYP PFNGLDRAWELEMENTSPROC)(GLenum mode, GLsizei count, GLenum type, const void *indices);
+                    glDrawArrays(GL_LINES, 0, vertCount);
+                    glBindVertexArray(0);
+                    
+                    // 释放cpu的顶点数组
+                    free(trans_vertices);
+                }
+            }
+        }
+    
 
 	}
 

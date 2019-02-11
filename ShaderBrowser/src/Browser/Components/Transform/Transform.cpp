@@ -3,7 +3,7 @@
 #include <glm/ext/quaternion_trigonometric.hpp>
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/quaternion.hpp>
-#include "../../../GL/GLDefine.h"
+#include "GL/GLDefine.h"
 
 using namespace customGL;
 
@@ -46,6 +46,48 @@ namespace browser
         m_vRotateDelaySpaces.push_back(sp);
         
         TRANS_DIRTY(this, true);
+    }
+    
+    void Transform::Translate(glm::vec3 offset, customGL::Space sp /*= customGL::Space::Self*/)
+    {
+        switch(sp)
+        {
+            case Space::Self:
+                {
+                    // 自身坐标系
+                    setPosition(m_oObjectPos.x+offset.x, m_oObjectPos.y+offset.y, m_oObjectPos.z+offset.z);
+                }
+                break;
+                
+            case Space::World:
+                {
+                    // 世界坐标系
+                    glm::vec3 global_position = getGlobalPosition();
+                    setGlobalPosition(global_position.x+offset.x, global_position.y+offset.y, global_position.z+offset.z);
+                }
+                break;
+        }
+    }
+    
+    glm::vec3 Transform::getForward()
+    {
+        const glm::mat4& modelMatrix = getTransformModelMatrix();
+        glm::vec3 forward = modelMatrix * glm::vec4(GLM_AXIS_Z, 0.0f);
+        return glm::normalize(forward);
+    }
+    
+    glm::vec3 Transform::getLeft()
+    {
+        const glm::mat4& modelMatrix = getTransformModelMatrix();
+        glm::vec3 left = modelMatrix * glm::vec4(GLM_AXIS_X, 0.0f);
+        return glm::normalize(left);
+    }
+    
+    glm::vec3 Transform::getUp()
+    {
+        const glm::mat4& modelMatrix = getTransformModelMatrix();
+        glm::vec3 up = modelMatrix * glm::vec4(GLM_AXIS_Y, 0.0f);
+        return glm::normalize(up);
     }
     
     void Transform::RotateDelay(const glm::mat4& parentMMatrix)
@@ -215,7 +257,9 @@ namespace browser
     
     glm::vec3 Transform::getGlobalPosition()
     {
-        return getTransformModelMatrix() * glm::vec4(m_oObjectPos, 1.0f);
+        // 获取父节点的model矩阵
+        const glm::mat4& parentModelMatrix = getParentTransformModelMatrix();
+        return parentModelMatrix * glm::vec4(m_oObjectPos, 1.0f);
     }
     
     glm::vec3 Transform::getGlobalEulerAngle()
@@ -346,11 +390,15 @@ namespace browser
 		// 3.位移
 		m_oModelMatrix = glm::translate(m_oModelMatrix, m_oObjectPos);
 		// 2.旋转 y-x-z
-		m_oModelMatrix = glm::toMat4(m_oQuaternion) * m_oModelMatrix;
+		m_oModelMatrix = m_oModelMatrix * glm::toMat4(m_oQuaternion);
+        m_oNoScaleModelMatrix = m_oModelMatrix; //这里记录下不包含缩放的model矩阵
 		// 1.缩放
 		m_oModelMatrix = glm::scale(m_oModelMatrix, m_oScale);
 
 //                    BROWSER_LOG_MAT4(m_oModelMatrix);
+        
+        
+        
 	}
     
     void Transform::visit(const glm::mat4& parentMMatrix, bool bDirty)

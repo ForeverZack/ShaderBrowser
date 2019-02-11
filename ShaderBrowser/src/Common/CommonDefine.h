@@ -15,6 +15,10 @@ namespace common
         Mesh,
 		// 相机
 		Camera,
+        // 包围盒
+        BoundBox,
+        // 光照
+        Light,
 
 		// 自定义的系统
 		CustomSystem,

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../BaseComponent.h"
-#include "../Transform/Transform.h"
-#include "../../../Common/Tools/Utils.h"
+#include "Browser/Components/BaseComponent.h"
+#include "Browser/Components/Transform/Transform.h"
+#include "Common/Tools/Utils.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -40,17 +40,6 @@ namespace browser
 	protected:
 		// 处理组件事件
 		void handleEvent(ComponentEvent event, BaseComponentMessage* msg);
-		// 获取Transform组件
-		template <typename MsgType>
-		void getTransformFromMsg(BaseComponentMessage* msg)
-		{
-			MsgType* convertMsg = dynamic_cast<MsgType*>(msg);
-			Transform* transform = convertMsg->getTransform();
-			if (!m_oTransform && transform)
-			{
-				m_oTransform = transform;
-			}
-		}
 
 		// 刷新projection matrix
 		void updateProjectionMatrix();
@@ -61,8 +50,6 @@ namespace browser
 
 	protected:
 		// view matrix 相关
-		// Transform组件
-		Transform* m_oTransform;
 		// view matrix
 		glm::mat4 m_oViewMatrix;
 

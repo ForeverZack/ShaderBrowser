@@ -55,6 +55,11 @@ namespace customGL
     extern const glm::vec4 GLM_VEC4_ZERO;
     // 1向量
     extern const glm::vec3 GLM_VEC3_ONE;
+    // 颜色(非归一化)
+    extern const glm::vec4 GLM_COLOR_WHITE; // 白色
+    extern const glm::vec4 GLM_COLOR_RED;   // 红色
+    extern const glm::vec4 GLM_COLOR_GREEN; // 绿色
+    extern const glm::vec4 GLM_COLOR_BLUE;  // 蓝色
     // 单位四元数
     extern const glm::quat GLM_QUAT_UNIT;
     // 旋转坐标空间
@@ -85,7 +90,9 @@ namespace customGL
         // uv1
         glm::vec2 uv_main;
         // normal
+        glm::vec3 normal;
         // tangent
+        glm::vec3 tangent;
     };
     
     // 顶点属性格式(供设置vao使用)

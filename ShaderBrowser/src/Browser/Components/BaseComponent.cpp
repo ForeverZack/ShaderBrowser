@@ -1,10 +1,12 @@
 #include "BaseComponent.h"
-#include "../Entitys/BaseEntity.h"
+#include "Browser/Entitys/BaseEntity.h"
 
 namespace browser
 {
 	BaseComponent::BaseComponent()
-		: m_eBelongSystem(SystemType::CustomSystem)
+        : m_oTransform(nullptr)
+        , m_oMeshFilter(nullptr)
+        , m_eBelongSystem(SystemType::CustomSystem)
 		, m_oBelongEntity(nullptr)
 	{
         this->autorelease();

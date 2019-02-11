@@ -5,10 +5,10 @@
 #include <glm/glm.hpp>
 #include <vector>
 #include "Pass.h"
-#include "../../../GL/GLProgram.h"
-#include "../../../Common/Tools/Utils.h"
-#include "../Mesh/Mesh.h"
-#include "../Camera/Camera.h"
+#include "GL/GLProgram.h"
+#include "Common/Tools/Utils.h"
+#include "Browser/Components/Mesh/Mesh.h"
+#include "Browser/Components/Camera/Camera.h"
 
 using namespace std;
 using namespace customGL;

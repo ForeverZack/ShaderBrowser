@@ -3,9 +3,9 @@
 #include <vector>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include "../BaseComponent.h"
-#include "../../../Common/Tools/Utils.h"
-#include "../../../GL/GLDefine.h"
+#include "Browser/Components/BaseComponent.h"
+#include "Common/Tools/Utils.h"
+#include "GL/GLDefine.h"
 
 using namespace common;
 using namespace customGL;
@@ -74,6 +74,17 @@ namespace browser
         // 旋转
         void Rotate(glm::vec3 rotation, customGL::Space sp = customGL::Space::Self);
         
+        // 平移
+        void Translate(glm::vec3 offset, customGL::Space sp = customGL::Space::Self);
+        
+        // 获取方向向量
+        // Forward (axis: z)
+        glm::vec3 getForward();
+        // Left (axis: x)
+        glm::vec3 getLeft();
+        // Up (axis: y)
+        glm::vec3 getUp();
+        
         // 获取\设置本地坐标系下的属性
         // 设置位置(相对于父节点)
         void setPosition(float x, float y, float z);
@@ -99,12 +110,15 @@ namespace browser
 		REGISTER_PROPERTY_CONSTREF_GET(glm::quat, m_oQuaternion, Quaternion)
         // 获取model矩阵
 		REGISTER_PROPERTY_CONSTREF_GET(glm::mat4, m_oModelMatrix, ModelMatrix)
+        REGISTER_PROPERTY_CONSTREF_GET(glm::mat4, m_oNoScaleModelMatrix, NoScaleModelMatrix)
         // name
         REGISTER_PROPERTY_GET_SET(std::string, m_sName, Name)
 		// parent
 		REGISTER_PROPERTY_GET(Transform*, m_oParent, Parent)
 		// children
 		REGISTER_PROPERTY_CONSTREF_GET(std::vector<Transform*>, m_vChildren, Children)
+        // dirty标记
+        REGISTER_PROPERTY_GET(bool, m_bTransDirty, TransDirty)
         
         // 获取\设置全局坐标系下的属性(并不建议过多使用，因为每次使用都会遍历父级节点，更新他们的model矩阵)
         // 获取世界坐标系下的位置
@@ -121,7 +135,7 @@ namespace browser
         void setGlobalQuaternion(const glm::quat& quaternion);
         
 
-		REGISTER_PROPERTY_GET(bool, m_bTransDirty, TransDirty)
+		
 
     
     private:
@@ -157,6 +171,8 @@ namespace browser
         glm::vec3 m_oGlobalEulerAngle;
         // 四元数（惯性坐标系下）
         glm::quat m_oGlobalQuaternion;
+        // 不含缩放的model矩阵(显示axis用)
+        glm::mat4 m_oNoScaleModelMatrix;
         
         // 变换脏标记
         bool m_bTransDirty;

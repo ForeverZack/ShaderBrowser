@@ -1,9 +1,9 @@
 #pragma once
 
 #include <vector>
-#include "../../../Common/Tools/Utils.h"
-#include "../../../GL/GLDefine.h"
-#include "../BaseComponent.h"
+#include "Common/Tools/Utils.h"
+#include "GL/GLDefine.h"
+#include "Browser/Components/BaseComponent.h"
 #include "Mesh.h"
 
 using namespace common;
@@ -20,6 +20,8 @@ namespace browser
 	public:
 		MeshFilter();
 		~MeshFilter();
+        
+        virtual Reference* clone();
 
 	public:
 		// 添加网格模型

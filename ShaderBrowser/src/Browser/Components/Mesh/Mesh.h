@@ -2,16 +2,19 @@
 
 #include <vector>
 #include <unordered_map>
-#include "../BaseComponent.h"
-#include "../../../Common/Tools/Utils.h"
-#include "../../../GL/GLDefine.h"
+#include <functional>
+#include "Browser/Components/BaseComponent.h"
+#include "Common/Tools/Utils.h"
+#include "GL/GLDefine.h"
+
+#include <assimp/scene.h>
 
 using namespace common;
 using namespace customGL;
 
 namespace browser
 {
-	class Mesh
+    class Mesh : public Reference
 	{
 	public:
 #define ANALYSIS_ARRAY_DATA_VEC2(varName, data)  \
@@ -41,6 +44,24 @@ namespace browser
             m_vVertices[i].varName.w  = values[i].w;    \
         }
         
+#define ANALYSIS_ARRAY_DATA_VERTEX(varName, data)  \
+        glm::vec3* values = (glm::vec3*)(data);  \
+        for (int i=0; i<m_uVertexCount; ++i)    \
+        {   \
+            m_vVertices[i].varName.x = values[i].x;    \
+            m_vVertices[i].varName.y  = values[i].y;    \
+            m_vVertices[i].varName.z  = values[i].z;    \
+            m_vVertices[i].varName.w  = 1.0f;    \
+        }
+        
+#define ANALYSIS_ARRAY_DATA_TEXCOORD(varName, data)  \
+        glm::vec3* values = (glm::vec3*)(data);  \
+        for (int i=0; i<m_uVertexCount; ++i)    \
+        {   \
+            m_vVertices[i].varName.x = values[i].x;    \
+            m_vVertices[i].varName.y  = values[i].y;    \
+        }
+        
     public:
         static Mesh* create(int length);
         
@@ -55,6 +76,7 @@ namespace browser
         void addVertexAttribute(GLuint location, GLint size, GLenum type, GLboolean normalized, GLsizei stride, void* data);
         // 设置顶点索引信息
         void setIndicesInfo(GLushort* data, unsigned int length);
+        void setIndicesInfo(std::function<void(std::vector<GLushort>&, unsigned int&)> setFunc);
         // 添加纹理属性
         void addTexture(const std::string& uniformName, Texture2D* texture);
         // 根据location获取顶点属性
@@ -69,7 +91,7 @@ namespace browser
         REGISTER_PROPERTY_GET(unsigned int, m_uIndexCount, IndexCount)
 		REGISTER_PROPERTY_CONSTREF_GET(std::vector<GLushort>, m_vIndices, Indices)
 		REGISTER_PROPERTY_CONSTREF_GET(std::vector<TextureData>, m_vTextures, Textures)
-        REGISTER_PROPERTY_CONSTREF_GET(std::string, m_sMaterialName, MaterialName)
+        REGISTER_PROPERTY_GET_SET(std::string, m_sMaterialName, MaterialName)
         
     private:
         // 填充顶点数组的数据内容

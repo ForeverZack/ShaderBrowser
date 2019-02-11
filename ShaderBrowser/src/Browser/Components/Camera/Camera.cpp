@@ -1,5 +1,5 @@
 #include "Camera.h"
-#include "../../../GL/GLDefine.h"
+#include "GL/GLDefine.h"
 
 namespace browser
 {
@@ -15,8 +15,7 @@ namespace browser
 	}
 
 	Camera::Camera(ProjectionType type, float nearPlane, float farPlane, int viewportWidth, int viewportHeight, float FOV)
-		: m_oTransform(nullptr)
-		, m_oViewMatrix(GLM_MAT4_UNIT)
+		:  m_oViewMatrix(GLM_MAT4_UNIT)
 		, m_eProjectionType(type)
 		, m_fFieldOfView(FOV)
 		, m_fNearPlane(nearPlane)
@@ -30,8 +29,7 @@ namespace browser
 	}
 
 	Camera::Camera()
-		: m_oTransform(nullptr)
-		, m_oViewMatrix(GLM_MAT4_UNIT)
+		: m_oViewMatrix(GLM_MAT4_UNIT)
 		, m_eProjectionType(ProjectionType::Perspective)
 		, m_fFieldOfView(60.0f)
 		, m_fNearPlane(0.3f)
@@ -102,14 +100,14 @@ namespace browser
 		{
 		case ComponentEvent::Camera_AddComponent:
 			{
-				BROWSER_LOG("Camera_AddComponent Message received");
+//                BROWSER_LOG("Camera_AddComponent Message received");
 				getTransformFromMsg<CameraAddComponentMessage>(msg);
 			}
 			break;
 
 		case ComponentEvent::Transform_AddComponent:
 			{
-				BROWSER_LOG("Transform_AddComponent Message received");
+//                BROWSER_LOG("Transform_AddComponent Message received");
 				getTransformFromMsg<TransformAddComponentMessage>(msg);
 			}
 			break;

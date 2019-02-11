@@ -3,10 +3,10 @@
 
 #include <glad/glad.h>
 #include <unordered_map>
-#include "../../../GL/GLDefine.h"
-#include "../../../Common/Tools/Utils.h"
-#include "../BaseComponent.h"
-#include "../Mesh/Mesh.h"
+#include "GL/GLDefine.h"
+#include "Common/Tools/Utils.h"
+#include "Browser/Components/BaseComponent.h"
+#include "Browser/Components/Mesh/Mesh.h"
 
 using namespace std;
 using namespace customGL;
@@ -27,6 +27,7 @@ namespace browser
 		// init
 		void init();
         
+        void changeMeshMaterial(Mesh* mesh, const std::string& programName);
         Material* getMaterialByMesh(Mesh* mesh);
         
     protected:

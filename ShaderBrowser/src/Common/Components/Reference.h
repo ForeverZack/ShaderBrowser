@@ -1,7 +1,7 @@
 #ifndef COMMON_COMS_REFERENCE_H
 #define COMMON_COMS_REFERENCE_H
 
-#include "../Tools/Utils.h"
+#include "Common/Tools/Utils.h"
 
 namespace common
 {
@@ -11,6 +11,9 @@ namespace common
 		Reference();
 		virtual ~Reference();
 
+        // 克隆对象(注意如果要使用clone就必须在子类中实现它!!)
+        virtual Reference* clone();
+        
 	public:
 		// 引用计数+1
 		void retain();

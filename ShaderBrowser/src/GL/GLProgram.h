@@ -14,9 +14,11 @@ namespace customGL
 	class GLProgram
 	{
 	public:
-		// 默认GLProgram名称
+		// 默认GLProgram名称(网格模型着色器)
 		static const char* DEFAULT_GLPROGRAM_NAME;
-
+        // 默认的line着色器
+        static const char* DEFAULT_LINES_GLPROGRAM_NAME;
+        
 	public:
 		// 预定义的顶点着色器属性位置枚举( layout (location = n) )
 		enum
@@ -27,6 +29,10 @@ namespace customGL
 			VERTEX_ATTR_COLOR,
 			// 2.纹理uv
 			VERTEX_ATTR_TEX_COORD,
+            // 3.法线
+            VERTEX_ATTR_NORMAL,
+            // 4.切线
+            VERTEX_ATTR_TANGENT,
 
 
 			// 最大值
@@ -47,6 +53,9 @@ namespace customGL
 			// projection matrix
 			UNIFORM_CGL_PROJECTION_MATRIX,
             
+            // 平行光
+            UNIFORM_CGL_DIRECTIONAL_LIGHT,
+            
             
             // 预定义Uniform变量个数
             UNIFORM_MAX_COUNT
@@ -56,6 +65,8 @@ namespace customGL
 		static const char* ATTRIBUTE_NAME_POSITION;
 		static const char* ATTRIBUTE_NAME_COLOR;
 		static const char* ATTRIBUTE_NAME_COORD;
+        static const char* ATTRIBUTE_NAME_NORMAL;
+        static const char* ATTRIBUTE_NAME_TANGENT;
 
 		// 预定义的uniform变量	（与前面枚举要对应上！！）
 		static const char* SHADER_UNIFORMS_ARRAY[UNIFORM_MAX_COUNT];

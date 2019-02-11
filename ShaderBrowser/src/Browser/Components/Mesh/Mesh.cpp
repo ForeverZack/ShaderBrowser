@@ -1,7 +1,7 @@
 #include "Mesh.h"
-#include "./../../../GL/GLProgram.h"
-#include "./../../System/RenderSystem.h"
-#include "../Render/Material.h"
+#include "GL/GLProgram.h"
+#include "Browser/System/RenderSystem.h"
+#include "Browser/Components/Render/Material.h"
 
 using namespace customGL;
 
@@ -72,6 +72,11 @@ namespace browser
         m_vIndices.assign(data, data+length);
     }
     
+    void Mesh::setIndicesInfo(std::function<void(std::vector<GLushort>&, unsigned int&)> setFunc)
+    {
+        setFunc(m_vIndices, m_uIndexCount);
+    }
+    
     void Mesh::addVertexAttribute(GLuint location, GLint size, GLenum type, GLboolean normalized, GLsizei stride, void* data)
     {
         BROWSER_ASSERT(m_uVertexCount>0, "MeshFilter cannot add vertex attribute before init, break in function MeshFilter::addVertexAttribute.");
@@ -107,7 +112,7 @@ namespace browser
             case GLProgram::VERTEX_ATTR_POSITION:
                 {
                     // 位置属性
-                    ANALYSIS_ARRAY_DATA_VEC4(position, data);
+                    ANALYSIS_ARRAY_DATA_VERTEX(position, data);
                 }
                 break;
                 
@@ -120,8 +125,22 @@ namespace browser
                 
             case GLProgram::VERTEX_ATTR_TEX_COORD:
                 {
-                    // 纹理属性
-                    ANALYSIS_ARRAY_DATA_VEC2(uv_main, data);
+                    // 纹理uv属性
+                    ANALYSIS_ARRAY_DATA_TEXCOORD(uv_main, data);
+                }
+                break;
+                
+            case GLProgram::VERTEX_ATTR_NORMAL:
+                {
+                    // 法线属性
+                    ANALYSIS_ARRAY_DATA_VEC3(normal, data);
+                }
+                break;
+                
+            case GLProgram::VERTEX_ATTR_TANGENT:
+                {
+                    // 切线属性
+                    ANALYSIS_ARRAY_DATA_VEC3(tangent, data);
                 }
                 break;
                 

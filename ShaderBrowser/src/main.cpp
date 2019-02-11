@@ -11,16 +11,20 @@
 #include "Browser/Components/Render/BaseRender.h"
 #include "Browser/Components/Render/Material.h"
 #include "Browser/Components/Render/Pass.h"
+#include "Browser/Components/BoundBox/AABBBoundBox.h"
 #include "Browser/System/RenderSystem.h"
 #include "Browser/System/TransformSystem.h"
 #include "Browser/System/MeshSystem.h"
+#include "Browser/System/LightSystem.h"
 #include "Common/Tools/FileUtils.h"
 #include "Browser/System/CameraSystem.h"
+#include "Browser/System/BoundBoxSystem.h"
 #include "Common/System/AutoReleasePool.h"
 #include "GL/Texture2D.h"
 #include "Common/System/ECSManager.h"
 #include "Common/System/Cache/GLProgramCache.h"
 #include "Common/System/Cache/TextureCache.h"
+#include "Common/System/Cache/ModelCache.h"
 #ifdef __APPLE__
 #include <unistd.h>
 #endif
@@ -37,6 +41,8 @@ using namespace common;
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <chrono>
+
+#include "GL/Model.h"
 
 // 函数需要先声明一下，否则在定义之前调用会编译出错
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -56,15 +62,15 @@ std::chrono::steady_clock::time_point _lastUpdate;
 
 //test
 // vertices
-glm::vec4 vertices[] = {
+glm::vec3 vertices[] = {
 	// first triangle
-    glm::vec4(-0.9f, -0.5f, 0.0f, 1.0f),  // left
-	glm::vec4(-0.0f, -0.5f, 0.0f, 1.0f), // right
-	glm::vec4(-0.45f, 0.5f, 0.0f, 1.0f),// top
+    glm::vec3(-0.9f, -0.5f, 0.0f),  // left
+	glm::vec3(-0.0f, -0.5f, 0.0f), // right
+	glm::vec3(-0.45f, 0.5f, 0.0f),// top
 	// second triangle
-	glm::vec4(0.0f, -0.5f, 0.0f, 1.0f),  // left
-	glm::vec4(0.9f, -0.5f, 0.0f, 1.0f),  // right
-	glm::vec4(0.45f, 0.5f, 0.0f, 1.0f)   // top
+	glm::vec3(0.0f, -0.5f, 0.0f),  // left
+	glm::vec3(0.9f, -0.5f, 0.0f),  // right
+	glm::vec3(0.45f, 0.5f, 0.0f)   // top
 };
 // colors
 glm::vec4 colors[] = {
@@ -78,15 +84,15 @@ glm::vec4 colors[] = {
     glm::vec4(0.45f, 0.5f, 0.0f, 1.0f)   // top
 };
 // coords
-glm::vec2 coords[] = {
+glm::vec3 coords[] = {
     // first triangle
-    glm::vec2(0.0f, 0.0f),
-    glm::vec2(1.0f, 0.0f),
-    glm::vec2(0.5f, 1.0f),
+    glm::vec3(0.0f, 0.0f, 0.0f),
+    glm::vec3(1.0f, 0.0f, 0.0f),
+    glm::vec3(0.5f, 1.0f, 0.0f),
     // second triangle
-    glm::vec2(0.0f, 0.0f),
-    glm::vec2(1.0f, 0.0f),
-    glm::vec2(0.5f, 1.0f)
+    glm::vec3(0.0f, 0.0f, 0.0f),
+    glm::vec3(1.0f, 0.0f, 0.0f),
+    glm::vec3(0.5f, 1.0f, 0.0f)
 };
 // indices
 GLushort indices[] = {
@@ -95,6 +101,9 @@ GLushort indices[] = {
     // second triangle
     3, 4, 5
 };
+
+Model* m_oModel = nullptr;
+
 void testVal()
 {
 //    std::string path = FileUtils::getInstance()->convertToAbsolutePath("./res/texture/awesomeface1.png");
@@ -114,6 +123,8 @@ void testVal()
 
 	// 创建场景根节点
 	BaseEntity* scene = BaseEntity::create("scene");
+    scene->setIsAxisVisible(true);
+    scene->addComponent(new BaseRender());
 	scene->retain();
 	browser::TransformSystem::getInstance()->setScene(scene);   //设置场景节点
 
@@ -125,7 +136,8 @@ void testVal()
 	browser::Camera* mainCamera = Camera::create(Camera::ProjectionType::Perspective, 0.3f, 1000.0f, SCR_WIDTH, SCR_HEIGHT, 60.0f);
 	mainCameraEntity->addComponent(mainCamera);
 	// 设置相机位置
-	mainCameraEntity->getTransform()->setPosition(0, 0, -3);
+	mainCameraEntity->setPosition(0, 1.5, 3);
+    mainCameraEntity->setEulerAngle(0, 180, 0);
 	// 设置主相机
 	CameraSystem::getInstance()->setMainCamera(mainCamera);
 	//=============================创建相机==================================
@@ -151,23 +163,57 @@ void testVal()
 	// 着色器程序
 	//GLProgram* program = GLProgram::create("./res/shaders/triangles.vert", "./res/shaders/triangles.frag");
     //GLProgramCache::getInstance()->addGLProgram(GLProgram::DEFAULT_GLPROGRAM_NAME, program);
-	GLProgramCache::getInstance()->addGLProgram(GLProgram::DEFAULT_GLPROGRAM_NAME, "shaders/triangles.vert", "shaders/triangles.frag");
+    GLProgramCache::getInstance()->addGLProgram("Triangles", "shaders/triangles.vert", "shaders/triangles.frag");
 
 
-	// 将组件加入渲染系统队列
-	BaseEntity* entity = BaseEntity::create();
-	scene->addChild(entity);
-	entity->setEulerAngle(0, 45, 0);
-	entity->setScale(2, 1, 1);
-	entity->setPosition(0, 1, 0);
-	// 组件：渲染组件
-	BaseRender* renderCom = new BaseRender();
-	entity->addComponent(renderCom);
+    // 将组件加入渲染系统队列
+    BaseEntity* entity = BaseEntity::create();
+//    scene->addChild(entity);
+    entity->setEulerAngle(0, 45, 0);
+    entity->setScale(2, 1, 1);
+    entity->setPosition(0, 1, 0);
+    // 组件：渲染组件
+    BaseRender* renderCom = new BaseRender();
+    renderCom->changeMeshMaterial(mesh, "Triangles");   // 修改mesh的材质对应的shader
+    entity->addComponent(renderCom);
+    // 包围盒
+    entity->addComponent(new AABBBoundBox());
     // meshFilter
-	MeshFilter* meshFilter = MeshFilter::create();
-	meshFilter->addMesh(mesh);
+    MeshFilter* meshFilter = MeshFilter::create();
+    meshFilter->addMesh(mesh);
     entity->addComponent(meshFilter);
 
+    
+    // 渲染模型
+    BaseEntity* modelEntity = BaseEntity::create("namizhuang");
+    modelEntity->setScale(0.2f, 0.2f, 0.2f);
+    modelEntity->setEulerAngle(0, 180, 0);
+    modelEntity->setPosition(0, 1, 0);
+    modelEntity->setIsBoundBoxVisible(true);
+    modelEntity->setIsAxisVisible(true);
+    scene->addChild(modelEntity);
+    // 渲染组件
+    modelEntity->addComponent(new BaseRender());
+    // 包围盒
+    modelEntity->addComponent(new AABBBoundBox());
+    // MeshFilter组件
+    modelEntity->addComponent(m_oModel->getOrCreateMeshFilter());
+    
+    // 渲染模型2
+    modelEntity = BaseEntity::create("namizhuang222");
+    modelEntity->setScale(0.2f, 0.2f, 0.2f);
+    modelEntity->setEulerAngle(0, 90, 0);
+    modelEntity->setPosition(1, 0, -2);
+    modelEntity->setIsBoundBoxVisible(true);
+    modelEntity->setIsAxisVisible(true);
+    scene->addChild(modelEntity);
+    // 渲染组件
+    modelEntity->addComponent(new BaseRender());
+    // 包围盒
+    modelEntity->addComponent(new AABBBoundBox());
+    // MeshFilter组件
+    modelEntity->addComponent(m_oModel->getOrCreateMeshFilter());
+    
 
 ////    glm::mat4 mat = transCom->getModelMatrix();
 ////    BROWSER_LOG_MAT4(mat);
@@ -203,7 +249,15 @@ void testVal()
 	//const aiScene *scene1 = importer.ReadFile("./res/models/nanosuit/nanosuit.obj", aiProcess_Triangulate | aiProcess_FlipUVs);
 	//Assimp::Importer importer2;
 	//const aiScene *scene2 = importer2.ReadFile("./res/models/Fighter/fighter char.FBX", aiProcess_Triangulate | aiProcess_FlipUVs);
+    
+    
+    
 }
+
+
+
+
+
 
 int main()
 {
@@ -212,12 +266,25 @@ int main()
 	int total = 0;
 	TextureCache::getInstance()->addTexturesAsync({ "texture/awesomeface.png", "texture/HelloWorld.png", "models/Fighter/Fighter.png" }, [&](Texture2D* texture) {
 		++total;
-		if (total == 3)
+		if (total == 4)
 		{
 			testVal();
-			TextureCache::getInstance()->removeTexture("models/Fighter/Fighter.png");
+            TextureCache::getInstance()->removeTexture("models/Fighter/Fighter.png");
 		}
 	});
+//    m_oModel = Model::createAlone("models/nanosuit/nanosuit.obj", [&](Model* mo)     //"models/Fighter/fighterChar.FBX"
+//    ModelCache::getInstance()->addModel("models/nanosuit/nanosuit.obj", [&](Model* mo)
+    ModelCache::getInstance()->addModelAsync("models/nanosuit/nanosuit.obj", [&](Model* mo)
+                                 {
+                                     m_oModel = mo;
+                                     ++total;
+                                     if (total == 4)
+                                     {
+                                         testVal();
+                                         TextureCache::getInstance()->removeTexture("models/Fighter/Fighter.png");
+                                     }
+                                 });
+
 
 
 	//// test
@@ -232,7 +299,6 @@ int main()
 	{
 		mainLoop(window);
 	}
-
 
 	// glfw: terminate, clearing all previously allocated GLFW resources.
 	glfwTerminate();
@@ -280,12 +346,18 @@ GLFWwindow* init()
 	ECSManager::getInstance()->registerSystem(browser::RenderSystem::getInstance());	// 渲染系统
     ECSManager::getInstance()->registerSystem(browser::TransformSystem::getInstance()); // Transform
     ECSManager::getInstance()->registerSystem(browser::MeshSystem::getInstance()); // Mesh
-	ECSManager::getInstance()->registerSystem(browser::CameraSystem::getInstance());	//Camera
+	ECSManager::getInstance()->registerSystem(browser::CameraSystem::getInstance());	// Camera
+    ECSManager::getInstance()->registerSystem(browser::BoundBoxSystem::getInstance()); // 包围盒
+    ECSManager::getInstance()->registerSystem(browser::LightSystem::getInstance()); // 灯光系统
 	// 初始化系统
 	ECSManager::getInstance()->initSystem(SystemType::RenderSystem);    // 渲染系统
     ECSManager::getInstance()->initSystem(SystemType::Transform);    // Transform
 	ECSManager::getInstance()->initSystem(SystemType::Mesh);    // Mesh
-	ECSManager::getInstance()->initSystem(SystemType::Camera);    // Mesh
+	ECSManager::getInstance()->initSystem(SystemType::Camera);    // Camera
+    ECSManager::getInstance()->initSystem(SystemType::BoundBox);    // 包围盒
+    ECSManager::getInstance()->initSystem(SystemType::Light);   // Light
+    // 加载缓存
+    GLProgramCache::getInstance()->init();  // 着色器缓存
 
 
 	return window;
@@ -309,9 +381,11 @@ void mainLoop(GLFWwindow *window)
 
 	// temp
 	TextureCache::getInstance()->update(deltaTime);
+    ModelCache::getInstance()->update(deltaTime);
 
 	// 2.render
 	ECSManager::getInstance()->updateSystem(SystemType::Transform, deltaTime);  // 更新transform
+    ECSManager::getInstance()->updateSystem(SystemType::BoundBox, deltaTime);   // 更新BoundBox
 	ECSManager::getInstance()->updateSystem(SystemType::Camera, deltaTime);  // 更新camera
 	ECSManager::getInstance()->updateSystem(SystemType::RenderSystem, deltaTime);   // 更新渲染系统
     //BROWSER_LOG(deltaTime);
@@ -322,6 +396,21 @@ void mainLoop(GLFWwindow *window)
 
 	// auto release
 	AutoReleasePool::getInstance()->update();
+    
+//    float fps = ;
+//    if (deltaTime < 1.0f/60.0f)
+//    {
+//        sleep((1.0f/60.0f - deltaTime));
+////        deltaTime = 1.0f/60.0f;
+//        fps = 60;
+//    }
+    
+    // 调试信息
+    std::string str_drawCalls = std::to_string(browser::RenderSystem::getInstance()->getDrawCalls());
+    std::string str_delta = std::to_string(deltaTime);
+    std::string str_fps = std::to_string(1.0f / deltaTime);
+    std::string str_title = "deltaTime:"+str_delta+", FPS:"+str_fps+", DrawCalls:"+str_drawCalls;
+    glfwSetWindowTitle(window, str_title.c_str());
 }
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
@@ -338,24 +427,33 @@ void processInput(GLFWwindow *window)
 		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 		{
 			browser::Transform* transform = camera->getBelongEntity()->getTransform();
-			transform->setPositionZ(transform->getPositionZ() + 0.1);
-		}
+            transform->Translate(transform->getForward() * 0.1f);
+        }
 		else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
 		{
-			BaseEntity* entity = camera->getBelongEntity();
-			browser::Transform* transform = entity->getTransform();
-			transform->setPositionZ(transform->getPositionZ() - 0.1);
-		}
+			browser::Transform* transform = camera->getBelongEntity()->getTransform();
+            transform->Translate(-transform->getForward() * 0.1f);
+        }
 		else if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
 		{
 			browser::Transform* transform = camera->getBelongEntity()->getTransform();
-			transform->setPositionX(transform->getPositionX() - 0.1);
+			transform->Translate(transform->getLeft() * 0.1f);
 		}
 		else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 		{
 			browser::Transform* transform = camera->getBelongEntity()->getTransform();
-			transform->setPositionX(transform->getPositionX() + 0.1);
+            transform->Translate(-transform->getLeft() * 0.1f);
 		}
+        else if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+        {
+            browser::Transform* transform = camera->getBelongEntity()->getTransform();
+            transform->Rotate(glm::vec3(0, -1.0f, 0), Space::Self);
+        }
+        else if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+        {
+            browser::Transform* transform = camera->getBelongEntity()->getTransform();
+            transform->Rotate(glm::vec3(0, 1.0f, 0), Space::Self);
+        }
 	}
 	
 

@@ -2,8 +2,8 @@
 #define COMMON_SYS_AUTORELEASEPOOL_H
 
 #include <vector>
-#include "../Components/Reference.h"
-#include "../Tools/BaseSingleton.h"
+#include "Common/Components/Reference.h"
+#include "Common/Tools/BaseSingleton.h"
 
 namespace common
 {

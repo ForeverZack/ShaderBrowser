@@ -32,7 +32,7 @@ namespace common
 
 	// 加载器
 	// 
-	// CreateFunc: 资源读取函数类型(通过构造函数将读取方法传入进来)，DataType: 数据类型，回调类型
+    // CreateFunc: 资源读取函数类型(通过构造函数将读取方法传入进来); DataType: 数据类型; CallbackFunc: 回调类型
 	template <typename CreateFunc, typename DataType, typename CallbackFunc>
 	class BaseAsyncLoader
 	{
@@ -111,7 +111,7 @@ namespace common
 				}
 
 				// 加载数据
-				asyncData->data = m_CreateFunc(asyncData->fullpath.c_str());
+                asyncData->data = m_CreateFunc(asyncData->fullpath.c_str());
 				asyncData->loadSuccess = true;
 
 				// 返回加载结果

@@ -1,5 +1,5 @@
 #include "TransformSystem.h"
-#include "../../GL/GLDefine.h"
+#include "GL/GLDefine.h"
 
 namespace browser
 {

@@ -1,4 +1,5 @@
 #include "Texture2D.h"
+#include "Common/System/Cache/TextureCache.h"
 
 namespace customGL
 {
@@ -43,11 +44,14 @@ namespace customGL
 	{
 		BROWSER_LOG("~Texture2D");
 
+        // 从显存中移除
 		if (m_uTextureId)
 		{
 			glDeleteTextures(1, &m_uTextureId);
         }
-	}
+        // 从cache中移除
+        TextureCache::getInstance()->removeFromCache(this);
+    }
 
 	bool Texture2D::initWithImage(Image* image)
 	{

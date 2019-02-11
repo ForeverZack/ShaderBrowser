@@ -1,5 +1,5 @@
 #include "Image.h"
-#include "../Plugins/Image/stb_image.h"
+#include "Plugins/Image/stb_image.h"
 
 namespace customGL
 {
@@ -12,6 +12,7 @@ namespace customGL
 			delete image;
 			return nullptr;
 		}
+        image->name = fileName;
 		return image;
 	}
 
@@ -35,7 +36,7 @@ namespace customGL
 
 	bool Image::initWithFile(const char* fileName)
 	{
-		stbi_set_flip_vertically_on_load(true);	// 翻转图片y轴
+        stbi_set_flip_vertically_on_load(true);    // 翻转图片y轴
 		m_Datas = stbi_load(fileName, &m_iWidth, &m_iHeight, &m_iChannels, 0);
 		switch (m_iChannels)
 		{

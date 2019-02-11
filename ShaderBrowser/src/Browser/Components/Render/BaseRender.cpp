@@ -1,8 +1,8 @@
 #include "BaseRender.h"
 #include "Material.h"
 #include "Pass.h"
-#include "../../../Common/System/Cache/GLProgramCache.h"
-#include "../../../Common/Tools/Utils.h"
+#include "Common/System/Cache/GLProgramCache.h"
+#include "Common/Tools/Utils.h"
 
 namespace browser
 {
@@ -27,6 +27,14 @@ namespace browser
         Material* material = createMaterial(GLProgram::DEFAULT_GLPROGRAM_NAME);
         addMaterial(Material::DEFAULT_MATERIAL_NAME, material);
 	}
+    
+    void BaseRender::changeMeshMaterial(Mesh* mesh, const std::string& programName)
+    {
+        BROWSER_WARNING(m_mMaterials.find(mesh->getMaterialName())==m_mMaterials.end(), "The material has already exist, and you are trying to change it, please confirm your program in function BaseRender::changeMeshMaterial");
+        
+        Material* material = createMaterial(programName);
+        addMaterial(mesh->getMaterialName(), material);
+    }
     
     Material* BaseRender::getMaterialByMesh(Mesh* mesh)
     {
@@ -74,18 +82,18 @@ namespace browser
     {
         switch (event)
         {
-        case ComponentEvent::MeshFilter_AddComponent:
-            {
-                // Entity添加了MeshFilter组件
-                BROWSER_LOG("MeshFilter_AddComponent Message received");
-				// TODO: 从MeshFilter中读取mesh数据，来生成Material
-            }
-            break;
-                
         case ComponentEvent::Render_AddComponent:
             {
                 // Entity添加了Render组件
                 BROWSER_LOG("Render_AddComponent Message received");
+                // TODO: 从MeshFilter中读取mesh数据，来生成Material
+                
+            }
+            break;
+        case ComponentEvent::MeshFilter_AddComponent:
+            {
+                // Entity添加了MeshFilter组件
+                BROWSER_LOG("MeshFilter_AddComponent Message received");
 				// TODO: 从MeshFilter中读取mesh数据，来生成Material
             }
             break;

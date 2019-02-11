@@ -3,10 +3,10 @@
 
 #include <unordered_map>
 #include <list>
-#include "../Tools/Utils.h"
-#include "../../Browser/Entitys/BaseEntity.h"
-#include "../../Browser/Components/BaseComponent.h"
-#include "../CommonDefine.h"
+#include "Common/Tools/Utils.h"
+#include "Browser/Entitys/BaseEntity.h"
+#include "Browser/Components/BaseComponent.h"
+#include "Common/CommonDefine.h"
 
 using namespace browser;
 

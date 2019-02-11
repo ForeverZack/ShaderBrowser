@@ -5,7 +5,7 @@
 #include <unordered_map>
 #include <algorithm> 
 #include "BaseSystem.h"
-#include "../Tools/BaseSingleton.h"
+#include "Common/Tools/BaseSingleton.h"
 
 namespace common
 {

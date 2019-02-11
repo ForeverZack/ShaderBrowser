@@ -1,16 +1,22 @@
 #include "BaseEntity.h"
-#include "../../Common/System/ECSManager.h"
+#include "Common/System/ECSManager.h"
+#include "Browser/Components/BoundBox/AABBBoundBox.h"
 
 namespace browser
 {
 	BaseEntity* BaseEntity::create(std::string transformName/* = ""*/)
 	{
-		Transform* transform = new Transform();
+        BaseEntity* entity = new BaseEntity();
+        entity->autorelease();
+        
+		// 默认拥有Transform组件
+        Transform* transform = new Transform();
 		transform->setName(transformName);
-
-		BaseEntity* entity = new BaseEntity();
-		entity->addComponent(transform);
-		entity->autorelease();
+        entity->addComponent(transform);
+        
+//        // TODO: 这里先将AABBBoundBox作为默认组件
+//        AABBBoundBox* boundBox = new AABBBoundBox();
+//        entity->addComponent(boundBox);
 
 		return entity;
 	}
@@ -19,6 +25,10 @@ namespace browser
 		: m_oTransformComponent(nullptr)
 		, m_oRenderComponent(nullptr)
 		, m_oMeshFilterComponent(nullptr)
+        , m_oBoundBox(nullptr)
+        , m_bIsVisible(true)
+        , m_bIsAxisVisible(false)
+        , m_bIsBoundBoxVisible(false)
 	{
 
 	}
@@ -78,10 +88,14 @@ namespace browser
 
 	bool BaseEntity::isRenderable()
 	{
-		// TODO: 目前MeshFilter还没有写，所以暂时只用renderCom来判断
-		return m_oRenderComponent;
-		//return m_oRenderComponent && m_oMeshFilterComponent;
+        // 是否需要被渲染 TODO: isVisible()
+        return m_oRenderComponent && m_oMeshFilterComponent;
 	}
+    
+    bool BaseEntity::checkVisibility(Camera* camera, bool reCalculate/* = false*/)
+    {
+        return m_oBoundBox && m_oBoundBox->checkVisibility(camera, reCalculate);
+    }
 
 	void BaseEntity::addComponent(BaseComponent* component)
 	{
@@ -156,7 +170,7 @@ namespace browser
         case SystemType::Mesh:
             //MeshFilter组件
 			MARK_SPECIAL_COMPONENT(m_oMeshFilterComponent, component, bEmpty);
-            deliverComponentMessage(ComponentEvent::MeshFilter_AddComponent, new MeshFilterAddComponentMessage(this));
+            deliverComponentMessage(ComponentEvent::MeshFilter_AddComponent, new MeshFilterAddComponentMessage(m_oMeshFilterComponent));
             break;
 
 		case SystemType::RenderSystem:
@@ -169,6 +183,12 @@ namespace browser
 			// 相机
 			deliverComponentMessage(ComponentEvent::Camera_AddComponent, new CameraAddComponentMessage(m_oTransformComponent));
 			break;
+                
+        case SystemType::BoundBox:
+            // 包围盒
+            MARK_SPECIAL_COMPONENT(m_oBoundBox, component, bEmpty);
+            deliverComponentMessage(ComponentEvent::BoundBox_AddComponent, new BoundBoxAddComponentMessage(m_oTransformComponent, m_oMeshFilterComponent));
+            break;
 
 		}
 	}

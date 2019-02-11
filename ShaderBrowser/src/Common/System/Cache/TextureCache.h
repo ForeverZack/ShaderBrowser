@@ -2,7 +2,7 @@
 
 #include "BaseCache.h"
 #include "BaseAsyncLoader.h"
-#include "../../../GL/Texture2D.h"
+#include "GL/Texture2D.h"
 
 using namespace customGL;
 
@@ -26,6 +26,8 @@ namespace common
 
 		// 移除纹理资源
 		void removeTexture(std::string name);
+        void removeTexture(Texture2D* texture);
+        void removeFromCache(Texture2D* texture);
 
 
 		// TODO: 临时

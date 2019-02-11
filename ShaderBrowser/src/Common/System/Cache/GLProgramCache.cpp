@@ -1,6 +1,6 @@
 #include "GLProgramCache.h"
-#include "../../Tools/Utils.h"
-#include "../../Tools/FileUtils.h"
+#include "Common/Tools/Utils.h"
+#include "Common/Tools/FileUtils.h"
 
 namespace common
 {    
@@ -13,6 +13,15 @@ namespace common
     GLProgramCache::~GLProgramCache()
     {
         
+    }
+    
+    void GLProgramCache::init()
+    {
+        // 添加渲染引擎自带的默认着色器
+        // 默认网格模型着色器
+        GLProgramCache::getInstance()->addGLProgram(GLProgram::DEFAULT_GLPROGRAM_NAME, "shaders/default/model_default.vert", "shaders/default/model_default.frag");
+        // 默认lines着色器
+        GLProgramCache::getInstance()->addGLProgram(GLProgram::DEFAULT_LINES_GLPROGRAM_NAME, "shaders/default/lines_default.vert", "shaders/default/lines_default.frag");
     }
     
     void GLProgramCache::addGLProgram(std::string name, GLProgram* program)

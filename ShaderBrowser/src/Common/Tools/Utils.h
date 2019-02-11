@@ -3,7 +3,7 @@
 
 #include <glad/glad.h>
 #include <iostream>
-#include "../../GL/GLDefine.h"
+#include "GL/GLDefine.h"
 
 using namespace std;
 using namespace customGL;
