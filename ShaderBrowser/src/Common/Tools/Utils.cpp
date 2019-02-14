@@ -50,15 +50,6 @@ namespace common
 
 		return const_cast<const GLchar*>(source);
 	}
-
-    TextureData Utils::createTextureData(const std::string& uniformName, Texture2D* texture)
-	{
-		TextureData textureData;
-		textureData.texture = texture;
-		textureData.uniformName = uniformName;
-
-		return textureData;
-	}
     
     VertexAttribDeclaration* Utils::createVertexAttribDeclaration(GLuint location, GLint size, GLenum type, GLboolean normalized, GLsizei stride)
     {

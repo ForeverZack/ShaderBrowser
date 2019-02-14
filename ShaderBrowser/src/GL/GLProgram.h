@@ -42,7 +42,7 @@ namespace customGL
         // 预定义的uniform变量枚举
         enum
         {
-            // 纹理0: 主纹理
+            // 纹理0: 主纹理(漫反射纹理)
             UNIFORM_CGL_TEXUTRE0 = 0,
             // 纹理1
             UNIFORM_CGL_TEXUTRE1,

@@ -26,8 +26,14 @@
 #include "Common/System/Cache/TextureCache.h"
 #include "Common/System/Cache/ModelCache.h"
 #ifdef __APPLE__
+// macOS
 #include <unistd.h>
+#else
+// win32
+#include <windows.h>
+#include <wingdi.h>
 #endif
+
 
 using namespace customGL;
 using namespace browser;
@@ -58,6 +64,52 @@ const unsigned int SCR_HEIGHT = 600;
 
 // 上一次更新的时间戳
 std::chrono::steady_clock::time_point _lastUpdate;
+
+#ifdef WIN32
+	typedef void (APIENTRY *PFNWGLEXTSWAPCONTROLPROC) (int);
+	typedef int(*PFNWGLEXTGETSWAPINTERVALPROC) (void);
+	PFNWGLEXTSWAPCONTROLPROC wglSwapIntervalEXT = NULL;
+	PFNWGLEXTGETSWAPINTERVALPROC wglGetSwapIntervalEXT = NULL;
+	// 初始化函数指针接口
+	bool InitVSync()
+	{
+		BROWSER_LOG(glGetString(GL_RENDERER));
+		const char *extensions = (const char*)glGetString(GL_EXTENSIONS);
+		if (extensions && strstr(extensions, "WGL_EXT_swap_control"))
+		{
+			wglSwapIntervalEXT = (PFNWGLEXTSWAPCONTROLPROC)wglGetProcAddress("wglSwapIntervalEXT");
+			wglGetSwapIntervalEXT = (PFNWGLEXTGETSWAPINTERVALPROC)wglGetProcAddress("wglGetSwapIntervalEXT");
+			return true;
+		}
+
+		return false;
+	}
+
+	// 判断当前状态是否为垂直同步
+	bool IsVSyncEnabled()
+	{
+		return (wglGetSwapIntervalEXT() > 0);
+	}
+
+	// 开启和关闭垂直同步
+	void SetVSyncState(bool enable)
+	{
+		if (!wglSwapIntervalEXT)
+		{
+			return;
+		}
+		if (enable)
+		{
+			wglSwapIntervalEXT(1);
+		}
+		else
+		{
+			wglSwapIntervalEXT(0);
+		}
+	}
+
+#endif // WIN32
+
 
 
 //test
@@ -103,6 +155,7 @@ GLushort indices[] = {
 };
 
 Model* m_oModel = nullptr;
+Model* m_oModel2 = nullptr;
 
 void testVal()
 {
@@ -116,9 +169,6 @@ void testVal()
 	//// 创建纹理
 	//TextureCache::getInstance()->addTexture("./res/texture/awesomeface.png");
 	//TextureCache::getInstance()->addTexture("texture/HelloWorld.png");
-
-	//// 测试自动释放
-	//BaseEntity* test = BaseEntity::create("test");
 
 
 	// 创建场景根节点
@@ -200,7 +250,7 @@ void testVal()
     modelEntity->addComponent(m_oModel->getOrCreateMeshFilter());
     
     // 渲染模型2
-    modelEntity = BaseEntity::create("namizhuang222");
+    modelEntity = BaseEntity::create("fighter");
     modelEntity->setScale(0.2f, 0.2f, 0.2f);
     modelEntity->setEulerAngle(0, 90, 0);
     modelEntity->setPosition(1, 0, -2);
@@ -212,8 +262,27 @@ void testVal()
     // 包围盒
     modelEntity->addComponent(new AABBBoundBox());
     // MeshFilter组件
-    modelEntity->addComponent(m_oModel->getOrCreateMeshFilter());
+    MeshFilter* fighterMeshFilter = m_oModel2->getOrCreateMeshFilter();
+    fighterMeshFilter->getMeshes()[0]->setTexture(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_TEXUTRE0], TextureCache::getInstance()->getTexture("models/Fighter/Fighter.png"));
+    modelEntity->addComponent(fighterMeshFilter);
     
+	for (int i = 0; i < 10; ++i)
+	{
+		modelEntity = BaseEntity::create("namizhuang");
+		modelEntity->setScale(0.2f, 0.2f, 0.2f);
+		modelEntity->setEulerAngle(0, 180, 0);
+		modelEntity->setPosition(0, 1, 0);
+		modelEntity->setIsBoundBoxVisible(true);
+		modelEntity->setIsAxisVisible(true);
+		scene->addChild(modelEntity);
+		// 渲染组件
+		modelEntity->addComponent(new BaseRender());
+		// 包围盒
+		modelEntity->addComponent(new AABBBoundBox());
+		// MeshFilter组件
+		modelEntity->addComponent(m_oModel->getOrCreateMeshFilter());
+	}
+
 
 ////    glm::mat4 mat = transCom->getModelMatrix();
 ////    BROWSER_LOG_MAT4(mat);
@@ -263,25 +332,44 @@ int main()
 {
 	GLFWwindow* window = init();
 
+	// 关闭垂直同步
+#ifdef WIN32
+	// win32
+	bool isOk = InitVSync();
+	if (isOk)
+	{
+		SetVSyncState(false);
+	}
+#endif // WIN32
+
 	int total = 0;
 	TextureCache::getInstance()->addTexturesAsync({ "texture/awesomeface.png", "texture/HelloWorld.png", "models/Fighter/Fighter.png" }, [&](Texture2D* texture) {
 		++total;
-		if (total == 4)
+		if (total == 5)
 		{
 			testVal();
-            TextureCache::getInstance()->removeTexture("models/Fighter/Fighter.png");
 		}
 	});
+    
+    int modelIdx = 0;
 //    m_oModel = Model::createAlone("models/nanosuit/nanosuit.obj", [&](Model* mo)     //"models/Fighter/fighterChar.FBX"
 //    ModelCache::getInstance()->addModel("models/nanosuit/nanosuit.obj", [&](Model* mo)
-    ModelCache::getInstance()->addModelAsync("models/nanosuit/nanosuit.obj", [&](Model* mo)
+    ModelCache::getInstance()->addModelsAsync({"models/Fighter/fighterChar.FBX", "models/nanosuit/nanosuit.obj"}, [&](Model* mo)
                                  {
-                                     m_oModel = mo;
+                                     if (modelIdx == 0)
+                                     {
+                                         BROWSER_LOG(mo->getDirectory());
+                                         ++modelIdx;
+                                         m_oModel2 = mo;
+                                     }
+                                     else
+                                     {
+                                         m_oModel = mo;
+                                     }
                                      ++total;
-                                     if (total == 4)
+                                     if (total == 5)
                                      {
                                          testVal();
-                                         TextureCache::getInstance()->removeTexture("models/Fighter/Fighter.png");
                                      }
                                  });
 
@@ -315,8 +403,10 @@ GLFWwindow* init()
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 #ifdef __APPLE__
+	// macOS
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // uncomment this statement to fix compilation on OS X
 #endif
+
 
     // glfw window creation
     // --------------------
@@ -385,10 +475,11 @@ void mainLoop(GLFWwindow *window)
 
 	// 2.render
 	ECSManager::getInstance()->updateSystem(SystemType::Transform, deltaTime);  // 更新transform
-    ECSManager::getInstance()->updateSystem(SystemType::BoundBox, deltaTime);   // 更新BoundBox
 	ECSManager::getInstance()->updateSystem(SystemType::Camera, deltaTime);  // 更新camera
+    ECSManager::getInstance()->updateSystem(SystemType::BoundBox, deltaTime);   // 更新BoundBox
 	ECSManager::getInstance()->updateSystem(SystemType::RenderSystem, deltaTime);   // 更新渲染系统
     //BROWSER_LOG(deltaTime);
+
 
 	// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 	glfwSwapBuffers(window);
@@ -406,10 +497,12 @@ void mainLoop(GLFWwindow *window)
 //    }
     
     // 调试信息
-    std::string str_drawCalls = std::to_string(browser::RenderSystem::getInstance()->getDrawCalls());
     std::string str_delta = std::to_string(deltaTime);
     std::string str_fps = std::to_string(1.0f / deltaTime);
-    std::string str_title = "deltaTime:"+str_delta+", FPS:"+str_fps+", DrawCalls:"+str_drawCalls;
+    std::string str_drawCalls = std::to_string(browser::RenderSystem::getInstance()->getDrawCalls());
+	std::string str_verticesCount = std::to_string(browser::RenderSystem::getInstance()->getVerticesCount());
+	std::string str_faceCount = std::to_string(browser::RenderSystem::getInstance()->getFaceCount());
+    std::string str_title = "deltaTime:"+str_delta+", FPS:"+str_fps+", DrawCalls:"+str_drawCalls+", Vertices:"+ str_verticesCount+", Face:"+ str_faceCount;
     glfwSetWindowTitle(window, str_title.c_str());
 }
 

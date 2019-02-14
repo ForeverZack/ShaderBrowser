@@ -23,6 +23,7 @@ namespace browser
 		, m_iViewportWidth(viewportWidth)
 		, m_iViewportHeight(viewportHeight)
 		, m_oProjectionMatrix(GLM_MAT4_UNIT)
+        , m_eRenderPathType(RenderPathType::Forward)
 	{
 		// 组件所属系统
 		m_eBelongSystem = SystemType::Camera;

@@ -18,7 +18,7 @@ namespace common
 	// 注册只读方法
 	#define REGISTER_PROPERTY_GET(varType, varName, funName)\
 	public: virtual varType get##funName(void)	{return varName;}
-	// 注册只读方法(返回 const &)
+    // 注册只读方法(返回 const &)   注意:对unordered_map这类需要两个或者更多模板参数的类型无法使用，因为宏会识别到其中的逗号
 	#define REGISTER_PROPERTY_CONSTREF_GET(varType, varName, funName)\
 	public: virtual const varType& get##funName(void)	{return varName;}
 
@@ -53,9 +53,6 @@ namespace common
 	public:
 		// 读取文件（shader）
 		static const GLchar* readFile(const char* filename);
-
-        // 创建TextureData
-        static TextureData createTextureData(const std::string& uniformName, Texture2D* texture);
 
         // 创建VertexAttribDeclaration
         static VertexAttribDeclaration* createVertexAttribDeclaration(GLuint location, GLint size, GLenum type, GLboolean normalized, GLsizei stride);

@@ -59,13 +59,22 @@ namespace browser
         void setupVAO(GLuint vao, const std::unordered_map<GLuint, VertexAttribDeclaration*>& declarations);
         
         
-        REGISTER_PROPERTY_GET_SET(unsigned int, m_uDrawCalls, DrawCalls)
+		REGISTER_PROPERTY_GET_SET(unsigned int, m_uDrawCalls, DrawCalls)
+		REGISTER_PROPERTY_GET_SET(unsigned long, m_uVerticesCount, VerticesCount)
+		REGISTER_PROPERTY_GET_SET(unsigned long, m_uFrameIndex, FrameIndex)
+		REGISTER_PROPERTY_GET_SET(unsigned long, m_uFaceCount, FaceCount)
 	
 	private:
 		// vbos
 		unsigned int m_uVBOs[RenderSystem_Buffer_Maxcount];
         // 绘制所用的draw call次数
         unsigned int m_uDrawCalls;
+		// 顶点数量
+		unsigned long m_uVerticesCount;
+		// 面数量
+		unsigned long m_uFaceCount;
+		// 当前帧
+		unsigned long m_uFrameIndex;
         
         // 坐标轴模型
         browser::Mesh* m_oAxisMesh;

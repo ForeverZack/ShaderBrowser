@@ -171,12 +171,12 @@ namespace browser
 	void Pass::usePass(Mesh* mesh, Transform* transform, Camera* camera)
 	{
         // 应用网格过滤器中的纹理
-        const std::vector<TextureData>& textureInfos = mesh->getTextures();
+        const std::unordered_map<std::string, TextureData>& textureInfos = mesh->getTextures();
         Texture2D* texture;
         for (auto itor = textureInfos.cbegin(); itor!=textureInfos.cend(); ++itor)
         {
-            texture = itor->texture;
-            setUniformTex2D(itor->uniformName.c_str(), texture->getTextureId());
+            texture = itor->second.texture;
+            setUniformTex2D(itor->second.uniformName.c_str(), texture->getTextureId());
         }
         
 		// 注意在更新uniform变量的值之前，要先使用着色器glUseProgram

@@ -27,7 +27,7 @@ namespace browser
         m_mVertexAttribDeclarations.clear();
         m_vIndices.clear();
         m_vVertices.clear();
-        m_vTextures.clear();
+        m_mTextures.clear();
 	}
 
 	Mesh::~Mesh()
@@ -62,8 +62,24 @@ namespace browser
     
     void Mesh::addTexture(const std::string& uniformName, Texture2D* texture)
     {
-        TextureData data = Utils::createTextureData(uniformName, texture);
-        m_vTextures.push_back(data);
+        auto itor = m_mTextures.find(uniformName);
+        if(itor == m_mTextures.end())
+        {
+            TextureData textureData;
+            textureData.texture = texture;
+            textureData.uniformName = uniformName;
+            
+            m_mTextures.emplace(uniformName, textureData);
+        }
+        else
+        {
+            (itor->second).texture = texture;
+        }
+    }
+    
+    void Mesh::setTexture(const std::string& uniformName, Texture2D* texture)
+    {
+        addTexture(uniformName, texture);
     }
     
     void Mesh::setIndicesInfo(GLushort* data, unsigned int length)

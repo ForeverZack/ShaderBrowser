@@ -153,8 +153,7 @@ namespace browser
     bool AABBBoundBox::checkVisibility(Camera* camera, bool reCalculate /*= false*/)
     {       
         if (m_oTransform && reCalculate)
-        {
-            const glm::mat4& model_matrix = m_oTransform->getModelMatrix();
+        {	
             const glm::mat4& view_matrix = camera->getViewMatrix();
             const glm::mat4& projection_matrix = camera->getProjectionMatrix();
             
@@ -163,8 +162,8 @@ namespace browser
             // 遍历包围盒的8个顶点
             for (int i=0; i<8; ++i)
             {
-                // 1. 将顶点转换到裁剪坐标系中
-                vertex = projection_matrix * view_matrix * model_matrix * m_vVertices[i];
+                // 1. 将顶点转换到裁剪坐标系中  (注意：这里的顶点坐标本身就是世界坐标系中的坐标，所以不需要乘model矩阵)
+                vertex = projection_matrix * view_matrix * m_vVertices[i];
                 
                 // 2. 根据裁剪坐标系的顶点坐标和w做比较,并算出一个掩码。
                 // 顶点在外部,则掩码不为0。这里将min的掩码和max的掩码做和运算,得到aabb包围盒是否有顶点在视锥内
@@ -172,7 +171,7 @@ namespace browser
             }
            
             // 这里结果为0,则说明有顶点在视锥内,需要显示;如果不为0,则说明包围盒完全在视锥外。
-            return result == 0;
+            m_bRecVisibility = (result == 0);
         }
         
         return m_bRecVisibility;

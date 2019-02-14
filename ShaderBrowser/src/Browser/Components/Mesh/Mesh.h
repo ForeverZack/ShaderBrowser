@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <unordered_map>
+#include <string>
 #include <functional>
 #include "Browser/Components/BaseComponent.h"
 #include "Common/Tools/Utils.h"
@@ -79,6 +80,7 @@ namespace browser
         void setIndicesInfo(std::function<void(std::vector<GLushort>&, unsigned int&)> setFunc);
         // 添加纹理属性
         void addTexture(const std::string& uniformName, Texture2D* texture);
+        void setTexture(const std::string& uniformName, Texture2D* texture);
         // 根据location获取顶点属性
         VertexAttribDeclaration* getVertexAttribDeclaration(GLuint location);
         
@@ -90,8 +92,12 @@ namespace browser
 		REGISTER_PROPERTY_CONSTREF_GET(std::vector<VertexData>, m_vVertices, Vertices)
         REGISTER_PROPERTY_GET(unsigned int, m_uIndexCount, IndexCount)
 		REGISTER_PROPERTY_CONSTREF_GET(std::vector<GLushort>, m_vIndices, Indices)
-		REGISTER_PROPERTY_CONSTREF_GET(std::vector<TextureData>, m_vTextures, Textures)
         REGISTER_PROPERTY_GET_SET(std::string, m_sMaterialName, MaterialName)
+//        REGISTER_PROPERTY_CONSTREF_GET(std::unordered_map<std::string, TextureData>, m_mTextures, Textures);
+        const std::unordered_map<std::string, TextureData>& getTextures()
+        {
+            return m_mTextures;
+        }
         
     private:
         // 填充顶点数组的数据内容
@@ -109,7 +115,7 @@ namespace browser
         // 索引数组
         std::vector<GLushort> m_vIndices;
 		// 纹理数组
-        std::vector<TextureData> m_vTextures;
+        std::unordered_map<std::string, TextureData> m_mTextures;
         // 纹理名称
         std::string m_sMaterialName;
         

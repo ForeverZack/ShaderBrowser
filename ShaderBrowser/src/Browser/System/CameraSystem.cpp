@@ -4,6 +4,7 @@
 namespace browser
 {
 	CameraSystem::CameraSystem()
+        : m_oMainCamera(nullptr)
 	{
 		m_iPriority = 0;
 		m_eSystemType = common::SystemType::Camera;

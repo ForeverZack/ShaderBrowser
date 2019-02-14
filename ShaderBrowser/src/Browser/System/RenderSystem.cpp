@@ -42,6 +42,9 @@ namespace browser
     
     
 	RenderSystem::RenderSystem()
+		: m_uDrawCalls(0)
+		, m_uVerticesCount(0)
+		, m_uFrameIndex(0)
 	{
 		m_iPriority = 0;
 		m_eSystemType = common::SystemType::RenderSystem;
@@ -157,9 +160,16 @@ namespace browser
 	{
         // 重置draw call
         m_uDrawCalls = 0;
+		// 重置顶点数量
+		m_uVerticesCount = 0;
+		// 重置三角面数量
+		m_uFaceCount = 0;
         
 		// 渲染主相机场景
 		renderScene(CameraSystem::getInstance()->getMainCamera());
+
+		// 当前第几帧
+		++m_uFrameIndex;
 	}
 
 	void RenderSystem::renderScene(Camera* camera)
@@ -381,6 +391,10 @@ namespace browser
                 
                 // 增加1次draw call
                 ++m_uDrawCalls;
+				// 增加顶点数量
+				m_uVerticesCount += vertCount;
+				// 增加三角面数量
+				m_uFaceCount += indexCount / 3;
             }
             
         }
