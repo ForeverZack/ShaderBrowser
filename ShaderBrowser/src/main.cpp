@@ -65,7 +65,7 @@ const unsigned int SCR_HEIGHT = 600;
 // 上一次更新的时间戳
 std::chrono::steady_clock::time_point _lastUpdate;
 
-#ifdef WIN32
+#ifdef _WIN32
 	typedef void (APIENTRY *PFNWGLEXTSWAPCONTROLPROC) (int);
 	typedef int(*PFNWGLEXTGETSWAPINTERVALPROC) (void);
 	PFNWGLEXTSWAPCONTROLPROC wglSwapIntervalEXT = NULL;
@@ -74,6 +74,10 @@ std::chrono::steady_clock::time_point _lastUpdate;
 	bool InitVSync()
 	{
 		BROWSER_LOG(glGetString(GL_RENDERER));
+		BROWSER_LOG(glGetString(GL_VERSION));
+		BROWSER_LOG(glGetString(GL_VENDOR));
+
+		// 注意：获取扩展（Extensions）只有在GLFW_OPENGL_COMPAT_PROFILE模式下才能获取到，以核心模式运行时获取不到，具体原因不清楚
 		const char *extensions = (const char*)glGetString(GL_EXTENSIONS);
 		if (extensions && strstr(extensions, "WGL_EXT_swap_control"))
 		{
@@ -333,7 +337,7 @@ int main()
 	GLFWwindow* window = init();
 
 	// 关闭垂直同步
-#ifdef WIN32
+#ifdef _WIN32
 	// win32
 	bool isOk = InitVSync();
 	if (isOk)
@@ -400,7 +404,7 @@ GLFWwindow* init()
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
 
 #ifdef __APPLE__
 	// macOS

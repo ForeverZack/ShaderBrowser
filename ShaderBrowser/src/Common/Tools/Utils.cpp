@@ -21,7 +21,7 @@ namespace common
 
 	const GLchar* Utils::readFile(const char* filename)
 	{
-#ifdef WIN32
+#ifdef _WIN32
         // WIN32
 		FILE* infile;
 		fopen_s(&infile, filename, "rb");

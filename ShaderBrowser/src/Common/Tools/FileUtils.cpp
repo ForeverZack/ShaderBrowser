@@ -1,5 +1,5 @@
 #include "FileUtils.h"
-#ifdef WIN32
+#ifdef _WIN32
     // WIN32
     #include <corecrt_io.h>
     #pragma warning(disable:4996)
@@ -92,7 +92,7 @@ namespace common
 		//filePathbuf变量是保存着相对路径的char型数组,dir用来保存绝对路径
 		char dir[MAX_FILE_DIRECTORY_LENGTH] = "";
 		//1.转换绝对路径到dir
-#ifdef WIN32
+#ifdef _WIN32
         // WIN32
 		_fullpath(dir, path.c_str(), MAX_FILE_DIRECTORY_LENGTH);
 #else

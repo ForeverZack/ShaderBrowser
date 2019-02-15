@@ -53,11 +53,11 @@ namespace browser
     {
         m_uVertexCount = length;
         m_vVertices.resize(length);
-        for(int i=0; i<length; ++i)
-        {
-            VertexData data;
-            m_vVertices[i] = data;
-        }
+        //for(int i=0; i<length; ++i)
+        //{
+        //    VertexData data;
+        //    m_vVertices[i] = data;
+        //}
     }
     
     void Mesh::addTexture(const std::string& uniformName, Texture2D* texture)
