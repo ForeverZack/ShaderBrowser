@@ -93,6 +93,7 @@ namespace browser
         REGISTER_PROPERTY_GET(unsigned int, m_uIndexCount, IndexCount)
 		REGISTER_PROPERTY_CONSTREF_GET(std::vector<GLushort>, m_vIndices, Indices)
         REGISTER_PROPERTY_GET_SET(std::string, m_sMaterialName, MaterialName)
+		REGISTER_PROPERTY_GET(unsigned int*, m_uVBOs, VBOs)
 //        REGISTER_PROPERTY_CONSTREF_GET(std::unordered_map<std::string, TextureData>, m_mTextures, Textures);
         const std::unordered_map<std::string, TextureData>& getTextures()
         {
@@ -126,7 +127,8 @@ namespace browser
         unsigned int m_uVAO;
         // 是否生成vao
         bool m_bGenVAO;
-        
+        // vbo
+		unsigned int m_uVBOs[2];
 	};
 }
 

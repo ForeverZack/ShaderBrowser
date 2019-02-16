@@ -5,6 +5,14 @@
 #include "CameraSystem.h"
 #include "Common/System/Cache/GLProgramCache.h"
 #include "GL/GLStateCache.h"
+#include <chrono>
+#include <stdio.h>
+#ifdef  _WIN32
+	#pragma warning(disable:4996)
+#endif //  _WIN32
+
+
+//#define _SHADER_BROWSER_RENDER_SYSTEM_DEBUG 
 
 namespace browser
 {
@@ -102,11 +110,11 @@ namespace browser
 //        glBindVertexArray(0);
 //    }
     
-    void RenderSystem::setupVAO(GLuint vao, const std::unordered_map<GLuint, VertexAttribDeclaration*>& declarations)
+    void RenderSystem::setupVAO(GLuint vao, unsigned int vbos[], const std::unordered_map<GLuint, VertexAttribDeclaration*>& declarations)
     {
         // 1.绑定vao和vbo
         glBindVertexArray(vao);
-        glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[RenderSystem_Vertices_Buffer]);
+        glBindBuffer(GL_ARRAY_BUFFER, vbos[RenderSystem_Vertices_Buffer]);
         
         // 2.设置顶点属性
         for (auto itor=declarations.cbegin(); itor!=declarations.cend(); ++itor)
@@ -193,8 +201,18 @@ namespace browser
             {
                 case Camera::RenderPathType::Forward:
                     {
+#ifdef _SHADER_BROWSER_RENDER_SYSTEM_DEBUG
+						auto timeRec = std::chrono::steady_clock::now();
+						BROWSER_LOG("=======start=========");
+#endif
+                        
                         // 前向渲染
-                        forwardRenderScene(camera);
+						forwardRenderScene(camera);
+
+#ifdef _SHADER_BROWSER_RENDER_SYSTEM_DEBUG
+						float deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - timeRec).count() / 1000.0f;
+						BROWSER_LOG("=======end========="+std::to_string(deltaTime)+"ms");
+#endif
                     }
                     break;
                     
@@ -209,13 +227,15 @@ namespace browser
         
         GLuint vao;
         size_t vertCount;
+		unsigned int* vbos = nullptr;
+		BaseEntity* entity = nullptr;
+		Transform* transform = nullptr;
         // 绘制调试信息
         // 1.包围盒
         // 开启深度测试
         GLStateCache::getInstance()->openDepthTest();
         {
-            BaseEntity* entity = nullptr;
-            Transform* transform = nullptr;
+
             BaseBoundBox* boundBox = nullptr;
             GLProgram* linesProgram = GLProgramCache::getInstance()->getGLProgram(GLProgram::DEFAULT_LINES_GLPROGRAM_NAME);
             for(auto itor = m_mComponentsList.begin(); itor!=m_mComponentsList.end(); ++itor)
@@ -224,6 +244,7 @@ namespace browser
                 if (entity->isRenderable() && entity->getIsVisible() && entity->getIsBoundBoxVisible() && entity->checkVisibility(camera))
                 {
                     vao = m_oAxisMesh->getVAO();    // TODO: 这里使用的是模型坐标轴的vao,后面看看要不要换掉
+					vbos = m_oAxisMesh->getVBOs();
                     transform = entity->getTransform();
                     boundBox = entity->getBoundBox();
                     
@@ -247,7 +268,7 @@ namespace browser
                     glBindVertexArray(vao);
                     
                     // 2.传递顶点数据
-                    glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[RenderSystem_Vertices_Buffer]);
+                    glBindBuffer(GL_ARRAY_BUFFER, vbos[RenderSystem_Vertices_Buffer]);
                     glBufferData(GL_ARRAY_BUFFER, vertCount * sizeof(VertexData), trans_vertices, GL_STATIC_DRAW);
                     
                     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -271,8 +292,6 @@ namespace browser
         // 关闭深度测试
         GLStateCache::getInstance()->closeDepthTest();
         {
-            BaseEntity* entity = nullptr;
-            Transform* transform = nullptr;
             GLProgram* linesProgram = GLProgramCache::getInstance()->getGLProgram(GLProgram::DEFAULT_LINES_GLPROGRAM_NAME);
             for(auto itor = m_mComponentsList.begin(); itor!=m_mComponentsList.end(); ++itor)
             {
@@ -283,6 +302,7 @@ namespace browser
                 if (entity->getIsVisible() && entity->getIsAxisVisible())
                 {
                     vao = m_oAxisMesh->getVAO();
+					vbos = m_oAxisMesh->getVBOs();
                     
                     
                     // 顶点属性
@@ -301,7 +321,7 @@ namespace browser
                     glBindVertexArray(vao);
                     
                     // 2.传递顶点数据
-                    glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[RenderSystem_Vertices_Buffer]);
+                    glBindBuffer(GL_ARRAY_BUFFER, vbos[RenderSystem_Vertices_Buffer]);
                     glBufferData(GL_ARRAY_BUFFER, vertCount * sizeof(VertexData), trans_vertices, GL_STATIC_DRAW);
                     
                     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -327,6 +347,19 @@ namespace browser
     
     void RenderSystem::forwardRenderScene(Camera* camera)
     {
+#ifdef _SHADER_BROWSER_RENDER_SYSTEM_DEBUG
+		auto timeRec = std::chrono::steady_clock::now();
+		float deltaTime;
+		float totalBufferDataTime = 0;
+		float totalDrawTime = 0;
+		float totalParamTime = 0;
+#endif
+
+
+#ifdef _SHADER_BROWSER_RENDER_SYSTEM_DEBUG
+		timeRec = std::chrono::steady_clock::now();
+#endif
+
         Material* material;
         GLuint vao;
         size_t vertCount;
@@ -338,8 +371,8 @@ namespace browser
         BaseEntity* entity;
         for (auto itor = m_mComponentsList.begin(); itor != m_mComponentsList.end(); ++itor)
         {
-            const std::list<BaseComponent*>& renderList = itor->second;
-            render = dynamic_cast<BaseRender*>(*(renderList.begin()));
+			const std::list<BaseComponent*>& renderList = itor->second;
+            render = static_cast<BaseRender*>(*(renderList.begin()));
             entity = render->getBelongEntity();
             meshFilter = entity->getMeshFilter();
             transform = entity->getTransform();
@@ -349,11 +382,20 @@ namespace browser
             {
                 continue;
             }
+
+#ifdef _SHADER_BROWSER_RENDER_SYSTEM_DEBUG
+			deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - timeRec).count() / 1000.0f;
+			totalParamTime += deltaTime;
+#endif
             
             // 遍历messh
             const std::vector<Mesh*>& meshes = meshFilter->getMeshes();
             for (int i = 0; i < meshes.size(); ++i)
             {
+#ifdef _SHADER_BROWSER_RENDER_SYSTEM_DEBUG
+				timeRec = std::chrono::steady_clock::now();
+#endif
+
                 mesh = meshes[i];
                 vao = mesh->getVAO();
                 material = render->getMaterialByMesh(mesh);
@@ -366,20 +408,26 @@ namespace browser
                 const std::vector<GLushort>& indices = mesh->getIndices();
                 indexCount = mesh->getIndexCount();
                 
-                // 1.绑定对应的vao
-                glBindVertexArray(vao);
-                
-                // 2.传递顶点数据
-                glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[RenderSystem_Vertices_Buffer]);
-                glBufferData(GL_ARRAY_BUFFER, vertCount * sizeof(VertexData), &vertices[0], GL_STATIC_DRAW);
-                
-                // 3.传递索引数组
-                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_uVBOs[RenderSystem_Indices_Buffer]);
-                glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLushort)*indexCount, &indices[0], GL_STATIC_DRAW);
-                
-                
-                glBindBuffer(GL_ARRAY_BUFFER, 0);
-                glBindVertexArray(0);
+                //// 1.绑定对应的vao
+                //glBindVertexArray(vao);
+                //
+                //// 2.传递顶点数据
+                //glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[RenderSystem_Vertices_Buffer]);
+                //glBufferData(GL_ARRAY_BUFFER, vertCount * sizeof(VertexData), &vertices[0], GL_STATIC_DRAW);
+                //
+                //// 3.传递索引数组
+                //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_uVBOs[RenderSystem_Indices_Buffer]);
+                //glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLushort)*indexCount, &indices[0], GL_STATIC_DRAW);
+                //
+                //
+                //glBindBuffer(GL_ARRAY_BUFFER, 0);
+                //glBindVertexArray(0);
+
+#ifdef _SHADER_BROWSER_RENDER_SYSTEM_DEBUG
+				deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - timeRec).count() / 1000.0f;
+				timeRec = std::chrono::steady_clock::now();
+				totalBufferDataTime += deltaTime;
+#endif
                 
                 // 4.绘制
                 material->useMaterial(mesh, transform, camera);
@@ -395,9 +443,31 @@ namespace browser
 				m_uVerticesCount += vertCount;
 				// 增加三角面数量
 				m_uFaceCount += indexCount / 3;
+
+#ifdef _SHADER_BROWSER_RENDER_SYSTEM_DEBUG
+				deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - timeRec).count() / 1000.0f;
+				totalDrawTime += deltaTime;
+#endif
             }
             
         }
+
+
+#ifdef _SHADER_BROWSER_RENDER_SYSTEM_DEBUG
+
+		char *strTotalBufferDataTime = new char[100];
+		sprintf(strTotalBufferDataTime, "===========totalBufferDataTime================%.3f ms", totalBufferDataTime);
+
+		char *strTotalDrawTime = new char[100];
+		sprintf(strTotalDrawTime, "===========totalDrawTime================%.3f ms", totalDrawTime);
+
+		char *strTotalParamTime = new char[100];
+		sprintf(strTotalParamTime, "===========totalParamTime================%.3f ms", totalParamTime);
+
+		BROWSER_LOG(strTotalBufferDataTime);
+		BROWSER_LOG(strTotalDrawTime);
+		BROWSER_LOG(strTotalParamTime);
+#endif
     }
 
 

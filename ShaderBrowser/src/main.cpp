@@ -32,6 +32,7 @@
 // win32
 #include <windows.h>
 #include <wingdi.h>
+#pragma warning(disable:4996)
 #endif
 
 
@@ -61,6 +62,9 @@ void testVal();
 // settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
+
+// 标题
+char strTitle[150];
 
 // 上一次更新的时间戳
 std::chrono::steady_clock::time_point _lastUpdate;
@@ -404,11 +408,14 @@ GLFWwindow* init()
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
 
 #ifdef __APPLE__
 	// macOS
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // uncomment this statement to fix compilation on OS X
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);    // mac下只能用GLFW_OPENGL_CORE_PROFILE核心模式，不然程序会报错
+#else
+    // win32
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);    // 这里如果用GLFW_OPENGL_CORE_PROFILE核心模式，则获取不到extensions
 #endif
 
 
@@ -501,13 +508,9 @@ void mainLoop(GLFWwindow *window)
 //    }
     
     // 调试信息
-    std::string str_delta = std::to_string(deltaTime);
-    std::string str_fps = std::to_string(1.0f / deltaTime);
-    std::string str_drawCalls = std::to_string(browser::RenderSystem::getInstance()->getDrawCalls());
-	std::string str_verticesCount = std::to_string(browser::RenderSystem::getInstance()->getVerticesCount());
-	std::string str_faceCount = std::to_string(browser::RenderSystem::getInstance()->getFaceCount());
-    std::string str_title = "deltaTime:"+str_delta+", FPS:"+str_fps+", DrawCalls:"+str_drawCalls+", Vertices:"+ str_verticesCount+", Face:"+ str_faceCount;
-    glfwSetWindowTitle(window, str_title.c_str());
+	sprintf(strTitle, "deltaTime:%.4fs, FPS:%.1f, DrawCalls:%d, Vertices:%d, Face:%d", deltaTime, 1.0f/deltaTime, browser::RenderSystem::getInstance()->getDrawCalls()
+				, browser::RenderSystem::getInstance()->getVerticesCount(), browser::RenderSystem::getInstance()->getFaceCount());
+    glfwSetWindowTitle(window, strTitle);
 }
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly

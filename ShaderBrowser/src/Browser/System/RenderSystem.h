@@ -17,6 +17,7 @@ namespace browser
     
 	class RenderSystem : public common::BaseSystem, public BaseSingleton<RenderSystem>
 	{
+	public:
 		// vbo缓存类型
 		enum VertexBufferType
         {
@@ -55,8 +56,7 @@ namespace browser
         void forwardRenderScene(Camera* camera);
         
         // 设置vao和vbo
-        void setupVAO(GLuint vao);
-        void setupVAO(GLuint vao, const std::unordered_map<GLuint, VertexAttribDeclaration*>& declarations);
+        void setupVAO(GLuint vao, unsigned int vbos[], const std::unordered_map<GLuint, VertexAttribDeclaration*>& declarations);
         
         
 		REGISTER_PROPERTY_GET_SET(unsigned int, m_uDrawCalls, DrawCalls)

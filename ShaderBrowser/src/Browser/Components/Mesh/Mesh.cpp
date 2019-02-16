@@ -1,7 +1,7 @@
 #include "Mesh.h"
 #include "GL/GLProgram.h"
-#include "Browser/System/RenderSystem.h"
 #include "Browser/Components/Render/Material.h"
+#include "Browser/System/RenderSystem.h"
 
 using namespace customGL;
 
@@ -43,10 +43,30 @@ namespace browser
             m_bGenVAO = true;
             // 生成vao
             glGenVertexArrays(1, &m_uVAO);
+			// 生成vbo
+			glGenBuffers(2, m_uVBOs);
         }
 
 		// 设置vao
-        RenderSystem::getInstance()->setupVAO(m_uVAO, m_mVertexAttribDeclarations);
+        RenderSystem::getInstance()->setupVAO(m_uVAO, m_uVBOs, m_mVertexAttribDeclarations);
+
+		// 绑定数据
+		// 1.绑定对应的vao
+		glBindVertexArray(m_uVAO);
+
+		// 2.传递顶点数据
+		glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[RenderSystem::VertexBufferType::RenderSystem_Vertices_Buffer]);
+		glBufferData(GL_ARRAY_BUFFER, getVertexCount() * sizeof(VertexData), &m_vVertices[0], GL_STATIC_DRAW);
+
+		// 3.传递索引数组
+		if (m_vIndices.size() > 0)
+		{
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_uVBOs[RenderSystem::VertexBufferType::RenderSystem_Indices_Buffer]);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLushort)*getIndexCount(), &m_vIndices[0], GL_STATIC_DRAW);
+		}
+
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
     }
     
     void Mesh::init(int length)
