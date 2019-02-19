@@ -274,7 +274,7 @@ void testVal()
     fighterMeshFilter->getMeshes()[0]->setTexture(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_TEXUTRE0], TextureCache::getInstance()->getTexture("models/Fighter/Fighter.png"));
     modelEntity->addComponent(fighterMeshFilter);
     
-	for (int i = 0; i < 10; ++i)
+	for (int i = 0; i < 20; ++i)
 	{
 		modelEntity = BaseEntity::create("namizhuang");
 		modelEntity->setScale(0.2f, 0.2f, 0.2f);

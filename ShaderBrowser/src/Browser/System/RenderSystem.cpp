@@ -12,6 +12,7 @@
 #endif //  _WIN32
 
 
+// 开启渲染系统调试日志
 //#define _SHADER_BROWSER_RENDER_SYSTEM_DEBUG 
 
 namespace browser
@@ -65,7 +66,6 @@ namespace browser
 
 		// 生成VBO
 		glGenBuffers(RenderSystem_Buffer_Maxcount, m_uVBOs);
-        
 
         // 生成坐标轴模型
         m_oAxisMesh = Mesh::create(6);
@@ -353,6 +353,7 @@ namespace browser
 		float totalBufferDataTime = 0;
 		float totalDrawTime = 0;
 		float totalParamTime = 0;
+		float totalUniformTime = 0;
 #endif
 
 
@@ -429,8 +430,14 @@ namespace browser
 				totalBufferDataTime += deltaTime;
 #endif
                 
-                // 4.绘制
+                // 4.使用材质
                 material->useMaterial(mesh, transform, camera);
+#ifdef _SHADER_BROWSER_RENDER_SYSTEM_DEBUG
+				deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - timeRec).count() / 1000.0f;
+				timeRec = std::chrono::steady_clock::now();
+				totalUniformTime += deltaTime;
+#endif
+				// 5.绘制
                 glBindVertexArray(vao);
                 //typedef void (APIENTRYP PFNGLDRAWELEMENTSPROC)(GLenum mode, GLsizei count, GLenum type, const void *indices);
                 glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_SHORT, (void*)0);
@@ -461,11 +468,15 @@ namespace browser
 		char *strTotalDrawTime = new char[100];
 		sprintf(strTotalDrawTime, "===========totalDrawTime================%.3f ms", totalDrawTime);
 
+		char *strTotalUniformTime = new char[100];
+		sprintf(strTotalUniformTime, "===========totalUniformTime================%.3f ms", totalUniformTime);
+
 		char *strTotalParamTime = new char[100];
 		sprintf(strTotalParamTime, "===========totalParamTime================%.3f ms", totalParamTime);
 
 		BROWSER_LOG(strTotalBufferDataTime);
 		BROWSER_LOG(strTotalDrawTime);
+		BROWSER_LOG(strTotalUniformTime);
 		BROWSER_LOG(strTotalParamTime);
 #endif
     }
