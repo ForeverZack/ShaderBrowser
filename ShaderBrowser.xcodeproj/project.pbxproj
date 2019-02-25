@@ -47,6 +47,7 @@
 		14C29E93221035A300A514BE /* LightSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14C29E92221035A300A514BE /* LightSystem.cpp */; };
 		14CDFD1822058FFE00A42823 /* Model.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14CDFD1622058FFD00A42823 /* Model.cpp */; };
 		14D46D22220096D900E21D4C /* TextureCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14D46D20220096D900E21D4C /* TextureCache.cpp */; };
+		14DC853B22242AFF0051B944 /* GameStatusPanel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14DC853922242AFF0051B944 /* GameStatusPanel.cpp */; };
 		14E143172208115B001A2EB1 /* GLStateCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14E143152208115B001A2EB1 /* GLStateCache.cpp */; };
 		14E1431A22084724001A2EB1 /* ModelCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14E1431822084723001A2EB1 /* ModelCache.cpp */; };
 		14E349D221C647AA00EB5785 /* Pass.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14E349D121C647AA00EB5785 /* Pass.cpp */; };
@@ -153,6 +154,8 @@
 		14D46D20220096D900E21D4C /* TextureCache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextureCache.cpp; sourceTree = "<group>"; };
 		14D46D21220096D900E21D4C /* TextureCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureCache.h; sourceTree = "<group>"; };
 		14D46D232200970F00E21D4C /* BaseAsyncLoader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BaseAsyncLoader.h; sourceTree = "<group>"; };
+		14DC853922242AFF0051B944 /* GameStatusPanel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GameStatusPanel.cpp; sourceTree = "<group>"; };
+		14DC853A22242AFF0051B944 /* GameStatusPanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameStatusPanel.h; sourceTree = "<group>"; };
 		14E143152208115B001A2EB1 /* GLStateCache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GLStateCache.cpp; sourceTree = "<group>"; };
 		14E143162208115B001A2EB1 /* GLStateCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLStateCache.h; sourceTree = "<group>"; };
 		14E1431822084723001A2EB1 /* ModelCache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ModelCache.cpp; sourceTree = "<group>"; };
@@ -537,6 +540,8 @@
 				14EB118A22202A0100D3C29D /* InspectorPanel.cpp */,
 				147BBAF7222277EE00B3079B /* HierarchyPanel.h */,
 				147BBAF8222277EE00B3079B /* HierarchyPanel.cpp */,
+				14DC853A22242AFF0051B944 /* GameStatusPanel.h */,
+				14DC853922242AFF0051B944 /* GameStatusPanel.cpp */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -631,6 +636,7 @@
 				14D46D22220096D900E21D4C /* TextureCache.cpp in Sources */,
 				14B9068121BABC8F00554B0B /* BaseEntity.cpp in Sources */,
 				14C29E93221035A300A514BE /* LightSystem.cpp in Sources */,
+				14DC853B22242AFF0051B944 /* GameStatusPanel.cpp in Sources */,
 				14BE47A32201EE0500EFE57C /* Camera.cpp in Sources */,
 				14CDFD1822058FFE00A42823 /* Model.cpp in Sources */,
 				147BBAF9222277EF00B3079B /* HierarchyPanel.cpp in Sources */,
