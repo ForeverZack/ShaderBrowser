@@ -14,7 +14,7 @@ namespace browser
     }
     
 	MeshFilter::MeshFilter()
-        //: 
+        : BaseComponent("Mesh Filter")
 	{
         // 组件所属系统
         m_eBelongSystem = SystemType::Mesh;

@@ -8,9 +8,20 @@ namespace browser
         , m_oMeshFilter(nullptr)
         , m_eBelongSystem(SystemType::CustomSystem)
 		, m_oBelongEntity(nullptr)
+        , m_sComponentName("Unnamed Component")
 	{
         this->autorelease();
 	}
+    
+    BaseComponent::BaseComponent(const std::string& name)
+        : m_oTransform(nullptr)
+        , m_oMeshFilter(nullptr)
+        , m_eBelongSystem(SystemType::CustomSystem)
+        , m_oBelongEntity(nullptr)
+        , m_sComponentName(name)
+    {
+        
+    }
 
 	BaseComponent::~BaseComponent()
 	{

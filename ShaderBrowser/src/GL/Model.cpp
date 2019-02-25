@@ -217,7 +217,7 @@ namespace customGL
         if (textureCount == 0)
         {
             MeshTextureData textureData(mesh, "texture/default/default_white.png", type, uniformName, false);
-            m_vMeshTextureData.push_back(textureData);
+            m_vMeshTextureData.push_back(std::move(textureData));
         }
         
         for(int i=0; i<textureCount; ++i)
@@ -226,7 +226,7 @@ namespace customGL
             material->GetTexture(type, i, &filename);
             
             MeshTextureData textureData(mesh, filename.C_Str(), type, uniformName);
-            m_vMeshTextureData.push_back(textureData);
+            m_vMeshTextureData.push_back(std::move(textureData));
         }
     }
     
@@ -249,6 +249,7 @@ namespace customGL
             }
             // 异步载入纹理
             // 注意:Lambda表达式使用的时候要注意,按引用捕获类似于传递实参或者引用,函数内部修改这个变量会传递到外边,但需要注意这个变量的生命周期,不能传递一个在调用之前被销毁的对象。而按值捕获类似于传值,内部修改并不会影响到外部,会在lambda表达式创建的时候生成一份复制,也可以保证外部的变量如果值发生变化,表达式内部该值也不会收到影响。参考下方的i和textureCount。i是一个每次循环都会变化的变量,而lambda表达式内想取到每次循环的固定值,所以按值捕获复制了一份。textureCount是一个局部变量,在lambda表达式函数被调用的时候,如果按引用捕获在调用的时候,访问到的值会不正确。
+                //按值传递函数对象参数时，加上mutable修饰符后，可以修改按值传递进来的拷贝（注意是能修改拷贝，而不是值本身）
             TextureCache::getInstance()->addTextureAsync(full_path, [&, i, textureCount](Texture2D* texture) mutable -> void     // 除了itor按值捕获,其他都按引用捕获
                  {
                      // 将texture的环绕方式设为repeat

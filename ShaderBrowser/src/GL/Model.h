@@ -42,6 +42,16 @@ namespace customGL
             , bFound(found)
         {
         }
+
+		MeshTextureData(const MeshTextureData&& data)
+			: mesh(data.mesh)
+			, filename(data.filename)
+			, type(data.type)
+			, uniformName(data.uniformName)
+			, bFound(data.bFound)
+		{
+
+		}
     };
     
     class Model : public Reference

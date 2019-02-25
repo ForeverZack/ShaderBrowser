@@ -4,20 +4,22 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/quaternion.hpp>
 #include "GL/GLDefine.h"
+#include <tuple>
 
 using namespace customGL;
 
 namespace browser
 {
 	Transform::Transform()
-        : m_oParent(nullptr)
+        : BaseComponent("Transform")
+        , m_oParent(nullptr)
         , m_bTransDirty(true)
         , m_oObjectPos(GLM_VEC3_ZERO)
         , m_oEulerAngle(GLM_VEC3_ZERO)
         , m_oQuaternion(GLM_QUAT_UNIT)
         , m_oScale(GLM_VEC3_ONE)
         , m_oModelMatrix(GLM_MAT4_UNIT)
-        , m_sName("")
+        , m_sName("Nonamed Entity")
         , m_oGlobalEulerAngle(GLM_VEC3_ZERO)
         , m_oGlobalQuaternion(GLM_QUAT_UNIT)
 	{
@@ -34,13 +36,39 @@ namespace browser
 		BROWSER_LOG("~Transform");
 	}
     
+    void Transform::onInspectorGUI(InspectorPanel* inspector)
+    {
+        // 显示名称
+        inspector->addPropertyText("Name: " + m_sName);
+        
+        // 显示模型坐标位置
+        inspector->addPropertyVector3("Position", &m_oObjectPos, [=](const glm::vec3& value)
+            {
+                setPosition(value);
+            }, false);
+        
+        // 显示欧拉角
+        // 注意万向锁：由于使用了yaw-pitch-roll，所以这里x轴旋转必须控制在-90~90度的范围内，否则会出现万向锁
+        inspector->addPropertyTransformEulerAngle("Rotation", &m_oEulerAngle, [=](const glm::vec3& value)
+            {
+                setEulerAngle(value);
+            }, false);
+        
+        // 显示缩放
+        inspector->addPropertyVector3("Scale", &m_oScale, [=](const glm::vec3& value)
+            {
+                setScale(value);
+            }, false);
+        
+    }
+    
     void Transform::setPosition(float x, float y, float z)
     {
         TRANS_SET_VEC3(m_oObjectPos, x, y, z);
         TRANS_DIRTY(this, true);
     }
     
-    void Transform::Rotate(glm::vec3 rotation, customGL::Space sp /*= customGL::Space::Self*/)
+    void Transform::Rotate(const glm::vec3& rotation, customGL::Space sp /*= customGL::Space::Self*/)
     {
         m_vRotateDelayRotations.push_back(rotation);
         m_vRotateDelaySpaces.push_back(sp);
@@ -48,7 +76,7 @@ namespace browser
         TRANS_DIRTY(this, true);
     }
     
-    void Transform::Translate(glm::vec3 offset, customGL::Space sp /*= customGL::Space::Self*/)
+    void Transform::Translate(const glm::vec3& offset, customGL::Space sp /*= customGL::Space::Self*/)
     {
         switch(sp)
         {
@@ -138,7 +166,7 @@ namespace browser
 
 //        BROWSER_LOG("====local=====");
 //        BROWSER_LOG_QUATERNION(m_oQuaternion);
-//        BROWSER_LOG_VEC3(glm::degrees(m_oEulerAngle));
+//        BROWSER_LOG_VEC3(m_oEulerAngle);
 //        BROWSER_LOG("====global=====");
 //        BROWSER_LOG_QUATERNION(m_oGlobalQuaternion);
 //        BROWSER_LOG_VEC3(glm::degrees(m_oGlobalEulerAngle));
@@ -161,7 +189,7 @@ namespace browser
         if(fabs(sp) > 0.9999f)
         {
             // 向正上或者正下
-            p = 1.570796f * sp;
+            p = PI / 2 * sp;
             // 计算heading, bank
             h = atan2(-quat.x*quat.z + quat.w*quat.y, 0.5f - quat.y*quat.y - quat.z*quat.z);
             b = 0.0f;
@@ -174,7 +202,29 @@ namespace browser
             b = atan2(quat.x*quat.y + quat.w*quat.z, 0.5f - quat.x*quat.x - quat.z*quat.z);
         }
         
+        p = formatDegree(glm::degrees(p));
+        h = formatDegree(glm::degrees(h));
+        b = formatDegree(glm::degrees(b));
+
+        
         return glm::vec3(p, h, b);
+    }
+    
+    float Transform::formatDegree(float degrees)
+    {
+        while(degrees<0.0f)
+        {
+            degrees+=360.0f;
+        }
+        while(degrees>=360.0f)
+        {
+            degrees-=360.0f;
+        }
+        if (degrees == -0.0f)
+        {
+            degrees = 0.0f;
+        }
+        return degrees;
     }
     
     void Transform::setQuaternion(float x, float y, float z, float w)
@@ -187,7 +237,8 @@ namespace browser
         m_vRotateDelaySpaces.clear();
 
         // 父节点model矩阵
-        const glm::mat4& parentMMatrix = getParentTransformModelMatrix();
+		const std::tuple<glm::mat4, bool>& parentTransInfo = getParentTransformModelMatrix();
+		const glm::mat4& parentMMatrix = std::get<0>(parentTransInfo);
         // 计算模型坐标空间下的欧拉角
         m_oEulerAngle = quaternion2EulerAngle(m_oQuaternion);   // 模型->惯性 四元数转欧拉角
         // 计算惯性坐标空间下的四元数和欧拉角
@@ -209,6 +260,8 @@ namespace browser
         m_vRotateDelayRotations.clear();
         m_vRotateDelaySpaces.clear();
         
+        // 重置当前旋转
+        m_oQuaternion = GLM_QUAT_UNIT;
         // 计算当前旋转值
         Rotate(m_oEulerAngle);
     }
@@ -258,7 +311,8 @@ namespace browser
     glm::vec3 Transform::getGlobalPosition()
     {
         // 获取父节点的model矩阵
-        const glm::mat4& parentModelMatrix = getParentTransformModelMatrix();
+		const std::tuple<glm::mat4, bool>& parentTransInfo = getParentTransformModelMatrix();
+		const glm::mat4& parentModelMatrix = std::get<0>(parentTransInfo);
         return parentModelMatrix * glm::vec4(m_oObjectPos, 1.0f);
     }
     
@@ -280,7 +334,8 @@ namespace browser
         
         // 设置自身的世界坐标系的位置，需要传入的世界坐标位置，设置本地坐标。该坐标可以通过 "父节点model矩阵的逆*世界坐标位置" 来得到。
         // model: local->world     model_inverse: world->local
-        glm::mat4 inverse_parentModelMatrix = glm::inverse(getParentTransformModelMatrix());
+		const std::tuple<glm::mat4, bool>& parentTransInfo = getParentTransformModelMatrix();
+        glm::mat4 inverse_parentModelMatrix = glm::inverse(std::get<0>(parentTransInfo));
         m_oObjectPos = inverse_parentModelMatrix * globalPosition;
         
         TRANS_DIRTY(this, true);
@@ -300,7 +355,8 @@ namespace browser
         m_vRotateDelaySpaces.clear();
         
         // 父节点model矩阵
-        const glm::mat4& parentMMatrix = getParentTransformModelMatrix();
+		const std::tuple<glm::mat4, bool>& parentTransInfo = getParentTransformModelMatrix();
+        const glm::mat4& parentMMatrix = std::get<0>(parentTransInfo);
         // 计算惯性坐标空间下的四元数和欧拉角
         m_oGlobalQuaternion = globalQuaternion;
         m_oGlobalEulerAngle = quaternion2EulerAngle(m_oGlobalQuaternion);
@@ -317,10 +373,10 @@ namespace browser
         setGlobalQuaternion(quaternion.x, quaternion.y, quaternion.z, quaternion.w);
     }
     
-    glm::mat4 Transform::getParentTransformModelMatrix(bool& parentDirty)
+	std::tuple<glm::mat4, bool> Transform::getParentTransformModelMatrix()
     {
         //只要父级节点中，有一个dirty，则他下面的子级节点全都需要重新计算model
-        parentDirty = false;
+        bool parentDirty = false;
         
         // 获取层级列表
         std::vector<Transform*> parents;
@@ -353,20 +409,16 @@ namespace browser
             parentMMatrix = child->getModelMatrix();
         }
         
-        return parentMMatrix;
-    }
-    
-    glm::mat4 Transform::getParentTransformModelMatrix()
-    {
-        bool parentDirty;
-        return getParentTransformModelMatrix(parentDirty);
+        return std::make_tuple(parentMMatrix, parentDirty);
     }
     
     const glm::mat4& Transform::getTransformModelMatrix()
     {
-        bool parentDirty = false;
         // 获取父节点的model矩阵
-        const glm::mat4& parentMMatrix = getParentTransformModelMatrix(parentDirty);
+		const std::tuple<glm::mat4, bool>& parentTransInfo = getParentTransformModelMatrix();
+        const glm::mat4& parentMMatrix = std::get<0>(parentTransInfo);
+		bool parentDirty = std::get<1>(parentTransInfo);
+
         if (parentDirty)
         {
             // 更新自身的model矩阵

@@ -15,7 +15,8 @@ namespace browser
 	}
 
 	Camera::Camera(ProjectionType type, float nearPlane, float farPlane, int viewportWidth, int viewportHeight, float FOV)
-		:  m_oViewMatrix(GLM_MAT4_UNIT)
+		: BaseComponent("Camera")
+        , m_oViewMatrix(GLM_MAT4_UNIT)
 		, m_eProjectionType(type)
 		, m_fFieldOfView(FOV)
 		, m_fNearPlane(nearPlane)
@@ -30,7 +31,8 @@ namespace browser
 	}
 
 	Camera::Camera()
-		: m_oViewMatrix(GLM_MAT4_UNIT)
+		: BaseComponent("Camera")
+        , m_oViewMatrix(GLM_MAT4_UNIT)
 		, m_eProjectionType(ProjectionType::Perspective)
 		, m_fFieldOfView(60.0f)
 		, m_fNearPlane(0.3f)

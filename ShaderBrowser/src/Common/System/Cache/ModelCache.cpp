@@ -93,9 +93,13 @@ namespace common
                         // 将加载好的模型加入缓存
                         add(asyncData->fullpath, responseModel);
                         // 执行model加载完成的回调函数
-                        if (asyncData->callback)
+						const std::vector<std::function<void(Model*)>>& callbacks = asyncData->callbacks;
+                        if (!callbacks.empty())
                         {
-                            asyncData->callback(responseModel);
+							for (int cbIndex = 0; cbIndex < callbacks.size(); ++cbIndex)
+							{
+								callbacks[cbIndex](responseModel);
+							}
                         }
                         
                         // 清除model的返回数据

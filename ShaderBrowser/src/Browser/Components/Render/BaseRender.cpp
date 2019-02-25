@@ -7,6 +7,7 @@
 namespace browser
 {
 	BaseRender::BaseRender()
+        : BaseComponent("Base Render")
 	{
 		// 组件所属系统
 		m_eBelongSystem = SystemType::RenderSystem;

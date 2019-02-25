@@ -53,6 +53,7 @@ namespace browser
         REGISTER_PROPERTY_GET_SET(bool, m_bIsVisible, IsVisible);
         REGISTER_PROPERTY_GET_SET(bool, m_bIsAxisVisible, IsAxisVisible);
         REGISTER_PROPERTY_GET_SET(bool, m_bIsBoundBoxVisible, IsBoundBoxVisible)
+        REGISTER_PROPERTY_CONSTREF_GET(std::vector<BaseComponent*>, m_vComponents, Components)
 
 	private:
 		// 添加\移除组件时，标记或者去标记特殊的组件
@@ -93,6 +94,7 @@ namespace browser
         bool m_bIsAxisVisible;
         // 是否显示包围盒
         bool m_bIsBoundBoxVisible;
+        
 	};
 
 

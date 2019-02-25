@@ -7,6 +7,7 @@ namespace browser
 	AABBBoundBox::AABBBoundBox()
         : m_oInUseMeshFilter(nullptr)
 	{
+        m_sComponentName = "AABB BoundBox";
         // 给显示包围盒顶点数组预留空间
         m_vDisplayVertices.reserve(24);
 	}

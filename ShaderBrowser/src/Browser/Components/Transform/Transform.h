@@ -57,6 +57,7 @@ namespace browser
         #define REGISTER_TRANS_PROPERTY_GET_SET(varType, varName, funName)\
             public: virtual varType get##funName(void)    {return varName;}\
             public: virtual void set##funName(varType var) {varName = var; this->m_bTransDirty=true;}
+        
 
 	public:
 		Transform();
@@ -72,10 +73,10 @@ namespace browser
         void visit(const glm::mat4& parentMMatrix, bool bDirty);
         
         // 旋转
-        void Rotate(glm::vec3 rotation, customGL::Space sp = customGL::Space::Self);
+        void Rotate(const glm::vec3& rotation, customGL::Space sp = customGL::Space::Self);
         
         // 平移
-        void Translate(glm::vec3 offset, customGL::Space sp = customGL::Space::Self);
+        void Translate(const glm::vec3& offset, customGL::Space sp = customGL::Space::Self);
         
         // 获取方向向量
         // Forward (axis: z)
@@ -141,19 +142,22 @@ namespace browser
     private:
         // 四元数转为欧拉角(物体->惯性坐标系)
         glm::vec3 quaternion2EulerAngle(glm::quat quat);
+        // 角度标准化
+        float formatDegree(float degrees);
         
         // 延迟旋转
         void RotateDelay(const glm::mat4& parentMMatrix);
         
-        // 获取父节点的model矩阵(遍历父节点)
-        glm::mat4 getParentTransformModelMatrix();
-        glm::mat4 getParentTransformModelMatrix(bool& parentDirty);  // 这里的parentDirty引用，是为了把它的标记值传出去，表示父级节点的model矩阵是否改变
+        // 获取父节点的model矩阵(遍历父节点)	这里用tuple模板来实现返回多个参数（用法类似于pair，但参数个数不限于2个）
+        std::tuple<glm::mat4, bool> getParentTransformModelMatrix();  // bool表示父级节点的model矩阵是否改变
         // 获取自身的model矩阵
 		const glm::mat4& getTransformModelMatrix();
 
 		// 更新自身的model矩阵
 		void updateSelfModelMatrix(const glm::mat4& parentMMatrix);
         
+        // 重载属性面板显示方法
+        virtual void onInspectorGUI(InspectorPanel* inspector);
         
 	protected:
         // 自身属性(相对于父节点)

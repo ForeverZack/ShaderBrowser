@@ -89,7 +89,7 @@ namespace browser
             textureData.texture = texture;
             textureData.uniformName = uniformName;
             
-            m_mTextures.emplace(uniformName, textureData);
+            m_mTextures.emplace(uniformName, std::move(textureData));
         }
         else
         {

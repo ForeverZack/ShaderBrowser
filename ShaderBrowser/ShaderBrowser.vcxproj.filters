@@ -64,13 +64,16 @@
     <Filter Include="src\Browser\Components\Light">
       <UniqueIdentifier>{465da903-baee-49dc-97be-871c08d01e7c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Plugins\imgui">
+      <UniqueIdentifier>{15b5b534-e0d9-48e6-952b-fed8388e1893}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Common\Tools\UI">
+      <UniqueIdentifier>{e5fa9253-d6a4-4252-800f-58e25c5ed41b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
       <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Plugins\Image\stb_image.cpp">
-      <Filter>src\Plugins\Image</Filter>
     </ClCompile>
     <ClCompile Include="src\GL\GLProgram.cpp">
       <Filter>src\GL</Filter>
@@ -183,11 +186,32 @@
     <ClCompile Include="src\Browser\System\LightSystem.cpp">
       <Filter>src\Browser\System</Filter>
     </ClCompile>
+    <ClCompile Include="src\Plugins\imgui\imgui_draw.cpp">
+      <Filter>src\Plugins\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Plugins\imgui\imgui.cpp">
+      <Filter>src\Plugins\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Common\Tools\UI\GUIFramework.cpp">
+      <Filter>src\Common\Tools\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Common\Tools\UI\BaseGUIPanel.cpp">
+      <Filter>src\Common\Tools\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Plugins\imgui\imgui_impl_glfw_gl3.cpp">
+      <Filter>src\Plugins\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Common\Tools\UI\InspectorPanel.cpp">
+      <Filter>src\Common\Tools\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Common\Tools\UI\HierarchyPanel.cpp">
+      <Filter>src\Common\Tools\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Common\Tools\UI\GameStatusPanel.cpp">
+      <Filter>src\Common\Tools\UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Plugins\Image\stb_image.h">
-      <Filter>src\Plugins\Image</Filter>
-    </ClInclude>
     <ClInclude Include="src\GL\GLProgram.h">
       <Filter>src\GL</Filter>
     </ClInclude>
@@ -310,6 +334,21 @@
     </ClInclude>
     <ClInclude Include="src\Browser\System\LightSystem.h">
       <Filter>src\Browser\System</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Common\Tools\UI\GUIFramework.h">
+      <Filter>src\Common\Tools\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Common\Tools\UI\BaseGUIPanel.h">
+      <Filter>src\Common\Tools\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Common\Tools\UI\InspectorPanel.h">
+      <Filter>src\Common\Tools\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Common\Tools\UI\HierarchyPanel.h">
+      <Filter>src\Common\Tools\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Common\Tools\UI\GameStatusPanel.h">
+      <Filter>src\Common\Tools\UI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

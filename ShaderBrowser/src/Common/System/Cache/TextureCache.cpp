@@ -82,9 +82,13 @@ namespace common
                 texture->retain();
 				add(asyncData->fullpath, texture);
 
-				if (asyncData->callback)
+				const std::vector<std::function<void(Texture2D*)>>& callbacks = asyncData->callbacks;
+				if (!callbacks.empty())
 				{
-					asyncData->callback(texture);
+					for (int cbIndex=0; cbIndex!=callbacks.size(); ++cbIndex)
+					{
+						callbacks[cbIndex](texture);
+					}
 				}
 			}
 			else

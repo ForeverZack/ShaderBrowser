@@ -1,6 +1,9 @@
 // svn测试
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <imgui.h>
+#include <imgui_impl_glfw_gl3.h>
+
 
 #include <iostream>
 #include "GL/GLProgram.h"
@@ -25,6 +28,9 @@
 #include "Common/System/Cache/GLProgramCache.h"
 #include "Common/System/Cache/TextureCache.h"
 #include "Common/System/Cache/ModelCache.h"
+#include "Common/Tools/UI/GUIFramework.h"
+#include "Common/Tools/UI/InspectorPanel.h"
+#include "Common/Tools/UI/GameStatusPanel.h"
 #ifdef __APPLE__
 // macOS
 #include <unistd.h>
@@ -53,15 +59,19 @@ using namespace common;
 
 // 函数需要先声明一下，否则在定义之前调用会编译出错
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void window_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
+void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 void renderScene();
 void mainLoop(GLFWwindow *window);
 GLFWwindow* init();
 void testVal();
 
+
 // settings
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
+const unsigned int SCR_WIDTH = 1280;
+const unsigned int SCR_HEIGHT = 720;
 
 // 标题
 char strTitle[150];
@@ -165,6 +175,7 @@ GLushort indices[] = {
 Model* m_oModel = nullptr;
 Model* m_oModel2 = nullptr;
 
+
 void testVal()
 {
 //    std::string path = FileUtils::getInstance()->convertToAbsolutePath("./res/texture/awesomeface1.png");
@@ -247,8 +258,6 @@ void testVal()
     modelEntity->setScale(0.2f, 0.2f, 0.2f);
     modelEntity->setEulerAngle(0, 180, 0);
     modelEntity->setPosition(0, 1, 0);
-    modelEntity->setIsBoundBoxVisible(true);
-    modelEntity->setIsAxisVisible(true);
     scene->addChild(modelEntity);
     // 渲染组件
     modelEntity->addComponent(new BaseRender());
@@ -262,8 +271,6 @@ void testVal()
     modelEntity->setScale(0.2f, 0.2f, 0.2f);
     modelEntity->setEulerAngle(0, 90, 0);
     modelEntity->setPosition(1, 0, -2);
-    modelEntity->setIsBoundBoxVisible(true);
-    modelEntity->setIsAxisVisible(true);
     scene->addChild(modelEntity);
     // 渲染组件
     modelEntity->addComponent(new BaseRender());
@@ -274,14 +281,15 @@ void testVal()
     fighterMeshFilter->getMeshes()[0]->setTexture(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_TEXUTRE0], TextureCache::getInstance()->getTexture("models/Fighter/Fighter.png"));
     modelEntity->addComponent(fighterMeshFilter);
     
+    // Inspector面板
+//    GUIFramework::getInstance()->getInspectorPanel()->selectEntity(modelEntity);
+    
 	for (int i = 0; i < 20; ++i)
 	{
-		modelEntity = BaseEntity::create("namizhuang");
+        modelEntity = BaseEntity::create("namizhuang");
 		modelEntity->setScale(0.2f, 0.2f, 0.2f);
 		modelEntity->setEulerAngle(0, 180, 0);
-		modelEntity->setPosition(0, 1, 0);
-		modelEntity->setIsBoundBoxVisible(true);
-		modelEntity->setIsAxisVisible(true);
+		modelEntity->setPosition(i, 1, 0);
 		scene->addChild(modelEntity);
 		// 渲染组件
 		modelEntity->addComponent(new BaseRender());
@@ -372,6 +380,7 @@ int main()
                                      }
                                      else
                                      {
+										 BROWSER_LOG(mo->getDirectory());
                                          m_oModel = mo;
                                      }
                                      ++total;
@@ -380,6 +389,20 @@ int main()
                                          testVal();
                                      }
                                  });
+
+	ModelCache::getInstance()->addModelAsync("models/Fighter/fighterChar.FBX", [&](Model* mo)
+	{
+		BROWSER_LOG("test1111");
+	});
+	ModelCache::getInstance()->addModelAsync("models/Fighter/fighterChar.FBX", [&](Model* mo)
+	{
+		BROWSER_LOG("test222");
+	});
+
+	ModelCache::getInstance()->addModelAsync("models/Fighter/fighterChar.FBX", [&](Model* mo)
+	{
+		BROWSER_LOG("test333");
+	});
 
 
 
@@ -396,7 +419,9 @@ int main()
 		mainLoop(window);
 	}
 
+
 	// glfw: terminate, clearing all previously allocated GLFW resources.
+	ImGui_ImplGlfwGL3_Shutdown();
 	glfwTerminate();
 	return 0;
 }
@@ -430,6 +455,13 @@ GLFWwindow* init()
 	}
 	glfwMakeContextCurrent(window);
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+	glfwSetWindowSizeCallback(window, window_size_callback);
+	glfwSetCursorPosCallback(window, mouse_callback);
+	glfwSetMouseButtonCallback(window, mouse_button_callback);
+
+	ImGui_ImplGlfwGL3_Init(window, true);
+
+	ImGui::StyleColorsDark();
 
 	// glad: load all OpenGL function pointers
 	// ---------------------------------------
@@ -438,6 +470,10 @@ GLFWwindow* init()
 		std::cout << "Failed to initialize GLAD" << std::endl;
 		return nullptr;
 	}
+
+
+	// 初始化调试GUI框架
+    common::GUIFramework::getInstance()->init(SCR_WIDTH, SCR_HEIGHT);
 
 	// 添加搜索路径
 	FileUtils::getInstance()->addSearchPath(".");
@@ -478,7 +514,9 @@ void mainLoop(GLFWwindow *window)
     _lastUpdate = now;
 
 	// 1.input
+	glfwPollEvents();
 	processInput(window);
+
 
 	// temp
 	TextureCache::getInstance()->update(deltaTime);
@@ -492,13 +530,21 @@ void mainLoop(GLFWwindow *window)
     //BROWSER_LOG(deltaTime);
 
 
+	// 更新调试信息
+	common::GUIFramework::getInstance()->getGameStatusPanel()->setDeltaTime(deltaTime);
+	// 更新调试GUI框架
+	common::GUIFramework::getInstance()->update(deltaTime);
+	// ImGui rendering
+	ImGui::Render();
+
+
 	// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 	glfwSwapBuffers(window);
-	glfwPollEvents();
 
 	// auto release
 	AutoReleasePool::getInstance()->update();
     
+	// 锁帧
 //    float fps = ;
 //    if (deltaTime < 1.0f/60.0f)
 //    {
@@ -506,11 +552,20 @@ void mainLoop(GLFWwindow *window)
 ////        deltaTime = 1.0f/60.0f;
 //        fps = 60;
 //    }
-    
-    // 调试信息
-	sprintf(strTitle, "deltaTime:%.4fs, FPS:%.1f, DrawCalls:%d, Vertices:%d, Face:%d", deltaTime, 1.0f/deltaTime, browser::RenderSystem::getInstance()->getDrawCalls()
-				, browser::RenderSystem::getInstance()->getVerticesCount(), browser::RenderSystem::getInstance()->getFaceCount());
-    glfwSetWindowTitle(window, strTitle);
+
+}
+
+void mouse_callback(GLFWwindow* window, double xpos, double ypos)
+{
+
+}
+
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
+{
+	//if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
+	//{
+	//	//popup_menu();
+	//}
 }
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
@@ -556,6 +611,11 @@ void processInput(GLFWwindow *window)
         }
 	}
 	
+
+}
+
+void window_size_callback(GLFWwindow* window, int width, int height)
+{
 
 }
 

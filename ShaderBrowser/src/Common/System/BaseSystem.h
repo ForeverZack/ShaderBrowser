@@ -34,7 +34,7 @@ namespace common
 			{
 				std::list<BaseComponent*> list;
 				list.push_back(component);
-				m_mComponentsList.emplace(entity, list);
+				m_mComponentsList.emplace(entity, std::move(list));
 			}
 			else
 			{

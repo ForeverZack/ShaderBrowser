@@ -1,9 +1,11 @@
 #ifndef COMS_BASECOMPONENT_H
 #define COMS_BASECOMPONENT_H
 
+#include <string>
 #include "Common/Components/Reference.h"
 #include "Common/CommonDefine.h"
 #include "Common/Tools/Utils.h"
+#include "Common/Tools/UI/InspectorPanel.h"
 #include "Browser/Components/Event/ComponentEvent.h"
 
 using namespace common;
@@ -20,10 +22,14 @@ namespace browser
 	public:
 
 	public:
-		BaseComponent();
+        BaseComponent();
+        BaseComponent(const std::string& name);
 		virtual ~BaseComponent();
 
 	public:
+        
+        // GUI属性面板
+        virtual void onInspectorGUI(InspectorPanel* inspector) {}
 
 		// 每帧刷新
 		virtual void update(float deltaTime) {}
@@ -51,6 +57,7 @@ namespace browser
 
 		REGISTER_PROPERTY_GET(SystemType, m_eBelongSystem, BelongSystem)
 		REGISTER_PROPERTY_GET_SET(BaseEntity*, m_oBelongEntity, BelongEntity)
+        REGISTER_PROPERTY_CONSTREF_GET(std::string, m_sComponentName, ComponentName)
         
     protected:
         // 获取Transform组件
@@ -86,6 +93,9 @@ namespace browser
 		SystemType m_eBelongSystem;
 		// 组件属于哪个Entity
 		BaseEntity* m_oBelongEntity;
+        
+        // 组件名称
+        std::string m_sComponentName;
 	};
 }
 

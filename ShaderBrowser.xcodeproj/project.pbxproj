@@ -11,9 +11,10 @@
 		1405E8A321F432FF00FBDD71 /* ComponentEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1405E8A221F432FF00FBDD71 /* ComponentEvent.cpp */; };
 		1452D79521E99742001AD1CA /* MeshSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1452D79421E99742001AD1CA /* MeshSystem.cpp */; };
 		1469977F220F14B600F4C802 /* BaseLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1469977E220F14B600F4C802 /* BaseLight.cpp */; };
+		147BBAF9222277EF00B3079B /* HierarchyPanel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 147BBAF8222277EE00B3079B /* HierarchyPanel.cpp */; };
 		148177B621D8A86D0037E11D /* Transform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 148177B421D8A86C0037E11D /* Transform.cpp */; };
 		148177B921D8CB5E0037E11D /* TransformSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 148177B821D8CB5E0037E11D /* TransformSystem.cpp */; };
-		148E896221CDE448006A71FD /* libassimp.4.1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 14FF768421C4B6D80008462D /* libassimp.4.1.0.dylib */; settings = {ATTRIBUTES = (Required, ); }; };
+		14941422221EF7B200A735DA /* libassimp.4.1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 14FF768421C4B6D80008462D /* libassimp.4.1.0.dylib */; };
 		149C01FF21F4AF910011DAE2 /* GLProgramCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 149C01FE21F4AF910011DAE2 /* GLProgramCache.cpp */; };
 		14B45A21220C227400FE5777 /* BaseBoundBox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B45A1F220C227400FE5777 /* BaseBoundBox.cpp */; };
 		14B45A24220C25AD00FE5777 /* AABBBoundBox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B45A23220C25AD00FE5777 /* AABBBoundBox.cpp */; };
@@ -23,7 +24,6 @@
 		14B902F521BA9CE500554B0B /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14B902F421BA9CE500554B0B /* CoreVideo.framework */; };
 		14B902F721BA9CED00554B0B /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14B902F621BA9CED00554B0B /* Cocoa.framework */; };
 		14B902F921BA9CF800554B0B /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14B902F821BA9CF800554B0B /* IOKit.framework */; };
-		14B9067C21BABC8F00554B0B /* stb_image.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B904CA21BABC8E00554B0B /* stb_image.cpp */; };
 		14B9067D21BABC8F00554B0B /* glad.c in Sources */ = {isa = PBXBuildFile; fileRef = 14B904D221BABC8E00554B0B /* glad.c */; };
 		14B9068121BABC8F00554B0B /* BaseEntity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B9065921BABC8F00554B0B /* BaseEntity.cpp */; };
 		14B9068221BABC8F00554B0B /* RenderSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B9065B21BABC8F00554B0B /* RenderSystem.cpp */; };
@@ -52,6 +52,12 @@
 		14E349D221C647AA00EB5785 /* Pass.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14E349D121C647AA00EB5785 /* Pass.cpp */; };
 		14E349D421C658CA00EB5785 /* GLDefine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14E349D321C658CA00EB5785 /* GLDefine.cpp */; };
 		14E723E621E8C31E002A8A89 /* MeshFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14E723E421E8C31E002A8A89 /* MeshFilter.cpp */; };
+		14EB11822220184D00D3C29D /* imgui_impl_glfw_gl3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14EB11802220184D00D3C29D /* imgui_impl_glfw_gl3.cpp */; };
+		14EB11832220184D00D3C29D /* imgui_draw.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14EB11812220184D00D3C29D /* imgui_draw.cpp */; };
+		14EB11852220185800D3C29D /* imgui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14EB11842220185800D3C29D /* imgui.cpp */; };
+		14EB1187222019C000D3C29D /* GUIFramework.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14EB1186222019C000D3C29D /* GUIFramework.cpp */; };
+		14EB118922201A8B00D3C29D /* BaseGUIPanel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14EB118822201A8B00D3C29D /* BaseGUIPanel.cpp */; };
+		14EB118C22202A0100D3C29D /* InspectorPanel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14EB118A22202A0100D3C29D /* InspectorPanel.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -76,6 +82,8 @@
 		1452D79421E99742001AD1CA /* MeshSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MeshSystem.cpp; sourceTree = "<group>"; };
 		1469977D220F14B600F4C802 /* BaseLight.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseLight.h; sourceTree = "<group>"; };
 		1469977E220F14B600F4C802 /* BaseLight.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BaseLight.cpp; sourceTree = "<group>"; };
+		147BBAF7222277EE00B3079B /* HierarchyPanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HierarchyPanel.h; sourceTree = "<group>"; };
+		147BBAF8222277EE00B3079B /* HierarchyPanel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HierarchyPanel.cpp; sourceTree = "<group>"; };
 		148177B421D8A86C0037E11D /* Transform.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Transform.cpp; sourceTree = "<group>"; };
 		148177B521D8A86C0037E11D /* Transform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Transform.h; sourceTree = "<group>"; };
 		148177B721D8CB5E0037E11D /* TransformSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TransformSystem.h; sourceTree = "<group>"; };
@@ -93,8 +101,6 @@
 		14B902F421BA9CE500554B0B /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		14B902F621BA9CED00554B0B /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		14B902F821BA9CF800554B0B /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
-		14B904C921BABC8E00554B0B /* stb_image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stb_image.h; sourceTree = "<group>"; };
-		14B904CA21BABC8E00554B0B /* stb_image.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = stb_image.cpp; sourceTree = "<group>"; };
 		14B904D221BABC8E00554B0B /* glad.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = glad.c; sourceTree = "<group>"; };
 		14B904DA21BABC8E00554B0B /* libglfw3.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libglfw3.a; sourceTree = "<group>"; };
 		14B904DC21BABC8E00554B0B /* glfw3.lib */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = glfw3.lib; sourceTree = "<group>"; };
@@ -156,6 +162,17 @@
 		14E349D321C658CA00EB5785 /* GLDefine.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GLDefine.cpp; sourceTree = "<group>"; };
 		14E723E421E8C31E002A8A89 /* MeshFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MeshFilter.cpp; sourceTree = "<group>"; };
 		14E723E721E8C33B002A8A89 /* MeshFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MeshFilter.h; sourceTree = "<group>"; };
+		14EAC0B6221EEB9D00981AF7 /* libAntTweakBar.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libAntTweakBar.a; path = ShaderBrowser/src/Plugins/AntTweakBar/lib/mac/libAntTweakBar.a; sourceTree = "<group>"; };
+		14EAC0B8221EEBB700981AF7 /* libAntTweakBar.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libAntTweakBar.dylib; path = ShaderBrowser/src/Plugins/AntTweakBar/lib/mac/libAntTweakBar.dylib; sourceTree = "<group>"; };
+		14EB11742220172700D3C29D /* GUIFramework.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GUIFramework.h; sourceTree = "<group>"; };
+		14EB11752220172700D3C29D /* BaseGUIPanel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BaseGUIPanel.h; sourceTree = "<group>"; };
+		14EB11802220184D00D3C29D /* imgui_impl_glfw_gl3.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = imgui_impl_glfw_gl3.cpp; sourceTree = "<group>"; };
+		14EB11812220184D00D3C29D /* imgui_draw.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = imgui_draw.cpp; sourceTree = "<group>"; };
+		14EB11842220185800D3C29D /* imgui.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = imgui.cpp; sourceTree = "<group>"; };
+		14EB1186222019C000D3C29D /* GUIFramework.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIFramework.cpp; sourceTree = "<group>"; };
+		14EB118822201A8B00D3C29D /* BaseGUIPanel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BaseGUIPanel.cpp; sourceTree = "<group>"; };
+		14EB118A22202A0100D3C29D /* InspectorPanel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InspectorPanel.cpp; sourceTree = "<group>"; };
+		14EB118B22202A0100D3C29D /* InspectorPanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InspectorPanel.h; sourceTree = "<group>"; };
 		14FF768421C4B6D80008462D /* libassimp.4.1.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libassimp.4.1.0.dylib; path = ShaderBrowser/src/Plugins/assimp/lib/mac/libassimp.4.1.0.dylib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -164,7 +181,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				148E896221CDE448006A71FD /* libassimp.4.1.0.dylib in Frameworks */,
+				14941422221EF7B200A735DA /* libassimp.4.1.0.dylib in Frameworks */,
 				14B902F921BA9CF800554B0B /* IOKit.framework in Frameworks */,
 				14B902F721BA9CED00554B0B /* Cocoa.framework in Frameworks */,
 				14B902F521BA9CE500554B0B /* CoreVideo.framework in Frameworks */,
@@ -264,6 +281,8 @@
 		14B902EF21BA9CCB00554B0B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				14EAC0B8221EEBB700981AF7 /* libAntTweakBar.dylib */,
+				14EAC0B6221EEB9D00981AF7 /* libAntTweakBar.a */,
 				14FF768421C4B6D80008462D /* libassimp.4.1.0.dylib */,
 				14B902F821BA9CF800554B0B /* IOKit.framework */,
 				14B902F621BA9CED00554B0B /* Cocoa.framework */,
@@ -289,20 +308,11 @@
 		14B904C721BABC8E00554B0B /* Plugins */ = {
 			isa = PBXGroup;
 			children = (
-				14B904C821BABC8E00554B0B /* Image */,
+				14EB1169222015FD00D3C29D /* imgui */,
 				14B904CB21BABC8E00554B0B /* glad */,
 				14B904D321BABC8E00554B0B /* GLFW */,
 			);
 			path = Plugins;
-			sourceTree = "<group>";
-		};
-		14B904C821BABC8E00554B0B /* Image */ = {
-			isa = PBXGroup;
-			children = (
-				14B904C921BABC8E00554B0B /* stb_image.h */,
-				14B904CA21BABC8E00554B0B /* stb_image.cpp */,
-			);
-			path = Image;
 			sourceTree = "<group>";
 		};
 		14B904CB21BABC8E00554B0B /* glad */ = {
@@ -435,6 +445,7 @@
 		14B9066621BABC8F00554B0B /* Tools */ = {
 			isa = PBXGroup;
 			children = (
+				14EB11712220172700D3C29D /* UI */,
 				14C1CD0021FF517A00470798 /* BaseSingleton.h */,
 				14C1CCFD21FF517000470798 /* FileUtils.h */,
 				14C1CCFE21FF517000470798 /* FileUtils.cpp */,
@@ -505,6 +516,31 @@
 			path = Mesh;
 			sourceTree = "<group>";
 		};
+		14EB1169222015FD00D3C29D /* imgui */ = {
+			isa = PBXGroup;
+			children = (
+				14EB11842220185800D3C29D /* imgui.cpp */,
+				14EB11812220184D00D3C29D /* imgui_draw.cpp */,
+				14EB11802220184D00D3C29D /* imgui_impl_glfw_gl3.cpp */,
+			);
+			path = imgui;
+			sourceTree = "<group>";
+		};
+		14EB11712220172700D3C29D /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				14EB11742220172700D3C29D /* GUIFramework.h */,
+				14EB1186222019C000D3C29D /* GUIFramework.cpp */,
+				14EB11752220172700D3C29D /* BaseGUIPanel.h */,
+				14EB118822201A8B00D3C29D /* BaseGUIPanel.cpp */,
+				14EB118B22202A0100D3C29D /* InspectorPanel.h */,
+				14EB118A22202A0100D3C29D /* InspectorPanel.cpp */,
+				147BBAF7222277EE00B3079B /* HierarchyPanel.h */,
+				147BBAF8222277EE00B3079B /* HierarchyPanel.cpp */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -563,6 +599,7 @@
 			files = (
 				148177B621D8A86D0037E11D /* Transform.cpp in Sources */,
 				14E349D221C647AA00EB5785 /* Pass.cpp in Sources */,
+				14EB11822220184D00D3C29D /* imgui_impl_glfw_gl3.cpp in Sources */,
 				14E723E621E8C31E002A8A89 /* MeshFilter.cpp in Sources */,
 				14B9068521BABC8F00554B0B /* BaseComponent.cpp in Sources */,
 				14B9068A21BABC8F00554B0B /* Image.cpp in Sources */,
@@ -576,6 +613,8 @@
 				14C29E8A220FDF0300A514BE /* DirectionalLight.cpp in Sources */,
 				14B45A27220C269800FE5777 /* BoundBoxSystem.cpp in Sources */,
 				14B9068721BABC8F00554B0B /* AutoReleasePool.cpp in Sources */,
+				14EB1187222019C000D3C29D /* GUIFramework.cpp in Sources */,
+				14EB11852220185800D3C29D /* imgui.cpp in Sources */,
 				1405E89F21F426F400FBDD71 /* Mesh.cpp in Sources */,
 				14C29E8D220FFB9E00A514BE /* PointLight.cpp in Sources */,
 				14B9068421BABC8F00554B0B /* BaseRender.cpp in Sources */,
@@ -583,18 +622,21 @@
 				14B9068921BABC8F00554B0B /* Reference.cpp in Sources */,
 				14B9068621BABC8F00554B0B /* Utils.cpp in Sources */,
 				14B9068321BABC8F00554B0B /* Material.cpp in Sources */,
+				14EB11832220184D00D3C29D /* imgui_draw.cpp in Sources */,
 				1469977F220F14B600F4C802 /* BaseLight.cpp in Sources */,
-				14B9067C21BABC8F00554B0B /* stb_image.cpp in Sources */,
 				14B9067D21BABC8F00554B0B /* glad.c in Sources */,
 				149C01FF21F4AF910011DAE2 /* GLProgramCache.cpp in Sources */,
+				14EB118922201A8B00D3C29D /* BaseGUIPanel.cpp in Sources */,
 				14B45A24220C25AD00FE5777 /* AABBBoundBox.cpp in Sources */,
 				14D46D22220096D900E21D4C /* TextureCache.cpp in Sources */,
 				14B9068121BABC8F00554B0B /* BaseEntity.cpp in Sources */,
 				14C29E93221035A300A514BE /* LightSystem.cpp in Sources */,
 				14BE47A32201EE0500EFE57C /* Camera.cpp in Sources */,
 				14CDFD1822058FFE00A42823 /* Model.cpp in Sources */,
+				147BBAF9222277EF00B3079B /* HierarchyPanel.cpp in Sources */,
 				14BE47A62201EE6600EFE57C /* CameraSystem.cpp in Sources */,
 				1452D79521E99742001AD1CA /* MeshSystem.cpp in Sources */,
+				14EB118C22202A0100D3C29D /* InspectorPanel.cpp in Sources */,
 				14E1431A22084724001A2EB1 /* ModelCache.cpp in Sources */,
 				14B9068D21BABC8F00554B0B /* main.cpp in Sources */,
 				14B45A21220C227400FE5777 /* BaseBoundBox.cpp in Sources */,
@@ -727,8 +769,10 @@
 					"\"$(SRCROOT)/ShaderBrowser/src/Plugins/glm/include\"",
 					"\"$(SRCROOT)/ShaderBrowser/src/Plugins/assimp/include\"",
 					"\"$(SRCROOT)/ShaderBrowser/src\"",
+					"\"$(SRCROOT)/ShaderBrowser/src/Plugins/stb\"",
+					"\"$(SRCROOT)/ShaderBrowser/src/Plugins/imgui\"",
 				);
-				LD_RUNPATH_SEARCH_PATHS = /Users/zack/OpenGL/ShaderBrowser/ShaderBrowser/src/Plugins/assimp/lib/mac;
+				LD_RUNPATH_SEARCH_PATHS = "$(PROJECT_DIR)/ShaderBrowser/src/Plugins/assimp/lib/mac";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/ShaderBrowser/src/Plugins/GLFW/lib/mac",
@@ -749,6 +793,7 @@
 					"$(PROJECT_DIR)/ShaderBrowser/src/Plugins/GLFW/lib/mac",
 					"$(PROJECT_DIR)/ShaderBrowser/src/Plugins/GLFW/lib/win32",
 					"$(PROJECT_DIR)/ShaderBrowser/src/Plugins/assimp/lib/mac",
+					"$(PROJECT_DIR)/ShaderBrowser/src/Plugins/AntTweakBar/lib/mac",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};

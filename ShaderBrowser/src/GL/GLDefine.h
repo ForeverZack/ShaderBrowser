@@ -40,6 +40,8 @@ namespace customGL
     //extern const char* DEFAULT_GLPROGRAM_NAME;
     // 默认材质名称
     //extern const char* DEFAULT_MATERIAL_NAME;
+    // 圆周率PI
+    extern const float PI;
     // 坐标轴X
     extern const glm::vec3 GLM_AXIS_X;
     // 坐标轴Y

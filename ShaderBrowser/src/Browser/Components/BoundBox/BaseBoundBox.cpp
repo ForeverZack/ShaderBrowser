@@ -3,7 +3,8 @@
 namespace browser
 {
 	BaseBoundBox::BaseBoundBox()
-        : m_bRecVisibility(true)
+        : BaseComponent("Bound Box")
+        , m_bRecVisibility(true)
 	{
 		// 组件所属系统
 		m_eBelongSystem = SystemType::BoundBox;
