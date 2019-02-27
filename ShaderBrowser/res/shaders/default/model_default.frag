@@ -12,5 +12,5 @@ in V2FData
 
 void main()
 {
-    fColor = texture(CGL_TEXTURE0, v2f.coord);
+    fColor = CGL_ALBEDO_COLOR * texture(CGL_TEXTURE0, v2f.coord);
 }

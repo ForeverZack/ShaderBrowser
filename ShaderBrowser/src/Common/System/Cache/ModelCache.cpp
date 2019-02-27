@@ -1,13 +1,12 @@
 #include "ModelCache.h"
 #include "Common/Tools/Utils.h"
 #include "Common/Tools/FileUtils.h"
-#include <vector>
 
 namespace common
 {    
 
 	ModelCache::ModelCache()
-    : BaseAsyncLoader<std::function<Model*(const char*)>, Model, std::function<void(Model*)>>(Model::create)
+    : BaseAsyncLoader<Model, std::function<void(Model*)>, std::vector<std::string>>(Model::create)
     {
     }
     
@@ -15,11 +14,11 @@ namespace common
     {
     }
     
-	void ModelCache::addModel(std::string filepath, std::function<void(Model*)> callback)
+	void ModelCache::addModel(std::string filepath, std::vector<std::string> animFilePaths, std::function<void(Model*)> callback)
 	{
 		const std::string full_path = FileUtils::getInstance()->getAbsolutePathForFilename(filepath);
 	
-		Model* model = Model::createAlone(full_path.c_str(), callback);
+		Model* model = Model::createAlone(full_path.c_str(), {}, callback);
         model->retain();
         
 		add(full_path, model);
@@ -31,7 +30,7 @@ namespace common
 		return get(full_path);
 	}
 
-	void ModelCache::addModelAsync(std::string filepath, std::function<void(Model*)> callback)
+	void ModelCache::addModelAsync(std::string filepath, std::vector<std::string> animFilePaths, std::function<void(Model*)> callback)
 	{
 		const std::string full_path = FileUtils::getInstance()->getAbsolutePathForFilename(filepath);
 
@@ -57,23 +56,29 @@ namespace common
 			return;
 		}
 
-		loadResourceAsync(full_path, callback);
+		// 获取动画文件绝对路径
+		for (auto itor = animFilePaths.begin(); itor != animFilePaths.end(); ++itor)
+		{
+			(*itor) = FileUtils::getInstance()->getAbsolutePathForFilename(*itor);
+		}
+
+		loadResourceAsync(full_path, callback, make_shared<std::vector<std::string>>(animFilePaths));
 	}
 
-	void ModelCache::addModelsAsync(std::vector<std::string> filepaths, std::function<void(Model*)> callback)
+	void ModelCache::addModelsAsync(std::vector<std::string> filepaths, std::vector<std::vector<std::string>> animFilePathsVec, std::function<void(Model*)> callback)
 	{
 		for (int i = 0; i < filepaths.size(); ++i)
 		{
-			addModelAsync(filepaths[i], callback);
+			addModelAsync(filepaths[i], animFilePathsVec[i], callback);
 		}
 	}
 
 	void ModelCache::update(float dt)
 	{
-		const std::vector<AsyncData<Model, std::function<void(Model*)>>*>& responses = getResponseQueue();
+		const std::vector<AsyncData<Model, std::function<void(Model*)>, std::vector<std::string>>*>& responses = getResponseQueue();
 
         Model* model = nullptr;
-		AsyncData<Model, std::function<void(Model*)>>* asyncData = nullptr;
+		AsyncData<Model, std::function<void(Model*)>, std::vector<std::string>>* asyncData = nullptr;
 		for (int i = 0; i < responses.size(); ++i)
 		{
 			asyncData = responses[i];

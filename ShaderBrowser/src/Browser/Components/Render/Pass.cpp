@@ -1,5 +1,6 @@
 #include "Pass.h"
 #include "GL/Texture2D.h"
+#include "GL/GLDefine.h"
 
 namespace browser
 {
@@ -183,16 +184,22 @@ namespace browser
 		m_oGLProgram->useProgram();
 
 		// 设置uniform（uniform需要每帧更新！！！！）
+		// 设置模型材质属性到pass （TODO: pass理论上可以修改它们的值，应该做判断，这里先覆盖）
+		const std::unordered_map<std::string, glm::vec4>& colorProperties = mesh->getColorProperties();
+		for (auto itor = colorProperties.begin(); itor != colorProperties.end(); ++itor)
+		{
+			setUniformV4f(itor->first, itor->second);
+		}
+		// 更新属性
 		for (auto itor = m_mUniforms.begin(); itor != m_mUniforms.end(); ++itor)
 		{
-            itor->second.updateGLProgramUniformValue(m_oGLProgram, itor->first);
+			itor->second.updateGLProgramUniformValue(m_oGLProgram, itor->first);
 		}
 		// 设置model矩阵
 		m_oGLProgram->setUniformWithMat4(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_MODEL_MATRIX], transform->getModelMatrix());
 		// 设置view矩阵,projection矩阵
 		m_oGLProgram->setUniformWithMat4(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_VIEW_MATRIX], camera->getViewMatrix());
 		m_oGLProgram->setUniformWithMat4(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_PROJECTION_MATRIX], camera->getProjectionMatrix());
-
 	}
 
 

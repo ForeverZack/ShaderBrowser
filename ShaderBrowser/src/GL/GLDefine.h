@@ -57,6 +57,7 @@ namespace customGL
     extern const glm::vec4 GLM_VEC4_ZERO;
     // 1向量
     extern const glm::vec3 GLM_VEC3_ONE;
+	extern const glm::vec4 GLM_VEC4_ONE;
     // 颜色(非归一化)
     extern const glm::vec4 GLM_COLOR_WHITE; // 白色
     extern const glm::vec4 GLM_COLOR_RED;   // 红色

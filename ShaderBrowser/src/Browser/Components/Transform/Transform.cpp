@@ -35,6 +35,16 @@ namespace browser
 	{
 		BROWSER_LOG("~Transform");
 	}
+
+	Reference* Transform::clone()
+	{
+		Transform* transform = new Transform();
+		transform->m_sName = m_sName;
+
+		*transform = *this;
+
+		return transform;
+	}
     
     void Transform::onInspectorGUI(InspectorPanel* inspector)
     {

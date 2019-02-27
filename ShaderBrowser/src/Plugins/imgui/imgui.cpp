@@ -2964,25 +2964,22 @@ void ImGui::RenderBullet(ImVec2 pos)
     window->DrawList->AddCircleFilled(pos, GImGui->FontSize*0.20f, GetColorU32(ImGuiCol_Text), 8);
 }
 
-void ImGui::RenderCheckMark(ImVec2 pos, ImU32 col)
+void ImGui::RenderCheckMark(ImVec2 pos, ImU32 col, float sz)
 {
-    ImGuiContext& g = *GImGui;
-    ImGuiWindow* window = GetCurrentWindow();
+	ImGuiContext& g = *GImGui;
+	ImGuiWindow* window = g.CurrentWindow;
 
-    ImVec2 a, b, c;
-    float start_x = (float)(int)(g.FontSize * 0.307f + 0.5f);
-    float rem_third = (float)(int)((g.FontSize - start_x) / 3.0f);
-    a.x = pos.x + 0.5f + start_x;
-    b.x = a.x + rem_third;
-    c.x = a.x + rem_third * 3.0f;
-    b.y = pos.y - 1.0f + (float)(int)(g.Font->Ascent * (g.FontSize / g.Font->FontSize) + 0.5f) + (float)(int)(g.Font->DisplayOffset.y);
-    a.y = b.y - rem_third;
-    c.y = b.y - rem_third * 2.0f;
+	float thickness = ImMax(sz / 5.0f, 1.0f);
+	sz -= thickness*0.5f;
+	pos += ImVec2(thickness*0.25f, thickness*0.25f);
 
-    window->DrawList->PathLineTo(a);
-    window->DrawList->PathLineTo(b);
-    window->DrawList->PathLineTo(c);
-    window->DrawList->PathStroke(col, false);
+	float third = sz / 3.0f;
+	float bx = pos.x + third;
+	float by = pos.y + sz - third*0.5f;
+	window->DrawList->PathLineTo(ImVec2(bx - third, by - third));
+	window->DrawList->PathLineTo(ImVec2(bx, by));
+	window->DrawList->PathLineTo(ImVec2(bx + third * 2, by - third * 2));
+	window->DrawList->PathStroke(col, false, thickness);
 }
 
 // Calculate text size. Text can be multi-line. Optionally ignore text after a ## marker.
@@ -7217,7 +7214,7 @@ void ImGui::ProgressBar(float fraction, const ImVec2& size_arg, const char* over
         RenderTextClipped(ImVec2(ImClamp(fill_br.x + style.ItemSpacing.x, bb.Min.x, bb.Max.x - overlay_size.x - style.ItemInnerSpacing.x), bb.Min.y), bb.Max, overlay, NULL, &overlay_size, ImVec2(0.0f,0.5f), &bb);
 }
 
-bool ImGui::Checkbox(const char* label, bool* v)
+bool ImGui::Checkbox(const char* strId, const char* label, bool* v)
 {
     ImGuiWindow* window = GetCurrentWindow();
     if (window->SkipItems)
@@ -7225,7 +7222,7 @@ bool ImGui::Checkbox(const char* label, bool* v)
 
     ImGuiContext& g = *GImGui;
     const ImGuiStyle& style = g.Style;
-    const ImGuiID id = window->GetID(label);
+    const ImGuiID id = window->GetID(strId);
     const ImVec2 label_size = CalcTextSize(label, NULL, true);
 
     const ImRect check_bb(window->DC.CursorPos, window->DC.CursorPos + ImVec2(label_size.y + style.FramePadding.y*2, label_size.y + style.FramePadding.y*2));
@@ -7252,10 +7249,12 @@ bool ImGui::Checkbox(const char* label, bool* v)
     RenderFrame(check_bb.Min, check_bb.Max, GetColorU32((held && hovered) ? ImGuiCol_FrameBgActive : hovered ? ImGuiCol_FrameBgHovered : ImGuiCol_FrameBg), true, style.FrameRounding);
     if (*v)
     {
-        const float check_sz = ImMin(check_bb.GetWidth(), check_bb.GetHeight());
-        const float pad = ImMax(1.0f, (float)(int)(check_sz / 6.0f));
-        window->DrawList->AddRectFilled(check_bb.Min+ImVec2(pad,pad), check_bb.Max-ImVec2(pad,pad), GetColorU32(ImGuiCol_CheckMark), style.FrameRounding);
-    }
+        const float square_sz = ImMin(check_bb.GetWidth(), check_bb.GetHeight());
+        const float pad = ImMax(1.0f, (float)(int)(square_sz / 6.0f));
+        //window->DrawList->AddRectFilled(check_bb.Min+ImVec2(pad,pad), check_bb.Max-ImVec2(pad,pad), GetColorU32(ImGuiCol_CheckMark), style.FrameRounding);
+		RenderCheckMark(check_bb.Min + ImVec2(pad, pad), GetColorU32(ImGuiCol_CheckMark), square_sz - pad*2.0f);
+
+	}
 
     if (g.LogEnabled)
         LogRenderedText(text_bb.GetTL(), *v ? "[x]" : "[ ]");
@@ -7265,10 +7264,10 @@ bool ImGui::Checkbox(const char* label, bool* v)
     return pressed;
 }
 
-bool ImGui::CheckboxFlags(const char* label, unsigned int* flags, unsigned int flags_value)
+bool ImGui::CheckboxFlags(const char* strId, const char* label, unsigned int* flags, unsigned int flags_value)
 {
     bool v = ((*flags & flags_value) == flags_value);
-    bool pressed = Checkbox(label, &v);
+    bool pressed = Checkbox(strId, label, &v);
     if (pressed)
     {
         if (v)
@@ -9668,7 +9667,7 @@ void ImGui::ShowMetricsWindow(bool* p_open)
         ImGui::Text("%d vertices, %d indices (%d triangles)", ImGui::GetIO().MetricsRenderVertices, ImGui::GetIO().MetricsRenderIndices, ImGui::GetIO().MetricsRenderIndices / 3);
         ImGui::Text("%d allocations", ImGui::GetIO().MetricsAllocs);
         static bool show_clip_rects = true;
-        ImGui::Checkbox("Show clipping rectangles when hovering a ImDrawCmd", &show_clip_rects);
+        ImGui::Checkbox("Show clipping rectangles when hovering a ImDrawCmd", "Show clipping rectangles when hovering a ImDrawCmd", &show_clip_rects);
         ImGui::Separator();
 
         struct Funcs

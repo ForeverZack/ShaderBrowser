@@ -63,6 +63,8 @@ namespace browser
 		Transform();
 		~Transform();
 
+		virtual Reference* clone();
+
 	public:
         // 添加子节点
         void addChild(Transform* child);

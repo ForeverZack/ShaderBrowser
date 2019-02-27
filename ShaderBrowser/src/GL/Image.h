@@ -4,13 +4,14 @@
 #include <glad/glad.h>
 #include <string>
 #include "Common/Tools/Utils.h"
+#include <memory>
 
 namespace customGL
 {
 	class Image
 	{
 	public:
-		static Image* create(const char* fileName);
+		static Image* create(const char* fileName, shared_ptr<const char*> extra = nullptr);
 	public:
 		Image();
 		~Image();

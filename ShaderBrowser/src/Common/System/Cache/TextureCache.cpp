@@ -7,7 +7,7 @@ namespace common
 {    
 
 	TextureCache::TextureCache()
-		: BaseAsyncLoader<std::function<Image*(const char*)>, Image, std::function<void(Texture2D*)>>(Image::create)
+		: BaseAsyncLoader<Image, std::function<void(Texture2D*)>>(Image::create)
     {
     }
     

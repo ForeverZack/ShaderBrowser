@@ -50,7 +50,7 @@ namespace common
         ~ShowGUIData();
         
     public:
-        void setTitle(const std::string& title, bool expand = false);
+        void setTitle(const std::string& title, bool expand = false, bool enable = true);
         void setText(const std::string& text);
         void setVec2(const std::string& showName, glm::vec2* vec2, ValueChangeFunc_vec2 callback = nullptr);
         void setVec3(const std::string& showName, glm::vec3* vec3, ValueChangeFunc_vec3 callback = nullptr);
@@ -73,6 +73,7 @@ namespace common
             struct {
                 std::string show_name;
                 bool isExpand;
+				bool isEnable;
             } title;
             struct {
                 std::string show_name;
@@ -129,7 +130,7 @@ namespace common
     
     public:
         // 添加折叠标签页
-        void addCollapsingHeader(const std::string& title, bool expand = false);
+        void addCollapsingHeader(const std::string& title, bool expand = false, bool enable = true);
         // 添加树节点
         void addTreeNode(const std::string& title, unsigned long nodeID, bool selected = false, bool expand = false, bool hasChildren = false, ShowGUIData::ClickFunc_TreeNode callback = nullptr);
         void addTreeNode(const ShowGUIData& nodeData);

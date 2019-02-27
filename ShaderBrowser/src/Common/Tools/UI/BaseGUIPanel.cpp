@@ -92,11 +92,12 @@ namespace common
         return false;
     }
 
-    void ShowGUIData::setTitle(const std::string& title, bool expand /*= false*/)
+    void ShowGUIData::setTitle(const std::string& title, bool expand /*= false*/, bool enable /*= true*/)
     {
         m_eType = ShowGUIType::ExpandTitle;
         value.title.show_name = title;
         value.title.isExpand = expand;
+		value.title.isEnable = enable;
     }
     
     void ShowGUIData::setTreeNode(const std::string& showName, unsigned long nodeID, bool selected /*= false*/, bool expand /*= false*/, bool hasChildren /*= false*/, ClickFunc_TreeNode callback /*= nullptr*/)
@@ -175,10 +176,10 @@ namespace common
 
 	}
     
-    void BaseGUIPanel::addCollapsingHeader(const std::string& title, bool expand /*= false*/)
+    void BaseGUIPanel::addCollapsingHeader(const std::string& title, bool expand /*= false*/, bool enable /*= true*/)
     {
         ShowGUIData data;
-        data.setTitle(title, expand);
+        data.setTitle(title, expand, enable);
         
         m_vContents.push_back(std::move(data));
     }
@@ -315,8 +316,13 @@ namespace common
             
             if(data.m_eType == ShowGUIData::ShowGUIType::ExpandTitle)
             {
-               data.value.title.isExpand = ImGui::CollapsingHeader(data.value.title.show_name.c_str(), 0, true, data.value.title.isExpand);
-               expandTitle = &data;
+				if (ImGui::Checkbox(data.value.title.show_name.c_str(), "", &data.value.title.isEnable))
+				{
+					// TODO: 回调函数
+				}
+				ImGui::SameLine(30);
+				data.value.title.isExpand = ImGui::CollapsingHeader(data.value.title.show_name.c_str(), 0, true, data.value.title.isExpand);
+				expandTitle = &data;
             }
             else
             {

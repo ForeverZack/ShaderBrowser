@@ -40,18 +40,20 @@ namespace customGL
 		};
         
         // 预定义的uniform变量枚举
-        enum
-        {
-            // 纹理0: 主纹理(漫反射纹理)
-            UNIFORM_CGL_TEXUTRE0 = 0,
-            // 纹理1
-            UNIFORM_CGL_TEXUTRE1,
+		enum
+		{
+			// 纹理0: 主纹理(漫反射纹理)
+			UNIFORM_CGL_TEXUTRE0 = 0,
+			// 纹理1
+			UNIFORM_CGL_TEXUTRE1,
 			// model matrix
 			UNIFORM_CGL_MODEL_MATRIX,
-            // view matrix
+			// view matrix
 			UNIFORM_CGL_VIEW_MATRIX,
 			// projection matrix
 			UNIFORM_CGL_PROJECTION_MATRIX,
+			// 漫反射颜色
+			UNIFORM_CGL_ALBEDO_COLOR,
             
             // 平行光
             UNIFORM_CGL_DIRECTIONAL_LIGHT,

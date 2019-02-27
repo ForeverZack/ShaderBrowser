@@ -7,25 +7,24 @@ using namespace common;
 namespace customGL
 {
 
-    //
-    Model* Model::create(const char* fileName)
-    {
-        Model* model = new Model();
-        if (!model->initWithFile(fileName, DEFAULT_ASSIMP_FLAG))
-        {
-            delete model;
-            return nullptr;
-        }
-        
-        return model;
-    }
+	Model* Model::create(const char* fileName, shared_ptr<std::vector<std::string>> animFileNames)
+	{
+		Model* model = new Model();
+		if (!model->initWithFile(fileName, *animFileNames, DEFAULT_ASSIMP_FLAG))
+		{
+			delete model;
+			return nullptr;
+		}
+
+		return model;
+	}
        
-    Model* Model::createAlone(std::string fileName, std::function<void(Model*)> success)
+    Model* Model::createAlone(std::string fileName, const std::vector<std::string>& animFiles, std::function<void(Model*)> success, unsigned int pFlags /*= DEFAULT_ASSIMP_FLAG*/)
     {
         Model* model = new Model();
         model->m_oSuccessCallback = success;
         
-        if (!model->initWithFile(fileName.c_str(), DEFAULT_ASSIMP_FLAG))
+        if (!model->initWithFile(fileName.c_str(), animFiles, pFlags))
         {
             delete model;
             return nullptr;
@@ -40,11 +39,14 @@ namespace customGL
         , m_oSuccessCallback(nullptr)
         , m_iLoadTextureNum(0)
         , m_oMeshFilter(nullptr)
+		, m_oRootNode(nullptr)
 	{
         // 清理
+		m_vImporters.clear();
         m_vMeshes.clear();
         m_vTextures.clear();
         m_vMeshTextureData.clear();
+		m_mAnimations.clear();
 	}
 
 	Model::~Model()
@@ -66,33 +68,65 @@ namespace customGL
         {
             (*itor)->release();
         }
+		// 释放模型原始数据
+		for (auto itor = m_vImporters.begin(); itor != m_vImporters.end(); ++itor)
+		{
+			const shared_ptr<Assimp::Importer>& importer = (*itor);
+			importer->FreeScene();
+		}
 	}
 
-	bool Model::initWithFile(const char* fileName, unsigned int pFlags)
+	bool Model::initWithFile(const char* fileName, const std::vector<std::string>& animFiles, unsigned int pFlags)
 	{
-        // 获取文件全名和路径
-        std::string model_file = FileUtils::getInstance()->getAbsolutePathForFilename(fileName, m_sDirectory);
-        
-        // 加载模型
-        Assimp::Importer importer;
-        const aiScene* scene = importer.ReadFile(model_file, pFlags);
-        if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
-        {
-            cout << "ERROR::ASSIMP::" << importer.GetErrorString() << endl;
-            return false;
-        }
-        
-        // 加载成功,生成模型数据
-        traverseNode(scene->mRootNode, scene);
-        
+        // 加载模型（主模型文件）
+		{
+			// 获取文件全名和路径
+			std::string model_file = FileUtils::getInstance()->getAbsolutePathForFilename(fileName, m_sDirectory);
+
+			std::shared_ptr<Assimp::Importer> importer = make_shared<Assimp::Importer>();
+			const aiScene* scene = importer->ReadFile(model_file, pFlags);
+			if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+			{
+				// 加载模型失败
+				cout << "ERROR::ASSIMP::" << importer->GetErrorString() << endl;
+				return false;
+			}
+			m_vImporters.push_back(importer);
+			// 加载模型动画数据
+			loadAnimations(scene);
+			// 加载模型网格数据
+			m_oRootNode = scene->mRootNode;
+			m_vMeshes.resize(scene->mNumMeshes);
+			traverseNode(scene->mRootNode, scene);
+		}
+		
+		// 加载其余的动画文件（动画文件列表）
+		{
+			for (auto itor = animFiles.begin(); itor != animFiles.end(); ++itor)
+			{
+				std::shared_ptr<Assimp::Importer> importer = make_shared<Assimp::Importer>();
+				const aiScene* scene = importer->ReadFile(*itor, aiProcess_GenSmoothNormals |
+					aiProcess_LimitBoneWeights |
+					aiProcess_FlipUVs);
+				unsigned int fff = scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE;
+				if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+				{
+					// 加载模型失败
+					cout << "ERROR::ASSIMP::" << importer->GetErrorString() << endl;
+					return false;
+				}
+				else
+				{
+					BROWSER_LOG("success" + (*itor));
+				}
+			}
+		}
+
         // 加载创建纹理
         if (m_oSuccessCallback)
         {
             loadTextures(m_sDirectory);
         }
-        
-        // 释放模型
-        importer.FreeScene();
         
 		return true;
 	}
@@ -116,18 +150,63 @@ namespace customGL
         
         return dynamic_cast<MeshFilter*>(m_oMeshFilter->clone());
     }
+
+	BaseEntity* Model::createNewEntity(const std::string& name)
+	{
+		BaseEntity* entity = traverseNodeAndCreateEntity(m_oRootNode, nullptr);
+		entity->setName(name);
+		return entity;
+	}
+
+	BaseEntity* Model::traverseNodeAndCreateEntity(aiNode* node, BaseEntity* parent)
+	{
+		BaseEntity* entity = BaseEntity::create(node->mName.C_Str());
+		if (parent)
+		{
+			parent->addChild(entity);
+		}
+
+		if (node->mNumMeshes > 0)
+		{
+			// MeshFilter组件
+			MeshFilter* meshFilter = MeshFilter::create();
+			entity->addComponent(meshFilter);
+			// 渲染组件
+			BaseRender* renderer = BaseRender::createBaseRender();
+			entity->addComponent(renderer);
+			// 包围盒组件
+			entity->addComponent(new AABBBoundBox());
+			for (unsigned int i = 0; i < node->mNumMeshes; ++i)
+			{
+				browser::Mesh* mesh = m_vMeshes[node->mMeshes[i]];
+				if (mesh)
+				{
+					renderer->addMaterial(mesh->getMaterialName(), GLProgram::DEFAULT_GLPROGRAM_NAME);
+					meshFilter->addMesh(mesh);
+				}
+			}
+		}
+		
+		// 继续遍历子节点
+		for (unsigned int i = 0; i < node->mNumChildren; ++i)
+		{
+			traverseNodeAndCreateEntity(node->mChildren[i], entity);
+		}
+
+		return entity;
+	}
     
     void Model::traverseNode(aiNode* node, const aiScene*& scene)
     {
         // 处理该节点所有的网格
-        for (unsigned int i=0; i<node->mNumMeshes; ++i)
-        {
-            browser::Mesh* mesh = generateMesh(node->mMeshes[i], scene);
-            if (mesh)
-            {
-                m_vMeshes.push_back(mesh);
-            }
-        }
+		for (unsigned int i = 0; i < node->mNumMeshes; ++i)
+		{
+			browser::Mesh* mesh = generateMesh(node->mMeshes[i], scene);
+			if (mesh)
+			{
+				m_vMeshes[node->mMeshes[i]] = mesh;
+			}
+		}
             
         // 继续遍历子节点
         for (unsigned int i=0; i<node->mNumChildren; ++i)
@@ -143,11 +222,11 @@ namespace customGL
         if (aiMesh)
         {
             // 注意:如果纹理创建不成功(例如没有找到),应该有一张白色默认纹理来代替,以防程序出问题
-            browser::Mesh* mesh = browser::Mesh::create(aiMesh->mNumVertices);
+            browser::Mesh* mesh = browser::Mesh::create(aiMesh->mNumVertices, aiMesh->mName.C_Str());
             // 顶点位置
             mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_POSITION, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), aiMesh->mVertices);
             // 顶点颜色
-			if (aiMesh->mColors[0])
+			if (aiMesh->mColors[0] && aiMesh->mColors[1])
 			{
 				mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_COLOR, 4, GL_FLOAT, GL_FALSE, sizeof(VertexData), aiMesh->mColors);
 			}
@@ -182,7 +261,14 @@ namespace customGL
             if (aiMesh->mMaterialIndex >= 0)
             {
                 aiMaterial* material = scene->mMaterials[aiMesh->mMaterialIndex];
-                
+                // 材质名称
+				mesh->setMaterialName(material->GetName().C_Str());
+				// 读取材质默认属性
+				aiColor4D color;
+				if (material->Get(AI_MATKEY_COLOR_DIFFUSE, color) == aiReturn_SUCCESS)
+				{
+					mesh->addColorProperty(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_ALBEDO_COLOR], glm::vec4(color.r, color.g, color.b, color.a));
+				}
                 // 漫反射纹理: 主纹理   GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_TEXUTRE0]
                 readTextureData(mesh, material, aiTextureType_DIFFUSE);
                 // 镜面反射纹理
@@ -229,6 +315,19 @@ namespace customGL
             m_vMeshTextureData.push_back(std::move(textureData));
         }
     }
+
+	void Model::loadAnimations(const aiScene*& scene)
+	{
+		if (scene->HasAnimations())
+		{
+			for (int i = 0; i < scene->mNumAnimations; ++i)
+			{
+				aiAnimation* animation = scene->mAnimations[i];
+				std::string name(animation->mName.C_Str());
+				m_mAnimations.push_back(std::make_tuple(animation, name));
+			}
+		}
+	}
     
     void Model::loadTextures(const std::string& directory)
     {

@@ -4,18 +4,20 @@
 #include <mutex>
 #include <deque>
 #include <vector>
+#include <memory>
 
 namespace common
 {
 	// 异步加载数据
-	template <typename DataType, typename CallbackFunc>
+	template <typename DataType, typename CallbackFunc, typename ExtraCreateDataType=const char*>
 	class AsyncData
 	{
 	public:
-		AsyncData(const std::string fp, CallbackFunc cb)
+		AsyncData(const std::string fp, CallbackFunc cb, shared_ptr<ExtraCreateDataType> extra = nullptr)
 			: fullpath(fp)
 			, data(nullptr)
 			, loadSuccess(false)
+			, extradata(extra)
 		{
 			callbacks.clear();
 			callbacks.push_back(cb);
@@ -23,6 +25,8 @@ namespace common
 
 		// 资源绝对路径
 		std::string fullpath;
+		// 创建方法的额外参数
+		shared_ptr<ExtraCreateDataType> extradata;
 		// 加载完成回调 (由于可能存在纹理资源正在加载但还没加载完成，这时候加载了同一张相同的纹理资源，会造成内存泄漏(后面加载的内存会替代前面的内存)，所以把回调方法合并进来)
 		std::vector<CallbackFunc> callbacks;
 		// 数据
@@ -32,10 +36,12 @@ namespace common
 	};
 
 	// 加载器
-    // CreateFunc: 资源读取函数类型(通过构造函数将读取方法传入进来); DataType: 数据类型; CallbackFunc: 回调类型
-	template <typename CreateFunc, typename DataType, typename CallbackFunc>
+    // CreateFunc: 资源读取函数类型(通过构造函数将读取方法传入进来); DataType: 数据类型; CallbackFunc: 回调类型; 额外的创建参数类型
+	template <typename DataType, typename CallbackFunc, typename ExtraCreateDataType = const char*>
 	class BaseAsyncLoader
 	{
+		typedef std::function<DataType*(const char*, shared_ptr<ExtraCreateDataType>)> CreateFunc;
+
 	public:
 		BaseAsyncLoader(CreateFunc createFunc)
 			: m_oThread(nullptr)
@@ -52,11 +58,11 @@ namespace common
 
 	public:
 		// 异步加载接口(注意！！这里使用绝对路径)
-		void loadResourceAsync(const std::string& fullpath, CallbackFunc callback)
+		void loadResourceAsync(const std::string& fullpath, CallbackFunc callback, shared_ptr<ExtraCreateDataType> extra = nullptr)
 		{
 			if (!m_oThread)
 			{
-				m_oThread = new std::thread(&BaseAsyncLoader<CreateFunc, DataType, CallbackFunc>::loadResource, this);
+				m_oThread = new std::thread(&BaseAsyncLoader<DataType, CallbackFunc, ExtraCreateDataType>::loadResource, this);
 			}
 
 			// 检测资源是否正在被加载（防止重复加载，造成内存泄漏）
@@ -73,7 +79,7 @@ namespace common
 			// 如果没有，则正常加载该资源
 			{
 				m_oRequestMutex.lock();
-				AsyncData<DataType, CallbackFunc>* asyncData = new AsyncData<DataType, CallbackFunc>(fullpath, callback);
+				AsyncData<DataType, CallbackFunc, ExtraCreateDataType>* asyncData = new AsyncData<DataType, CallbackFunc, ExtraCreateDataType>(fullpath, callback, extra);
 				m_vRequestQueue.push_back(asyncData);
 				m_oRequestMutex.unlock();
 
@@ -82,7 +88,7 @@ namespace common
 			}
 		}
 		// 获取加载返回队列
-		const std::vector<AsyncData<DataType, CallbackFunc>*>& getResponseQueue()
+		const std::vector<AsyncData<DataType, CallbackFunc, ExtraCreateDataType>*>& getResponseQueue()
 		{
 			m_vResponses.clear();
 			m_oResponseMutex.lock();
@@ -102,7 +108,7 @@ namespace common
 		{
 			std::mutex signalMutex;
 			std::unique_lock<std::mutex> signal(signalMutex);
-			AsyncData<DataType, CallbackFunc>* asyncData = nullptr;
+			AsyncData<DataType, CallbackFunc, ExtraCreateDataType>* asyncData = nullptr;
 			while (true)
 			{
 				m_oRequestMutex.lock();
@@ -134,7 +140,15 @@ namespace common
 
 				// 加载数据
 				{
-					DataType* result = m_CreateFunc(asyncData->fullpath.c_str());
+					DataType* result = nullptr;
+					if (asyncData->extradata)
+					{
+						result  = m_CreateFunc(asyncData->fullpath.c_str(), asyncData->extradata);
+					}
+					else
+					{
+						result = m_CreateFunc(asyncData->fullpath.c_str(), nullptr);
+					}
 					m_oLoadingDataMutex.lock();
 					asyncData->data = result;
 					asyncData->loadSuccess = true;
@@ -166,17 +180,17 @@ namespace common
 		// 返回互斥量
 		std::mutex m_oResponseMutex;
 		// 加载请求队列（供异步加载的线程读取数据）
-		std::deque<AsyncData<DataType, CallbackFunc>*> m_vRequestQueue;
+		std::deque<AsyncData<DataType, CallbackFunc, ExtraCreateDataType>*> m_vRequestQueue;
 		// 加载返回队列（供异步加载的线程写入结果数据）
-		std::deque<AsyncData<DataType, CallbackFunc>*> m_vResponseQueue;
+		std::deque<AsyncData<DataType, CallbackFunc, ExtraCreateDataType>*> m_vResponseQueue;
 
 		// 当前正在加载的互斥量
 		std::mutex m_oLoadingDataMutex;
 		// 当前正在加载对象 (因为针对每种不同的加载器，当前只会开启一个线程去加载，每次只加载一个资源对象，所以这里暂时不需要用队列去保存加载资源的指针)
-		AsyncData<DataType, CallbackFunc>* m_oLoadingAsyncData;
+		AsyncData<DataType, CallbackFunc, ExtraCreateDataType>* m_oLoadingAsyncData;
 
 		// 加载返回队列（供主线程访问加载的数据结果）
-		std::vector<AsyncData<DataType, CallbackFunc>*> m_vResponses;
+		std::vector<AsyncData<DataType, CallbackFunc, ExtraCreateDataType>*> m_vResponses;
 
 		// 数据加载方法
 		CreateFunc m_CreateFunc;

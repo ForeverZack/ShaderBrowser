@@ -6,9 +6,9 @@ namespace browser
 	// Ä¬ÈÏ²ÄÖÊÃû³Æ
 	const char* Material::DEFAULT_MATERIAL_NAME = "ShaderBrowser_DefaultMaterial";
 
-	Material* Material::createMaterial()
+	Material* Material::createMaterial(const std::string& materialName /*= DEFAULT_MATERIAL_NAME*/)
 	{
-		Material* material = new Material();
+		Material* material = new Material(materialName);
         
 		material->init();
         material->autorelease();
@@ -16,7 +16,8 @@ namespace browser
 		return material;
 	}
 
-	Material::Material()
+	Material::Material(const std::string& materialName)
+		: m_sMaterialName(materialName)
 	{
 
 	}

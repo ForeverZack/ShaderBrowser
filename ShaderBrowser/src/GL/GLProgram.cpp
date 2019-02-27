@@ -20,16 +20,17 @@ namespace customGL
 	//  预定义的uniform变量
 	// 创建shader时写入shader文件头的uniform字符串
 	const char* SHADER_UNIFORMS =
-        // 定义一些基本的数据结构
-        "struct DirectionalLight { vec3 direction; float intensity; vec4 color; };\n"
-    
-        // shader中可以使用的内置的uniform变量名字(不一定会有值,看具体怎么使用)
+		// 定义一些基本的数据结构
+		"struct DirectionalLight { vec3 direction; float intensity; vec4 color; };\n"
+
+		// shader中可以使用的内置的uniform变量名字(不一定会有值,看具体怎么使用)
 		"uniform sampler2D CGL_TEXTURE0;\n"
 		"uniform sampler2D CGL_TEXTURE1;\n"
 		"uniform mat4 CGL_MODEL_MATRIX;\n"
 		"uniform mat4 CGL_VIEW_MATRIX;\n"
 		"uniform mat4 CGL_PROJECTION_MATRIX;\n"
-    "uniform DirectionalLight CGL_DIRECTIONAL_LIGHT;\n";
+		"uniform vec4 CGL_ALBEDO_COLOR = vec4(1.0f, 1.0f, 1.0f, 1.0f);\n"
+		"uniform DirectionalLight CGL_DIRECTIONAL_LIGHT;\n";
 	 // uniform变量名称
 	const char* GLProgram::SHADER_UNIFORMS_ARRAY[] =
 	{
@@ -38,6 +39,7 @@ namespace customGL
 		"CGL_MODEL_MATRIX",
 		"CGL_VIEW_MATRIX",
 		"CGL_PROJECTION_MATRIX",
+		"CGL_ALBEDO_COLOR",
         "CGL_DIRECTIONAL_LIGHT"
 	};
 

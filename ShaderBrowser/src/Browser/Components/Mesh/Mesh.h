@@ -62,12 +62,15 @@ namespace browser
             m_vVertices[i].varName.x = values[i].x;    \
             m_vVertices[i].varName.y  = values[i].y;    \
         }
+
+		// 默认网格名称
+		static const char* DEFAULT_MESH_NAME;
         
     public:
-        static Mesh* create(int length);
+        static Mesh* create(int length, const std::string& meshName = DEFAULT_MESH_NAME);
         
 	public:
-		Mesh();
+		Mesh(const std::string& meshName = DEFAULT_MESH_NAME);
 		~Mesh();
 
 	public:
@@ -83,6 +86,8 @@ namespace browser
         void setTexture(const std::string& uniformName, Texture2D* texture);
         // 根据location获取顶点属性
         VertexAttribDeclaration* getVertexAttribDeclaration(GLuint location);
+		// 添加材质颜色属性
+		void addColorProperty(const std::string& propertyName, const glm::vec4& value);
         
         // 向RenderSystem注册vao
         void setupVAO();
@@ -94,11 +99,16 @@ namespace browser
 		REGISTER_PROPERTY_CONSTREF_GET(std::vector<GLushort>, m_vIndices, Indices)
         REGISTER_PROPERTY_GET_SET(std::string, m_sMaterialName, MaterialName)
 		REGISTER_PROPERTY_GET(unsigned int*, m_uVBOs, VBOs)
+		REGISTER_PROPERTY_CONSTREF_GET(std::string, m_sMeshName, MeshName)
 //        REGISTER_PROPERTY_CONSTREF_GET(std::unordered_map<std::string, TextureData>, m_mTextures, Textures);
         const std::unordered_map<std::string, TextureData>& getTextures()
         {
             return m_mTextures;
         }
+		const std::unordered_map<std::string, glm::vec4>& getColorProperties()
+		{
+			return m_mColorProperties;
+		}
         
     private:
         // 填充顶点数组的数据内容
@@ -107,6 +117,8 @@ namespace browser
         
         
 	protected:
+		// 模型名称
+		std::string m_sMeshName;
         // 顶点个数
         unsigned int m_uVertexCount;
         // 顶点数组
@@ -117,8 +129,10 @@ namespace browser
         std::vector<GLushort> m_vIndices;
 		// 纹理数组
         std::unordered_map<std::string, TextureData> m_mTextures;
-        // 纹理名称
+        // 材质名称
         std::string m_sMaterialName;
+		// 材质颜色属性 (diffuse)
+		std::unordered_map<std::string, glm::vec4> m_mColorProperties;
         
 
         // 顶点属性格式（设置vao时需要用到）

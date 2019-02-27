@@ -13,11 +13,13 @@ namespace browser
 	class BaseEntity : public common::Reference
 	{
 	public:
-		static BaseEntity* create(std::string transformName = "");
+		static BaseEntity* create(const std::string& transformName = "");
 
 	public:
 		BaseEntity();
 		virtual ~BaseEntity();
+
+		BaseEntity* clone();
 
 	public:
 		// 添加组件
@@ -41,6 +43,8 @@ namespace browser
 		void setEulerAngle(float x, float y, float z);
 		// 设置缩放
 		void setScale(float x, float y, float z);
+		// 设置名称
+		void setName(const std::string& name);
 
 		// 判断组件是否可渲染
 		bool isRenderable();

@@ -34,6 +34,15 @@ namespace browser
         
         return meshFilter;
     }
+
+	void MeshFilter::onInspectorGUI(InspectorPanel* inspector)
+	{
+		// 模型列表（临时）
+		for (auto itor = m_vMeshes.begin(); itor != m_vMeshes.end(); ++itor)
+		{
+			inspector->addPropertyText("Mesh: " + (*itor)->getMeshName() + " , Mat: " + (*itor)->getMaterialName());
+		}
+	}
     
 	void MeshFilter::addMesh(Mesh* mesh)
 	{

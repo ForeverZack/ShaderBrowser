@@ -24,10 +24,10 @@ namespace browser
 
 	public:
 		// TODO: 这里的vao应该是生成material之后自动生成的(可以从缓存中找)
-		static Material* createMaterial();
+		static Material* createMaterial(const std::string& materialName = DEFAULT_MATERIAL_NAME);
 
 	public:
-		Material();
+		Material(const std::string& materialName);
 		~Material();
 
 	public:
@@ -40,10 +40,12 @@ namespace browser
 		void useMaterial(Mesh* mesh, Transform* transform, Camera* camera, int index = 0);
 
 
-        // 返回Pass队列
-        REGISTER_PROPERTY_CONSTREF_GET(std::vector<Pass*>, m_vPass, Pass)
+		REGISTER_PROPERTY_CONSTREF_GET(std::vector<Pass*>, m_vPass, Pass)
+		REGISTER_PROPERTY_CONSTREF_GET(std::string, m_sMaterialName, MaterialName)
 
 	private:
+		// 名称
+		std::string m_sMaterialName;
 		// Pass队列
 		std::vector<Pass*> m_vPass;
 	};

@@ -7,6 +7,7 @@
 #include "Common/Tools/Utils.h"
 #include "Browser/Components/BaseComponent.h"
 #include "Browser/Components/Mesh/Mesh.h"
+#include "Material.h"
 
 using namespace std;
 using namespace customGL;
@@ -20,27 +21,35 @@ namespace browser
 	class BaseRender : public BaseComponent
 	{
 	public:
+		static BaseRender* createBaseRender(const std::string& materialName = Material::DEFAULT_MATERIAL_NAME, const std::string& programeName = GLProgram::DEFAULT_GLPROGRAM_NAME);
+	public:
 		BaseRender();
 		~BaseRender();
 
 	public:
 		// init
-		void init();
+		void init(const std::string& materialName, const std::string& programName);
         
+		// 修改模型材质shader
         void changeMeshMaterial(Mesh* mesh, const std::string& programName);
         Material* getMaterialByMesh(Mesh* mesh);
+		// 添加材质
+		void addMaterial(Material* material);
+		void addMaterial(const std::string& materialName, const std::string& programName);
+
+
+		// 重载属性面板显示方法
+		virtual void onInspectorGUI(InspectorPanel* inspector);
         
     protected:
         // 处理组件事件
         void handleEvent(ComponentEvent event, BaseComponentMessage* msg);
         
 		// 创建材质(根据shader名字)
-		Material* createMaterial(std::string programName);
-        // 添加材质
-        void addMaterial(std::string name, Material* material);
+		Material* createMaterial(const std::string& programName, const std::string& materialName = Material::DEFAULT_MATERIAL_NAME);
         
 	private:
-        // 材质map
+        // 材质map	std::string绑定Mesh的MaterialName
         std::unordered_map<std::string, Material*> m_mMaterials;
         
 	};

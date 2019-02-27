@@ -8,7 +8,7 @@ using namespace customGL;
 
 namespace common
 {
-	class TextureCache : public BaseMapCache<std::string, Texture2D, TextureCache>, public BaseAsyncLoader<std::function<Image*(const char*)>, Image, std::function<void(Texture2D*)>>
+	class TextureCache : public BaseMapCache<std::string, Texture2D, TextureCache>, public BaseAsyncLoader<Image, std::function<void(Texture2D*)>>
 	{
 	public:
 		TextureCache();

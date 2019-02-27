@@ -4,7 +4,7 @@
 
 namespace browser
 {
-	BaseEntity* BaseEntity::create(std::string transformName/* = ""*/)
+	BaseEntity* BaseEntity::create(const std::string& transformName/* = ""*/)
 	{
         BaseEntity* entity = new BaseEntity();
         entity->autorelease();
@@ -17,6 +17,19 @@ namespace browser
 //        // TODO: 这里先将AABBBoundBox作为默认组件
 //        AABBBoundBox* boundBox = new AABBBoundBox();
 //        entity->addComponent(boundBox);
+
+		return entity;
+	}
+
+	BaseEntity* BaseEntity::clone()
+	{
+		BaseEntity* entity = new BaseEntity();
+		entity->autorelease();
+
+		for (auto itor = m_vComponents.begin(); itor != m_vComponents.end(); ++itor)
+		{
+			addComponent(static_cast<BaseComponent*>((*itor)->clone()));
+		}
 
 		return entity;
 	}
@@ -84,6 +97,12 @@ namespace browser
 	{
 		BROWSER_ASSERT(m_oTransformComponent, "Cannot find Transform component on parent entity in function BaseEntity::setScale");
 		m_oTransformComponent->setScale(x, y, z);
+	}
+
+	void BaseEntity::setName(const std::string& name)
+	{
+		BROWSER_ASSERT(m_oTransformComponent, "Cannot find Transform component on parent entity in function BaseEntity::setName");
+		m_oTransformComponent->setName(name);
 	}
 
 	bool BaseEntity::isRenderable()

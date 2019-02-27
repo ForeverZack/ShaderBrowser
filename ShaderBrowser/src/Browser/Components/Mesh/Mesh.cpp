@@ -7,21 +7,25 @@ using namespace customGL;
 
 namespace browser
 {
-	Mesh* Mesh::create(int length)
+	// 默认网格名称
+	const char* Mesh::DEFAULT_MESH_NAME = "Default";
+
+	Mesh* Mesh::create(int length, const std::string& meshName /*= DEFAULT_MESH_NAME*/)
     {
-		Mesh* mesh = new Mesh();
+		Mesh* mesh = new Mesh(meshName);
         
 		mesh->init(length);
         
         return mesh;
     }
     
-	Mesh::Mesh()
+	Mesh::Mesh(const std::string& meshName /*= DEFAULT_MESH_NAME*/)
         : m_uVAO(0)
         , m_bGenVAO(false)
         , m_uVertexCount(0)
         , m_uIndexCount(0)
         , m_sMaterialName(Material::DEFAULT_MATERIAL_NAME)
+		, m_sMeshName(meshName)
 	{
         // 清空
         m_mVertexAttribDeclarations.clear();
@@ -73,11 +77,6 @@ namespace browser
     {
         m_uVertexCount = length;
         m_vVertices.resize(length);
-        //for(int i=0; i<length; ++i)
-        //{
-        //    VertexData data;
-        //    m_vVertices[i] = data;
-        //}
     }
     
     void Mesh::addTexture(const std::string& uniformName, Texture2D* texture)
@@ -142,6 +141,19 @@ namespace browser
         return nullptr;
     }
     
+	void Mesh::addColorProperty(const std::string& propertyName, const glm::vec4& value)
+	{
+		auto itor = m_mColorProperties.find(propertyName);
+		if (itor == m_mColorProperties.end())
+		{
+			m_mColorProperties.emplace(propertyName, value);
+		}
+		else
+		{
+			itor->second = value;
+		}
+	}
+
     void Mesh::fillVertexsParam(GLuint location, void* data)
     {
         switch (location) {

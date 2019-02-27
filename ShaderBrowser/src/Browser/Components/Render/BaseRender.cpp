@@ -1,11 +1,18 @@
 #include "BaseRender.h"
-#include "Material.h"
 #include "Pass.h"
 #include "Common/System/Cache/GLProgramCache.h"
 #include "Common/Tools/Utils.h"
 
 namespace browser
 {
+	BaseRender* BaseRender::createBaseRender(const std::string& materialName /*= Material::DEFAULT_MATERIAL_NAME*/, const std::string& programeName /*= GLProgram::DEFAULT_GLPROGRAM_NAME*/)
+	{
+		BaseRender* renderer = new BaseRender();
+		renderer->init(materialName, programeName);
+
+		return renderer;
+	}
+
 	BaseRender::BaseRender()
         : BaseComponent("Base Render")
 	{
@@ -14,19 +21,24 @@ namespace browser
         
         // 清理
         m_mMaterials.clear();
-        
-        // 初始化
-        init();
 	}
 
 	BaseRender::~BaseRender()
 	{
 	}
 
-	void BaseRender::init()
+	void BaseRender::onInspectorGUI(InspectorPanel* inspector)
 	{
-        Material* material = createMaterial(GLProgram::DEFAULT_GLPROGRAM_NAME);
-        addMaterial(Material::DEFAULT_MATERIAL_NAME, material);
+		// 材质列表(临时)
+		for (auto itor = m_mMaterials.begin(); itor != m_mMaterials.end(); ++itor)
+		{
+			inspector->addPropertyText("Materials : " + itor->first);
+		}
+	}
+
+	void BaseRender::init(const std::string& materialName, const std::string& programName)
+	{
+        addMaterial(materialName, programName);
 	}
     
     void BaseRender::changeMeshMaterial(Mesh* mesh, const std::string& programName)
@@ -34,7 +46,7 @@ namespace browser
         BROWSER_WARNING(m_mMaterials.find(mesh->getMaterialName())==m_mMaterials.end(), "The material has already exist, and you are trying to change it, please confirm your program in function BaseRender::changeMeshMaterial");
         
         Material* material = createMaterial(programName);
-        addMaterial(mesh->getMaterialName(), material);
+        addMaterial(material);
     }
     
     Material* BaseRender::getMaterialByMesh(Mesh* mesh)
@@ -48,21 +60,28 @@ namespace browser
         return nullptr;
     }
 
-	Material* BaseRender::createMaterial(std::string programName)
+	Material* BaseRender::createMaterial(const std::string& programName, const std::string& materialName /*= Material::DEFAULT_MATERIAL_NAME*/)
 	{
 		// 缓存中获取glProgram
 		GLProgram* program = GLProgramCache::getInstance()->getGLProgram(programName);
 		// （注意！！！Pass中会存储uniform的值，所以要考虑好pass能不能复用，可以给场景物体一个isStatic选项，让他们可以合批noMVP。cocos中只有使用了noMVP的才能复用，所以暂时不对pass做cache处理）
 		Pass* pass = Pass::createPass(program);
 
-		Material* material = Material::createMaterial();
+		Material* material = Material::createMaterial(materialName);
 		material->addPass(pass);
 
 		return material;
 	}
+
+	void BaseRender::addMaterial(const std::string& materialName, const std::string& programName)
+	{
+		Material* material = createMaterial(programName, materialName);
+		addMaterial(material);
+	}
     
-    void BaseRender::addMaterial(std::string name, Material* material)
+    void BaseRender::addMaterial(Material* material)
     {
+		const std::string& name = material->getMaterialName();
         auto itor = m_mMaterials.find(name);
         if (itor != m_mMaterials.end())
         {

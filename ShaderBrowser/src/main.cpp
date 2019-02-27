@@ -172,8 +172,9 @@ GLushort indices[] = {
     3, 4, 5
 };
 
-Model* m_oModel = nullptr;
-Model* m_oModel2 = nullptr;
+Model* m_oModel = nullptr;	//纳米装
+Model* m_oModel2 = nullptr;	//Fighter
+Model* m_oModelLamp = nullptr;	//拿灯
 
 
 void testVal()
@@ -193,7 +194,7 @@ void testVal()
 	// 创建场景根节点
 	BaseEntity* scene = BaseEntity::create("scene");
     scene->setIsAxisVisible(true);
-    scene->addComponent(new BaseRender());
+    scene->addComponent(BaseRender::createBaseRender());
 	scene->retain();
 	browser::TransformSystem::getInstance()->setScene(scene);   //设置场景节点
 
@@ -205,7 +206,7 @@ void testVal()
 	browser::Camera* mainCamera = Camera::create(Camera::ProjectionType::Perspective, 0.3f, 1000.0f, SCR_WIDTH, SCR_HEIGHT, 60.0f);
 	mainCameraEntity->addComponent(mainCamera);
 	// 设置相机位置
-	mainCameraEntity->setPosition(0, 1.5, 3);
+	mainCameraEntity->setPosition(0, 1.5, 30);
     mainCameraEntity->setEulerAngle(0, 180, 0);
 	// 设置主相机
 	CameraSystem::getInstance()->setMainCamera(mainCamera);
@@ -242,7 +243,7 @@ void testVal()
     entity->setScale(2, 1, 1);
     entity->setPosition(0, 1, 0);
     // 组件：渲染组件
-    BaseRender* renderCom = new BaseRender();
+    BaseRender* renderCom = BaseRender::createBaseRender();
     renderCom->changeMeshMaterial(mesh, "Triangles");   // 修改mesh的材质对应的shader
     entity->addComponent(renderCom);
     // 包围盒
@@ -254,50 +255,45 @@ void testVal()
 
     
     // 渲染模型
-    BaseEntity* modelEntity = BaseEntity::create("namizhuang");
-    modelEntity->setScale(0.2f, 0.2f, 0.2f);
-    modelEntity->setEulerAngle(0, 180, 0);
-    modelEntity->setPosition(0, 1, 0);
-    scene->addChild(modelEntity);
-    // 渲染组件
-    modelEntity->addComponent(new BaseRender());
-    // 包围盒
-    modelEntity->addComponent(new AABBBoundBox());
-    // MeshFilter组件
-    modelEntity->addComponent(m_oModel->getOrCreateMeshFilter());
+	BaseEntity* modelEntity = m_oModel->createNewEntity("namizhuang");
+	modelEntity->setScale(0.2f, 0.2f, 0.2f);
+	modelEntity->setEulerAngle(0, 180, 0);
+	modelEntity->setPosition(0, 1, 0);
+	scene->addChild(modelEntity);
     
     // 渲染模型2
-    modelEntity = BaseEntity::create("fighter");
+	modelEntity = m_oModel2->createNewEntity("fighter");
     modelEntity->setScale(0.2f, 0.2f, 0.2f);
     modelEntity->setEulerAngle(0, 90, 0);
     modelEntity->setPosition(1, 0, -2);
     scene->addChild(modelEntity);
-    // 渲染组件
-    modelEntity->addComponent(new BaseRender());
-    // 包围盒
-    modelEntity->addComponent(new AABBBoundBox());
     // MeshFilter组件
-    MeshFilter* fighterMeshFilter = m_oModel2->getOrCreateMeshFilter();
-    fighterMeshFilter->getMeshes()[0]->setTexture(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_TEXUTRE0], TextureCache::getInstance()->getTexture("models/Fighter/Fighter.png"));
-    modelEntity->addComponent(fighterMeshFilter);
+	MeshFilter* fighterMeshFilter = modelEntity->getTransform()->getChildren()[0]->getChildren()[0]->getBelongEntity()->getMeshFilter();
+	fighterMeshFilter->getMeshes()[0]->setTexture(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_TEXUTRE0], TextureCache::getInstance()->getTexture("models/Fighter/Fighter.png"));
+
+	// 渲染模型3
+	modelEntity = m_oModelLamp->createNewEntity("LampBob");
+	modelEntity->setScale(0.2f, 0.2f, 0.2f);
+	modelEntity->setEulerAngle(0, 0, 0);
+	modelEntity->setPosition(0, 0, 5);
+	scene->addChild(modelEntity);
     
-    // Inspector面板
-//    GUIFramework::getInstance()->getInspectorPanel()->selectEntity(modelEntity);
     
-	for (int i = 0; i < 20; ++i)
-	{
-        modelEntity = BaseEntity::create("namizhuang");
-		modelEntity->setScale(0.2f, 0.2f, 0.2f);
-		modelEntity->setEulerAngle(0, 180, 0);
-		modelEntity->setPosition(i, 1, 0);
-		scene->addChild(modelEntity);
-		// 渲染组件
-		modelEntity->addComponent(new BaseRender());
-		// 包围盒
-		modelEntity->addComponent(new AABBBoundBox());
-		// MeshFilter组件
-		modelEntity->addComponent(m_oModel->getOrCreateMeshFilter());
-	}
+	// 性能测试
+	//for (int i = 0; i < 20; ++i)
+	//{
+ //       modelEntity = BaseEntity::create("namizhuang");
+	//	modelEntity->setScale(0.2f, 0.2f, 0.2f);
+	//	modelEntity->setEulerAngle(0, 180, 0);
+	//	modelEntity->setPosition(i, 1, 0);
+	//	scene->addChild(modelEntity);
+	//	// 渲染组件
+	//	modelEntity->addComponent(BaseRender::createBaseRender());
+	//	// 包围盒
+	//	modelEntity->addComponent(new AABBBoundBox());
+	//	// MeshFilter组件
+	//	modelEntity->addComponent(m_oModel->getOrCreateMeshFilter());
+	//}
 
 
 ////    glm::mat4 mat = transCom->getModelMatrix();
@@ -361,7 +357,7 @@ int main()
 	int total = 0;
 	TextureCache::getInstance()->addTexturesAsync({ "texture/awesomeface.png", "texture/HelloWorld.png", "models/Fighter/Fighter.png" }, [&](Texture2D* texture) {
 		++total;
-		if (total == 5)
+		if (total == 6)
 		{
 			testVal();
 		}
@@ -370,39 +366,37 @@ int main()
     int modelIdx = 0;
 //    m_oModel = Model::createAlone("models/nanosuit/nanosuit.obj", [&](Model* mo)     //"models/Fighter/fighterChar.FBX"
 //    ModelCache::getInstance()->addModel("models/nanosuit/nanosuit.obj", [&](Model* mo)
-    ModelCache::getInstance()->addModelsAsync({"models/Fighter/fighterChar.FBX", "models/nanosuit/nanosuit.obj"}, [&](Model* mo)
+	ModelCache::getInstance()->addModelsAsync(
+		{ "models/Fighter/fighterChar.FBX", "models/nanosuit/nanosuit.obj", "models/Blender/NormalPose.dae" }, 
+		{ {}, {}, {"models/Blender/untitled.dae"} }, [&](Model* mo)
                                  {
-                                     if (modelIdx == 0)
-                                     {
-                                         BROWSER_LOG(mo->getDirectory());
-                                         ++modelIdx;
-                                         m_oModel2 = mo;
-                                     }
-                                     else
-                                     {
-										 BROWSER_LOG(mo->getDirectory());
-                                         m_oModel = mo;
-                                     }
-                                     ++total;
-                                     if (total == 5)
-                                     {
-                                         testVal();
-                                     }
+										switch (modelIdx)
+										{
+											case 0:
+											{
+												//BROWSER_LOG(mo->getDirectory());
+												m_oModel2 = mo;
+											}
+											break;
+											case 1:
+											{
+												m_oModel = mo;
+											}
+											break;
+											case 2:
+											{
+												m_oModelLamp = mo;
+											}
+											break;
+										}
+										++modelIdx;
+										++total;
+										if (total == 6)
+										{
+											testVal();
+										}
                                  });
 
-	ModelCache::getInstance()->addModelAsync("models/Fighter/fighterChar.FBX", [&](Model* mo)
-	{
-		BROWSER_LOG("test1111");
-	});
-	ModelCache::getInstance()->addModelAsync("models/Fighter/fighterChar.FBX", [&](Model* mo)
-	{
-		BROWSER_LOG("test222");
-	});
-
-	ModelCache::getInstance()->addModelAsync("models/Fighter/fighterChar.FBX", [&](Model* mo)
-	{
-		BROWSER_LOG("test333");
-	});
 
 
 
