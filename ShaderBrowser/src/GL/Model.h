@@ -94,9 +94,9 @@ namespace customGL
 		// 加载动画
 		void loadAnimations(const aiScene*& scene);
         // 递归遍历模型节点
-        void traverseNode(aiNode* node, const aiScene*& scene);
+        void traverseNode(aiNode* node, const aiScene*& scene, unsigned int boneOffset = 0);
         // 生成游戏内部使用的网格(aiMesh->Mesh)
-        browser::Mesh* generateMesh(unsigned int meshIdx, const aiScene*& scene);
+        browser::Mesh* generateMesh(aiMesh* aiMesh, const aiScene*& scene, unsigned int boneOffset);
         // 读取纹理数据
         void readTextureData(browser::Mesh* mesh, aiMaterial* material, aiTextureType type, const char* uniformName = GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_TEXUTRE0]);
 
@@ -132,7 +132,23 @@ namespace customGL
         std::vector<Texture2D*> m_vTextures;
         // 纹理数据(中转)
         std::vector<MeshTextureData> m_vMeshTextureData;
-        
+
+
+		// 骨骼数量
+		unsigned int m_uBoneNum;
+		// 骨骼颜色？？
+		std::vector<float> m_vBonesColor;
+        // 骨骼矩阵
+		std::vector<glm::mat4> m_vBonesMatrix;
+		std::vector<glm::mat4> m_vBonesMatrixPre;
+		// 骨骼id列表
+		std::unordered_map<std::string, unsigned int> m_mBonesIdMap;
+		// 
+		// 辅助数据：（用来显示骨骼）
+		// 骨骼顶点数据 
+		std::vector<VertexData> m_vSkeletonVertices;
+		// 骨骼索引
+		std::vector<glm::uvec2> m_vSkieletonIndices;
 	};
 }
 

@@ -441,6 +441,27 @@ namespace browser
         return m_oModelMatrix;
     }
 
+	glm::mat4 Transform::traverseNoScaleModelMatrix()
+	{
+		Transform* node = m_oParent;
+		glm::mat4 noScaleModelMat = m_oNoScaleModelMatrix;
+		glm::vec3 totalScale(m_oScale);
+		while (node)
+		{
+			totalScale.x *= node->getScaleX();
+			totalScale.y *= node->getScaleY();
+			totalScale.z *= node->getScaleZ();
+
+			node = node->m_oParent;
+		}
+
+		totalScale.x = 1.0f / totalScale.x;
+		totalScale.y = 1.0f / totalScale.y;
+		totalScale.z = 1.0f / totalScale.z;
+
+		return glm::scale(m_oNoScaleModelMatrix, totalScale);
+	}
+
 	void Transform::updateSelfModelMatrix(const glm::mat4& parentMMatrix)
 	{
 		// 计算自身旋转

@@ -13,6 +13,15 @@ namespace customGL
     {
         
     }
+
+	void GLStateCache::update(float deltaTime)
+	{
+		// 重置texturenId队列
+		for (int i = 0; i < MAX_ACTIVE_TEXTURE; ++i)
+		{
+			m_vTexIds[i] = 0;
+		}
+	}
     
     void GLStateCache::bindTexture2DN(GLuint textureUnit, GLuint textureId)
     {

@@ -34,6 +34,9 @@ namespace common
             
             //特殊处理Transform的欧拉角属性
             Property_TransformEulerAngle,
+			// 分割线
+			Separator,
+
         };
         
         // 回调函数类型
@@ -57,7 +60,8 @@ namespace common
         void setVec4(const std::string& showName, glm::vec4* vec3, ValueChangeFunc_vec4 callback = nullptr);
         void setTransformEulerAngle(const std::string& showName, glm::vec3* vec3, ValueChangeFunc_vec3 callback = nullptr);
         void setTreeNode(const std::string& showName, unsigned long nodeID, bool selected = false, bool expand = false, bool hasChildren = false, ClickFunc_TreeNode callback = nullptr);
-        
+		void setSeparator();
+
         bool isValueChange();
 
         
@@ -140,7 +144,8 @@ namespace common
         void addPropertyVector3(const std::string& title, glm::vec3* vec3, ShowGUIData::ValueChangeFunc_vec3 callback = nullptr, bool readOnly = true, bool expand = true);
         void addPropertyVector4(const std::string& title, glm::vec4* vec4, ShowGUIData::ValueChangeFunc_vec4 callback = nullptr, bool readOnly = true, bool expand = true);
         void addPropertyTransformEulerAngle(const std::string& title, glm::vec3* vec3, ShowGUIData::ValueChangeFunc_vec3 callback = nullptr, bool readOnly = true, bool expand = true);
-        
+		void addSeparator();
+
 	public:
 		// 设置窗口样式颜色
 		void setWindowStyleColor(ImGuiCol_ style, float red, float green, float blue, float alpha);

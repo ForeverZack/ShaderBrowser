@@ -94,10 +94,23 @@ namespace customGL
 			m_vImporters.push_back(importer);
 			// 加载模型动画数据
 			loadAnimations(scene);
+			// 初始化骨骼数据
+			{
+				m_uBoneNum = 0;
+				for (int i = 0; i < scene->mNumMeshes; ++i)
+				{
+					m_uBoneNum += scene->mMeshes[i]->mNumBones;
+				}
+				m_vBonesMatrix.resize(m_uBoneNum);
+				m_vBonesMatrixPre.resize(m_uBoneNum);
+				m_vBonesColor.resize(m_uBoneNum);
+			}
 			// 加载模型网格数据
-			m_oRootNode = scene->mRootNode;
-			m_vMeshes.resize(scene->mNumMeshes);
-			traverseNode(scene->mRootNode, scene);
+			{
+				m_oRootNode = scene->mRootNode;
+				m_vMeshes.resize(scene->mNumMeshes);
+				traverseNode(scene->mRootNode, scene);
+			}
 		}
 		
 		// 加载其余的动画文件（动画文件列表）
@@ -196,29 +209,31 @@ namespace customGL
 		return entity;
 	}
     
-    void Model::traverseNode(aiNode* node, const aiScene*& scene)
+    void Model::traverseNode(aiNode* node, const aiScene*& scene, unsigned int boneOffset/* = 0*/)
     {
         // 处理该节点所有的网格
+		aiMesh* aiMesh = nullptr;
 		for (unsigned int i = 0; i < node->mNumMeshes; ++i)
 		{
-			browser::Mesh* mesh = generateMesh(node->mMeshes[i], scene);
+			aiMesh = scene->mMeshes[node->mMeshes[i]];
+			browser::Mesh* mesh = generateMesh(aiMesh, scene, boneOffset);
 			if (mesh)
 			{
 				m_vMeshes[node->mMeshes[i]] = mesh;
 			}
+			boneOffset += aiMesh->mNumBones;
 		}
             
         // 继续遍历子节点
         for (unsigned int i=0; i<node->mNumChildren; ++i)
         {
-            traverseNode(node->mChildren[i], scene);
+            traverseNode(node->mChildren[i], scene, boneOffset);
         }
     }
     
-    browser::Mesh* Model::generateMesh(unsigned int meshIdx, const aiScene*& scene)
+    browser::Mesh* Model::generateMesh(aiMesh* aiMesh, const aiScene*& scene, unsigned int boneOffset)
     {
         // 根据aiMesh的id获取aiMesh
-        aiMesh* aiMesh = scene->mMeshes[meshIdx];
         if (aiMesh)
         {
             // 注意:如果纹理创建不成功(例如没有找到),应该有一张白色默认纹理来代替,以防程序出问题
@@ -256,6 +271,23 @@ namespace customGL
                          
                      }
                  });
+
+			// 骨骼信息
+			aiBone* bone = nullptr;
+			aiVertexWeight * vertexWeight = nullptr;
+			unsigned int boneIdx;
+			for (unsigned int i = 0; i < aiMesh->mNumBones; ++i)
+			{
+				bone = aiMesh->mBones[i];
+				boneIdx = boneOffset + i;
+				
+				for (unsigned int w = 0; w < bone->mNumWeights; ++w)
+				{
+					vertexWeight = &(bone->mWeights[w]);
+				}
+			}
+			
+
             
             // 处理材质(这里的材质指的是纹理)
             if (aiMesh->mMaterialIndex >= 0)

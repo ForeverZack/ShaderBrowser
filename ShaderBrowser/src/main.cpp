@@ -31,6 +31,7 @@
 #include "Common/Tools/UI/GUIFramework.h"
 #include "Common/Tools/UI/InspectorPanel.h"
 #include "Common/Tools/UI/GameStatusPanel.h"
+#include "GL/GLStateCache.h"
 #ifdef __APPLE__
 // macOS
 #include <unistd.h>
@@ -515,6 +516,9 @@ void mainLoop(GLFWwindow *window)
 	// temp
 	TextureCache::getInstance()->update(deltaTime);
     ModelCache::getInstance()->update(deltaTime);
+
+	// 重置GL状态（这里主要是为了防止插件如imgui绑定纹理，造成缓存失效）
+	GLStateCache::getInstance()->update(deltaTime);
 
 	// 2.render
 	ECSManager::getInstance()->updateSystem(SystemType::Transform, deltaTime);  // 更新transform

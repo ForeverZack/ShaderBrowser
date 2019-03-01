@@ -116,6 +116,11 @@ namespace common
         m_eType = ShowGUIType::Property_Text;
         value.text.show_name = text;
     }
+
+	void ShowGUIData::setSeparator()
+	{
+		m_eType = ShowGUIType::Separator;
+	}
     
     void ShowGUIData::setVec2(const std::string& showName, glm::vec2* vec2, ValueChangeFunc_vec2 callback /*= nullptr*/)
     {
@@ -204,7 +209,14 @@ namespace common
         
         m_vContents.push_back(std::move(data));
     }
-    
+
+	void BaseGUIPanel::addSeparator()
+	{
+		ShowGUIData data(true);
+		data.setSeparator();
+
+		m_vContents.push_back(std::move(data));
+	}
     
     void BaseGUIPanel::addPropertyVector2(const std::string& title, glm::vec2* vec2, ShowGUIData::ValueChangeFunc_vec2 callback /*= nullptr*/, bool readOnly /*= true*/, bool expand /*= true*/)
     {
@@ -316,11 +328,12 @@ namespace common
             
             if(data.m_eType == ShowGUIData::ShowGUIType::ExpandTitle)
             {
-				if (ImGui::Checkbox(data.value.title.show_name.c_str(), "", &data.value.title.isEnable))
-				{
-					// TODO: 回调函数
-				}
-				ImGui::SameLine(30);
+				//if (ImGui::Checkbox(data.value.title.show_name.c_str(), "", &data.value.title.isEnable))
+				//{
+				//	// TODO: 回调函数
+				//}
+				//ImGui::SameLine();
+
 				data.value.title.isExpand = ImGui::CollapsingHeader(data.value.title.show_name.c_str(), 0, true, data.value.title.isExpand);
 				expandTitle = &data;
             }
@@ -393,6 +406,12 @@ namespace common
                             }
                         }
                         break;
+
+					case ShowGUIData::ShowGUIType::Separator:
+						{
+							ImGui::Separator();
+						}
+						break;
                         
 //                         //TreeNode需要在展开的节点处调用一下ImGui::TreePop,而且其子节点要在treepop之前生成完，牵扯到一个递归问题，所以暂时没法写进m_vContent这种顺序结构里，后面看看有没有好的优化方案
 //                    case ShowGUIData::ShowGUIType::TreeNode:

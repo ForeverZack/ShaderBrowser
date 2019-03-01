@@ -86,16 +86,20 @@ namespace customGL
         }
         
     public:
-        // position
+        // 位置
         glm::vec4 position;
-        // color
+        // 顶点颜色
         glm::vec4 color;
-        // uv1
+        // 主纹理uv
         glm::vec2 uv_main;
-        // normal
+        // 法线
         glm::vec3 normal;
-        // tangent
+        // 切线
         glm::vec3 tangent;
+		// 骨骼id索引	(一个顶点最多被4根骨骼所影响)
+		glm::uvec4 boneIndices;
+		// 骨骼权重
+		glm::vec4 boneWeights;
     };
     
     // 顶点属性格式(供设置vao使用)

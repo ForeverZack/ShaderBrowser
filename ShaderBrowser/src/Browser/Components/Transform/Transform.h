@@ -111,9 +111,10 @@ namespace browser
         void setQuaternion(float x, float y, float z, float w);
         void setQuaternion(const glm::quat& quaternion);
 		REGISTER_PROPERTY_CONSTREF_GET(glm::quat, m_oQuaternion, Quaternion)
-        // 获取model矩阵
+		// 获取model矩阵
 		REGISTER_PROPERTY_CONSTREF_GET(glm::mat4, m_oModelMatrix, ModelMatrix)
-        REGISTER_PROPERTY_CONSTREF_GET(glm::mat4, m_oNoScaleModelMatrix, NoScaleModelMatrix)
+		REGISTER_PROPERTY_CONSTREF_GET(glm::mat4, m_oNoScaleModelMatrix, NoScaleModelMatrix)
+		glm::mat4 traverseNoScaleModelMatrix();
         // name
         REGISTER_PROPERTY_GET_SET(std::string, m_sName, Name)
 		// parent

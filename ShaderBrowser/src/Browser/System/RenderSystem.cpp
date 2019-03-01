@@ -311,9 +311,10 @@ namespace browser
                     
                     // 在CPU中处理顶点位置
                     VertexData* trans_vertices = (VertexData*)malloc(sizeof(VertexData) * vertCount);
+					glm::mat4 noScaleModelMatrix = transform->traverseNoScaleModelMatrix();
                     for(int i=0; i<vertCount; ++i)
                     {
-                        trans_vertices[i].position = transform->getNoScaleModelMatrix() * m_oAxisScaleMatrix * vertices[i].position;
+                        trans_vertices[i].position = noScaleModelMatrix * m_oAxisScaleMatrix * vertices[i].position;
                         trans_vertices[i].color = vertices[i].color;
                     }
                     

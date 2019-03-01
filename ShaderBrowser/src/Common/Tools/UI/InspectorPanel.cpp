@@ -48,6 +48,7 @@ namespace common
         // 组件列表
         BaseComponent* component = nullptr;
         const std::vector<BaseComponent*>& components = m_oSelEntity->getComponents();
+		int index = 0, count = components.size();
         for(auto itor=components.cbegin(); itor!=components.cend(); ++itor)
         {
             component = (*itor);
@@ -55,6 +56,13 @@ namespace common
             addCollapsingHeader(component->getComponentName(), true);
             // 添加内容
             component->onInspectorGUI(this);
+			// 分割线
+			if (index != count - 1)
+			{
+				addSeparator();
+			}
+
+			++index;
         }
         
     }
