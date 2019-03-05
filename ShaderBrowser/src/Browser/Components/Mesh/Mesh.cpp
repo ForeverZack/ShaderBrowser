@@ -75,6 +75,11 @@ namespace browser
     
     void Mesh::init(int length)
     {
+        /*
+         调用resize()函数后，所有的空间都已经初始化了，所以可以直接访问。
+         而reserve()函数预分配出的空间没有被初始化，所以不可访问。调用resize(n)后，容器的size即为n。至于是否影响capacity，取决于调整后的容器的size是否大于capacity。
+         调用reserve(n)后，若容器的capacity<n，则重新分配内存空间，从而使得capacity等于n。如果capacity>=n呢？capacity无变化。
+         */
         m_uVertexCount = length;
         m_vVertices.resize(length);
     }

@@ -70,6 +70,9 @@
     <Filter Include="src\Common\Tools\UI">
       <UniqueIdentifier>{e5fa9253-d6a4-4252-800f-58e25c5ed41b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Browser\Components\Animation">
+      <UniqueIdentifier>{f469d4db-d267-4f20-b41d-82d326160913}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -210,6 +213,12 @@
     <ClCompile Include="src\Common\Tools\UI\GameStatusPanel.cpp">
       <Filter>src\Common\Tools\UI</Filter>
     </ClCompile>
+    <ClCompile Include="src\Browser\Components\Animation\Animator.cpp">
+      <Filter>src\Browser\Components\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Browser\System\AnimationSystem.cpp">
+      <Filter>src\Browser\System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\GL\GLProgram.h">
@@ -349,6 +358,18 @@
     </ClInclude>
     <ClInclude Include="src\Common\Tools\UI\GameStatusPanel.h">
       <Filter>src\Common\Tools\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GL\Assimp.h">
+      <Filter>src\GL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GL\Rescale.h">
+      <Filter>src\GL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Browser\Components\Animation\Animator.h">
+      <Filter>src\Browser\Components\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Browser\System\AnimationSystem.h">
+      <Filter>src\Browser\System</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -42,6 +42,9 @@ namespace browser
         , m_bIsVisible(true)
         , m_bIsAxisVisible(false)
         , m_bIsBoundBoxVisible(false)
+        , m_oAnimator(nullptr)
+        , m_oModel(nullptr)
+        , m_oModelRootEntity(nullptr)
 	{
 
 	}
@@ -49,6 +52,16 @@ namespace browser
 	BaseEntity::~BaseEntity()
 	{
         BROWSER_LOG("~BaseEntity");
+
+		// 移除所有children
+		if (m_oTransformComponent)
+		{
+			const std::vector<Transform*>& children = m_oTransformComponent->getChildren();
+			for (int i=0; i<children.size(); ++i)
+			{
+				children[i]->getBelongEntity()->release();
+			}
+		}
 
 		// clear
 		for (auto itor = m_vComponents.begin(); itor != m_vComponents.end(); ++itor)
@@ -114,6 +127,32 @@ namespace browser
     bool BaseEntity::checkVisibility(Camera* camera, bool reCalculate/* = false*/)
     {
         return m_oBoundBox && m_oBoundBox->checkVisibility(camera, reCalculate);
+    }
+    
+    const std::vector<VertexData>& BaseEntity::getVertices(Mesh* mesh, bool& dirty)
+    {
+        // 检测模型根节点是否含有动画组件
+        if(m_oModelRootEntity && m_oModelRootEntity->m_oAnimator && m_oModelRootEntity->m_oAnimator->getIsPlaying())
+        {
+			dirty = true;
+            const std::unordered_map<Mesh*, std::vector<VertexData>>& vertices = m_oModelRootEntity->m_oAnimator->getVertices();
+            return vertices.find(mesh)->second;
+        }
+        else
+        {
+			dirty = false;
+            return mesh->getVertices();
+        }
+    }
+    
+    void BaseEntity::playAnimation(const std::string& animName, bool repeat/* = false*/, float speed/* = 1.0f*/, bool interpolate/* = true*/)
+    {
+        // 只有模型的根节点可以播放动画，因为只有根节点可以拿到完整的模型数据
+        BROWSER_ASSERT(m_oModelRootEntity, "Entity must set the model root entity, after that it can play animation!");
+        BROWSER_ASSERT(this==m_oModelRootEntity, "You cannot play animation on a child entity, please select the root model entity! Block in function BaseEntity::playAnimation");
+        
+        // 播放动画
+        m_oAnimator->play(animName, repeat, speed, interpolate);
     }
 
 	void BaseEntity::addComponent(BaseComponent* component)
@@ -207,6 +246,12 @@ namespace browser
             // 包围盒
             MARK_SPECIAL_COMPONENT(m_oBoundBox, component, bEmpty);
             deliverComponentMessage(ComponentEvent::BoundBox_AddComponent, new BoundBoxAddComponentMessage(m_oTransformComponent, m_oMeshFilterComponent));
+            break;
+                
+        case SystemType::Animation:
+            // 包围盒
+            MARK_SPECIAL_COMPONENT(m_oAnimator, component, bEmpty);
+            deliverComponentMessage(ComponentEvent::Animator_AddComponent, new AnimatorAddComponentMessage(m_oModel));
             break;
 
 		}

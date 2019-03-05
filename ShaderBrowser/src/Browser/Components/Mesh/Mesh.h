@@ -95,6 +95,7 @@ namespace browser
         REGISTER_PROPERTY_GET(unsigned int, m_uVAO, VAO)
         REGISTER_PROPERTY_GET(unsigned int, m_uVertexCount, VertexCount)
 		REGISTER_PROPERTY_CONSTREF_GET(std::vector<VertexData>, m_vVertices, Vertices)
+		REGISTER_PROPERTY_REF_GET(std::vector<VertexData>, m_vVertices, VerticesRef)
         REGISTER_PROPERTY_GET(unsigned int, m_uIndexCount, IndexCount)
 		REGISTER_PROPERTY_CONSTREF_GET(std::vector<GLushort>, m_vIndices, Indices)
         REGISTER_PROPERTY_GET_SET(std::string, m_sMaterialName, MaterialName)

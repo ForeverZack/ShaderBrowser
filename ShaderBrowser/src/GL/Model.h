@@ -11,10 +11,7 @@
 #include "Common/System/Cache/TextureCache.h"
 #include "GL/GLProgram.h"
 #include "Browser/Entitys/BaseEntity.h"
-#include "Browser/Components/Transform/Transform.h"
-#include "Browser/Components/Mesh/MeshFilter.h"
-#include "Browser/Components/BoundBox/AABBBoundBox.h"
-#include "Browser/Components/Render/BaseRender.h"
+
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -79,14 +76,15 @@ namespace customGL
 		~Model();
         
     public:
-        // 生成MeshFilter模型
-        MeshFilter* getOrCreateMeshFilter();
 		// 生成一个新的entity
 		BaseEntity* createNewEntity(const std::string& name);
         // 设置vao
         void setupMeshesVAO();
         // 加载纹理
         void loadTextures(const std::string& directory);
+		// 计算模型动画
+		// interpolateAnimation：是否插值动画（false使用前一帧, true在两帧间插值）
+		void computeBonesTransform(aiAnimation* animation, float elapsedTime, std::unordered_map<aiNode*, aiMatrix4x4>& nodeTrans, std::vector<glm::mat4>& bonesMatrix, float speed = 1.0f, bool interpolateAnimation = true);
 
 	private:
         // 初始化
@@ -94,18 +92,34 @@ namespace customGL
 		// 加载动画
 		void loadAnimations(const aiScene*& scene);
         // 递归遍历模型节点
-        void traverseNode(aiNode* node, const aiScene*& scene, unsigned int boneOffset = 0);
+        void traverseNode(aiNode* node, const aiScene*& scene);
         // 生成游戏内部使用的网格(aiMesh->Mesh)
         browser::Mesh* generateMesh(aiMesh* aiMesh, const aiScene*& scene, unsigned int boneOffset);
         // 读取纹理数据
         void readTextureData(browser::Mesh* mesh, aiMaterial* material, aiTextureType type, const char* uniformName = GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_TEXUTRE0]);
 
 		// 递归遍历模型，生成Entity
-		BaseEntity* traverseNodeAndCreateEntity(aiNode* node, BaseEntity* parent);
+		BaseEntity* traverseNodeAndCreateEntity(aiNode* node, BaseEntity* parent, BaseEntity* root);
         
-        
+    public:
         REGISTER_PROPERTY_CONSTREF_GET(std::string, m_sDirectory, Directory);
+        REGISTER_PROPERTY_CONSTREF_GET(std::vector<std::string>, m_vAnimationNames, AnimationNames);
         REGISTER_PROPERTY_GET_SET(std::function<void(Model*)>, m_oSuccessCallback, SuccessCallback)
+        REGISTER_PROPERTY_GET(unsigned int, m_uBoneNum, BoneNum)
+        REGISTER_PROPERTY_CONSTREF_GET(std::vector<browser::Mesh*>, m_vMeshes, Meshes)
+        aiAnimation* getAnimation(const std::string& animName)
+        {
+            for(auto itor=m_mAnimations.begin(); itor!=m_mAnimations.end(); ++itor)
+            {
+                const std::tuple<aiAnimation*, std::string>& animInfo = (*itor);
+                const std::string& name = std::get<1>(animInfo);
+                if(name == animName)
+                {
+                    return std::get<0>(animInfo);
+                }
+            }
+            return nullptr;
+        }
         
     private:
         // 生成的MeshFilter组件
@@ -115,6 +129,8 @@ namespace customGL
 		std::vector<std::shared_ptr<Assimp::Importer>> m_vImporters;
 		// 记录模型根节点
 		aiNode* m_oRootNode;
+        // 记录模型场景
+        const aiScene* m_oScene;
         // 加载路径
         std::string m_sDirectory;
         // 加载完成标记
@@ -128,21 +144,24 @@ namespace customGL
         std::vector<browser::Mesh*> m_vMeshes;
 		// 模型动画队列
 		std::vector<std::tuple<aiAnimation*, std::string>> m_mAnimations;
+        std::vector<std::string> m_vAnimationNames;
         // 纹理队列
         std::vector<Texture2D*> m_vTextures;
         // 纹理数据(中转)
         std::vector<MeshTextureData> m_vMeshTextureData;
 
 
+        // 是否有骨骼动画
+        bool m_bHasSkeletonAnim;
 		// 骨骼数量
 		unsigned int m_uBoneNum;
 		// 骨骼颜色？？
 		std::vector<float> m_vBonesColor;
-        // 骨骼矩阵
-		std::vector<glm::mat4> m_vBonesMatrix;
-		std::vector<glm::mat4> m_vBonesMatrixPre;
 		// 骨骼id列表
 		std::unordered_map<std::string, unsigned int> m_mBonesIdMap;
+		// 当前已记录的骨骼数量
+		unsigned int m_uRecBoneOffset;
+
 		// 
 		// 辅助数据：（用来显示骨骼）
 		// 骨骼顶点数据 

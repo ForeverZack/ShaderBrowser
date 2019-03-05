@@ -1,9 +1,5 @@
 #pragma once
 #include <glm/glm.hpp>
-#include <glm/gtx/quaternion.hpp>
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
 
 namespace Assimp
 {
@@ -95,7 +91,7 @@ namespace Assimp
 
 	glm::vec4 ConvertToGLM(const aiColor4D & vector)
 	{
-		return glm::vec4(vector.a, vector.r, vector.g, vector.b);
+		return glm::vec4(vector.r, vector.g, vector.b, vector.a);
 	}
 
 	glm::quat ConvertToGLM( const aiQuaternion & quat )

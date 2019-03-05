@@ -19,6 +19,7 @@
 #include "Browser/System/TransformSystem.h"
 #include "Browser/System/MeshSystem.h"
 #include "Browser/System/LightSystem.h"
+#include "Browser/System/AnimationSystem.h"
 #include "Common/Tools/FileUtils.h"
 #include "Browser/System/CameraSystem.h"
 #include "Browser/System/BoundBoxSystem.h"
@@ -265,11 +266,12 @@ void testVal()
     // 渲染模型2
 	modelEntity = m_oModel2->createNewEntity("fighter");
     modelEntity->setScale(0.2f, 0.2f, 0.2f);
-    modelEntity->setEulerAngle(0, 90, 0);
+    modelEntity->setEulerAngle(-90, 0, 0);
     modelEntity->setPosition(1, 0, -2);
     scene->addChild(modelEntity);
+	modelEntity->playAnimation("Take 001");
     // MeshFilter组件
-	MeshFilter* fighterMeshFilter = modelEntity->getTransform()->getChildren()[0]->getChildren()[0]->getBelongEntity()->getMeshFilter();
+	MeshFilter* fighterMeshFilter = modelEntity->getTransform()->getChildren()[0]->getBelongEntity()->getMeshFilter();
 	fighterMeshFilter->getMeshes()[0]->setTexture(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_TEXUTRE0], TextureCache::getInstance()->getTexture("models/Fighter/Fighter.png"));
 
 	// 渲染模型3
@@ -481,6 +483,7 @@ GLFWwindow* init()
 	ECSManager::getInstance()->registerSystem(browser::CameraSystem::getInstance());	// Camera
     ECSManager::getInstance()->registerSystem(browser::BoundBoxSystem::getInstance()); // 包围盒
     ECSManager::getInstance()->registerSystem(browser::LightSystem::getInstance()); // 灯光系统
+    ECSManager::getInstance()->registerSystem(browser::AnimationSystem::getInstance()); // 动画系统
 	// 初始化系统
 	ECSManager::getInstance()->initSystem(SystemType::RenderSystem);    // 渲染系统
     ECSManager::getInstance()->initSystem(SystemType::Transform);    // Transform
@@ -488,6 +491,7 @@ GLFWwindow* init()
 	ECSManager::getInstance()->initSystem(SystemType::Camera);    // Camera
     ECSManager::getInstance()->initSystem(SystemType::BoundBox);    // 包围盒
     ECSManager::getInstance()->initSystem(SystemType::Light);   // Light
+    ECSManager::getInstance()->initSystem(SystemType::Animation);   // Animation
     // 加载缓存
     GLProgramCache::getInstance()->init();  // 着色器缓存
 
@@ -521,6 +525,7 @@ void mainLoop(GLFWwindow *window)
 	GLStateCache::getInstance()->update(deltaTime);
 
 	// 2.render
+    ECSManager::getInstance()->updateSystem(SystemType::Animation, deltaTime);   // 更新动画系统
 	ECSManager::getInstance()->updateSystem(SystemType::Transform, deltaTime);  // 更新transform
 	ECSManager::getInstance()->updateSystem(SystemType::Camera, deltaTime);  // 更新camera
     ECSManager::getInstance()->updateSystem(SystemType::BoundBox, deltaTime);   // 更新BoundBox

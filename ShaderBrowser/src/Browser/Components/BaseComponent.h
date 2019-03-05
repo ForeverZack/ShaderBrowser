@@ -64,7 +64,7 @@ namespace browser
         template <typename MsgType>
         void getTransformFromMsg(BaseComponentMessage* msg)
         {
-            MsgType* convertMsg = dynamic_cast<MsgType*>(msg);
+            MsgType* convertMsg = static_cast<MsgType*>(msg);
             Transform* transform = convertMsg->getTransform();
             if (!m_oTransform && transform)
             {
@@ -78,7 +78,7 @@ namespace browser
         template <typename MsgType>
         void getMeshFilterFromMsg(BaseComponentMessage* msg)
         {
-            MsgType* convertMsg = dynamic_cast<MsgType*>(msg);
+            MsgType* convertMsg = static_cast<MsgType*>(msg);
             MeshFilter* meshFilter = convertMsg->getMeshFilter();
             if (!m_oMeshFilter && meshFilter)
             {

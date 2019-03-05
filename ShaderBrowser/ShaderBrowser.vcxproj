@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Browser\Components\Animation\Animator.cpp" />
     <ClCompile Include="src\Browser\Components\BaseComponent.cpp" />
     <ClCompile Include="src\Browser\Components\BoundBox\AABBBoundBox.cpp" />
     <ClCompile Include="src\Browser\Components\BoundBox\BaseBoundBox.cpp" />
@@ -35,6 +36,7 @@
     <ClCompile Include="src\Browser\Components\Render\Pass.cpp" />
     <ClCompile Include="src\Browser\Components\Transform\Transform.cpp" />
     <ClCompile Include="src\Browser\Entitys\BaseEntity.cpp" />
+    <ClCompile Include="src\Browser\System\AnimationSystem.cpp" />
     <ClCompile Include="src\Browser\System\BoundBoxSystem.cpp" />
     <ClCompile Include="src\Browser\System\CameraSystem.cpp" />
     <ClCompile Include="src\Browser\System\LightSystem.cpp" />
@@ -67,6 +69,7 @@
     <ClCompile Include="src\Plugins\imgui\imgui_impl_glfw_gl3.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Browser\Components\Animation\Animator.h" />
     <ClInclude Include="src\Browser\Components\BaseComponent.h" />
     <ClInclude Include="src\Browser\Components\BoundBox\AABBBoundBox.h" />
     <ClInclude Include="src\Browser\Components\BoundBox\BaseBoundBox.h" />
@@ -83,6 +86,7 @@
     <ClInclude Include="src\Browser\Components\Render\Pass.h" />
     <ClInclude Include="src\Browser\Components\Transform\Transform.h" />
     <ClInclude Include="src\Browser\Entitys\BaseEntity.h" />
+    <ClInclude Include="src\Browser\System\AnimationSystem.h" />
     <ClInclude Include="src\Browser\System\BoundBoxSystem.h" />
     <ClInclude Include="src\Browser\System\CameraSystem.h" />
     <ClInclude Include="src\Browser\System\LightSystem.h" />
@@ -107,11 +111,13 @@
     <ClInclude Include="src\Common\Tools\UI\HierarchyPanel.h" />
     <ClInclude Include="src\Common\Tools\UI\InspectorPanel.h" />
     <ClInclude Include="src\Common\Tools\Utils.h" />
+    <ClInclude Include="src\GL\Assimp.h" />
     <ClInclude Include="src\GL\GLDefine.h" />
     <ClInclude Include="src\GL\GLProgram.h" />
     <ClInclude Include="src\GL\GLStateCache.h" />
     <ClInclude Include="src\GL\Image.h" />
     <ClInclude Include="src\GL\Model.h" />
+    <ClInclude Include="src\GL\Rescale.h" />
     <ClInclude Include="src\GL\Texture2D.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

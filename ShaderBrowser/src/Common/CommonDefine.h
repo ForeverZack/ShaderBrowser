@@ -19,6 +19,8 @@ namespace common
         BoundBox,
         // 光照
         Light,
+        // 动画
+        Animation,
 
 		// 自定义的系统
 		CustomSystem,

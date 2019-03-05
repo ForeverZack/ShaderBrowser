@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		1405E89F21F426F400FBDD71 /* Mesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1405E89D21F426F400FBDD71 /* Mesh.cpp */; };
 		1405E8A321F432FF00FBDD71 /* ComponentEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1405E8A221F432FF00FBDD71 /* ComponentEvent.cpp */; };
+		1415B6D9222A4FB100C7E37B /* Animator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1415B6D7222A4FB100C7E37B /* Animator.cpp */; };
+		1415B6DC222A5B2A00C7E37B /* AnimationSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1415B6DB222A5B2A00C7E37B /* AnimationSystem.cpp */; };
 		1452D79521E99742001AD1CA /* MeshSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1452D79421E99742001AD1CA /* MeshSystem.cpp */; };
 		1469977F220F14B600F4C802 /* BaseLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1469977E220F14B600F4C802 /* BaseLight.cpp */; };
 		147BBAF9222277EF00B3079B /* HierarchyPanel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 147BBAF8222277EE00B3079B /* HierarchyPanel.cpp */; };
@@ -78,6 +80,12 @@
 		1405E89E21F426F400FBDD71 /* Mesh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Mesh.h; sourceTree = "<group>"; };
 		1405E8A121F432FF00FBDD71 /* ComponentEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ComponentEvent.h; sourceTree = "<group>"; };
 		1405E8A221F432FF00FBDD71 /* ComponentEvent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ComponentEvent.cpp; sourceTree = "<group>"; };
+		1415B6D4222A2FD100C7E37B /* Rescale.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Rescale.h; sourceTree = "<group>"; };
+		1415B6D5222A2FD100C7E37B /* Assimp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Assimp.h; sourceTree = "<group>"; };
+		1415B6D7222A4FB100C7E37B /* Animator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Animator.cpp; sourceTree = "<group>"; };
+		1415B6D8222A4FB100C7E37B /* Animator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Animator.h; sourceTree = "<group>"; };
+		1415B6DA222A5B2900C7E37B /* AnimationSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnimationSystem.h; sourceTree = "<group>"; };
+		1415B6DB222A5B2A00C7E37B /* AnimationSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AnimationSystem.cpp; sourceTree = "<group>"; };
 		14275C0A21B8A8580027A8BB /* ShaderBrowser */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ShaderBrowser; sourceTree = BUILT_PRODUCTS_DIR; };
 		1452D79321E99703001AD1CA /* MeshSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MeshSystem.h; sourceTree = "<group>"; };
 		1452D79421E99742001AD1CA /* MeshSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MeshSystem.cpp; sourceTree = "<group>"; };
@@ -203,6 +211,15 @@
 				1405E8A221F432FF00FBDD71 /* ComponentEvent.cpp */,
 			);
 			path = Event;
+			sourceTree = "<group>";
+		};
+		1415B6D6222A4FB100C7E37B /* Animation */ = {
+			isa = PBXGroup;
+			children = (
+				1415B6D8222A4FB100C7E37B /* Animator.h */,
+				1415B6D7222A4FB100C7E37B /* Animator.cpp */,
+			);
+			path = Animation;
 			sourceTree = "<group>";
 		};
 		14275C0121B8A8580027A8BB = {
@@ -389,6 +406,8 @@
 		14B9065A21BABC8F00554B0B /* System */ = {
 			isa = PBXGroup;
 			children = (
+				1415B6DA222A5B2900C7E37B /* AnimationSystem.h */,
+				1415B6DB222A5B2A00C7E37B /* AnimationSystem.cpp */,
 				14B45A26220C269800FE5777 /* BoundBoxSystem.h */,
 				14B45A25220C269800FE5777 /* BoundBoxSystem.cpp */,
 				14BE47A52201EE6600EFE57C /* CameraSystem.h */,
@@ -408,6 +427,7 @@
 		14B9065D21BABC8F00554B0B /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				1415B6D6222A4FB100C7E37B /* Animation */,
 				14B45A1B220C21C100FE5777 /* BoundBox */,
 				14BE47A02201EE0500EFE57C /* Camera */,
 				1405E8A021F432FF00FBDD71 /* Event */,
@@ -483,6 +503,8 @@
 		14B9067321BABC8F00554B0B /* GL */ = {
 			isa = PBXGroup;
 			children = (
+				1415B6D5222A2FD100C7E37B /* Assimp.h */,
+				1415B6D4222A2FD100C7E37B /* Rescale.h */,
 				14E143162208115B001A2EB1 /* GLStateCache.h */,
 				14E143152208115B001A2EB1 /* GLStateCache.cpp */,
 				14CDFD1722058FFD00A42823 /* Model.h */,
@@ -627,6 +649,7 @@
 				14B9068921BABC8F00554B0B /* Reference.cpp in Sources */,
 				14B9068621BABC8F00554B0B /* Utils.cpp in Sources */,
 				14B9068321BABC8F00554B0B /* Material.cpp in Sources */,
+				1415B6DC222A5B2A00C7E37B /* AnimationSystem.cpp in Sources */,
 				14EB11832220184D00D3C29D /* imgui_draw.cpp in Sources */,
 				1469977F220F14B600F4C802 /* BaseLight.cpp in Sources */,
 				14B9067D21BABC8F00554B0B /* glad.c in Sources */,
@@ -637,6 +660,7 @@
 				14B9068121BABC8F00554B0B /* BaseEntity.cpp in Sources */,
 				14C29E93221035A300A514BE /* LightSystem.cpp in Sources */,
 				14DC853B22242AFF0051B944 /* GameStatusPanel.cpp in Sources */,
+				1415B6D9222A4FB100C7E37B /* Animator.cpp in Sources */,
 				14BE47A32201EE0500EFE57C /* Camera.cpp in Sources */,
 				14CDFD1822058FFE00A42823 /* Model.cpp in Sources */,
 				147BBAF9222277EF00B3079B /* HierarchyPanel.cpp in Sources */,

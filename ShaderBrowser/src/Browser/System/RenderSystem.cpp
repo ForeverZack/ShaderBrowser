@@ -371,6 +371,7 @@ namespace browser
         MeshFilter* meshFilter;
         Mesh* mesh;
         BaseEntity* entity;
+		bool verticesDirty;
         for (auto itor = m_mComponentsList.begin(); itor != m_mComponentsList.end(); ++itor)
         {
 			const std::list<BaseComponent*>& renderList = itor->second;
@@ -404,26 +405,30 @@ namespace browser
                 
                 
                 // 顶点属性
-                const std::vector<VertexData>& vertices = mesh->getVertices();
+                const std::vector<VertexData>& vertices = entity->getVertices(mesh, verticesDirty);
                 vertCount = mesh->getVertexCount();
                 // 顶点索引数组
                 const std::vector<GLushort>& indices = mesh->getIndices();
                 indexCount = mesh->getIndexCount();
                 
-                //// 1.绑定对应的vao
-                //glBindVertexArray(vao);
-                //
-                //// 2.传递顶点数据
-                //glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[RenderSystem_Vertices_Buffer]);
-                //glBufferData(GL_ARRAY_BUFFER, vertCount * sizeof(VertexData), &vertices[0], GL_STATIC_DRAW);
-                //
-                //// 3.传递索引数组
-                //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_uVBOs[RenderSystem_Indices_Buffer]);
-                //glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLushort)*indexCount, &indices[0], GL_STATIC_DRAW);
-                //
-                //
-                //glBindBuffer(GL_ARRAY_BUFFER, 0);
-                //glBindVertexArray(0);
+				if (verticesDirty)
+				{
+					// 1.绑定对应的vao
+					glBindVertexArray(vao);
+					
+					// 2.传递顶点数据
+					glBindBuffer(GL_ARRAY_BUFFER, mesh->getVBOs()[RenderSystem_Vertices_Buffer]);
+					glBufferData(GL_ARRAY_BUFFER, vertCount * sizeof(VertexData), &vertices[0], GL_STATIC_DRAW);
+					//
+					//// 3.传递索引数组
+					//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_uVBOs[RenderSystem_Indices_Buffer]);
+					//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLushort)*indexCount, &indices[0], GL_STATIC_DRAW);
+					//
+					
+					glBindBuffer(GL_ARRAY_BUFFER, 0);
+					glBindVertexArray(0);
+				}
+
 
 #ifdef _SHADER_BROWSER_RENDER_SYSTEM_DEBUG
 				deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - timeRec).count() / 1000.0f;

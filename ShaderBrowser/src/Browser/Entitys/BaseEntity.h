@@ -1,11 +1,18 @@
 #pragma once
 
 #include <vector>
+#include <unordered_map>
 #include "Common/Components/Reference.h"
 #include "Browser/Components/BaseComponent.h"
 #include "Browser/Components/Mesh/MeshFilter.h"
 #include "Browser/Components/Transform/Transform.h"
 #include "Browser/Components/BoundBox/BaseBoundBox.h"
+#include "Browser/Components/Animation/Animator.h"
+
+namespace customGL
+{
+	class Model;
+};
 
 namespace browser
 {
@@ -51,13 +58,22 @@ namespace browser
         // 可见性检测
         bool checkVisibility(Camera* camera, bool reCalculate = false);
         
+        // 播放动画
+        void playAnimation(const std::string& animName, bool repeat = false, float speed = 1.0f, bool interpolate = true);
+        
+        // 获取顶点数组
+        const std::vector<VertexData>& getVertices(Mesh* mesh, bool& dirty);
+        
 		REGISTER_PROPERTY_GET(MeshFilter*, m_oMeshFilterComponent, MeshFilter);
 		REGISTER_PROPERTY_GET(Transform*, m_oTransformComponent, Transform);
         REGISTER_PROPERTY_GET(BaseBoundBox*, m_oBoundBox, BoundBox);
+        REGISTER_PROPERTY_GET(Animator*, m_oAnimator, Animator);
         REGISTER_PROPERTY_GET_SET(bool, m_bIsVisible, IsVisible);
         REGISTER_PROPERTY_GET_SET(bool, m_bIsAxisVisible, IsAxisVisible);
         REGISTER_PROPERTY_GET_SET(bool, m_bIsBoundBoxVisible, IsBoundBoxVisible)
         REGISTER_PROPERTY_CONSTREF_GET(std::vector<BaseComponent*>, m_vComponents, Components)
+		REGISTER_PROPERTY_GET_SET(Model*, m_oModel, Model)
+        REGISTER_PROPERTY_GET_SET(BaseEntity*, m_oModelRootEntity, ModelRootEntity)
 
 	private:
 		// 添加\移除组件时，标记或者去标记特殊的组件
@@ -75,7 +91,7 @@ namespace browser
 			}
 			else
 			{
-				markVar = dynamic_cast<T*>(component);
+				markVar = static_cast<T*>(component);
 			}
 		}
 
@@ -91,6 +107,13 @@ namespace browser
 		MeshFilter* m_oMeshFilterComponent;
         // 包围盒
         BaseBoundBox* m_oBoundBox;
+        // 动画播放器
+        Animator* m_oAnimator;
+		
+		// 原始模型文件
+		Model* m_oModel;
+        // 模型根节点处的实体
+        BaseEntity* m_oModelRootEntity;
         
         // 是否可见
         bool m_bIsVisible;

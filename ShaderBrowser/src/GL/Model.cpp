@@ -1,5 +1,13 @@
 #include "Model.h"
 #include "Common/Tools/FileUtils.h"
+#include "GL/Assimp.h"
+#include "Rescale.h"
+#include "Browser/Components/Transform/Transform.h"
+#include "Browser/Components/Mesh/MeshFilter.h"
+#include "Browser/Components/BoundBox/AABBBoundBox.h"
+#include "Browser/Components/Render/BaseRender.h"
+#include "Browser/Components/Animation/Animator.h"
+#include <queue>
 
 
 using namespace common;
@@ -40,6 +48,8 @@ namespace customGL
         , m_iLoadTextureNum(0)
         , m_oMeshFilter(nullptr)
 		, m_oRootNode(nullptr)
+        , m_oScene(nullptr)
+        , m_bHasSkeletonAnim(false)
 	{
         // 清理
 		m_vImporters.clear();
@@ -47,6 +57,7 @@ namespace customGL
         m_vTextures.clear();
         m_vMeshTextureData.clear();
 		m_mAnimations.clear();
+        m_vAnimationNames.clear();
 	}
 
 	Model::~Model()
@@ -84,6 +95,8 @@ namespace customGL
 			std::string model_file = FileUtils::getInstance()->getAbsolutePathForFilename(fileName, m_sDirectory);
 
 			std::shared_ptr<Assimp::Importer> importer = make_shared<Assimp::Importer>();
+			// 设置importer的属性
+			importer->SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, false);	// 防止FBX自己生成枢轴，干扰Node结构树
 			const aiScene* scene = importer->ReadFile(model_file, pFlags);
 			if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 			{
@@ -101,14 +114,16 @@ namespace customGL
 				{
 					m_uBoneNum += scene->mMeshes[i]->mNumBones;
 				}
-				m_vBonesMatrix.resize(m_uBoneNum);
-				m_vBonesMatrixPre.resize(m_uBoneNum);
+//                m_vBonesMatrix.resize(m_uBoneNum);
+//                m_vBonesMatrixPre.resize(m_uBoneNum);
 				m_vBonesColor.resize(m_uBoneNum);
 			}
 			// 加载模型网格数据
 			{
+                m_oScene = scene;
 				m_oRootNode = scene->mRootNode;
 				m_vMeshes.resize(scene->mNumMeshes);
+				m_uRecBoneOffset = 0;
 				traverseNode(scene->mRootNode, scene);
 			}
 		}
@@ -118,10 +133,12 @@ namespace customGL
 			for (auto itor = animFiles.begin(); itor != animFiles.end(); ++itor)
 			{
 				std::shared_ptr<Assimp::Importer> importer = make_shared<Assimp::Importer>();
+				// 设置importer的属性
+				importer->SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, false);	// 防止FBX自己生成枢轴，干扰Node结构树
 				const aiScene* scene = importer->ReadFile(*itor, aiProcess_GenSmoothNormals |
 					aiProcess_LimitBoneWeights |
 					aiProcess_FlipUVs);
-				unsigned int fff = scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE;
+//                unsigned int fff = scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE;
 				if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 				{
 					// 加载模型失败
@@ -132,6 +149,8 @@ namespace customGL
 				{
 					BROWSER_LOG("success" + (*itor));
 				}
+                // 加载模型动画数据
+                loadAnimations(scene);
 			}
 		}
 
@@ -143,41 +162,31 @@ namespace customGL
         
 		return true;
 	}
-    
-    MeshFilter* Model::getOrCreateMeshFilter()
-    {
-        if (!m_oMeshFilter)
-        {
-            m_oMeshFilter = MeshFilter::create();
-            int i=0;
-            for(auto itor=m_vMeshes.begin(); itor!=m_vMeshes.end(); ++itor)
-            {
-//                if (i < 3)
-                {
-                    ++i;
-                    m_oMeshFilter->addMesh(*itor);
-                }
-            }
-            m_oMeshFilter->retain();
-        }
-        
-        return dynamic_cast<MeshFilter*>(m_oMeshFilter->clone());
-    }
 
 	BaseEntity* Model::createNewEntity(const std::string& name)
 	{
-		BaseEntity* entity = traverseNodeAndCreateEntity(m_oRootNode, nullptr);
+		BaseEntity* entity = traverseNodeAndCreateEntity(m_oRootNode, nullptr, nullptr);
 		entity->setName(name);
+		entity->setModel(this);
+        if(m_bHasSkeletonAnim)
+        {
+            entity->addComponent(new Animator());
+        }
 		return entity;
 	}
 
-	BaseEntity* Model::traverseNodeAndCreateEntity(aiNode* node, BaseEntity* parent)
+	BaseEntity* Model::traverseNodeAndCreateEntity(aiNode* node, BaseEntity* parent, BaseEntity* root)
 	{
 		BaseEntity* entity = BaseEntity::create(node->mName.C_Str());
 		if (parent)
 		{
 			parent->addChild(entity);
 		}
+        if(!root)
+        {
+            root = entity;
+        }
+        entity->setModelRootEntity(root);
 
 		if (node->mNumMeshes > 0)
 		{
@@ -203,32 +212,33 @@ namespace customGL
 		// 继续遍历子节点
 		for (unsigned int i = 0; i < node->mNumChildren; ++i)
 		{
-			traverseNodeAndCreateEntity(node->mChildren[i], entity);
+			traverseNodeAndCreateEntity(node->mChildren[i], entity, root);
 		}
 
 		return entity;
 	}
     
-    void Model::traverseNode(aiNode* node, const aiScene*& scene, unsigned int boneOffset/* = 0*/)
+    void Model::traverseNode(aiNode* node, const aiScene*& scene)
     {
         // 处理该节点所有的网格
 		aiMesh* aiMesh = nullptr;
 		for (unsigned int i = 0; i < node->mNumMeshes; ++i)
 		{
 			aiMesh = scene->mMeshes[node->mMeshes[i]];
-			browser::Mesh* mesh = generateMesh(aiMesh, scene, boneOffset);
+			browser::Mesh* mesh = generateMesh(aiMesh, scene, m_uRecBoneOffset);
 			if (mesh)
 			{
 				m_vMeshes[node->mMeshes[i]] = mesh;
 			}
-			boneOffset += aiMesh->mNumBones;
+			m_uRecBoneOffset += aiMesh->mNumBones;
 		}
             
         // 继续遍历子节点
         for (unsigned int i=0; i<node->mNumChildren; ++i)
         {
-            traverseNode(node->mChildren[i], scene, boneOffset);
+            traverseNode(node->mChildren[i], scene);
         }
+        
     }
     
     browser::Mesh* Model::generateMesh(aiMesh* aiMesh, const aiScene*& scene, unsigned int boneOffset)
@@ -273,18 +283,36 @@ namespace customGL
                  });
 
 			// 骨骼信息
+			std::vector<VertexData>& vertices = mesh->getVerticesRef();
 			aiBone* bone = nullptr;
 			aiVertexWeight * vertexWeight = nullptr;
 			unsigned int boneIdx;
 			for (unsigned int i = 0; i < aiMesh->mNumBones; ++i)
 			{
-				bone = aiMesh->mBones[i];
-				boneIdx = boneOffset + i;
+				bone = aiMesh->mBones[i];	// aiBone
+				boneIdx = boneOffset + i;	// 骨骼id要自己生成
 				
 				for (unsigned int w = 0; w < bone->mNumWeights; ++w)
 				{
 					vertexWeight = &(bone->mWeights[w]);
+					VertexData& vertexData = vertices[vertexWeight->mVertexId];
+					
+					// 一个顶点最多能被4个骨骼控制，这里我们要在这个数组中找到第一个空着的骨骼信息
+					for (unsigned int j = 0; j < 4; ++j)
+					{
+						if (vertexData.boneWeights[j] != 0.0f)
+						{
+							continue;
+						}
+
+						vertexData.boneIndices[j] = boneIdx;
+						vertexData.boneWeights[j] = vertexWeight->mWeight;
+						break;
+					}
 				}
+				
+//                m_vBonesMatrix[boneIdx] = Assimp::ConvertToGLM(bone->mOffsetMatrix);
+				m_mBonesIdMap[bone->mName.C_Str()] = boneIdx;
 			}
 			
 
@@ -299,7 +327,7 @@ namespace customGL
 				aiColor4D color;
 				if (material->Get(AI_MATKEY_COLOR_DIFFUSE, color) == aiReturn_SUCCESS)
 				{
-					mesh->addColorProperty(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_ALBEDO_COLOR], glm::vec4(color.r, color.g, color.b, color.a));
+					mesh->addColorProperty(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_ALBEDO_COLOR], Assimp::ConvertToGLM(color));
 				}
                 // 漫反射纹理: 主纹理   GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_TEXUTRE0]
                 readTextureData(mesh, material, aiTextureType_DIFFUSE);
@@ -357,8 +385,128 @@ namespace customGL
 				aiAnimation* animation = scene->mAnimations[i];
 				std::string name(animation->mName.C_Str());
 				m_mAnimations.push_back(std::make_tuple(animation, name));
+                m_vAnimationNames.push_back(name);
+			}
+            
+            m_bHasSkeletonAnim = true;
+		}
+	}
+
+	void Model::computeBonesTransform(aiAnimation* animation, float elapsedTime, std::unordered_map<aiNode*, aiMatrix4x4>& nodeTrans, std::vector<glm::mat4>& bonesMatrix, float speed/* = 1.0f*/, bool interpolateAnimation /*= true*/)
+	{
+		// 将采样范围变换到 [0, 1]
+		float animSample = static_cast<float>(animation->mTicksPerSecond / animation->mDuration) * elapsedTime * speed;
+		animSample = std::min(animSample, 1.0f);
+
+		aiMatrix4x4 transformation, scaleMat, translateMat;
+		Rescale rescaler(0.0f, static_cast<float>(animation->mDuration), 0.0f, 1.0f);
+		const float sampleUnscaled = rescaler.Unscale(animSample);
+		// 遍历骨骼变换信息，生成父节点坐标系下自身的变换矩阵
+		{
+			aiNodeAnim* channel = nullptr;
+			aiNode* node = nullptr;
+			for (unsigned int i = 0; i < animation->mNumChannels; ++i)
+			{
+				channel = animation->mChannels[i];
+				node = m_oRootNode->FindNode(channel->mNodeName);
+
+				// 位移
+				const auto translation = Assimp::InterpolationGet<aiVector3D>(sampleUnscaled, channel->mPositionKeys, channel->mNumPositionKeys, interpolateAnimation);
+				// 旋转
+				const auto rotation = Assimp::InterpolationGet<aiQuaternion>(sampleUnscaled, channel->mRotationKeys, channel->mNumRotationKeys, interpolateAnimation);
+				// 缩放
+				const auto scale = Assimp::InterpolationGet<aiVector3D>(sampleUnscaled, channel->mScalingKeys, channel->mNumScalingKeys, interpolateAnimation);
+				// 计算单个骨骼自身坐标系下的变换矩阵
+				aiMatrix4x4::Translation(translation, translateMat);
+				aiMatrix4x4& rotateMat = aiMatrix4x4(rotation.GetMatrix());
+				aiMatrix4x4::Scaling(scale, scaleMat);
+				transformation = translateMat * rotateMat * scaleMat;
+
+//                node->mTransformation = transformation;
+                nodeTrans.insert(make_pair(node, transformation));
 			}
 		}
+		// 遍历模型，生成骨骼坐标系下相对于根节点mRootNode的变换矩阵
+		{
+			// 1.记录受影响的骨骼名称 (前面用nodeTrans记过aiNode了，所以没有必要再转一次)
+//            std::set<std::string> bonesNameVec;
+//            for(int i=0; i<animation->mNumChannels; ++i)
+//            {
+//                std::string boneName(animation->mChannels[i]->mNodeName.C_Str());
+//                bonesNameVec.insert(std::move(boneName));
+//            }
+            // 2.从根节点开始向下遍历，算出相对于根节点的骨骼变换矩阵
+            std::queue<std::tuple<aiNode*, bool>> traverseQueue;
+            traverseQueue.push(make_tuple(m_oRootNode, false));
+            aiNode* node = nullptr;
+            bool parentDirty;
+            std::unordered_map<aiNode*, aiMatrix4x4>::iterator itor;
+            while(!traverseQueue.empty())
+            {
+                std::tuple<aiNode*, bool>& nodeInfo = traverseQueue.front();
+                node = std::get<0>(nodeInfo);
+                parentDirty = std::get<1>(nodeInfo);
+                itor = nodeTrans.find(node);
+                traverseQueue.pop();
+
+                for(int i=0; i<node->mNumChildren; ++i)
+                {
+                    traverseQueue.push(make_tuple(node->mChildren[i], parentDirty || itor!=nodeTrans.end()));
+                }
+                
+                // 没有父节点 或者 该骨骼节点没有变换，则跳过
+                if (!node->mParent)
+                {
+                    continue;
+                }
+                
+                if(itor == nodeTrans.end())
+                {
+                    continue;
+                }
+
+                // 如果父节点经历过变换，则从map中查找mat4；否则获取模型文件的mat4
+                if (parentDirty)
+                {
+                    const aiMatrix4x4& parentTransformation = nodeTrans.find(node->mParent)->second;
+                    itor->second = parentTransformation * itor->second;
+                }
+                else
+                {
+                    const aiMatrix4x4& parentTransformation = node->mParent->mTransformation;
+                    itor->second = parentTransformation * itor->second;
+                }
+                
+            }
+		}
+        // 计算所有骨骼的变换矩阵，
+        {
+            unsigned int boneIdx = 0;
+            aiMesh* mesh = nullptr;
+            aiBone* bone = nullptr;
+            aiNode* node = nullptr;
+            std::unordered_map<aiNode*, aiMatrix4x4>::iterator itor;
+            for(int i=0; i<m_oScene->mNumMeshes; ++i)
+            {
+                mesh = m_oScene->mMeshes[i];
+                
+                for(int j=0; j<mesh->mNumBones; ++j,++boneIdx)
+                {
+                    bone = mesh->mBones[j];
+                    node = m_oRootNode->FindNode(bone->mName);
+                    itor = nodeTrans.find(node);
+                    if (itor != nodeTrans.end())
+                    {
+                        bonesMatrix[boneIdx] = Assimp::ConvertToGLM(itor->second * bone->mOffsetMatrix);
+                    }
+                    else
+                    {
+                        bonesMatrix[boneIdx] = Assimp::ConvertToGLM(node->mTransformation * bone->mOffsetMatrix);
+                    }
+                }
+            }
+        }
+        
 	}
     
     void Model::loadTextures(const std::string& directory)

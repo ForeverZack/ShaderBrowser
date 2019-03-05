@@ -16,7 +16,7 @@ namespace browser
 		for (auto itor = m_mComponentsList.cbegin(); itor != m_mComponentsList.cend(); ++itor)
 		{
 			const std::list<BaseComponent*>& boundBoxes = itor->second;
-			boundBox = dynamic_cast<BaseBoundBox*>(*(boundBoxes.begin()));
+			boundBox = static_cast<BaseBoundBox*>(*(boundBoxes.begin()));
 			boundBox->updateBoundBox(deltaTime);
 		}
 	}

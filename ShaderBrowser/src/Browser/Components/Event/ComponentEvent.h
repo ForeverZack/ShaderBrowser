@@ -6,6 +6,11 @@
 
 using namespace common;
 
+namespace customGL
+{
+    class Model;
+}
+
 namespace browser
 {
     class BaseComponentMessage : public Reference
@@ -51,10 +56,13 @@ namespace browser
 		// 移除Transform组件的事件
 		Transform_RemoveComponent,
 
-        // BoundBox组件的事件
+        // BoundBox组件的事件:
         // 添加BoundBox
         BoundBox_AddComponent,
 
+        // Animator组件的时间:
+        // 添加Animator
+        Animator_AddComponent,
     };
 
 
@@ -127,5 +135,15 @@ namespace browser
         MeshFilter* m_oMeshFilter;
     };
     
+    // Entity添加Animator
+    class AnimatorAddComponentMessage : public BaseComponentMessage
+    {
+    public:
+        AnimatorAddComponentMessage(customGL::Model* model) : m_oModel(model) {}
+        ~AnimatorAddComponentMessage() {}
+        REGISTER_PROPERTY_GET(customGL::Model*, m_oModel, Model)
+    protected:
+        customGL::Model* m_oModel;
+    };
 }
 
