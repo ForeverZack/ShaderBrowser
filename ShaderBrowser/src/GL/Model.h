@@ -85,7 +85,7 @@ namespace customGL
 		// 计算模型动画
 		// interpolateAnimation：是否插值动画（false使用前一帧, true在两帧间插值）
 		void computeBonesTransform(aiAnimation* animation, float elapsedTime, std::unordered_map<aiNode*, aiMatrix4x4>& nodeTrans, std::vector<glm::mat4>& bonesMatrix, float speed = 1.0f, bool interpolateAnimation = true);
-
+		void traverseNodeToComputeBonesTransform(aiNode* node, const aiMatrix4x4 parentMatrix, std::unordered_map<aiNode*, aiMatrix4x4>& nodeTrans, std::vector<glm::mat4>& bonesMatrix);
 	private:
         // 初始化
 		bool initWithFile(const char* fileName, const std::vector<std::string>& animFiles, unsigned int pFlags);
@@ -159,9 +159,10 @@ namespace customGL
 		std::vector<float> m_vBonesColor;
 		// 骨骼id列表
 		std::unordered_map<std::string, unsigned int> m_mBonesIdMap;
+		// 骨骼列表
+		std::vector<aiBone*> m_vBones;
 		// 当前已记录的骨骼数量
 		unsigned int m_uRecBoneOffset;
-
 		// 
 		// 辅助数据：（用来显示骨骼）
 		// 骨骼顶点数据 

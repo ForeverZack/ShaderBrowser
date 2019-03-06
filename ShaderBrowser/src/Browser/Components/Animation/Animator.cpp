@@ -1,5 +1,6 @@
 #include "Animator.h"
 #include "GL/Model.h"
+#include <chrono>
 
 namespace browser
 {
@@ -53,14 +54,34 @@ namespace browser
             {
                 return;
             }
+
             // 重置
             m_mTransformations.clear();
             m_vBonesMatrix.clear();
             m_vBonesMatrix.resize(m_oSrcModel->getBoneNum());
+
             // 计算时间
-            //m_fElapsedTime += deltaTime;
+            m_fElapsedTime += deltaTime;
+			if (m_fElapsedTime > m_fCurAnimDuration)
+			{
+				if (m_bRepeat)
+				{
+					m_fElapsedTime = fmod(m_fElapsedTime, m_fCurAnimDuration);
+				}
+				else
+				{
+					m_bIsPlaying = false;
+				}
+			}
+
+			//auto timeRec = std::chrono::steady_clock::now();
             // 计算骨骼变换矩阵
             m_oSrcModel->computeBonesTransform(m_oAnimation, m_fElapsedTime, m_mTransformations, m_vBonesMatrix, m_fSpeed, m_bInterpolate);
+	
+			//float deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - timeRec).count() / 1000.0f;
+			//timeRec = std::chrono::steady_clock::now();
+			//BROWSER_LOG("========computeBonesTransform==========="+ std::to_string(deltaTime) + "ms");
+
             // cpu计算顶点位置
             if(!m_bUseGPU)
             {
@@ -73,6 +94,7 @@ namespace browser
                 }
                 // 根据骨骼矩阵，计算新的顶点位置、法线和切线
                 glm::mat4 skinning;
+				bool hasSkinning;
                 for(auto itor=m_mVertices.begin(); itor!=m_mVertices.end(); ++itor)
                 {
                     std::vector<VertexData>& vertices = itor->second;
@@ -81,23 +103,35 @@ namespace browser
                         VertexData& vertex = vertices[i];
                         
                         // 计算蒙皮矩阵（顶点的骨骼变换矩阵，每个顶点最多被4个骨骼控制）
-                        skinning = GLM_MAT4_UNIT;
+						skinning = GLM_MAT4_ZERO;
+						hasSkinning = false;
                         for(int j=0; j<4; ++j)
                         {
+							int boneidx = vertex.boneIndices[j];
+							float weight = vertex.boneWeights[j];
                             if(vertex.boneWeights[j] > 0.0f)
                             {
                                 skinning = skinning + (m_vBonesMatrix[vertex.boneIndices[j]]*vertex.boneWeights[j]);
+								hasSkinning = true;
                             }
                         }
                         
                         //BROWSER_LOG_MAT4(skinning);
                         // 计算变换后的顶点位置、法线等信息
-                        vertex.position = skinning * vertex.position;
-                        vertex.normal = skinning * glm::vec4(vertex.normal, 0.0f);
-                        vertex.tangent = skinning * glm::vec4(vertex.tangent, 0.0f);
+						if (hasSkinning)
+						{
+							vertex.position = skinning * vertex.position;
+							vertex.normal = skinning * glm::vec4(vertex.normal, 0.0f);
+							vertex.tangent = skinning * glm::vec4(vertex.tangent, 0.0f);
+						}
+
                     }
                 }
             }
+
+			//deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - timeRec).count() / 1000.0f;
+			//BROWSER_LOG("========cpu compute position===========" + std::to_string(deltaTime) + "ms");
+
         }
     }
     
@@ -120,13 +154,21 @@ namespace browser
         }
 
         //
-        m_oAnimation = m_oSrcModel->getAnimation(animName);
-        m_sCurAnimName = animName;
-        m_bRepeat = repeat;
-        m_fSpeed = speed;
-        m_bInterpolate = interpolate;
-        m_bIsPlaying = true;
-        m_fElapsedTime = 0.0f;
+        auto animation = m_oSrcModel->getAnimation(animName);
+		if (animation)
+		{
+			m_oAnimation = animation;
+			m_sCurAnimName = animName;
+			m_bRepeat = repeat;
+			m_fSpeed = speed;
+			m_bInterpolate = interpolate;
+			m_bIsPlaying = true;
+			m_fElapsedTime = 0.0f;
+
+			m_fCurAnimDuration = animation->mDuration / animation->mTicksPerSecond;
+		}
+
+
     }
 
 	void Animator::handleEvent(ComponentEvent event, BaseComponentMessage* msg)

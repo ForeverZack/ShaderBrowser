@@ -96,7 +96,7 @@ namespace customGL
 
 			std::shared_ptr<Assimp::Importer> importer = make_shared<Assimp::Importer>();
 			// 设置importer的属性
-			importer->SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, false);	// 防止FBX自己生成枢轴，干扰Node结构树
+			//importer->SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, false);	// 防止FBX自己生成枢轴，干扰Node结构树
 			const aiScene* scene = importer->ReadFile(model_file, pFlags);
 			if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 			{
@@ -116,7 +116,11 @@ namespace customGL
 				}
 //                m_vBonesMatrix.resize(m_uBoneNum);
 //                m_vBonesMatrixPre.resize(m_uBoneNum);
-				m_vBonesColor.resize(m_uBoneNum);
+				//m_vBonesColor.resize(m_uBoneNum);
+				m_mBonesIdMap.clear();
+				m_mBonesIdMap.reserve(m_uBoneNum);
+				m_vBones.clear();
+				m_vBones.reserve(m_uBoneNum);
 			}
 			// 加载模型网格数据
 			{
@@ -134,7 +138,7 @@ namespace customGL
 			{
 				std::shared_ptr<Assimp::Importer> importer = make_shared<Assimp::Importer>();
 				// 设置importer的属性
-				importer->SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, false);	// 防止FBX自己生成枢轴，干扰Node结构树
+				//importer->SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, false);	// 防止FBX自己生成枢轴，干扰Node结构树
 				const aiScene* scene = importer->ReadFile(*itor, aiProcess_GenSmoothNormals |
 					aiProcess_LimitBoneWeights |
 					aiProcess_FlipUVs);
@@ -313,6 +317,7 @@ namespace customGL
 				
 //                m_vBonesMatrix[boneIdx] = Assimp::ConvertToGLM(bone->mOffsetMatrix);
 				m_mBonesIdMap[bone->mName.C_Str()] = boneIdx;
+				m_vBones.push_back(bone);
 			}
 			
 
@@ -426,87 +431,138 @@ namespace customGL
                 nodeTrans.insert(make_pair(node, transformation));
 			}
 		}
-		// 遍历模型，生成骨骼坐标系下相对于根节点mRootNode的变换矩阵
-		{
-			// 1.记录受影响的骨骼名称 (前面用nodeTrans记过aiNode了，所以没有必要再转一次)
-//            std::set<std::string> bonesNameVec;
-//            for(int i=0; i<animation->mNumChannels; ++i)
+
+		aiMatrix4x4 identity;
+		traverseNodeToComputeBonesTransform(m_oRootNode, identity, nodeTrans, bonesMatrix);
+
+//		// 遍历模型，生成骨骼坐标系下相对于根节点mRootNode的变换矩阵
+//		{
+//			// 1.记录受影响的骨骼名称 (前面用nodeTrans记过aiNode了，所以没有必要再转一次)
+////            std::set<std::string> bonesNameVec;
+////            for(int i=0; i<animation->mNumChannels; ++i)
+////            {
+////                std::string boneName(animation->mChannels[i]->mNodeName.C_Str());
+////                bonesNameVec.insert(std::move(boneName));
+////            }
+//            // 2.从根节点开始向下遍历，算出相对于根节点的骨骼变换矩阵
+//            std::queue<std::tuple<aiNode*, bool>> traverseQueue;
+//            traverseQueue.push(make_tuple(m_oRootNode, false));
+//            aiNode* node = nullptr;
+//            bool parentDirty;
+//            std::unordered_map<aiNode*, aiMatrix4x4>::iterator itor;
+//            while(!traverseQueue.empty())
 //            {
-//                std::string boneName(animation->mChannels[i]->mNodeName.C_Str());
-//                bonesNameVec.insert(std::move(boneName));
+//                std::tuple<aiNode*, bool>& nodeInfo = traverseQueue.front();
+//                node = std::get<0>(nodeInfo);
+//                parentDirty = std::get<1>(nodeInfo);
+//                itor = nodeTrans.find(node);
+//                traverseQueue.pop();
+//
+//                for(int i=0; i<node->mNumChildren; ++i)
+//                {
+//                    traverseQueue.push(make_tuple(node->mChildren[i], parentDirty || itor!=nodeTrans.end()));
+//                }
+//                
+//                // 没有父节点 或者 该骨骼节点没有变换，则跳过
+//                if (!node->mParent)
+//                {
+//                    continue;
+//                }
+//                
+//                if(itor == nodeTrans.end())
+//                {
+//                    continue;
+//                }
+//
+//                // 如果父节点经历过变换，则从map中查找mat4；否则获取模型文件的mat4
+//                if (parentDirty)
+//                {
+//					aiMatrix4x4 mat;
+//					while (nodeTrans.find(node->mParent) == nodeTrans.end())
+//					{
+//						node = node->mParent;
+//					}
+//					const aiMatrix4x4& parentTransformation = nodeTrans.find(node->mParent)->second;
+//					itor->second = parentTransformation * itor->second;
+//                }
+//                else
+//                {
+//                    const aiMatrix4x4& parentTransformation = node->mParent->mTransformation;
+//                    itor->second = parentTransformation * itor->second;
+//                }
+//                
 //            }
-            // 2.从根节点开始向下遍历，算出相对于根节点的骨骼变换矩阵
-            std::queue<std::tuple<aiNode*, bool>> traverseQueue;
-            traverseQueue.push(make_tuple(m_oRootNode, false));
-            aiNode* node = nullptr;
-            bool parentDirty;
-            std::unordered_map<aiNode*, aiMatrix4x4>::iterator itor;
-            while(!traverseQueue.empty())
-            {
-                std::tuple<aiNode*, bool>& nodeInfo = traverseQueue.front();
-                node = std::get<0>(nodeInfo);
-                parentDirty = std::get<1>(nodeInfo);
-                itor = nodeTrans.find(node);
-                traverseQueue.pop();
-
-                for(int i=0; i<node->mNumChildren; ++i)
-                {
-                    traverseQueue.push(make_tuple(node->mChildren[i], parentDirty || itor!=nodeTrans.end()));
-                }
-                
-                // 没有父节点 或者 该骨骼节点没有变换，则跳过
-                if (!node->mParent)
-                {
-                    continue;
-                }
-                
-                if(itor == nodeTrans.end())
-                {
-                    continue;
-                }
-
-                // 如果父节点经历过变换，则从map中查找mat4；否则获取模型文件的mat4
-                if (parentDirty)
-                {
-                    const aiMatrix4x4& parentTransformation = nodeTrans.find(node->mParent)->second;
-                    itor->second = parentTransformation * itor->second;
-                }
-                else
-                {
-                    const aiMatrix4x4& parentTransformation = node->mParent->mTransformation;
-                    itor->second = parentTransformation * itor->second;
-                }
-                
-            }
-		}
-        // 计算所有骨骼的变换矩阵，
-        {
-            unsigned int boneIdx = 0;
-            aiMesh* mesh = nullptr;
-            aiBone* bone = nullptr;
-            aiNode* node = nullptr;
-            std::unordered_map<aiNode*, aiMatrix4x4>::iterator itor;
-            for(int i=0; i<m_oScene->mNumMeshes; ++i)
-            {
-                mesh = m_oScene->mMeshes[i];
-                
-                for(int j=0; j<mesh->mNumBones; ++j,++boneIdx)
-                {
-                    bone = mesh->mBones[j];
-                    node = m_oRootNode->FindNode(bone->mName);
-                    itor = nodeTrans.find(node);
-                    if (itor != nodeTrans.end())
-                    {
-                        bonesMatrix[boneIdx] = Assimp::ConvertToGLM(itor->second * bone->mOffsetMatrix);
-                    }
-                    else
-                    {
-                        bonesMatrix[boneIdx] = Assimp::ConvertToGLM(node->mTransformation * bone->mOffsetMatrix);
-                    }
-                }
-            }
-        }
+//		}
+//        // 计算所有骨骼的变换矩阵，
+//        {
+//            unsigned int boneIdx = 0;
+//            aiMesh* mesh = nullptr;
+//            aiBone* bone = nullptr;
+//			aiNode* node = nullptr;
+//			aiNode* tmpNode = nullptr;
+//			bool parentDirty = false;
+//            std::unordered_map<aiNode*, aiMatrix4x4>::iterator itor;
+//            for(int i=0; i<m_oScene->mNumMeshes; ++i)
+//            {
+//                mesh = m_oScene->mMeshes[i];
+//                
+//                for(int j=0; j<mesh->mNumBones; ++j,++boneIdx)
+//                {
+//                    bone = mesh->mBones[j];
+//					tmpNode = node = m_oRootNode->FindNode(bone->mName);
+//					parentDirty = true;
+//					while (nodeTrans.find(tmpNode) == nodeTrans.end())
+//					{
+//						tmpNode = tmpNode->mParent;
+//						if (!tmpNode)
+//						{
+//							parentDirty = false;
+//							break;
+//						}
+//					}
+//                    if (parentDirty)
+//                    {
+//						itor = nodeTrans.find(tmpNode);
+//                        bonesMatrix[boneIdx] = Assimp::ConvertToGLM(itor->second * bone->mOffsetMatrix);
+//                    }
+//                    else
+//                    {
+//                        bonesMatrix[boneIdx] = Assimp::ConvertToGLM(node->mTransformation * bone->mOffsetMatrix);
+//                    }
+//                }
+//            }
+//        }
         
+	}
+
+	void Model::traverseNodeToComputeBonesTransform(aiNode* node, const aiMatrix4x4 parentMatrix, std::unordered_map<aiNode*, aiMatrix4x4>& nodeTrans, std::vector<glm::mat4>& bonesMatrix)
+	{
+		aiMatrix4x4 nodeMatrix;
+
+		// 计算当前节点的变换矩阵
+		auto itor = nodeTrans.find(node);
+		if (itor != nodeTrans.end())
+		{
+			nodeMatrix = parentMatrix * itor->second;
+			itor->second = nodeMatrix;
+		}
+		else
+		{
+			nodeMatrix = parentMatrix * node->mTransformation;
+		}
+
+		// 当前节点是否含有骨骼
+		auto boneItor = m_mBonesIdMap.find(std::string(node->mName.C_Str()));
+		if (boneItor != m_mBonesIdMap.end())
+		{
+			bonesMatrix[boneItor->second] = Assimp::ConvertToGLM( nodeMatrix * m_vBones[boneItor->second]->mOffsetMatrix);
+		}
+
+		// 遍历子节点
+		for (int i = 0; i < node->mNumChildren; ++i)
+		{
+			traverseNodeToComputeBonesTransform(node->mChildren[i], nodeMatrix, nodeTrans, bonesMatrix);
+		}
 	}
     
     void Model::loadTextures(const std::string& directory)

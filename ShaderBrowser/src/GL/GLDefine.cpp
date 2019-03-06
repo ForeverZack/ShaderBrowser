@@ -20,6 +20,8 @@ namespace customGL {
     // 单位矩阵
     extern const glm::mat3 GLM_MAT3_UNIT = glm::mat3(1.0f);
     extern const glm::mat4 GLM_MAT4_UNIT = glm::mat4(1.0f);
+	// 零矩阵
+	extern const glm::mat4 GLM_MAT4_ZERO = glm::mat4(0.0f);
     // 零向量
     extern const glm::vec2 GLM_VEC2_ZERO = glm::vec2(0.0f, 0.0f);
     extern const glm::vec3 GLM_VEC3_ZERO = glm::vec3(0.0f, 0.0f, 0.0f);

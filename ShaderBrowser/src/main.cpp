@@ -261,24 +261,25 @@ void testVal()
 	modelEntity->setScale(0.2f, 0.2f, 0.2f);
 	modelEntity->setEulerAngle(0, 180, 0);
 	modelEntity->setPosition(0, 1, 0);
-	scene->addChild(modelEntity);
+	//scene->addChild(modelEntity);
     
     // 渲染模型2
 	modelEntity = m_oModel2->createNewEntity("fighter");
     modelEntity->setScale(0.2f, 0.2f, 0.2f);
-    modelEntity->setEulerAngle(-90, 0, 0);
+    modelEntity->setEulerAngle(0, 90, 0);
     modelEntity->setPosition(1, 0, -2);
     scene->addChild(modelEntity);
-	modelEntity->playAnimation("Take 001");
+	modelEntity->playAnimation("Take 001", true);
     // MeshFilter组件
-	MeshFilter* fighterMeshFilter = modelEntity->getTransform()->getChildren()[0]->getBelongEntity()->getMeshFilter();
+	//MeshFilter* fighterMeshFilter = modelEntity->getTransform()->getChildren()[0]->getBelongEntity()->getMeshFilter();
+	MeshFilter* fighterMeshFilter = modelEntity->getTransform()->getChildren()[0]->getChildren()[0]->getBelongEntity()->getMeshFilter();
 	fighterMeshFilter->getMeshes()[0]->setTexture(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_TEXUTRE0], TextureCache::getInstance()->getTexture("models/Fighter/Fighter.png"));
 
 	// 渲染模型3
 	modelEntity = m_oModelLamp->createNewEntity("LampBob");
-	modelEntity->setScale(0.2f, 0.2f, 0.2f);
-	modelEntity->setEulerAngle(0, 0, 0);
-	modelEntity->setPosition(0, 0, 5);
+	modelEntity->setEulerAngle(0, 90, 0);
+	modelEntity->setPosition(10, 0, 5);
+	modelEntity->playAnimation("", true);
 	scene->addChild(modelEntity);
     
     
@@ -370,7 +371,7 @@ int main()
 //    m_oModel = Model::createAlone("models/nanosuit/nanosuit.obj", [&](Model* mo)     //"models/Fighter/fighterChar.FBX"
 //    ModelCache::getInstance()->addModel("models/nanosuit/nanosuit.obj", [&](Model* mo)
 	ModelCache::getInstance()->addModelsAsync(
-		{ "models/Fighter/fighterChar.FBX", "models/nanosuit/nanosuit.obj", "models/Blender/NormalPose.dae" }, 
+		{ "models/Fighter/fighterChar.FBX", "models/nanosuit/nanosuit.obj", "models/man/model.dae" }, 
 		{ {}, {}, {"models/Blender/untitled.dae"} }, [&](Model* mo)
                                  {
 										switch (modelIdx)

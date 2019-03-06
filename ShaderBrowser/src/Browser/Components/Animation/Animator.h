@@ -57,6 +57,8 @@ namespace browser
         // 当前正在播放的动画
         std::string m_sCurAnimName;
         aiAnimation* m_oAnimation;
+		// 当前动画持续时间
+		float m_fCurAnimDuration;
         // 播放时间
         float m_fElapsedTime;
         // 播放速度

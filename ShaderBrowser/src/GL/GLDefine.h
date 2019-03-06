@@ -50,7 +50,9 @@ namespace customGL
     extern const glm::vec3 GLM_AXIS_Z;
     // 单位矩阵
     extern const glm::mat3 GLM_MAT3_UNIT;
-    extern const glm::mat4 GLM_MAT4_UNIT;
+	extern const glm::mat4 GLM_MAT4_UNIT;
+	// 零矩阵
+	extern const glm::mat4 GLM_MAT4_ZERO;
     // 零向量
     extern const glm::vec2 GLM_VEC2_ZERO;
     extern const glm::vec3 GLM_VEC3_ZERO;
