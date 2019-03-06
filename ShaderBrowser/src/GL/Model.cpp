@@ -424,7 +424,7 @@ namespace customGL
 				const auto scale = Assimp::InterpolationGet<aiVector3D>(sampleUnscaled, channel->mScalingKeys, channel->mNumScalingKeys, interpolateAnimation);
 				// 计算单个骨骼自身坐标系下的变换矩阵
 				aiMatrix4x4::Translation(translation, translateMat);
-				aiMatrix4x4& rotateMat = aiMatrix4x4(rotation.GetMatrix());
+				aiMatrix4x4 rotateMat(rotation.GetMatrix());
 				aiMatrix4x4::Scaling(scale, scaleMat);
 				transformation = translateMat * rotateMat * scaleMat;
 
