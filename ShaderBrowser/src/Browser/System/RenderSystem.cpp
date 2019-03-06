@@ -1,8 +1,10 @@
 #include "RenderSystem.h"
+#include "CameraSystem.h"
 #include "Browser/Components/Render/Material.h"
 #include "Browser/Components/Mesh/MeshFilter.h"
 #include "Browser/Components/BoundBox/BaseBoundBox.h"
-#include "CameraSystem.h"
+#include "Browser/Components/Animation/Animator.h"
+#include "Browser/Components/Render/Pass.h"
 #include "Common/System/Cache/GLProgramCache.h"
 #include "GL/GLStateCache.h"
 #include <chrono>
@@ -152,6 +154,19 @@ namespace browser
                         glVertexAttribPointer(declaration->index, declaration->size, declaration->type, declaration->normalized, declaration->stride, (void*)offsetof(VertexData, tangent));
                     }
                     break;
+				case GLProgram::VERTEX_ATTR_BONE_IDS:
+					{
+						// 6.骨骼id
+						// 注意！！！这里要用glVertexAttribIPointer来传递int值，不然都是float类型的，索引数组会找不到
+						glVertexAttribIPointer(declaration->index, declaration->size, declaration->type, declaration->stride, (void*)offsetof(VertexData, boneIndices));
+					}
+					break;
+				case GLProgram::VERTEX_ATTR_BONE_WEIGHTS:
+					{
+						// 7.骨骼权重
+						glVertexAttribPointer(declaration->index, declaration->size, declaration->type, declaration->normalized, declaration->stride, (void*)offsetof(VertexData, boneWeights));
+					}
+					break;
             }
             
             glEnableVertexAttribArray(declaration->index);
@@ -371,6 +386,8 @@ namespace browser
         MeshFilter* meshFilter;
         Mesh* mesh;
         BaseEntity* entity;
+		Pass* pass;
+		Animator* animator;
 		bool verticesDirty;
         for (auto itor = m_mComponentsList.begin(); itor != m_mComponentsList.end(); ++itor)
         {
@@ -411,7 +428,7 @@ namespace browser
                 const std::vector<GLushort>& indices = mesh->getIndices();
                 indexCount = mesh->getIndexCount();
                 
-				if (verticesDirty)
+				//if (verticesDirty)
 				{
 					// 1.绑定对应的vao
 					glBindVertexArray(vao);
@@ -437,7 +454,9 @@ namespace browser
 #endif
                 
                 // 4.使用材质
-                material->useMaterial(mesh, transform, camera);
+				pass = material->getUsePass();
+				entity->useBonesMatrix(pass);
+				material->useMaterial(mesh, transform, camera);
 #ifdef _SHADER_BROWSER_RENDER_SYSTEM_DEBUG
 				deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - timeRec).count() / 1000.0f;
 				timeRec = std::chrono::steady_clock::now();

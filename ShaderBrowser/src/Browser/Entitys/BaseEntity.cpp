@@ -1,6 +1,9 @@
 #include "BaseEntity.h"
 #include "Common/System/ECSManager.h"
 #include "Browser/Components/BoundBox/AABBBoundBox.h"
+#ifdef  _WIN32
+#pragma warning(disable:4996)
+#endif //  _WIN32
 
 namespace browser
 {
@@ -36,7 +39,7 @@ namespace browser
 
 	BaseEntity::BaseEntity()
 		: m_oTransformComponent(nullptr)
-		, m_oRenderComponent(nullptr)
+		, m_oRenderer(nullptr)
 		, m_oMeshFilterComponent(nullptr)
         , m_oBoundBox(nullptr)
         , m_bIsVisible(true)
@@ -121,7 +124,7 @@ namespace browser
 	bool BaseEntity::isRenderable()
 	{
         // 是否需要被渲染 TODO: isVisible()
-        return m_oRenderComponent && m_oMeshFilterComponent;
+        return m_oRenderer && m_oMeshFilterComponent;
 	}
     
     bool BaseEntity::checkVisibility(Camera* camera, bool reCalculate/* = false*/)
@@ -132,7 +135,7 @@ namespace browser
     const std::vector<VertexData>& BaseEntity::getVertices(Mesh* mesh, bool& dirty)
     {
         // 检测模型根节点是否含有动画组件
-        if(m_oModelRootEntity && m_oModelRootEntity->m_oAnimator && m_oModelRootEntity->m_oAnimator->getIsPlaying())
+        if(m_oModelRootEntity && m_oModelRootEntity->m_oAnimator && m_oModelRootEntity->m_oAnimator->getIsPlaying() && !m_oModelRootEntity->m_oAnimator->getUseGPU())
         {
 			dirty = true;
             const std::unordered_map<Mesh*, std::vector<VertexData>>& vertices = m_oModelRootEntity->m_oAnimator->getVertices();
@@ -144,6 +147,21 @@ namespace browser
             return mesh->getVertices();
         }
     }
+
+	void BaseEntity::useBonesMatrix(Pass* pass)
+	{
+		if (!m_oModelRootEntity || !m_oModelRootEntity->m_oAnimator)
+		{
+			return;
+		}
+		char uniformName[50];
+		const std::vector<glm::mat4>& bonesMatrix = m_oModelRootEntity->m_oAnimator->getBonesMatrix();
+		for (unsigned int i=0; i<bonesMatrix.size(); ++i)
+		{
+			sprintf(uniformName, GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_BONES_MATRIX], i);
+			pass->setUniformMat4(uniformName, bonesMatrix[i]);
+		}
+	}
     
     void BaseEntity::playAnimation(const std::string& animName, bool repeat/* = false*/, float speed/* = 1.0f*/, bool interpolate/* = true*/)
     {
@@ -154,6 +172,44 @@ namespace browser
         // 播放动画
         m_oAnimator->play(animName, repeat, speed, interpolate);
     }
+
+	void BaseEntity::setAnimatorUseGPU(bool useGPU)
+	{
+		BROWSER_ASSERT(m_oModelRootEntity, "Entity must set the model root entity, after that it can play animation!");
+		BROWSER_ASSERT(this == m_oModelRootEntity, "You cannot play animation on a child entity, please select the root model entity! Block in function BaseEntity::playAnimation");
+
+		m_oAnimator->setUseGPU(useGPU);
+	}
+
+	void BaseEntity::changeAllMeshesMaterial(const std::string& programName)
+	{
+		traverseEntity(this, [=](BaseEntity* entity) {
+			BaseRender* renderer = entity->getRenderer();
+			MeshFilter* meshFilter = entity->getMeshFilter();
+			if (renderer && meshFilter)
+			{
+				const std::vector<Mesh*>& meshes = meshFilter->getMeshes();
+				for (auto itor = meshes.begin(); itor != meshes.end(); ++itor)
+				{
+					renderer->changeMeshMaterial(*itor, programName);
+				}
+			}
+		});
+	}
+
+	void BaseEntity::traverseEntity(BaseEntity* entity, std::function<void(BaseEntity* entity)> callback)
+	{
+		callback(entity);
+
+		if (entity->m_oTransformComponent)
+		{
+			const std::vector<Transform*>& children = entity->m_oTransformComponent->getChildren();
+			for (auto itor = children.begin(); itor != children.end(); ++itor)
+			{
+				traverseEntity((*itor)->getBelongEntity(), callback);
+			}
+		}
+	}
 
 	void BaseEntity::addComponent(BaseComponent* component)
 	{
@@ -233,7 +289,7 @@ namespace browser
 
 		case SystemType::RenderSystem:
 			// 渲染组件
-			MARK_SPECIAL_COMPONENT(m_oRenderComponent, component, bEmpty);
+			MARK_SPECIAL_COMPONENT(m_oRenderer, component, bEmpty);
             deliverComponentMessage(ComponentEvent::Render_AddComponent, new RenderAddComponentMessage(this));
 			break;
 

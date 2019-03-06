@@ -253,7 +253,7 @@ namespace customGL
             // 注意:如果纹理创建不成功(例如没有找到),应该有一张白色默认纹理来代替,以防程序出问题
             browser::Mesh* mesh = browser::Mesh::create(aiMesh->mNumVertices, aiMesh->mName.C_Str());
             // 顶点位置
-            mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_POSITION, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), aiMesh->mVertices);
+            mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_POSITION, 4, GL_FLOAT, GL_FALSE, sizeof(VertexData), aiMesh->mVertices);
             // 顶点颜色
 			if (aiMesh->mColors[0] && aiMesh->mColors[1])
 			{
@@ -319,7 +319,8 @@ namespace customGL
 				m_mBonesIdMap[bone->mName.C_Str()] = boneIdx;
 				m_vBones.push_back(bone);
 			}
-			
+			mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_BONE_IDS, 4, GL_UNSIGNED_INT, GL_FALSE, sizeof(VertexData), nullptr);
+			mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_BONE_WEIGHTS, 4, GL_FLOAT, GL_FALSE, sizeof(VertexData), nullptr);
 
             
             // 处理材质(这里的材质指的是纹理)
@@ -555,7 +556,7 @@ namespace customGL
 		auto boneItor = m_mBonesIdMap.find(std::string(node->mName.C_Str()));
 		if (boneItor != m_mBonesIdMap.end())
 		{
-			bonesMatrix[boneItor->second] = Assimp::ConvertToGLM( nodeMatrix * m_vBones[boneItor->second]->mOffsetMatrix);
+			bonesMatrix[boneItor->second] = Assimp::ConvertToGLM(nodeMatrix * m_vBones[boneItor->second]->mOffsetMatrix);
 		}
 
 		// 遍历子节点

@@ -129,7 +129,10 @@ namespace browser
         }
         
         // 填充数据
-        fillVertexsParam(location, data);
+		if (data)
+		{
+			fillVertexsParam(location, data);
+		}
         
         // 将顶点属性记录下来，用来设置vao
         VertexAttribDeclaration* declaration = Utils::createVertexAttribDeclaration(location, size, type, normalized, stride);

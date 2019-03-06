@@ -10,12 +10,16 @@ namespace customGL
 {
     // 最大支持的纹理单元数量
     static const int MAX_ACTIVE_TEXTURE = 16;
+	// 最大支持骨骼矩阵数量
+	static const int MAX_BONES_COUNT = 100;
     
 	class GLProgram
 	{
 	public:
 		// 默认GLProgram名称(网格模型着色器)
 		static const char* DEFAULT_GLPROGRAM_NAME;
+		// 默认带骨骼动画的网格模型着色器
+		static const char* DEFAULT_SKELETON_GLPROGRAM_NAME;
         // 默认的line着色器
         static const char* DEFAULT_LINES_GLPROGRAM_NAME;
         
@@ -33,6 +37,10 @@ namespace customGL
             VERTEX_ATTR_NORMAL,
             // 4.切线
             VERTEX_ATTR_TANGENT,
+			// 5.骨骼id（最多4个骨骼影响一个顶点）
+			VERTEX_ATTR_BONE_IDS,
+			// 6.骨骼权重
+			VERTEX_ATTR_BONE_WEIGHTS,
 
 
 			// 最大值
@@ -54,9 +62,11 @@ namespace customGL
 			UNIFORM_CGL_PROJECTION_MATRIX,
 			// 漫反射颜色
 			UNIFORM_CGL_ALBEDO_COLOR,
-            
             // 平行光
             UNIFORM_CGL_DIRECTIONAL_LIGHT,
+
+			// 骨骼矩阵
+			UNIFORM_CGL_BONES_MATRIX,
             
             
             // 预定义Uniform变量个数
@@ -69,6 +79,8 @@ namespace customGL
 		static const char* ATTRIBUTE_NAME_COORD;
         static const char* ATTRIBUTE_NAME_NORMAL;
         static const char* ATTRIBUTE_NAME_TANGENT;
+		static const char* ATTRIBUTE_NAME_BONE_IDS;
+		static const char* ATTRIBUTE_NAME_BONE_WEIGHTS;
 
 		// 预定义的uniform变量	（与前面枚举要对应上！！）
 		static const char* SHADER_UNIFORMS_ARRAY[UNIFORM_MAX_COUNT];
@@ -123,6 +135,8 @@ namespace customGL
 		std::unordered_map<std::string, GLuint> m_mTextureUnits;
 		// 纹理单元计数
 		GLuint m_uTextureUnitIndex;
+
+		std::string m_Path;
 	};
 }
 

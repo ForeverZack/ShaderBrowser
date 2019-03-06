@@ -14,7 +14,7 @@ namespace browser
         , m_bInterpolate(true)
         , m_bRepeat(false)
         , m_bIsPlaying(false)
-        , m_bUseGPU(false)
+        , m_bUseGPU(true)
 	{
 		// 组件所属系统
 		m_eBelongSystem = SystemType::Animation;
@@ -103,22 +103,26 @@ namespace browser
                         VertexData& vertex = vertices[i];
                         
                         // 计算蒙皮矩阵（顶点的骨骼变换矩阵，每个顶点最多被4个骨骼控制）
-						skinning = GLM_MAT4_ZERO;
-						hasSkinning = false;
-                        for(int j=0; j<4; ++j)
-                        {
-							int boneidx = vertex.boneIndices[j];
-							float weight = vertex.boneWeights[j];
-                            if(vertex.boneWeights[j] > 0.0f)
-                            {
-                                skinning = skinning + (m_vBonesMatrix[vertex.boneIndices[j]]*vertex.boneWeights[j]);
-								hasSkinning = true;
-                            }
-                        }
+						//skinning = GLM_MAT4_ZERO;
+						//hasSkinning = false;
+      //                  for(int j=0; j<4; ++j)
+      //                  {
+      //                      if(vertex.boneWeights[j] > 0.0f)
+      //                      {
+      //                          skinning = skinning + (m_vBonesMatrix[vertex.boneIndices[j]]*vertex.boneWeights[j]);
+						//		hasSkinning = true;
+      //                      }
+      //                  }
+
+						skinning = m_vBonesMatrix[vertex.boneIndices[0]] * vertex.boneWeights[0]
+									+ m_vBonesMatrix[vertex.boneIndices[1]] * vertex.boneWeights[1]
+									+ m_vBonesMatrix[vertex.boneIndices[2]] * vertex.boneWeights[2]
+									+ m_vBonesMatrix[vertex.boneIndices[3]] * vertex.boneWeights[3];
+
                         
                         //BROWSER_LOG_MAT4(skinning);
                         // 计算变换后的顶点位置、法线等信息
-						if (hasSkinning)
+						if (skinning != GLM_MAT4_ZERO)
 						{
 							vertex.position = skinning * vertex.position;
 							vertex.normal = skinning * glm::vec4(vertex.normal, 0.0f);

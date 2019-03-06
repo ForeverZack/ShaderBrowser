@@ -39,7 +39,9 @@ namespace browser
         virtual void onInspectorGUI(InspectorPanel* inspector);
 
         
-        REGISTER_PROPERTY_GET(bool, m_bIsPlaying, IsPlaying)
+		REGISTER_PROPERTY_CONSTREF_GET(std::vector<glm::mat4>, m_vBonesMatrix, BonesMatrix)
+		REGISTER_PROPERTY_GET(bool, m_bIsPlaying, IsPlaying)
+		REGISTER_PROPERTY_GET_SET(bool, m_bUseGPU, UseGPU)
         const std::unordered_map<Mesh*, std::vector<VertexData>>& getVertices()
         {
             return m_mVertices;

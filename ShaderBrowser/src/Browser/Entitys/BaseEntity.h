@@ -8,6 +8,7 @@
 #include "Browser/Components/Transform/Transform.h"
 #include "Browser/Components/BoundBox/BaseBoundBox.h"
 #include "Browser/Components/Animation/Animator.h"
+#include "Browser/Components/Render/BaseRender.h"
 
 namespace customGL
 {
@@ -58,11 +59,15 @@ namespace browser
         // 可见性检测
         bool checkVisibility(Camera* camera, bool reCalculate = false);
         
+		// 修改所有网格模型shader
+		void changeAllMeshesMaterial(const std::string& programName);
         // 播放动画
-        void playAnimation(const std::string& animName, bool repeat = false, float speed = 1.0f, bool interpolate = true);
-        
+        void playAnimation(const std::string& animName, bool repeat = false, float speed = 1.0f, bool interpolate = true);        
+		void setAnimatorUseGPU(bool useGPU);
         // 获取顶点数组
         const std::vector<VertexData>& getVertices(Mesh* mesh, bool& dirty);
+		// 获取骨骼数组
+		void useBonesMatrix(Pass* pass);
         
 		REGISTER_PROPERTY_GET(MeshFilter*, m_oMeshFilterComponent, MeshFilter);
 		REGISTER_PROPERTY_GET(Transform*, m_oTransformComponent, Transform);
@@ -73,11 +78,14 @@ namespace browser
         REGISTER_PROPERTY_GET_SET(bool, m_bIsBoundBoxVisible, IsBoundBoxVisible)
         REGISTER_PROPERTY_CONSTREF_GET(std::vector<BaseComponent*>, m_vComponents, Components)
 		REGISTER_PROPERTY_GET_SET(Model*, m_oModel, Model)
-        REGISTER_PROPERTY_GET_SET(BaseEntity*, m_oModelRootEntity, ModelRootEntity)
+		REGISTER_PROPERTY_GET_SET(BaseEntity*, m_oModelRootEntity, ModelRootEntity)
+		REGISTER_PROPERTY_GET_SET(BaseRender*, m_oRenderer, Renderer)
 
 	private:
 		// 添加\移除组件时，标记或者去标记特殊的组件
 		void markSpecialComponent(BaseComponent* component, bool bEmpty = false);
+		// 遍历节点
+		void traverseEntity(BaseEntity* entity, std::function<void(BaseEntity* entity)> callback);
 
 		// 记录\移除特殊的组件  (注意！！！这里第一个参数使用的是指针的引用(T* &)，用来给成员变量赋值)
 		// 如果参数不是引用的话会调用参数对象的拷贝构造函数，所以如果有需求想改变指针所指的对象（换句话说，就是要改变指针里面存的地址），就要使用指针引用
@@ -102,7 +110,7 @@ namespace browser
 		// Transform组件
 		Transform* m_oTransformComponent;
 		// 渲染组件(方便快速获取组件对象)
-		BaseComponent* m_oRenderComponent;
+		BaseRender* m_oRenderer;
 		// 网格过滤器组件
 		MeshFilter* m_oMeshFilterComponent;
         // 包围盒

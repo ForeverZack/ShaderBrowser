@@ -2,11 +2,16 @@
 #include "Common/Tools/Utils.h"
 #include "GLStateCache.h"
 #include <glm/gtc/type_ptr.hpp>
+#ifdef  _WIN32
+	#pragma warning(disable:4996)
+#endif //  _WIN32
 
 namespace customGL
 {
 	// 默认GLProgram名称
 	const char* GLProgram::DEFAULT_GLPROGRAM_NAME = "ShaderBrowser_DefaultGLProgram";
+	// 默认带骨骼动画的网格模型着色器
+	const char* GLProgram::DEFAULT_SKELETON_GLPROGRAM_NAME = "ShaderBrowser_DefaultSkeletonGLProgram";
     // 默认的line着色器
     const char* GLProgram::DEFAULT_LINES_GLPROGRAM_NAME = "ShaderBrowser_DefaultLinesGLProgram";
 
@@ -15,13 +20,16 @@ namespace customGL
 	const char* GLProgram::ATTRIBUTE_NAME_COLOR = "a_color";
 	const char* GLProgram::ATTRIBUTE_NAME_COORD = "a_coord";
     const char* GLProgram::ATTRIBUTE_NAME_NORMAL = "a_normal";
-    const char* GLProgram::ATTRIBUTE_NAME_TANGENT = "a_tangent";
+	const char* GLProgram::ATTRIBUTE_NAME_TANGENT = "a_tangent";
+	const char* GLProgram::ATTRIBUTE_NAME_BONE_IDS = "a_boneIds";
+	const char* GLProgram::ATTRIBUTE_NAME_BONE_WEIGHTS = "a_boneWeights";
 
 	//  预定义的uniform变量
 	// 创建shader时写入shader文件头的uniform字符串
 	const char* SHADER_UNIFORMS =
 		// 定义一些基本的数据结构
 		"struct DirectionalLight { vec3 direction; float intensity; vec4 color; };\n"
+		"const int MAX_BONES = 100;\n"
 
 		// shader中可以使用的内置的uniform变量名字(不一定会有值,看具体怎么使用)
 		"uniform sampler2D CGL_TEXTURE0;\n"
@@ -30,7 +38,8 @@ namespace customGL
 		"uniform mat4 CGL_VIEW_MATRIX;\n"
 		"uniform mat4 CGL_PROJECTION_MATRIX;\n"
 		"uniform vec4 CGL_ALBEDO_COLOR = vec4(1.0f, 1.0f, 1.0f, 1.0f);\n"
-		"uniform DirectionalLight CGL_DIRECTIONAL_LIGHT;\n";
+		"uniform DirectionalLight CGL_DIRECTIONAL_LIGHT;\n"
+		"uniform mat4 CGL_BONES_MATRIX[MAX_BONES];\n";
 	 // uniform变量名称
 	const char* GLProgram::SHADER_UNIFORMS_ARRAY[] =
 	{
@@ -40,7 +49,8 @@ namespace customGL
 		"CGL_VIEW_MATRIX",
 		"CGL_PROJECTION_MATRIX",
 		"CGL_ALBEDO_COLOR",
-        "CGL_DIRECTIONAL_LIGHT"
+		"CGL_DIRECTIONAL_LIGHT",
+		"CGL_BONES_MATRIX[%d]"
 	};
 
 	GLProgram* GLProgram::create(const char* vertSrc, const char* fragSrc)
@@ -51,6 +61,7 @@ namespace customGL
 			delete program;
 			return nullptr;
 		}
+		program->m_Path = std::string(vertSrc);
 		return program;
 	}
 
@@ -228,12 +239,31 @@ namespace customGL
 
 	void GLProgram::updatePreDefinedUniformsLocation()
 	{
+		char tmpUniform[50];
+		GLint location = -1;
 		for (int i = 0; i < UNIFORM_MAX_COUNT; ++i)
 		{
             std::string uniformName(SHADER_UNIFORMS_ARRAY[i]);
-			GLint location = glGetUniformLocation(m_uProgram, uniformName.c_str());
-            
-            m_mUniformLocations.emplace(uniformName, location);
+
+			if (i == UNIFORM_CGL_BONES_MATRIX)
+			{
+				for (int j = 0; j < MAX_BONES_COUNT; ++j)
+				{
+					sprintf(tmpUniform, SHADER_UNIFORMS_ARRAY[UNIFORM_CGL_BONES_MATRIX], j);
+					location = glGetUniformLocation(m_uProgram, tmpUniform);
+					if (location == -1)
+					{
+						break;
+					}
+					m_mUniformLocations.emplace(tmpUniform, location);
+				}
+			}
+			else
+			{
+				location = glGetUniformLocation(m_uProgram, uniformName.c_str());
+				m_mUniformLocations.emplace(uniformName, location);
+			}
+			
 		}
 	}
     

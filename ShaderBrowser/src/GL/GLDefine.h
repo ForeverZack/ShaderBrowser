@@ -82,6 +82,7 @@ namespace customGL
     public:
         VertexData()
 			: boneWeights(0.0f)
+			, boneIndices(0)
         {
         }
         ~VertexData()

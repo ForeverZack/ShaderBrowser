@@ -20,6 +20,8 @@ namespace common
         // 添加渲染引擎自带的默认着色器
         // 默认网格模型着色器
         GLProgramCache::getInstance()->addGLProgram(GLProgram::DEFAULT_GLPROGRAM_NAME, "shaders/default/model_default.vert", "shaders/default/model_default.frag");
+		// 默认带骨骼动画的网格模型着色器
+		GLProgramCache::getInstance()->addGLProgram(GLProgram::DEFAULT_SKELETON_GLPROGRAM_NAME, "shaders/default/skeleton_model_default.vert", "shaders/default/skeleton_model_default.frag");
         // 默认lines着色器
         GLProgramCache::getInstance()->addGLProgram(GLProgram::DEFAULT_LINES_GLPROGRAM_NAME, "shaders/default/lines_default.vert", "shaders/default/lines_default.frag");
     }

@@ -45,7 +45,7 @@ namespace browser
     {
         BROWSER_WARNING(m_mMaterials.find(mesh->getMaterialName())==m_mMaterials.end(), "The material has already exist, and you are trying to change it, please confirm your program in function BaseRender::changeMeshMaterial");
         
-        Material* material = createMaterial(programName);
+        Material* material = createMaterial(programName, mesh->getMaterialName());
         addMaterial(material);
     }
     

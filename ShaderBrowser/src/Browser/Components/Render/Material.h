@@ -38,6 +38,7 @@ namespace browser
 		// 使用材质的第几个Pass
 		// TODO: 这里实际上应该根据pass的类型来决定，而不是根据index ( 这里的类型也跟渲染队列有关，比方说如果在进行阴影深度贴图的渲染，应该使用对应的简单的pass )
 		void useMaterial(Mesh* mesh, Transform* transform, Camera* camera, int index = 0);
+		Pass* getUsePass(int index = 0);
 
 
 		REGISTER_PROPERTY_CONSTREF_GET(std::vector<Pass*>, m_vPass, Pass)

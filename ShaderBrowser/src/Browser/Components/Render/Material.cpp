@@ -42,6 +42,12 @@ namespace browser
         common::BROWSER_ASSERT(m_vPass.size()>index && m_vPass[index], "cannot found pass in function Material::useMaterial");
         m_vPass[index]->usePass(mesh, transform, camera);
 	}
+
+	Pass* Material::getUsePass(int index/* = 0*/)
+	{
+		return m_vPass[index];
+	}
+
     
 
 }

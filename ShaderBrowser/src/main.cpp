@@ -261,7 +261,7 @@ void testVal()
 	modelEntity->setScale(0.2f, 0.2f, 0.2f);
 	modelEntity->setEulerAngle(0, 180, 0);
 	modelEntity->setPosition(0, 1, 0);
-	//scene->addChild(modelEntity);
+	scene->addChild(modelEntity);
     
     // 渲染模型2
 	modelEntity = m_oModel2->createNewEntity("fighter");
@@ -270,6 +270,7 @@ void testVal()
     modelEntity->setPosition(1, 0, -2);
     scene->addChild(modelEntity);
 	modelEntity->playAnimation("Take 001", true);
+	modelEntity->changeAllMeshesMaterial(GLProgram::DEFAULT_SKELETON_GLPROGRAM_NAME);
     // MeshFilter组件
 	//MeshFilter* fighterMeshFilter = modelEntity->getTransform()->getChildren()[0]->getBelongEntity()->getMeshFilter();
 	MeshFilter* fighterMeshFilter = modelEntity->getTransform()->getChildren()[0]->getChildren()[0]->getBelongEntity()->getMeshFilter();
@@ -281,6 +282,9 @@ void testVal()
 	modelEntity->setPosition(10, 0, 5);
 	modelEntity->playAnimation("", true);
 	scene->addChild(modelEntity);
+	//modelEntity->getAnimator()->setUseGPU(false);
+	modelEntity->changeAllMeshesMaterial(GLProgram::DEFAULT_SKELETON_GLPROGRAM_NAME);
+
     
     
 	// 性能测试
