@@ -159,7 +159,15 @@ namespace browser
 		for (unsigned int i=0; i<bonesMatrix.size(); ++i)
 		{
 			sprintf(uniformName, GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_BONES_MATRIX], i);
-			pass->setUniformMat4(uniformName, bonesMatrix[i]);
+            const glm::mat4& boneMatrix = bonesMatrix[i];
+//            BROWSER_LOG_MAT4(bonesMatrix[i]);
+            
+            // 方式1:
+            pass->setUniformMat3x4(uniformName, glm::mat3x4(boneMatrix[0][0], boneMatrix[1][0], boneMatrix[2][0], boneMatrix[3][0],
+                                                            boneMatrix[0][1], boneMatrix[1][1], boneMatrix[2][1], boneMatrix[3][1],
+                                                            boneMatrix[0][2], boneMatrix[1][2], boneMatrix[2][2], boneMatrix[3][2]));
+            // 方式2:
+//            pass->setUniformMat3x4(uniformName, static_cast<glm::mat3x4>(glm::transpose(boneMatrix)));
 		}
 	}
     

@@ -74,7 +74,7 @@ namespace customGL {
         _value.floatValue = value;
     }
     
-    void UniformValue::setMat3(const glm::mat3 value)
+    void UniformValue::setMat3(const glm::mat3& value)
     {
         common::BROWSER_ASSERT(m_eType==UniformValueType::UniformValueType_Undefined
                                || m_eType==UniformValueType::UniformValueType_Mat3,
@@ -84,7 +84,17 @@ namespace customGL {
         _value.mat3 = value;
     }
     
-    void UniformValue::setMat4(const glm::mat4x4 value)
+    void UniformValue::setMat3x4(const glm::mat3x4 &value)
+    {
+        common::BROWSER_ASSERT(m_eType==UniformValueType::UniformValueType_Undefined
+                               || m_eType==UniformValueType::UniformValueType_Mat3x4,
+                               "UniformValueType has already defined, you cannot change it again in function UniformValue::setMat3x4");
+        
+        m_eType = UniformValueType_Mat3x4;
+        _value.mat3x4 = value;
+    }
+    
+    void UniformValue::setMat4(const glm::mat4x4& value)
     {
         common::BROWSER_ASSERT(m_eType==UniformValueType::UniformValueType_Undefined
                                || m_eType==UniformValueType::UniformValueType_Mat4,
@@ -92,6 +102,16 @@ namespace customGL {
         
         m_eType = UniformValueType::UniformValueType_Mat4;
         _value.mat4 = value;
+    }
+    
+    void UniformValue::setMat4x3(const glm::mat4x3& value)
+    {
+        common::BROWSER_ASSERT(m_eType==UniformValueType::UniformValueType_Undefined
+                               || m_eType==UniformValueType::UniformValueType_Mat4x3,
+                               "UniformValueType has already defined, you cannot change it again in function UniformValue::setMat4x3");
+        
+        m_eType = UniformValueType::UniformValueType_Mat4x3;
+        _value.mat4x3 = value;
     }
     
     void UniformValue::setFloatV(int size, const float* value)
@@ -105,7 +125,7 @@ namespace customGL {
         _value.floatv.pointer = value;
     }
     
-    void UniformValue::setVec2(glm::vec2 value)
+    void UniformValue::setVec2(const glm::vec2& value)
     {
         common::BROWSER_ASSERT(m_eType==UniformValueType::UniformValueType_Undefined
                || m_eType==UniformValueType::UniformValueType_Vec2,
@@ -115,7 +135,7 @@ namespace customGL {
         _value.v2f.pointer = value;
     }
     
-    void UniformValue::setVec3(glm::vec3 value)
+    void UniformValue::setVec3(const glm::vec3& value)
     {
         common::BROWSER_ASSERT(m_eType==UniformValueType::UniformValueType_Undefined
                || m_eType==UniformValueType::UniformValueType_Vec3,
@@ -125,7 +145,7 @@ namespace customGL {
         _value.v3f.pointer = value;
     }
     
-    void UniformValue::setVec4(glm::vec4 value)
+    void UniformValue::setVec4(const glm::vec4& value)
     {
         common::BROWSER_ASSERT(m_eType==UniformValueType::UniformValueType_Undefined
                || m_eType==UniformValueType::UniformValueType_Vec4,
@@ -164,9 +184,19 @@ namespace customGL {
                 glProgram->setUniformWithMat3(uniformName.c_str(), _value.mat3);
                 break;
                 
+            case UniformValueType_Mat3x4:
+                // mat3x4
+                glProgram->setUniformWithMat3x4(uniformName.c_str(), _value.mat3x4);
+                break;
+                
             case UniformValueType_Mat4:
                 // mat4
                 glProgram->setUniformWithMat4(uniformName.c_str(), _value.mat4);
+                break;
+                
+            case UniformValueType_Mat4x3:
+                // mat4x3
+                glProgram->setUniformWithMat4x3(uniformName.c_str(), _value.mat4x3);
                 break;
                 
             case UniformValueType_FloatV:

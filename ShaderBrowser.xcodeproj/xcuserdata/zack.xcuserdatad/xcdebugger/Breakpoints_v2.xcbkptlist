@@ -9,13 +9,13 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "ShaderBrowser/src/GL/Model.cpp"
-            timestampString = "573574827.447064"
+            filePath = "ShaderBrowser/src/Browser/Components/Render/Pass.cpp"
+            timestampString = "573657653.558598"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "409"
-            endingLineNumber = "409"
-            landmarkName = "Model::computeBonesTransform(aiAnimation* animation, float elapsedTime, std::unordered_map&lt;aiNode*, aiMatrix4x4&gt;&amp; nodeTrans, std::vector&lt;glm::mat4&gt;&amp; bonesMatrix, float speed/* = 1.0f*/, bool interpolateAnimation"
+            startingLineNumber = "79"
+            endingLineNumber = "79"
+            landmarkName = "Pass::setUniformMat3x4(const std::string&amp; uniformName, const glm::mat3x4&amp; value)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -25,13 +25,13 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "ShaderBrowser/src/GL/Model.cpp"
-            timestampString = "573574827.447404"
+            filePath = "ShaderBrowser/src/Browser/Components/Render/Pass.cpp"
+            timestampString = "573657653.558946"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "435"
-            endingLineNumber = "435"
-            landmarkName = "Model::computeBonesTransform(aiAnimation* animation, float elapsedTime, std::unordered_map&lt;aiNode*, aiMatrix4x4&gt;&amp; nodeTrans, std::vector&lt;glm::mat4&gt;&amp; bonesMatrix, float speed/* = 1.0f*/, bool interpolateAnimation"
+            startingLineNumber = "110"
+            endingLineNumber = "110"
+            landmarkName = "Pass::setUniformMat4x3(const std::string&amp; uniformName, const glm::mat4x3&amp; value)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -41,77 +41,13 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "ShaderBrowser/src/GL/Model.cpp"
-            timestampString = "573574827.44757"
+            filePath = "ShaderBrowser/src/Browser/Components/Render/Pass.cpp"
+            timestampString = "573657653.5590301"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "484"
-            endingLineNumber = "484"
-            landmarkName = "Model::computeBonesTransform(aiAnimation* animation, float elapsedTime, std::unordered_map&lt;aiNode*, aiMatrix4x4&gt;&amp; nodeTrans, std::vector&lt;glm::mat4&gt;&amp; bonesMatrix, float speed/* = 1.0f*/, bool interpolateAnimation"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ShaderBrowser/src/Browser/Components/Animation/Animator.cpp"
-            timestampString = "573402241.700997"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "95"
-            endingLineNumber = "95"
-            landmarkName = "Animator::updateAnimation(float deltaTime)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ShaderBrowser/src/Browser/Entitys/BaseEntity.cpp"
-            timestampString = "573402241.701136"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "138"
-            endingLineNumber = "138"
-            landmarkName = "BaseEntity::getVertices(Mesh* mesh)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ShaderBrowser/src/Browser/Entitys/BaseEntity.cpp"
-            timestampString = "573402241.701261"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "142"
-            endingLineNumber = "142"
-            landmarkName = "BaseEntity::getVertices(Mesh* mesh)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ShaderBrowser/src/Browser/System/RenderSystem.cpp"
-            timestampString = "573402241.701296"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "408"
-            endingLineNumber = "408"
-            landmarkName = "RenderSystem::forwardRenderScene(Camera* camera)"
+            startingLineNumber = "80"
+            endingLineNumber = "80"
+            landmarkName = "Pass::setUniformMat3x4(const std::string&amp; uniformName, const glm::mat3x4&amp; value)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

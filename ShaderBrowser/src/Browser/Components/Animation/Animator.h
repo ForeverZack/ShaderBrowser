@@ -19,6 +19,10 @@ namespace browser
     
 	class Animator : public BaseComponent
 	{
+    public:
+        // 默认动画名称前缀
+        static const std::string DEFAULT_ANIMATION_NAME;
+        
 	public:
 		Animator();
 		~Animator();

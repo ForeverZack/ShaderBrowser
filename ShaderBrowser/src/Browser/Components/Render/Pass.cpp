@@ -58,7 +58,7 @@ namespace browser
             uniformValue.setFloat(value);
         }
     }
-    void Pass::setUniformMat3(const std::string& uniformName, glm::mat3 value)
+    void Pass::setUniformMat3(const std::string& uniformName, const glm::mat3& value)
     {
         auto itor = m_mUniforms.find(uniformName);
         if (itor == m_mUniforms.end())
@@ -73,7 +73,22 @@ namespace browser
             uniformValue.setMat3(value);
         }
     }
-    void Pass::setUniformMat4(const std::string& uniformName, glm::mat4 value)
+    void Pass::setUniformMat3x4(const std::string& uniformName, const glm::mat3x4& value)
+    {
+        auto itor = m_mUniforms.find(uniformName);
+        if (itor == m_mUniforms.end())
+        {
+            UniformValue uniformValue;
+            uniformValue.setMat3x4(value);
+            m_mUniforms.emplace(uniformName, std::move(uniformValue));
+        }
+        else
+        {
+            UniformValue& uniformValue = itor->second;
+            uniformValue.setMat3x4(value);
+        }
+    }
+    void Pass::setUniformMat4(const std::string& uniformName, const glm::mat4& value)
     {
         auto itor = m_mUniforms.find(uniformName);
         if (itor == m_mUniforms.end())
@@ -86,6 +101,22 @@ namespace browser
         {
             UniformValue& uniformValue = itor->second;
             uniformValue.setMat4(value);
+        }
+    }
+    
+    void Pass::setUniformMat4x3(const std::string& uniformName, const glm::mat4x3& value)
+    {
+        auto itor = m_mUniforms.find(uniformName);
+        if (itor == m_mUniforms.end())
+        {
+            UniformValue uniformValue;
+            uniformValue.setMat4x3(value);
+            m_mUniforms.emplace(uniformName, std::move(uniformValue));
+        }
+        else
+        {
+            UniformValue& uniformValue = itor->second;
+            uniformValue.setMat4x3(value);
         }
     }
     
@@ -105,7 +136,7 @@ namespace browser
         }
     }
     
-    void Pass::setUniformV2f(const std::string& uniformName, glm::vec2 value)
+    void Pass::setUniformV2f(const std::string& uniformName, const glm::vec2& value)
     {
         auto itor = m_mUniforms.find(uniformName);
         if (itor == m_mUniforms.end())
@@ -121,7 +152,7 @@ namespace browser
         }
     }
     
-    void Pass::setUniformV3f(const std::string& uniformName, glm::vec3 value)
+    void Pass::setUniformV3f(const std::string& uniformName, const glm::vec3& value)
     {
         auto itor = m_mUniforms.find(uniformName);
         if (itor == m_mUniforms.end())
@@ -137,7 +168,7 @@ namespace browser
         }
     }
 
-	void Pass::setUniformV4f(const std::string& uniformName, glm::vec4 value)
+	void Pass::setUniformV4f(const std::string& uniformName, const glm::vec4& value)
 	{
 		auto itor = m_mUniforms.find(uniformName);
 		if (itor == m_mUniforms.end())

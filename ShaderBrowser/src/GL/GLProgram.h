@@ -100,7 +100,9 @@ namespace customGL
         void setUniformWithInt(const std::string& uniformName, int value);
         void setUniformWithFloat(const std::string& uniformName, float value);
         void setUniformWithMat3(const std::string& uniformName, const glm::mat3& value);
+        void setUniformWithMat3x4(const std::string& uniformName, const glm::mat3x4& value);
         void setUniformWithMat4(const std::string& uniformName, const glm::mat4& value);
+        void setUniformWithMat4x3(const std::string& uniformName, const glm::mat4x3& value);
         void setUniformWithFloatV(const std::string& uniformName, int size, const float* fv);
         void setUniformWithVec2(const std::string& uniformName, GLfloat f1, GLfloat f2);
         void setUniformWithVec3(const std::string& uniformName, GLfloat f1, GLfloat f2, GLfloat f3);

@@ -4,6 +4,9 @@
 
 namespace browser
 {
+    // 默认动画名称前缀
+    const std::string Animator::DEFAULT_ANIMATION_NAME = "DefaultAnim_";
+    
 	Animator::Animator()
         : BaseComponent("Animator")
         , m_oSrcModel(nullptr)

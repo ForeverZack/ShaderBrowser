@@ -280,7 +280,7 @@ void testVal()
 	modelEntity = m_oModelLamp->createNewEntity("LampBob");
 	modelEntity->setEulerAngle(0, 90, 0);
 	modelEntity->setPosition(10, 0, 5);
-	modelEntity->playAnimation("", true);
+    modelEntity->playAnimation(Animator::DEFAULT_ANIMATION_NAME+"0", true);
 	scene->addChild(modelEntity);
 	//modelEntity->getAnimator()->setUseGPU(false);
 	modelEntity->changeAllMeshesMaterial(GLProgram::DEFAULT_SKELETON_GLPROGRAM_NAME);
@@ -376,7 +376,7 @@ int main()
 //    ModelCache::getInstance()->addModel("models/nanosuit/nanosuit.obj", [&](Model* mo)
 	ModelCache::getInstance()->addModelsAsync(
 		{ "models/Fighter/fighterChar.FBX", "models/nanosuit/nanosuit.obj", "models/man/model.dae" }, 
-		{ {}, {}, {"models/Blender/untitled.dae"} }, [&](Model* mo)
+		{ {}, {}, {} }, [&](Model* mo)
                                  {
 										switch (modelIdx)
 										{

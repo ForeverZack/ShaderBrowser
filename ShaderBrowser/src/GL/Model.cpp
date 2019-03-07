@@ -50,6 +50,7 @@ namespace customGL
 		, m_oRootNode(nullptr)
         , m_oScene(nullptr)
         , m_bHasSkeletonAnim(false)
+        , m_uUnnamedAnimCount(0)
 	{
         // 清理
 		m_vImporters.clear();
@@ -390,6 +391,10 @@ namespace customGL
 			{
 				aiAnimation* animation = scene->mAnimations[i];
 				std::string name(animation->mName.C_Str());
+                if (name == "")
+                {
+                    name = Animator::DEFAULT_ANIMATION_NAME + std::to_string(m_uUnnamedAnimCount++);
+                }
 				m_mAnimations.push_back(std::make_tuple(animation, name));
                 m_vAnimationNames.push_back(name);
 			}

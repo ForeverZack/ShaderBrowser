@@ -145,6 +145,7 @@ namespace customGL
 		// 模型动画队列
 		std::vector<std::tuple<aiAnimation*, std::string>> m_mAnimations;
         std::vector<std::string> m_vAnimationNames;
+        unsigned int m_uUnnamedAnimCount;
         // 纹理队列
         std::vector<Texture2D*> m_vTextures;
         // 纹理数据(中转)

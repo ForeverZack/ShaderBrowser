@@ -39,7 +39,7 @@ namespace customGL
 		"uniform mat4 CGL_PROJECTION_MATRIX;\n"
 		"uniform vec4 CGL_ALBEDO_COLOR = vec4(1.0f, 1.0f, 1.0f, 1.0f);\n"
 		"uniform DirectionalLight CGL_DIRECTIONAL_LIGHT;\n"
-		"uniform mat4 CGL_BONES_MATRIX[MAX_BONES];\n";
+		"uniform mat3x4 CGL_BONES_MATRIX[MAX_BONES];\n";
 	 // uniform变量名称
 	const char* GLProgram::SHADER_UNIFORMS_ARRAY[] =
 	{
@@ -300,11 +300,26 @@ namespace customGL
 //        typedef void (APIENTRYP PFNGLUNIFORMMATRIX3FVPROC)(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
         glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(value));
     }
+    
+    void GLProgram::setUniformWithMat3x4(const std::string& uniformName, const glm::mat3x4& value)
+    {
+        GLint location = getUniformLocation(uniformName);
+        //        typedef void (APIENTRYP PFNGLUNIFORMMATRIX3X4FVPROC)(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value)
+        glUniformMatrix3x4fv(location, 1, GL_FALSE, glm::value_ptr(value));
+    }
+    
     void GLProgram::setUniformWithMat4(const std::string& uniformName, const glm::mat4& value)
     {
         GLint location = getUniformLocation(uniformName);
 //        typedef void (APIENTRYP PFNGLUNIFORMMATRIX4FVPROC)(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
         glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
+    }
+    
+    void GLProgram::setUniformWithMat4x3(const std::string& uniformName, const glm::mat4x3& value)
+    {
+        GLint location = getUniformLocation(uniformName);
+        //        typedef void (APIENTRYP PFNGLUNIFORMMATRIX4X3FVPROC)(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value)
+        glUniformMatrix4x3fv(location, 1, GL_FALSE, glm::value_ptr(value));
     }
     
     void GLProgram::setUniformWithFloatV(const std::string& uniformName, int size, const float* fv)

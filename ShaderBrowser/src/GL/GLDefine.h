@@ -195,8 +195,12 @@ namespace customGL
             UniformValueType_Int,
             // matrix4x4
             UniformValueType_Mat4,
+            // matrix4x3
+            UniformValueType_Mat4x3,
             // matrix3x3
             UniformValueType_Mat3,
+            // matrix3x4
+            UniformValueType_Mat3x4,
             // sampler2D
             UniformValueType_Sampler2D,
         };
@@ -210,12 +214,14 @@ namespace customGL
         // 设置数值
         void setInt(int value);
         void setFloat(float value);
-        void setMat3(const glm::mat3 value);
-        void setMat4(const glm::mat4 value);
+        void setMat3(const glm::mat3& value);
+        void setMat3x4(const glm::mat3x4& value);
+        void setMat4(const glm::mat4& value);
+        void setMat4x3(const glm::mat4x3& value);
         void setFloatV(int size, const float* value);
-        void setVec2(glm::vec2 value);
-        void setVec3(glm::vec3 value);
-        void setVec4(glm::vec4 value);
+        void setVec2(const glm::vec2& value);
+        void setVec3(const glm::vec3& value);
+        void setVec4(const glm::vec4& value);
         void setTex2D(GLuint textureId);
         
         
@@ -230,7 +236,9 @@ namespace customGL
             float floatValue;
             int intValue;
             glm::mat3 mat3;
+            glm::mat3x4 mat3x4;
             glm::mat4 mat4;
+            glm::mat4x3 mat4x3;
             struct {
                 GLuint textureId;
                 //GLuint textureUnit;
