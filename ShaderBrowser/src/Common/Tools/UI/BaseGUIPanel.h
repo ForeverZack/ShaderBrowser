@@ -73,13 +73,16 @@ namespace common
         // 是否只读
         bool isReadOnly;
         // 值
-        union U {
-            struct {
+        union U
+        {
+            struct
+            {
                 std::string show_name;
                 bool isExpand;
 				bool isEnable;
             } title;
-            struct {
+            struct
+            {
                 std::string show_name;
                 std::string key_id;
                 bool selected;
@@ -87,20 +90,24 @@ namespace common
                 bool hasChildren;
                 unsigned long node_id;
             } tree_node;
-            struct {
+            struct
+            {
                 std::string show_name;
             } text;
-            struct {
+            struct
+            {
                 std::string show_name;
                 glm::vec2* pointer;
                 glm::vec2 show_value;
             } vec2;
-            struct {
+            struct
+            {
                 std::string show_name;
                 glm::vec3* pointer;
                 glm::vec3 show_value;
             } vec3;
-            struct {
+            struct
+            {
                 std::string show_name;
                 glm::vec4* pointer;
                 glm::vec4 show_value;

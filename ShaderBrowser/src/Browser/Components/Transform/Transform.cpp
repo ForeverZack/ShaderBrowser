@@ -16,6 +16,7 @@ namespace browser
         , m_bTransDirty(true)
         , m_oObjectPos(GLM_VEC3_ZERO)
         , m_oEulerAngle(GLM_VEC3_ZERO)
+        , m_bUpdateInspectorEuler(true)
         , m_oQuaternion(GLM_QUAT_UNIT)
         , m_oScale(GLM_VEC3_ONE)
         , m_oModelMatrix(GLM_MAT4_UNIT)
@@ -59,11 +60,14 @@ namespace browser
         
         // 显示欧拉角
         // 注意万向锁：由于使用了yaw-pitch-roll，所以这里x轴旋转必须控制在-90~90度的范围内，否则会出现万向锁
-        inspector->addPropertyTransformEulerAngle("Rotation", &m_oEulerAngle, [=](const glm::vec3& value)
+        inspector->addPropertyTransformEulerAngle("Rotation", &m_oInspectorEuler, [=](const glm::vec3& value)
             {
+                m_oInspectorEuler = value;
+                m_bUpdateInspectorEuler = false;
+                
                 setEulerAngle(value);
             }, false);
-        
+
         // 显示缩放
         inspector->addPropertyVector3("Scale", &m_oScale, [=](const glm::vec3& value)
             {
@@ -134,6 +138,12 @@ namespace browser
         
 //        BROWSER_LOG(m_sName);
         
+        // 如果当前从属性面板中输入了欧拉角，则取消所有变换，仅使用属性面板设置的欧拉角的值
+        if(!m_bUpdateInspectorEuler)
+        {
+            setEulerAngle(m_oInspectorEuler);
+        }
+        
         for (int i=0; i<m_vRotateDelayRotations.size(); ++i)
         {
             const glm::vec3& rotation = m_vRotateDelayRotations[i];
@@ -169,6 +179,14 @@ namespace browser
         
         // 计算模型坐标空间下的欧拉角
         m_oEulerAngle = quaternion2EulerAngle(m_oQuaternion);   // 模型->惯性 四元数转欧拉角
+        if (m_bUpdateInspectorEuler)
+        {
+            m_oInspectorEuler = m_oEulerAngle;
+        }
+        else
+        {
+            m_bUpdateInspectorEuler = true;
+        }
         // 计算惯性坐标空间下的四元数和欧拉角
         m_oGlobalQuaternion = parentQuat * m_oQuaternion;
         m_oGlobalEulerAngle = quaternion2EulerAngle(m_oGlobalQuaternion);
@@ -429,7 +447,7 @@ namespace browser
         const glm::mat4& parentMMatrix = std::get<0>(parentTransInfo);
 		bool parentDirty = std::get<1>(parentTransInfo);
 
-        if (parentDirty)
+        if (parentDirty || m_bTransDirty)
         {
             // 更新自身的model矩阵
             updateSelfModelMatrix(parentMMatrix);

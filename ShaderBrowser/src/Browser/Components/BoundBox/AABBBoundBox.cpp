@@ -16,6 +16,23 @@ namespace browser
 	{
 		BROWSER_LOG("~AABBBoundBox");
 	}
+    
+    void AABBBoundBox::onInspectorGUI(InspectorPanel* inspector)
+    {
+        
+        // 显示AABB包围盒最小点
+        inspector->addPropertyVector3("Min Vertex", &m_oMinVertex, [=](const glm::vec3& value)
+                                      {
+                                          m_oMinVertex = value;
+                                      }, false);
+        
+        // 显示AABB包围盒最大点
+        inspector->addPropertyVector3("Max Vertex", &m_oMaxVertex, [=](const glm::vec3& value)
+                                      {
+                                          m_oMaxVertex = value;
+                                      }, false);
+        
+    }
 
 	void AABBBoundBox::updateBoundBox(float deltaTime)
 	{        

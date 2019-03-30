@@ -263,7 +263,7 @@ void testVal()
 	modelEntity->setPosition(0, 1, 0);
 	scene->addChild(modelEntity);
     
-    // 渲染模型2
+    // 渲染模型2    fighter => aabb Min:-20, 0, -13  Max:20, 80, 15
 	modelEntity = m_oModel2->createNewEntity("fighter");
     modelEntity->setScale(0.2f, 0.2f, 0.2f);
     modelEntity->setEulerAngle(0, 90, 0);

@@ -181,6 +181,11 @@ namespace browser
         // 不含缩放的model矩阵(显示axis用)
         glm::mat4 m_oNoScaleModelMatrix;
         
+        // 属性面板的欧拉角
+        glm::vec3 m_oInspectorEuler;
+        // 是否需要更新属性面板欧拉角的值
+        bool m_bUpdateInspectorEuler;
+        
         // 变换脏标记
         bool m_bTransDirty;
         // 延迟旋转角度队列

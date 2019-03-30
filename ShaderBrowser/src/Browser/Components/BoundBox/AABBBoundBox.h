@@ -45,13 +45,16 @@ namespace browser
         // 可见性检测
         virtual bool checkVisibility(Camera* camera, bool reCalculate = false);
         
+        // 重载属性面板显示方法
+        virtual void onInspectorGUI(InspectorPanel* inspector);
+        
         
     protected:
         // 重新生成包围盒
         void calculateAABBBoundBox();
         // 设置顶点
         void setVertexPosition(glm::vec4& vertex, float x, float y, float z);
-        // 计算可见性焉码
+        // 计算可见性掩码
         int calculateVertexOutCode(const glm::vec4& vertex);
         
 	protected:
