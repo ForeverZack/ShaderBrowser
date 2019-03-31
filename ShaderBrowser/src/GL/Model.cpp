@@ -55,9 +55,10 @@ namespace customGL
         // 清理
 		m_vImporters.clear();
         m_vMeshes.clear();
+        m_vAiMeshes.clear();
         m_vTextures.clear();
         m_vMeshTextureData.clear();
-		m_mAnimations.clear();
+		m_vAnimations.clear();
         m_vAnimationNames.clear();
 	}
 
@@ -80,6 +81,7 @@ namespace customGL
         {
             (*itor)->release();
         }
+        m_vAiMeshes.clear();
 		// 释放模型原始数据
 		for (auto itor = m_vImporters.begin(); itor != m_vImporters.end(); ++itor)
 		{
@@ -93,44 +95,75 @@ namespace customGL
         // 加载模型（主模型文件）
 		{
 			// 获取文件全名和路径
-			std::string model_file = FileUtils::getInstance()->getAbsolutePathForFilename(fileName, m_sDirectory);
+			m_sFullPath = FileUtils::getInstance()->getAbsolutePathForFilename(fileName, m_sDirectory);
 
 			std::shared_ptr<Assimp::Importer> importer = make_shared<Assimp::Importer>();
 			// 设置importer的属性
-			//importer->SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, false);	// 防止FBX自己生成枢轴，干扰Node结构树
-			const aiScene* scene = importer->ReadFile(model_file, pFlags);
+//            importer->SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, false);    // 防止FBX自己生成枢轴，干扰Node结构树
+			const aiScene* scene = importer->ReadFile(m_sFullPath, pFlags);
 			if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 			{
 				// 加载模型失败
 				cout << "ERROR::ASSIMP::" << importer->GetErrorString() << endl;
 				return false;
 			}
+            // 记录importer，否则场景数据会被析构
 			m_vImporters.push_back(importer);
 			// 加载模型动画数据
 			loadAnimations(scene);
 			// 初始化骨骼数据
 			{
 				m_uBoneNum = 0;
-				for (int i = 0; i < scene->mNumMeshes; ++i)
-				{
-					m_uBoneNum += scene->mMeshes[i]->mNumBones;
-				}
-//                m_vBonesMatrix.resize(m_uBoneNum);
-//                m_vBonesMatrixPre.resize(m_uBoneNum);
-				//m_vBonesColor.resize(m_uBoneNum);
 				m_mBonesIdMap.clear();
-				m_mBonesIdMap.reserve(m_uBoneNum);
 				m_vBones.clear();
-				m_vBones.reserve(m_uBoneNum);
 			}
 			// 加载模型网格数据
 			{
                 m_oScene = scene;
 				m_oRootNode = scene->mRootNode;
 				m_vMeshes.resize(scene->mNumMeshes);
+                m_vAiMeshes.resize(scene->mNumMeshes);
 				m_uRecBoneOffset = 0;
 				traverseNode(scene->mRootNode, scene);
+                
+                m_uBoneNum = m_mBonesIdMap.size();
 			}
+            // 将骨骼树节点下的mesh绑定到骨骼 (在这里检测是否已经有网格模型绑定在骨骼上了。如果有，并且该网格模型没有绑定任何的骨骼，则执行网格的骨骼绑定)
+            {
+                aiMesh* aiMesh = nullptr;
+                aiNode* meshNode = nullptr;
+                aiNode* parentNode = nullptr;
+                int index = 0;
+                std::unordered_map<std::string, unsigned int>::iterator boneItor;
+                for(auto itor=m_vAiMeshes.cbegin(); itor!=m_vAiMeshes.cend(); ++itor)
+                {
+                    aiMesh = std::get<0>(*itor);
+                    meshNode = std::get<1>(*itor);
+                    parentNode = meshNode->mParent;
+                    
+                    while(parentNode)
+                    {
+                        boneItor = m_mBonesIdMap.find(parentNode->mName.C_Str());
+                        if(boneItor != m_mBonesIdMap.end())
+                        {
+                            unsigned int boneIdx = boneItor->second;
+                            
+                            browser::Mesh* mesh = m_vMeshes[index];
+                            std::vector<VertexData>& vertices = mesh->getVerticesRef();
+                            if (vertices.size()>0 && vertices[0].boneWeights[0]==0.0f)
+                            {
+                                // 绑定模型到骨骼
+                                bindMeshOnSingleBone(mesh, boneIdx);
+                            }
+                            
+                            break;
+                        }
+                        parentNode = parentNode->mParent;
+                    }
+                    
+                    ++index;
+                }
+            }
 		}
 		
 		// 加载其余的动画文件（动画文件列表）
@@ -139,21 +172,19 @@ namespace customGL
 			{
 				std::shared_ptr<Assimp::Importer> importer = make_shared<Assimp::Importer>();
 				// 设置importer的属性
-				//importer->SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, false);	// 防止FBX自己生成枢轴，干扰Node结构树
-				const aiScene* scene = importer->ReadFile(*itor, aiProcess_GenSmoothNormals |
+//                importer->SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, false);    // 防止FBX自己生成枢轴，干扰Node结构树
+                std::string full_path = *itor;
+				const aiScene* scene = importer->ReadFile(full_path, aiProcess_GenSmoothNormals |
 					aiProcess_LimitBoneWeights |
 					aiProcess_FlipUVs);
-//                unsigned int fff = scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE;
-				if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+				if (!scene || !scene->mRootNode)
 				{
 					// 加载模型失败
 					cout << "ERROR::ASSIMP::" << importer->GetErrorString() << endl;
 					return false;
 				}
-				else
-				{
-					BROWSER_LOG("success" + (*itor));
-				}
+                // 记录importer，否则场景数据会被析构
+                m_vImporters.push_back(importer);
                 // 加载模型动画数据
                 loadAnimations(scene);
 			}
@@ -234,8 +265,8 @@ namespace customGL
 			if (mesh)
 			{
 				m_vMeshes[node->mMeshes[i]] = mesh;
+                m_vAiMeshes[node->mMeshes[i]] = make_tuple(aiMesh, node);
 			}
-			m_uRecBoneOffset += aiMesh->mNumBones;
 		}
             
         // 继续遍历子节点
@@ -246,11 +277,15 @@ namespace customGL
         
     }
     
-    browser::Mesh* Model::generateMesh(aiMesh* aiMesh, const aiScene*& scene, unsigned int boneOffset)
+    browser::Mesh* Model::generateMesh(aiMesh* aiMesh, const aiScene*& scene, unsigned int& boneOffset)
     {
         // 根据aiMesh的id获取aiMesh
         if (aiMesh)
         {
+            if (std::string(aiMesh->mName.C_Str()) == "Le_Eye_Mesh")
+            {
+                int iii=0;
+            }
             // 注意:如果纹理创建不成功(例如没有找到),应该有一张白色默认纹理来代替,以防程序出问题
             browser::Mesh* mesh = browser::Mesh::create(aiMesh->mNumVertices, aiMesh->mName.C_Str());
             // 顶点位置
@@ -292,10 +327,25 @@ namespace customGL
 			aiBone* bone = nullptr;
 			aiVertexWeight * vertexWeight = nullptr;
 			unsigned int boneIdx;
+            unsigned int currentBoneOffset = 0; // 当前骨骼id偏移，防止重复的骨骼
+            std::unordered_map<std::string, unsigned int>::iterator boneIdItor;
 			for (unsigned int i = 0; i < aiMesh->mNumBones; ++i)
 			{
 				bone = aiMesh->mBones[i];	// aiBone
-				boneIdx = boneOffset + i;	// 骨骼id要自己生成
+                boneIdItor = m_mBonesIdMap.find(bone->mName.C_Str());
+                if (boneIdItor != m_mBonesIdMap.end())
+                {
+                    // 骨骼已存在
+                    boneIdx = boneIdItor->second;
+                }
+                else
+                {
+                    // 骨骼id要自己生成
+                    boneIdx = boneOffset + currentBoneOffset;
+                    ++currentBoneOffset;
+                    m_vBones.push_back(bone);
+                    m_mBonesIdMap[bone->mName.C_Str()] = boneIdx;
+                }
 				
 				for (unsigned int w = 0; w < bone->mNumWeights; ++w)
 				{
@@ -316,12 +366,11 @@ namespace customGL
 					}
 				}
 				
-//                m_vBonesMatrix[boneIdx] = Assimp::ConvertToGLM(bone->mOffsetMatrix);
-				m_mBonesIdMap[bone->mName.C_Str()] = boneIdx;
-				m_vBones.push_back(bone);
 			}
 			mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_BONE_IDS, 4, GL_UNSIGNED_INT, GL_FALSE, sizeof(VertexData), nullptr);
 			mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_BONE_WEIGHTS, 4, GL_FLOAT, GL_FALSE, sizeof(VertexData), nullptr);
+            // 增加骨骼id偏移
+            boneOffset += currentBoneOffset;
 
             
             // 处理材质(这里的材质指的是纹理)
@@ -390,12 +439,13 @@ namespace customGL
 			for (int i = 0; i < scene->mNumAnimations; ++i)
 			{
 				aiAnimation* animation = scene->mAnimations[i];
-				std::string name(animation->mName.C_Str());
+                std::string name(animation->mName.C_Str());
                 if (name == "")
                 {
                     name = Animator::DEFAULT_ANIMATION_NAME + std::to_string(m_uUnnamedAnimCount++);
                 }
-				m_mAnimations.push_back(std::make_tuple(animation, name));
+//                std::string name = Animator::DEFAULT_ANIMATION_NAME + std::to_string(m_uUnnamedAnimCount++);
+				m_vAnimations.push_back(std::make_tuple(animation, name));
                 m_vAnimationNames.push_back(name);
 			}
             
@@ -438,6 +488,7 @@ namespace customGL
 			}
 		}
 
+        
 		aiMatrix4x4 identity;
 		traverseNodeToComputeBonesTransform(m_oRootNode, identity, nodeTrans, bonesMatrix);
 
@@ -541,7 +592,7 @@ namespace customGL
         
 	}
 
-	void Model::traverseNodeToComputeBonesTransform(aiNode* node, const aiMatrix4x4 parentMatrix, std::unordered_map<aiNode*, aiMatrix4x4>& nodeTrans, std::vector<glm::mat4>& bonesMatrix)
+    void Model::traverseNodeToComputeBonesTransform(aiNode* node, const aiMatrix4x4 parentMatrix, std::unordered_map<aiNode*, aiMatrix4x4>& nodeTrans, std::vector<glm::mat4>& bonesMatrix)
 	{
 		aiMatrix4x4 nodeMatrix;
 
@@ -571,6 +622,37 @@ namespace customGL
 		}
 	}
     
+    bool Model::bindMeshOnSingleBone(browser::Mesh* mesh, const std::string& boneName)
+    {
+        std::unordered_map<std::string, unsigned int>::iterator itor = m_mBonesIdMap.find(boneName);
+        if(itor == m_mBonesIdMap.end())
+        {
+            return false;
+        }
+        
+        return bindMeshOnSingleBone(mesh, itor->second);
+    }
+    
+    bool Model::bindMeshOnSingleBone(browser::Mesh* mesh, unsigned int boneIdx)
+    {
+        if(boneIdx >= m_uBoneNum)
+        {
+            return false;
+        }
+        
+        std::vector<VertexData>& vertices = mesh->getVerticesRef();
+        for (auto itor=vertices.begin(); itor!=vertices.end(); ++itor)
+        {
+            VertexData& vertex = (*itor);
+            vertex.boneIndices = GLM_VEC4_ZERO;
+            vertex.boneWeights = GLM_VEC4_ZERO;
+            vertex.boneIndices[0] = boneIdx;
+            vertex.boneWeights[0] = 1.0f;
+        }
+        
+        return true;
+    }
+    
     void Model::loadTextures(const std::string& directory)
     {
         int textureCount = m_vMeshTextureData.size();
@@ -593,13 +675,16 @@ namespace customGL
                 //按值传递函数对象参数时，加上mutable修饰符后，可以修改按值传递进来的拷贝（注意是能修改拷贝，而不是值本身）
             TextureCache::getInstance()->addTextureAsync(full_path, [&, i, textureCount](Texture2D* texture) mutable -> void     // 除了itor按值捕获,其他都按引用捕获
                  {
-                     // 将texture的环绕方式设为repeat
-                     texture->setTexWrapParams(GL_REPEAT, GL_REPEAT);
-                     // 记录texture
-                     m_vTextures.push_back(texture);
+                     if (texture)
+                     {
+                         // 将texture的环绕方式设为repeat
+                         texture->setTexWrapParams(GL_REPEAT, GL_REPEAT);
+                         // 记录texture
+                         m_vTextures.push_back(texture);
                      
-                     browser::Mesh* mesh = m_vMeshTextureData[i].mesh;
-                     mesh->addTexture(m_vMeshTextureData[i].uniformName, texture);
+                         browser::Mesh* mesh = m_vMeshTextureData[i].mesh;
+                         mesh->addTexture(m_vMeshTextureData[i].uniformName, texture);
+                     }
                      
                      ++m_iLoadTextureNum;
                      if (m_iLoadTextureNum == textureCount)

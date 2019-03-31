@@ -56,6 +56,7 @@ using namespace common;
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <chrono>
+#include <unordered_map>
 
 #include "GL/Model.h"
 
@@ -177,6 +178,10 @@ GLushort indices[] = {
 Model* m_oModel = nullptr;	//纳米装
 Model* m_oModel2 = nullptr;	//Fighter
 Model* m_oModelLamp = nullptr;	//拿灯
+Model* m_oModelYBot = nullptr;
+Model* m_oModelUnity = nullptr;
+
+std::unordered_map<std::string, Model*> m_mModels;
 
 
 void testVal()
@@ -256,7 +261,14 @@ void testVal()
     entity->addComponent(meshFilter);
 
     
-    // 渲染模型
+    // "models/Fighter/fighterChar.FBX", "models/nanosuit/nanosuit.obj", "models/man/model.dae", "models/YBot/ybot.fbx" }
+    m_oModel2 = m_mModels[FileUtils::getInstance()->getAbsolutePathForFilename("models/Fighter/fighterChar.FBX")];
+    m_oModel = m_mModels[FileUtils::getInstance()->getAbsolutePathForFilename("models/nanosuit/nanosuit.obj")];
+    m_oModelLamp = m_mModels[FileUtils::getInstance()->getAbsolutePathForFilename("models/man/model.dae")];
+    m_oModelYBot = m_mModels[FileUtils::getInstance()->getAbsolutePathForFilename("models/YBot/ybot.fbx")];
+    m_oModelUnity = m_mModels[FileUtils::getInstance()->getAbsolutePathForFilename("models/RawMocap/DefaultAvatar.fbx")];
+    
+    // 渲染模型0
 	BaseEntity* modelEntity = m_oModel->createNewEntity("namizhuang");
 	modelEntity->setScale(0.2f, 0.2f, 0.2f);
 	modelEntity->setEulerAngle(0, 180, 0);
@@ -269,21 +281,39 @@ void testVal()
     modelEntity->setEulerAngle(0, 90, 0);
     modelEntity->setPosition(1, 0, -2);
     scene->addChild(modelEntity);
-	modelEntity->playAnimation("Take 001", true);
-	modelEntity->changeAllMeshesMaterial(GLProgram::DEFAULT_SKELETON_GLPROGRAM_NAME);
+    modelEntity->playAnimation("Take 001", true);
+    modelEntity->changeAllMeshesMaterial(GLProgram::DEFAULT_SKELETON_GLPROGRAM_NAME);
     // MeshFilter组件
-	//MeshFilter* fighterMeshFilter = modelEntity->getTransform()->getChildren()[0]->getBelongEntity()->getMeshFilter();
-	MeshFilter* fighterMeshFilter = modelEntity->getTransform()->getChildren()[0]->getChildren()[0]->getBelongEntity()->getMeshFilter();
+//    MeshFilter* fighterMeshFilter = modelEntity->getTransform()->getChildren()[0]->getBelongEntity()->getMeshFilter();
+    MeshFilter* fighterMeshFilter = modelEntity->getTransform()->getChildren()[0]->getChildren()[0]->getBelongEntity()->getMeshFilter();
 	fighterMeshFilter->getMeshes()[0]->setTexture(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_TEXUTRE0], TextureCache::getInstance()->getTexture("models/Fighter/Fighter.png"));
 
 	// 渲染模型3
 	modelEntity = m_oModelLamp->createNewEntity("LampBob");
 	modelEntity->setEulerAngle(0, 90, 0);
 	modelEntity->setPosition(10, 0, 5);
-    modelEntity->playAnimation(Animator::DEFAULT_ANIMATION_NAME+"0", true);
 	scene->addChild(modelEntity);
+    modelEntity->playAnimation(Animator::DEFAULT_ANIMATION_NAME+"0", true);
 	//modelEntity->getAnimator()->setUseGPU(false);
-	modelEntity->changeAllMeshesMaterial(GLProgram::DEFAULT_SKELETON_GLPROGRAM_NAME);
+    modelEntity->changeAllMeshesMaterial(GLProgram::DEFAULT_SKELETON_GLPROGRAM_NAME);
+    
+    // 模型4 RawMocap
+    modelEntity = m_oModelUnity->createNewEntity("RawMocap");
+    modelEntity->setScale(0.1f, 0.1f, 0.1f);
+    modelEntity->setPosition(-10, -10, -50);
+    scene->addChild(modelEntity);
+//    modelEntity->playAnimation("_1_Edit1_WalkFWD", true);
+    modelEntity->playAnimation("_3_a_U1_M_P_WalkAvoid_ToLeft_Both_Fb_p0_No_0_1", true);
+    modelEntity->changeAllMeshesMaterial(GLProgram::DEFAULT_SKELETON_GLPROGRAM_NAME);
+//    modelEntity->getAnimator()->setUseGPU(false);
+    
+    // 模型5 RawMocap
+    modelEntity = m_oModelYBot->createNewEntity("yBot");
+    modelEntity->setScale(0.05f, 0.05f, 0.05f);
+    modelEntity->setPosition(-10, 0, 5);
+    scene->addChild(modelEntity);
+    modelEntity->playAnimation(1, true);
+    modelEntity->changeAllMeshesMaterial(GLProgram::DEFAULT_SKELETON_GLPROGRAM_NAME);
 
     
     
@@ -365,7 +395,7 @@ int main()
 	int total = 0;
 	TextureCache::getInstance()->addTexturesAsync({ "texture/awesomeface.png", "texture/HelloWorld.png", "models/Fighter/Fighter.png" }, [&](Texture2D* texture) {
 		++total;
-		if (total == 6)
+		if (total == 8)
 		{
 			testVal();
 		}
@@ -375,35 +405,17 @@ int main()
 //    m_oModel = Model::createAlone("models/nanosuit/nanosuit.obj", [&](Model* mo)     //"models/Fighter/fighterChar.FBX"
 //    ModelCache::getInstance()->addModel("models/nanosuit/nanosuit.obj", [&](Model* mo)
 	ModelCache::getInstance()->addModelsAsync(
-		{ "models/Fighter/fighterChar.FBX", "models/nanosuit/nanosuit.obj", "models/man/model.dae" }, 
-		{ {}, {}, {} }, [&](Model* mo)
-                                 {
-										switch (modelIdx)
-										{
-											case 0:
-											{
-												//BROWSER_LOG(mo->getDirectory());
-												m_oModel2 = mo;
-											}
-											break;
-											case 1:
-											{
-												m_oModel = mo;
-											}
-											break;
-											case 2:
-											{
-												m_oModelLamp = mo;
-											}
-											break;
-										}
-										++modelIdx;
-										++total;
-										if (total == 6)
-										{
-											testVal();
-										}
-                                 });
+		{ "models/Fighter/fighterChar.FBX", "models/nanosuit/nanosuit.obj", "models/man/model.dae", "models/RawMocap/DefaultAvatar.fbx", "models/YBot/ybot.fbx" },
+          { {}, {}, {}, {"models/RawMocap/Animations/Walking/WalkFWD.fbx", "models/RawMocap/Animations/Idle/Idle_Ready.fbx", "models/RawMocap/Animations/Walking/WalkAvoid_ToLeft_Both.fbx"}, {"models/YBot/Localmotion/walking.fbx"} }, [&](Model* mo)
+             {
+                    m_mModels.insert(make_pair(mo->getFullPath(), mo));
+                    ++modelIdx;
+                    ++total;
+                    if (total == 8)
+                    {
+                        testVal();
+                    }
+             });
 
 
 

@@ -180,6 +180,16 @@ namespace browser
         // 播放动画
         m_oAnimator->play(animName, repeat, speed, interpolate);
     }
+    
+    void BaseEntity::playAnimation(int animIdx, bool repeat /*= false*/, float speed /*= 1.0f*/, bool interpolate /*= true*/)
+    {
+        // 只有模型的根节点可以播放动画，因为只有根节点可以拿到完整的模型数据
+        BROWSER_ASSERT(m_oModelRootEntity, "Entity must set the model root entity, after that it can play animation!");
+        BROWSER_ASSERT(this==m_oModelRootEntity, "You cannot play animation on a child entity, please select the root model entity! Block in function BaseEntity::playAnimation");
+        
+        // 播放动画
+        m_oAnimator->play(animIdx, repeat, speed, interpolate);
+    }
 
 	void BaseEntity::setAnimatorUseGPU(bool useGPU)
 	{

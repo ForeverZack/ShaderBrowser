@@ -177,6 +177,40 @@ namespace browser
 
 
     }
+    
+    void Animator::play(int animIdx, bool repeat /*= false*/, float speed /*= 1.0f*/, bool interpolate /*= true*/)
+    {
+        BROWSER_ASSERT(m_oSrcModel, "Entity must have a source model, or you cannot play animation in function Animator::play");
+        
+        if(!m_bHasInit)
+        {
+            // 重置容器大小
+            m_vBonesMatrix.reserve(m_oSrcModel->getBoneNum());
+            m_mVertices.clear();
+            const std::vector<Mesh*>& meshes = m_oSrcModel->getMeshes();
+            for(auto itor=meshes.begin(); itor!=meshes.end(); ++itor)
+            {
+                std::vector<VertexData> vertices;
+                vertices.resize((*itor)->getVertexCount());
+                m_mVertices.emplace((*itor), std::move(vertices));
+            }
+        }
+        
+        //
+        auto animation = m_oSrcModel->getAnimation(animIdx);
+        if (animation)
+        {
+            m_oAnimation = animation;
+            m_sCurAnimName = animation->mName.C_Str();
+            m_bRepeat = repeat;
+            m_fSpeed = speed;
+            m_bInterpolate = interpolate;
+            m_bIsPlaying = true;
+            m_fElapsedTime = 0.0f;
+            
+            m_fCurAnimDuration = animation->mDuration / animation->mTicksPerSecond;
+        }
+    }
 
 	void Animator::handleEvent(ComponentEvent event, BaseComponentMessage* msg)
 	{

@@ -30,6 +30,7 @@ namespace browser
 	public:
         // 播放动画
         void play(const std::string& animName, bool repeat = false, float speed = 1.0f, bool interpolate = true);
+        void play(int animIdx, bool repeat = false, float speed = 1.0f, bool interpolate = true);
         
         // 刷新动画
         void updateAnimation(float deltaTime);

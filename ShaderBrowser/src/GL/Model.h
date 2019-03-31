@@ -86,6 +86,11 @@ namespace customGL
 		// interpolateAnimation：是否插值动画（false使用前一帧, true在两帧间插值）
 		void computeBonesTransform(aiAnimation* animation, float elapsedTime, std::unordered_map<aiNode*, aiMatrix4x4>& nodeTrans, std::vector<glm::mat4>& bonesMatrix, float speed = 1.0f, bool interpolateAnimation = true);
 		void traverseNodeToComputeBonesTransform(aiNode* node, const aiMatrix4x4 parentMatrix, std::unordered_map<aiNode*, aiMatrix4x4>& nodeTrans, std::vector<glm::mat4>& bonesMatrix);
+        
+        // 绑定网格模型到单个骨骼
+        bool bindMeshOnSingleBone(browser::Mesh* mesh, const std::string& boneName);
+        bool bindMeshOnSingleBone(browser::Mesh* mesh, unsigned int boneIdx);
+        
 	private:
         // 初始化
 		bool initWithFile(const char* fileName, const std::vector<std::string>& animFiles, unsigned int pFlags);
@@ -94,7 +99,7 @@ namespace customGL
         // 递归遍历模型节点
         void traverseNode(aiNode* node, const aiScene*& scene);
         // 生成游戏内部使用的网格(aiMesh->Mesh)
-        browser::Mesh* generateMesh(aiMesh* aiMesh, const aiScene*& scene, unsigned int boneOffset);
+        browser::Mesh* generateMesh(aiMesh* aiMesh, const aiScene*& scene, unsigned int& boneOffset);
         // 读取纹理数据
         void readTextureData(browser::Mesh* mesh, aiMaterial* material, aiTextureType type, const char* uniformName = GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_TEXUTRE0]);
 
@@ -103,13 +108,26 @@ namespace customGL
         
     public:
         REGISTER_PROPERTY_CONSTREF_GET(std::string, m_sDirectory, Directory);
+        REGISTER_PROPERTY_CONSTREF_GET(std::string, m_sFullPath, FullPath);
         REGISTER_PROPERTY_CONSTREF_GET(std::vector<std::string>, m_vAnimationNames, AnimationNames);
         REGISTER_PROPERTY_GET_SET(std::function<void(Model*)>, m_oSuccessCallback, SuccessCallback)
         REGISTER_PROPERTY_GET(unsigned int, m_uBoneNum, BoneNum)
         REGISTER_PROPERTY_CONSTREF_GET(std::vector<browser::Mesh*>, m_vMeshes, Meshes)
+        aiAnimation* getAnimation(int animIdx)
+        {
+            BROWSER_ASSERT(animIdx<m_vAnimations.size(), "Animation index is out of range in function Model::getAnimation(int animIdx)");
+            
+            const std::tuple<aiAnimation*, std::string>& animInfo = m_vAnimations[animIdx];
+            aiAnimation* animation = std::get<0>(animInfo);
+            if (animation)
+            {
+                return animation;
+            }
+            return nullptr;
+        }
         aiAnimation* getAnimation(const std::string& animName)
         {
-            for(auto itor=m_mAnimations.begin(); itor!=m_mAnimations.end(); ++itor)
+            for(auto itor=m_vAnimations.begin(); itor!=m_vAnimations.end(); ++itor)
             {
                 const std::tuple<aiAnimation*, std::string>& animInfo = (*itor);
                 const std::string& name = std::get<1>(animInfo);
@@ -133,6 +151,8 @@ namespace customGL
         const aiScene* m_oScene;
         // 加载路径
         std::string m_sDirectory;
+        // 文件绝对路径
+        std::string m_sFullPath;
         // 加载完成标记
         bool m_bLoadSuccess;
         // 加载的纹理数量
@@ -142,8 +162,9 @@ namespace customGL
         
         // 网格模型队列
         std::vector<browser::Mesh*> m_vMeshes;
+        std::vector<std::tuple<aiMesh*, aiNode*>> m_vAiMeshes;
 		// 模型动画队列
-		std::vector<std::tuple<aiAnimation*, std::string>> m_mAnimations;
+		std::vector<std::tuple<aiAnimation*, std::string>> m_vAnimations;
         std::vector<std::string> m_vAnimationNames;
         unsigned int m_uUnnamedAnimCount;
         // 纹理队列
