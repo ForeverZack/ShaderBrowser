@@ -31,6 +31,7 @@ namespace common
             Property_Vector3,
             Property_Vector4,
             Property_Text,
+            Property_Checkbox,
             
             //特殊处理Transform的欧拉角属性
             Property_TransformEulerAngle,
@@ -43,6 +44,7 @@ namespace common
         typedef std::function<void(const glm::vec2&)> ValueChangeFunc_vec2;
         typedef std::function<void(const glm::vec3&)> ValueChangeFunc_vec3;
         typedef std::function<void(const glm::vec4&)> ValueChangeFunc_vec4;
+        typedef std::function<void(bool isEnable)> ValueChangeFunc_checkbox;
         typedef std::function<void(ShowGUIData&)> ClickFunc_TreeNode;
         
     public:
@@ -59,6 +61,7 @@ namespace common
         void setVec3(const std::string& showName, glm::vec3* vec3, ValueChangeFunc_vec3 callback = nullptr);
         void setVec4(const std::string& showName, glm::vec4* vec3, ValueChangeFunc_vec4 callback = nullptr);
         void setTransformEulerAngle(const std::string& showName, glm::vec3* vec3, ValueChangeFunc_vec3 callback = nullptr);
+        void setCheckbox(const std::string& showName, bool enable, ValueChangeFunc_checkbox callback = nullptr);
         void setTreeNode(const std::string& showName, unsigned long nodeID, bool selected = false, bool expand = false, bool hasChildren = false, ClickFunc_TreeNode callback = nullptr);
 		void setSeparator();
 
@@ -112,6 +115,11 @@ namespace common
                 glm::vec4* pointer;
                 glm::vec4 show_value;
             } vec4;
+            struct
+            {
+                std::string show_name;
+                bool isEnable;
+            } checkbox;
 
             
             // 这一段一定要加，暂时还不理解为什么，不然不能使用构造函数和析构函数
@@ -129,6 +137,7 @@ namespace common
         ValueChangeFunc_vec3 callback_vec3;
         ValueChangeFunc_vec4 callback_vec4;
         ValueChangeFunc_vec3 callback_tsEulerAngle;
+        ValueChangeFunc_checkbox callback_checkbox;
         ClickFunc_TreeNode callback_treeNode;
     };
     
@@ -151,6 +160,7 @@ namespace common
         void addPropertyVector3(const std::string& title, glm::vec3* vec3, ShowGUIData::ValueChangeFunc_vec3 callback = nullptr, bool readOnly = true, bool expand = true);
         void addPropertyVector4(const std::string& title, glm::vec4* vec4, ShowGUIData::ValueChangeFunc_vec4 callback = nullptr, bool readOnly = true, bool expand = true);
         void addPropertyTransformEulerAngle(const std::string& title, glm::vec3* vec3, ShowGUIData::ValueChangeFunc_vec3 callback = nullptr, bool readOnly = true, bool expand = true);
+        void addPropertyCheckbox(const std::string& title, bool enable, ShowGUIData::ValueChangeFunc_checkbox callback = nullptr, bool readOnly = true, bool expand = true);
 		void addSeparator();
 
 	public:

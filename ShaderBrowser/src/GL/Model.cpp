@@ -48,6 +48,7 @@ namespace customGL
         , m_iLoadTextureNum(0)
         , m_oMeshFilter(nullptr)
 		, m_oRootNode(nullptr)
+        , m_oRootBoneNode(nullptr)
         , m_oScene(nullptr)
         , m_bHasSkeletonAnim(false)
         , m_uUnnamedAnimCount(0)
@@ -189,6 +190,9 @@ namespace customGL
                 loadAnimations(scene);
 			}
 		}
+        
+        // 搜寻骨骼根节点
+        findModelRootBondNode(m_oRootNode);
 
         // 加载创建纹理
         if (m_oSuccessCallback)
@@ -254,6 +258,26 @@ namespace customGL
 		return entity;
 	}
     
+    void Model::findModelRootBondNode(aiNode* node)
+    {
+        if(m_oRootBoneNode)
+        {
+            return;
+        }
+        
+        if(m_mBonesIdMap.find(node->mName.C_Str())!= m_mBonesIdMap.end())
+        {
+            m_oRootBoneNode = node;
+            return;
+        }
+        
+        // 继续遍历子节点
+        for (unsigned int i=0; i<node->mNumChildren; ++i)
+        {
+            findModelRootBondNode(node->mChildren[i]);
+        }
+    }
+    
     void Model::traverseNode(aiNode* node, const aiScene*& scene)
     {
         // 处理该节点所有的网格
@@ -282,10 +306,6 @@ namespace customGL
         // 根据aiMesh的id获取aiMesh
         if (aiMesh)
         {
-            if (std::string(aiMesh->mName.C_Str()) == "Le_Eye_Mesh")
-            {
-                int iii=0;
-            }
             // 注意:如果纹理创建不成功(例如没有找到),应该有一张白色默认纹理来代替,以防程序出问题
             browser::Mesh* mesh = browser::Mesh::create(aiMesh->mNumVertices, aiMesh->mName.C_Str());
             // 顶点位置
@@ -453,10 +473,10 @@ namespace customGL
 		}
 	}
 
-	void Model::computeBonesTransform(aiAnimation* animation, float elapsedTime, std::unordered_map<aiNode*, aiMatrix4x4>& nodeTrans, std::vector<glm::mat4>& bonesMatrix, float speed/* = 1.0f*/, bool interpolateAnimation /*= true*/)
+	void Model::computeBonesTransform(aiAnimation* animation, float elapsedTime, std::unordered_map<aiNode*, aiMatrix4x4>& nodeTrans, std::vector<glm::mat4>& bonesMatrix, bool interpolateAnimation /*= true*/, bool applyRootMotion /*= false*/)
 	{
 		// 将采样范围变换到 [0, 1]
-		float animSample = static_cast<float>(animation->mTicksPerSecond / animation->mDuration) * elapsedTime * speed;
+		float animSample = static_cast<float>(animation->mTicksPerSecond / animation->mDuration) * elapsedTime;
 		animSample = std::min(animSample, 1.0f);
 
 		aiMatrix4x4 transformation, scaleMat, translateMat;
@@ -472,8 +492,12 @@ namespace customGL
 				node = m_oRootNode->FindNode(channel->mNodeName);
 
 				// 位移
-				const auto translation = Assimp::InterpolationGet<aiVector3D>(sampleUnscaled, channel->mPositionKeys, channel->mNumPositionKeys, interpolateAnimation);
-				// 旋转
+				auto translation = Assimp::InterpolationGet<aiVector3D>(sampleUnscaled, channel->mPositionKeys, channel->mNumPositionKeys, interpolateAnimation);
+                if (!applyRootMotion && node==m_oRootBoneNode)
+                {
+                    translation = aiVector3D(0, 0, 0);
+                }
+                // 旋转
 				const auto rotation = Assimp::InterpolationGet<aiQuaternion>(sampleUnscaled, channel->mRotationKeys, channel->mNumRotationKeys, interpolateAnimation);
 				// 缩放
 				const auto scale = Assimp::InterpolationGet<aiVector3D>(sampleUnscaled, channel->mScalingKeys, channel->mNumScalingKeys, interpolateAnimation);
@@ -483,114 +507,128 @@ namespace customGL
 				aiMatrix4x4::Scaling(scale, scaleMat);
 				transformation = translateMat * rotateMat * scaleMat;
 
-//                node->mTransformation = transformation;
-                nodeTrans.insert(make_pair(node, transformation));
+//                nodeTrans.insert(make_pair(node, transformation));
+                nodeTrans[node] = std::move(transformation);
 			}
 		}
 
-        
+        // 从根节点遍历下去，得到每个节点相对于根节点的变换矩阵
 		aiMatrix4x4 identity;
 		traverseNodeToComputeBonesTransform(m_oRootNode, identity, nodeTrans, bonesMatrix);
-
-//		// 遍历模型，生成骨骼坐标系下相对于根节点mRootNode的变换矩阵
-//		{
-//			// 1.记录受影响的骨骼名称 (前面用nodeTrans记过aiNode了，所以没有必要再转一次)
-////            std::set<std::string> bonesNameVec;
-////            for(int i=0; i<animation->mNumChannels; ++i)
-////            {
-////                std::string boneName(animation->mChannels[i]->mNodeName.C_Str());
-////                bonesNameVec.insert(std::move(boneName));
-////            }
-//            // 2.从根节点开始向下遍历，算出相对于根节点的骨骼变换矩阵
-//            std::queue<std::tuple<aiNode*, bool>> traverseQueue;
-//            traverseQueue.push(make_tuple(m_oRootNode, false));
-//            aiNode* node = nullptr;
-//            bool parentDirty;
-//            std::unordered_map<aiNode*, aiMatrix4x4>::iterator itor;
-//            while(!traverseQueue.empty())
-//            {
-//                std::tuple<aiNode*, bool>& nodeInfo = traverseQueue.front();
-//                node = std::get<0>(nodeInfo);
-//                parentDirty = std::get<1>(nodeInfo);
-//                itor = nodeTrans.find(node);
-//                traverseQueue.pop();
-//
-//                for(int i=0; i<node->mNumChildren; ++i)
-//                {
-//                    traverseQueue.push(make_tuple(node->mChildren[i], parentDirty || itor!=nodeTrans.end()));
-//                }
-//                
-//                // 没有父节点 或者 该骨骼节点没有变换，则跳过
-//                if (!node->mParent)
-//                {
-//                    continue;
-//                }
-//                
-//                if(itor == nodeTrans.end())
-//                {
-//                    continue;
-//                }
-//
-//                // 如果父节点经历过变换，则从map中查找mat4；否则获取模型文件的mat4
-//                if (parentDirty)
-//                {
-//					aiMatrix4x4 mat;
-//					while (nodeTrans.find(node->mParent) == nodeTrans.end())
-//					{
-//						node = node->mParent;
-//					}
-//					const aiMatrix4x4& parentTransformation = nodeTrans.find(node->mParent)->second;
-//					itor->second = parentTransformation * itor->second;
-//                }
-//                else
-//                {
-//                    const aiMatrix4x4& parentTransformation = node->mParent->mTransformation;
-//                    itor->second = parentTransformation * itor->second;
-//                }
-//                
-//            }
-//		}
-//        // 计算所有骨骼的变换矩阵，
-//        {
-//            unsigned int boneIdx = 0;
-//            aiMesh* mesh = nullptr;
-//            aiBone* bone = nullptr;
-//			aiNode* node = nullptr;
-//			aiNode* tmpNode = nullptr;
-//			bool parentDirty = false;
-//            std::unordered_map<aiNode*, aiMatrix4x4>::iterator itor;
-//            for(int i=0; i<m_oScene->mNumMeshes; ++i)
-//            {
-//                mesh = m_oScene->mMeshes[i];
-//                
-//                for(int j=0; j<mesh->mNumBones; ++j,++boneIdx)
-//                {
-//                    bone = mesh->mBones[j];
-//					tmpNode = node = m_oRootNode->FindNode(bone->mName);
-//					parentDirty = true;
-//					while (nodeTrans.find(tmpNode) == nodeTrans.end())
-//					{
-//						tmpNode = tmpNode->mParent;
-//						if (!tmpNode)
-//						{
-//							parentDirty = false;
-//							break;
-//						}
-//					}
-//                    if (parentDirty)
-//                    {
-//						itor = nodeTrans.find(tmpNode);
-//                        bonesMatrix[boneIdx] = Assimp::ConvertToGLM(itor->second * bone->mOffsetMatrix);
-//                    }
-//                    else
-//                    {
-//                        bonesMatrix[boneIdx] = Assimp::ConvertToGLM(node->mTransformation * bone->mOffsetMatrix);
-//                    }
-//                }
-//            }
-//        }
-        
 	}
+    
+    void Model::blendBonesTransform(aiAnimation* befAnimation, float befElapsed, bool befInterpolate, aiAnimation* animation, float elapsedTime, bool interpolate, float blendWeight, std::unordered_map<aiNode*, aiMatrix4x4>& nodeTrans, std::vector<glm::mat4>& bonesMatrix, bool applyRootMotion /*= false*/)
+    {
+        // 记录所有变换的node信息<位移, 旋转, 缩放>
+        std::unordered_map<aiNode*, aiVector3D> translateVec;
+        std::unordered_map<aiNode*, aiQuaternion> rotateVec;
+        std::unordered_map<aiNode*, aiVector3D> scaleVec;
+        
+        // 遍历记录beforeAnimation骨骼变换信息
+        {
+            float animSample = static_cast<float>(befAnimation->mTicksPerSecond / befAnimation->mDuration) * befElapsed;
+            animSample = std::min(animSample, 1.0f);
+
+            aiMatrix4x4 transformation, scaleMat, translateMat;
+            Rescale rescaler(0.0f, static_cast<float>(befAnimation->mDuration), 0.0f, 1.0f);
+            const float sampleUnscaled = rescaler.Unscale(animSample);
+        
+            aiNodeAnim* channel = nullptr;
+            aiNode* node = nullptr;
+            for (unsigned int i = 0; i < befAnimation->mNumChannels; ++i)
+            {
+                channel = befAnimation->mChannels[i];
+                node = m_oRootNode->FindNode(channel->mNodeName);
+                // 位移
+                auto translation = Assimp::InterpolationGet<aiVector3D>(sampleUnscaled, channel->mPositionKeys, channel->mNumPositionKeys, befInterpolate);
+                if (!applyRootMotion && node==m_oRootBoneNode)
+                {
+                    translation = aiVector3D(0, 0, 0);
+                }
+                // 旋转
+                const auto rotation = Assimp::InterpolationGet<aiQuaternion>(sampleUnscaled, channel->mRotationKeys, channel->mNumRotationKeys, befInterpolate);
+                // 缩放
+                const auto scale = Assimp::InterpolationGet<aiVector3D>(sampleUnscaled, channel->mScalingKeys, channel->mNumScalingKeys, befInterpolate);
+                
+                translateVec[node] = std::move(translation);
+                rotateVec[node] = std::move(rotation);
+                scaleVec[node] = std::move(scale);
+            }
+        }
+        
+        // 
+        {
+            // 插值函数
+            const auto ipVect = Assimp::Interpolator<aiVector3D>();
+            const auto ipQuat = Assimp::Interpolator<aiQuaternion>();
+            const auto ipScale = Assimp::Interpolator<aiVector3D>();
+            
+            float animSample = static_cast<float>(animation->mTicksPerSecond / animation->mDuration) * befElapsed;
+            animSample = std::min(animSample, 1.0f);
+            
+            aiMatrix4x4 transformation, scaleMat, translateMat;
+            Rescale rescaler(0.0f, static_cast<float>(animation->mDuration), 0.0f, 1.0f);
+            const float sampleUnscaled = rescaler.Unscale(animSample);
+            
+            aiNodeAnim* channel = nullptr;
+            aiNode* node = nullptr;
+            for (unsigned int i = 0; i < animation->mNumChannels; ++i)
+            {
+                channel = animation->mChannels[i];
+                node = m_oRootNode->FindNode(channel->mNodeName);
+                // 位移
+                auto translation = Assimp::InterpolationGet<aiVector3D>(sampleUnscaled, channel->mPositionKeys, channel->mNumPositionKeys, interpolate);
+                if (!applyRootMotion && node==m_oRootBoneNode)
+                {
+                    translation = aiVector3D(0, 0, 0);
+                }
+                // 旋转
+                auto rotation = Assimp::InterpolationGet<aiQuaternion>(sampleUnscaled, channel->mRotationKeys, channel->mNumRotationKeys, interpolate);
+                // 缩放
+                auto scale = Assimp::InterpolationGet<aiVector3D>(sampleUnscaled, channel->mScalingKeys, channel->mNumScalingKeys, interpolate);
+                
+                if(translateVec.find(node) != translateVec.end())
+                {
+                    // 如果前一个动画存在相同的骨骼有变化，则对他们进行插值
+                    ipVect(translateVec[node], translateVec[node], translation, blendWeight);
+                    ipQuat(rotateVec[node], rotateVec[node], rotation, blendWeight);
+                    ipScale(scaleVec[node], scaleVec[node], scale, blendWeight);
+                }
+                else
+                {
+                    translateVec[node] = std::move(translation);
+                    rotateVec[node] = std::move(rotation);
+                    scaleVec[node] = std::move(scale);
+                }
+
+            }
+        }
+
+        // 生成父节点坐标系下自身的变换矩阵
+        {
+            aiMatrix4x4 translateMat, rotateMat, scaleMat, transformation;
+            aiNode* node = nullptr;
+            for (auto itor=translateVec.begin(); itor!=translateVec.end(); ++itor)
+            {
+                node = itor->first;
+                aiVector3D& translation = itor->second;
+                aiQuaternion& rotation = rotateVec[node];
+                aiVector3D& scale = scaleVec[node];
+                
+                // 计算单个骨骼自身坐标系下的变换矩阵
+                aiMatrix4x4::Translation(translation, translateMat);
+                aiMatrix4x4 rotateMat(rotation.GetMatrix());
+                aiMatrix4x4::Scaling(scale, scaleMat);
+                transformation = translateMat * rotateMat * scaleMat;
+                
+                nodeTrans.insert(make_pair(node, transformation));
+            }
+        }
+        
+        // 从根节点遍历下去，得到每个节点相对于根节点的变换矩阵
+        aiMatrix4x4 identity;
+        traverseNodeToComputeBonesTransform(m_oRootNode, identity, nodeTrans, bonesMatrix);
+    }
 
     void Model::traverseNodeToComputeBonesTransform(aiNode* node, const aiMatrix4x4 parentMatrix, std::unordered_map<aiNode*, aiMatrix4x4>& nodeTrans, std::vector<glm::mat4>& bonesMatrix)
 	{
@@ -612,7 +650,7 @@ namespace customGL
 		auto boneItor = m_mBonesIdMap.find(std::string(node->mName.C_Str()));
 		if (boneItor != m_mBonesIdMap.end())
 		{
-			bonesMatrix[boneItor->second] = Assimp::ConvertToGLM(nodeMatrix * m_vBones[boneItor->second]->mOffsetMatrix);
+            bonesMatrix[boneItor->second] = std::move(Assimp::ConvertToGLM(nodeMatrix * m_vBones[boneItor->second]->mOffsetMatrix));
 		}
 
 		// 遍历子节点

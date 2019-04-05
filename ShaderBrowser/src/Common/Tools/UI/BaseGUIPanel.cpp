@@ -12,6 +12,7 @@ namespace common
         , callback_vec3(nullptr)
         , callback_vec4(nullptr)
         , callback_tsEulerAngle(nullptr)
+        , callback_checkbox(nullptr)
         , callback_treeNode(nullptr)
     {
     }
@@ -23,6 +24,7 @@ namespace common
         , callback_vec3(nullptr)
         , callback_vec4(nullptr)
         , callback_tsEulerAngle(nullptr)
+        , callback_checkbox(nullptr)
         , callback_treeNode(nullptr)
     {
         
@@ -36,7 +38,9 @@ namespace common
         , callback_vec3(data.callback_vec3)
         , callback_vec4(data.callback_vec4)
         , callback_tsEulerAngle(data.callback_tsEulerAngle)
+        , callback_checkbox(data.callback_checkbox)
         , callback_treeNode(data.callback_treeNode)
+    
     {
         value = data.value;
     }
@@ -51,6 +55,7 @@ namespace common
         callback_vec3 = data.callback_vec3;
         callback_vec4 = data.callback_vec4;
         callback_tsEulerAngle = data.callback_tsEulerAngle;
+        callback_checkbox = data.callback_checkbox;
         callback_treeNode = data.callback_treeNode;
     }
     
@@ -154,6 +159,14 @@ namespace common
         callback_tsEulerAngle = callback;
     }
     
+    void ShowGUIData::setCheckbox(const std::string& showName, bool enable, ValueChangeFunc_checkbox callback /*= nullptr*/)
+    {
+        m_eType = ShowGUIType::Property_Checkbox;
+        value.checkbox.show_name = showName;
+        value.checkbox.isEnable = enable;
+        callback_checkbox = callback;
+    }
+    
     
     
     
@@ -246,6 +259,14 @@ namespace common
     {
         ShowGUIData data(readOnly, expand);
         data.setTransformEulerAngle(title, vec3, callback);
+        
+        m_vContents.push_back(std::move(data));
+    }
+    
+    void BaseGUIPanel::addPropertyCheckbox(const std::string& title, bool enable, ShowGUIData::ValueChangeFunc_checkbox callback /*= nullptr*/, bool readOnly /*= true*/, bool expand /*= true*/)
+    {
+        ShowGUIData data(readOnly, expand);
+        data.setCheckbox(title, enable, callback);
         
         m_vContents.push_back(std::move(data));
     }
@@ -404,6 +425,19 @@ namespace common
                                     }
                                 }
                             }
+                        }
+                        break;
+                        
+                    case ShowGUIData::ShowGUIType::Property_Checkbox:
+                        {
+                            if (ImGui::Checkbox(data.value.checkbox.show_name.c_str(), data.value.checkbox.show_name.c_str(), &data.value.checkbox.isEnable))
+                            {
+                                if (data.callback_checkbox)
+                                {
+                                    data.callback_checkbox(data.value.checkbox.isEnable);
+                                }
+                            }
+
                         }
                         break;
 

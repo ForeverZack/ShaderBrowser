@@ -84,8 +84,10 @@ namespace customGL
         void loadTextures(const std::string& directory);
 		// 计算模型动画
 		// interpolateAnimation：是否插值动画（false使用前一帧, true在两帧间插值）
-		void computeBonesTransform(aiAnimation* animation, float elapsedTime, std::unordered_map<aiNode*, aiMatrix4x4>& nodeTrans, std::vector<glm::mat4>& bonesMatrix, float speed = 1.0f, bool interpolateAnimation = true);
+		void computeBonesTransform(aiAnimation* animation, float elapsedTime, std::unordered_map<aiNode*, aiMatrix4x4>& nodeTrans, std::vector<glm::mat4>& bonesMatrix, bool interpolateAnimation = true, bool applyRootMotion = false);
 		void traverseNodeToComputeBonesTransform(aiNode* node, const aiMatrix4x4 parentMatrix, std::unordered_map<aiNode*, aiMatrix4x4>& nodeTrans, std::vector<glm::mat4>& bonesMatrix);
+        // 混合模型动画
+        void blendBonesTransform(aiAnimation* befAnimation, float befElapsed, bool befInterpolate, aiAnimation* animation, float elapsedTime, bool interpolate, float blendWeight, std::unordered_map<aiNode*, aiMatrix4x4>& nodeTrans, std::vector<glm::mat4>& bonesMatrix, bool applyRootMotion = false);
         
         // 绑定网格模型到单个骨骼
         bool bindMeshOnSingleBone(browser::Mesh* mesh, const std::string& boneName);
@@ -98,6 +100,8 @@ namespace customGL
 		void loadAnimations(const aiScene*& scene);
         // 递归遍历模型节点
         void traverseNode(aiNode* node, const aiScene*& scene);
+        // 找到模型骨骼根节点
+        void findModelRootBondNode(aiNode* node);
         // 生成游戏内部使用的网格(aiMesh->Mesh)
         browser::Mesh* generateMesh(aiMesh* aiMesh, const aiScene*& scene, unsigned int& boneOffset);
         // 读取纹理数据
@@ -147,6 +151,8 @@ namespace customGL
 		std::vector<std::shared_ptr<Assimp::Importer>> m_vImporters;
 		// 记录模型根节点
 		aiNode* m_oRootNode;
+        // 记录模型骨骼根节点
+        aiNode* m_oRootBoneNode;
         // 记录模型场景
         const aiScene* m_oScene;
         // 加载路径

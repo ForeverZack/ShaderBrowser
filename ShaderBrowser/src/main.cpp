@@ -183,6 +183,7 @@ Model* m_oModelUnity = nullptr;
 
 std::unordered_map<std::string, Model*> m_mModels;
 
+BaseEntity* m_YBotEntity = nullptr;
 
 void testVal()
 {
@@ -307,13 +308,14 @@ void testVal()
     modelEntity->changeAllMeshesMaterial(GLProgram::DEFAULT_SKELETON_GLPROGRAM_NAME);
 //    modelEntity->getAnimator()->setUseGPU(false);
     
-    // 模型5 RawMocap
+    // 模型5 yBot
     modelEntity = m_oModelYBot->createNewEntity("yBot");
     modelEntity->setScale(0.05f, 0.05f, 0.05f);
     modelEntity->setPosition(-10, 0, 5);
     scene->addChild(modelEntity);
     modelEntity->playAnimation(1, true);
     modelEntity->changeAllMeshesMaterial(GLProgram::DEFAULT_SKELETON_GLPROGRAM_NAME);
+    m_YBotEntity = modelEntity;
 
     
     
@@ -406,7 +408,7 @@ int main()
 //    ModelCache::getInstance()->addModel("models/nanosuit/nanosuit.obj", [&](Model* mo)
 	ModelCache::getInstance()->addModelsAsync(
 		{ "models/Fighter/fighterChar.FBX", "models/nanosuit/nanosuit.obj", "models/man/model.dae", "models/RawMocap/DefaultAvatar.fbx", "models/YBot/ybot.fbx" },
-          { {}, {}, {}, {"models/RawMocap/Animations/Walking/WalkFWD.fbx", "models/RawMocap/Animations/Idle/Idle_Ready.fbx", "models/RawMocap/Animations/Walking/WalkAvoid_ToLeft_Both.fbx"}, {"models/YBot/Localmotion/walking.fbx"} }, [&](Model* mo)
+          { {}, {}, {}, {"models/RawMocap/Animations/Walking/WalkFWD.fbx", "models/RawMocap/Animations/Idle/Idle_Ready.fbx", "models/RawMocap/Animations/Walking/WalkAvoid_ToLeft_Both.fbx"}, {"models/YBot/Localmotion/walking.fbx", "models/YBot/Localmotion/running.fbx"} }, [&](Model* mo)
              {
                     m_mModels.insert(make_pair(mo->getFullPath(), mo));
                     ++modelIdx;
@@ -628,6 +630,11 @@ void processInput(GLFWwindow *window)
         {
             browser::Transform* transform = camera->getBelongEntity()->getTransform();
             transform->Rotate(glm::vec3(0, 1.0f, 0), Space::Self);
+        }
+        else if(glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS)
+        {
+            static int playAniIndx = 2;
+            m_YBotEntity->getAnimator()->blendTo(playAniIndx, true, 1, true);
         }
 	}
 	

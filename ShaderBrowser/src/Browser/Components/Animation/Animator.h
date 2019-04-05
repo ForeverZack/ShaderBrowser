@@ -16,9 +16,39 @@ using namespace customGL;
 
 namespace browser
 {
+    // 播放动画数据结构
+    class AnimationPlayData
+    {
+    public:
+        AnimationPlayData();
+        
+        void setData(const std::string& aniName, aiAnimation* anim, float dur, float elap, float spe, bool inter, bool rep);
+        void empty();
+        
+        // 重载赋值运算符
+        AnimationPlayData& operator=(const AnimationPlayData& data);
+        
+    public:
+        // 当前正在播放的动画
+        std::string name;
+        aiAnimation* animation;
+        // 当前动画持续时间
+        float duration;
+        // 播放时间
+        float elapsed;
+        // 播放速度
+        float speed;
+        // 是否插值处理动画
+        bool interpolate;
+        // 是否循环
+        bool repeat;
+    };
+    
     
 	class Animator : public BaseComponent
 	{
+
+        
     public:
         // 默认动画名称前缀
         static const std::string DEFAULT_ANIMATION_NAME;
@@ -31,6 +61,9 @@ namespace browser
         // 播放动画
         void play(const std::string& animName, bool repeat = false, float speed = 1.0f, bool interpolate = true);
         void play(int animIdx, bool repeat = false, float speed = 1.0f, bool interpolate = true);
+        // 混合动画
+        void blendTo(const std::string& animName, bool repeat = false, float speed = 1.0f, bool interpolate = true, float blendDuration = 0.2f);
+        void blendTo(int animIdx, bool repeat = false, float speed = 1.0f, bool interpolate = true, float blendDuration = 0.2f);
         
         // 刷新动画
         void updateAnimation(float deltaTime);
@@ -60,25 +93,23 @@ namespace browser
         
         // 顶点数组
         std::unordered_map<Mesh*, std::vector<VertexData>> m_mVertices;
+
         
         // 当前正在播放的动画
-        std::string m_sCurAnimName;
-        aiAnimation* m_oAnimation;
-		// 当前动画持续时间
-		float m_fCurAnimDuration;
-        // 播放时间
-        float m_fElapsedTime;
-        // 播放速度
-        float m_fSpeed;
-        // 是否插值处理动画
-        bool m_bInterpolate;
-        // 是否循环
-        bool m_bRepeat;
+        AnimationPlayData m_oCurAnimation;
+        // 上一个在播放的动画
+        AnimationPlayData m_oBefAnimation;
+        
+        // 混合计时器
+        float m_fBlendTimer;
+        // 混合需要时间
+        float m_fBlendDuration;
         // 是否正在播放
         bool m_bIsPlaying;
-        
         // 是否使用gpu计算顶点位置
         bool m_bUseGPU;
+        // 是否允许根节点的运动
+        bool m_bApplyRootMotion;
         
         // 动画中的aiNode的变换矩阵
         std::unordered_map<aiNode*, aiMatrix4x4> m_mTransformations;
