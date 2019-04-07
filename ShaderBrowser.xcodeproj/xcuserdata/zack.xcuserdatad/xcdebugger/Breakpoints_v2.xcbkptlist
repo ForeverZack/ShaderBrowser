@@ -9,13 +9,45 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "ShaderBrowser/src/Common/Tools/UI/BaseGUIPanel.cpp"
-            timestampString = "576168342.875417"
+            filePath = "ShaderBrowser/src/GL/Model.cpp"
+            timestampString = "576341330.7565041"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "433"
-            endingLineNumber = "433"
-            landmarkName = "BaseGUIPanel::drawContent()"
+            startingLineNumber = "209"
+            endingLineNumber = "209"
+            landmarkName = "Model::createNewEntity(const std::string&amp; name)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ShaderBrowser/src/Browser/System/RenderSystem.cpp"
+            timestampString = "576341330.756973"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "424"
+            endingLineNumber = "424"
+            landmarkName = "RenderSystem::forwardRenderScene(Camera* camera, float deltaTime)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ShaderBrowser/src/Browser/Components/Transform/Transform.cpp"
+            timestampString = "576341330.757108"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "511"
+            endingLineNumber = "511"
+            landmarkName = "Transform::handleEvent(ComponentEvent event, BaseComponentMessage* msg)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

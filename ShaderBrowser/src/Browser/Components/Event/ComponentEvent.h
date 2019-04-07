@@ -1,5 +1,6 @@
 #pragma once
 
+#include <unordered_map>
 #include "Common/Components/Reference.h"
 #include "Common/CommonDefine.h"
 #include "Common/Tools/Utils.h"
@@ -63,6 +64,8 @@ namespace browser
         // Animator组件的时间:
         // 添加Animator
         Animator_AddComponent,
+        // Animator更新骨骼节点数据
+        Animator_UpdateBonesTransform,
     };
 
 
@@ -145,5 +148,29 @@ namespace browser
     protected:
         customGL::Model* m_oModel;
     };
+    
+    // Animator更新骨骼节点数据
+    class AnimatorUpdateBonesTransformMessage : public BaseComponentMessage
+    {
+    public:
+        AnimatorUpdateBonesTransformMessage(std::unordered_map<std::string, unsigned int>* bonesIdMap, std::unordered_map<unsigned int, glm::vec3>* bonesPosition, std::unordered_map<unsigned int, glm::quat>* bonesRotation, std::unordered_map<unsigned int, glm::vec3>* bonesScale)
+            : m_mBonesIdMap(bonesIdMap)
+            , m_mBonesPosition(bonesPosition)
+            , m_mBonesRotation(bonesRotation)
+            , m_mBonesScale(bonesScale)
+        {
+        }
+        ~AnimatorUpdateBonesTransformMessage() {}
+        std::unordered_map<std::string, unsigned int>* getBonesIdMap() { return m_mBonesIdMap; }
+        std::unordered_map<unsigned int, glm::vec3>* getBonesPosition() { return m_mBonesPosition; }
+        std::unordered_map<unsigned int, glm::quat>* getBonesRotation() { return m_mBonesRotation; }
+        std::unordered_map<unsigned int, glm::vec3>* getBonesScale() { return m_mBonesScale; }
+    protected:
+        std::unordered_map<std::string, unsigned int>* m_mBonesIdMap;
+        std::unordered_map<unsigned int, glm::vec3>* m_mBonesPosition;
+        std::unordered_map<unsigned int, glm::quat>* m_mBonesRotation;
+        std::unordered_map<unsigned int, glm::vec3>* m_mBonesScale;
+    };
+    
 }
 

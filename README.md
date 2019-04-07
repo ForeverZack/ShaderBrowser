@@ -127,6 +127,10 @@ glVertexAttribPointer只能绑定浮点型的，调试中因为错误使用造�
 添加骨骼动画的混合操作，支持从一个动画混合播放到另外一个动画。并且添加了Apply Root Motion属性，用来控制模型骨骼根节点的移动数据是否有用 (有的    
 模型根节点会有移动动画，有时候这个会不符合我们的需求)。 <br>
 
+## 2019.4.6～2019.4.7 <br>
+添加SkinnedMeshRenderer，与原来的BaseRender做区分(实际上就是将MeshFilter,BaseRender,BoundBox合并到一起)。还有一些问题：运行时可能会看不到某个模型；
+绑定网格模型到骨骼时位置不正确。另外，Animator::BlendTo也需要记录一下骨骼节点的Transform信息，现在只给Animator::play加了。<br>
+
 ## 后续工作 <br>
 -1) 切分动画，以及切分动画之间的混合等操作 <br>
 0）骨骼的显示，包围盒的旋转问题，GLProgram的缓存机制问题，实体Visible的问题，骨骼动画的优化。优化重构代码，减轻组件之间的耦合，看看ogre中如何实现和优化的。<br>

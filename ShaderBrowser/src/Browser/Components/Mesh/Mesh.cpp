@@ -10,17 +10,18 @@ namespace browser
 	// 默认网格名称
 	const char* Mesh::DEFAULT_MESH_NAME = "Default";
 
-	Mesh* Mesh::create(int length, const std::string& meshName /*= DEFAULT_MESH_NAME*/)
+	Mesh* Mesh::create(int length, const std::string& meshName /*= DEFAULT_MESH_NAME*/, MeshType type /*= MeshType::CommonMesh*/)
     {
-		Mesh* mesh = new Mesh(meshName);
+		Mesh* mesh = new Mesh(meshName, type);
         
 		mesh->init(length);
         
         return mesh;
     }
     
-	Mesh::Mesh(const std::string& meshName /*= DEFAULT_MESH_NAME*/)
+	Mesh::Mesh(const std::string& meshName /*= DEFAULT_MESH_NAME*/, MeshType type /*= MeshType::CommonMesh*/)
         : m_uVAO(0)
+        , m_eMeshType(type)
         , m_bGenVAO(false)
         , m_uVertexCount(0)
         , m_uIndexCount(0)

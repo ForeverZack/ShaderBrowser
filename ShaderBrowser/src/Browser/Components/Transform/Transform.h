@@ -162,6 +162,9 @@ namespace browser
         // 重载属性面板显示方法
         virtual void onInspectorGUI(InspectorPanel* inspector);
         
+        // 处理组件事件
+        virtual void handleEvent(ComponentEvent event, BaseComponentMessage* msg);
+        
 	protected:
         // 自身属性(相对于父节点)
         // 模型空间位置

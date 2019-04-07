@@ -25,6 +25,11 @@ namespace browser
 
 	MeshFilter::~MeshFilter()
 	{
+        for(auto itor=m_vMeshes.begin(); itor!=m_vMeshes.end(); ++itor)
+        {
+            (*itor)->release();
+        }
+        m_vMeshes.clear();
 	}
     
     Reference* MeshFilter::clone()

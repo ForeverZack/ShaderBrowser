@@ -479,6 +479,47 @@ namespace browser
 
 		return glm::scale(m_oNoScaleModelMatrix, totalScale);
 	}
+    
+    void Transform::handleEvent(ComponentEvent event, BaseComponentMessage* msg)
+    {
+        switch (event) {
+            case ComponentEvent::Animator_UpdateBonesTransform:
+                {
+                    AnimatorUpdateBonesTransformMessage* convert_msg = static_cast<AnimatorUpdateBonesTransformMessage*>(msg);
+                    
+                    auto bonesIdMap = convert_msg->getBonesIdMap();
+                    auto bonesPosition = convert_msg->getBonesPosition();
+                    auto bonesRotation = convert_msg->getBonesRotation();
+                    auto bonesScale = convert_msg->getBonesScale();
+                    
+                    auto itor = bonesIdMap->find(m_sName);
+                    if(itor != bonesIdMap->end())
+                    {
+                        unsigned int boneId = itor->second;
+                        
+                        if(bonesPosition->find(boneId) != bonesPosition->end())
+                        {
+                            const glm::vec3& position = (*bonesPosition)[boneId];
+                            const glm::quat& quaternion = (*bonesRotation)[boneId];
+                            const glm::vec3& scale = (*bonesScale)[boneId];
+                            setScale(scale.x, scale.y, scale.z);
+                            setQuaternion(quaternion);
+                            setPosition(position);
+                        }
+                        else
+                        {
+                            setScale(1, 1, 1);
+                            setEulerAngle(0, 0, 0);
+                            setPosition(0, 0, 0);
+                        }
+                    }
+                }
+                break;
+                
+            default:
+                break;
+        }
+    }
 
 	void Transform::updateSelfModelMatrix(const glm::mat4& parentMMatrix)
 	{

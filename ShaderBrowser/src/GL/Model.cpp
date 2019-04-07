@@ -6,6 +6,7 @@
 #include "Browser/Components/Mesh/MeshFilter.h"
 #include "Browser/Components/BoundBox/AABBBoundBox.h"
 #include "Browser/Components/Render/BaseRender.h"
+#include "Browser/Components/Render/SkinnedMeshRenderer.h"
 #include "Browser/Components/Animation/Animator.h"
 #include <queue>
 
@@ -228,25 +229,63 @@ namespace customGL
         }
         entity->setModelRootEntity(root);
 
+        bool skinned = false;
 		if (node->mNumMeshes > 0)
 		{
 			// MeshFilter组件
-			MeshFilter* meshFilter = MeshFilter::create();
-			entity->addComponent(meshFilter);
+			MeshFilter* meshFilter = nullptr;
 			// 渲染组件
-			BaseRender* renderer = BaseRender::createBaseRender();
-			entity->addComponent(renderer);
-			// 包围盒组件
-			entity->addComponent(new AABBBoundBox());
+			BaseRender* renderer = nullptr;
+            BaseRender* skinnedRender = nullptr;
+            
 			for (unsigned int i = 0; i < node->mNumMeshes; ++i)
 			{
 				browser::Mesh* mesh = m_vMeshes[node->mMeshes[i]];
 				if (mesh)
 				{
-					renderer->addMaterial(mesh->getMaterialName(), GLProgram::DEFAULT_GLPROGRAM_NAME);
-					meshFilter->addMesh(mesh);
+                    // 检测是否需要蒙皮
+                    if (mesh->getMeshType() == browser::Mesh::MeshType::MeshWithBone)
+                    {
+                        skinned = true;
+                    }
+                    
+                    if(skinned)
+                    {
+                        if(!skinnedRender)
+                        {
+                            skinnedRender = SkinnedMeshRenderer::createSkinnedMeshRenderer();
+                            entity->addComponent(skinnedRender);
+                        }
+                        
+                        skinnedRender->addMaterial(mesh->getMaterialName(), GLProgram::DEFAULT_SKELETON_GLPROGRAM_NAME);
+                        static_cast<SkinnedMeshRenderer*>(skinnedRender)->addMesh(mesh);
+                    }
+                    else
+                    {
+                        if(!meshFilter)
+                        {
+                            meshFilter = MeshFilter::create();
+                            entity->addComponent(meshFilter);
+                        }
+                        if (!renderer)
+                        {
+                            renderer = BaseRender::createBaseRender();
+                            entity->addComponent(renderer);
+                        }
+                        
+                        renderer->addMaterial(mesh->getMaterialName(), GLProgram::DEFAULT_GLPROGRAM_NAME);
+                        meshFilter->addMesh(mesh);
+                    }
+
 				}
 			}
+            
+            if(!skinned)
+            {
+                // 包围盒组件
+                entity->addComponent(new AABBBoundBox());
+            }
+            
 		}
 		
 		// 继续遍历子节点
@@ -307,7 +346,7 @@ namespace customGL
         if (aiMesh)
         {
             // 注意:如果纹理创建不成功(例如没有找到),应该有一张白色默认纹理来代替,以防程序出问题
-            browser::Mesh* mesh = browser::Mesh::create(aiMesh->mNumVertices, aiMesh->mName.C_Str());
+            browser::Mesh* mesh = browser::Mesh::create(aiMesh->mNumVertices, aiMesh->mName.C_Str(), aiMesh->HasBones() ? browser::Mesh::MeshType::MeshWithBone : browser::Mesh::MeshType::CommonMesh );
             // 顶点位置
             mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_POSITION, 4, GL_FLOAT, GL_FALSE, sizeof(VertexData), aiMesh->mVertices);
             // 顶点颜色
@@ -473,7 +512,7 @@ namespace customGL
 		}
 	}
 
-	void Model::computeBonesTransform(aiAnimation* animation, float elapsedTime, std::unordered_map<aiNode*, aiMatrix4x4>& nodeTrans, std::vector<glm::mat4>& bonesMatrix, bool interpolateAnimation /*= true*/, bool applyRootMotion /*= false*/)
+	void Model::computeBonesTransform(aiAnimation* animation, float elapsedTime, std::unordered_map<aiNode*, aiMatrix4x4>& nodeTrans, std::vector<glm::mat4>& bonesMatrix, std::unordered_map<unsigned int, glm::vec3>& bonesPosition, std::unordered_map<unsigned int, glm::quat>& bonesRotation, std::unordered_map<unsigned int, glm::vec3>& bonesScale, bool interpolateAnimation /*= true*/, bool applyRootMotion /*= false*/)
 	{
 		// 将采样范围变换到 [0, 1]
 		float animSample = static_cast<float>(animation->mTicksPerSecond / animation->mDuration) * elapsedTime;
@@ -482,6 +521,8 @@ namespace customGL
 		aiMatrix4x4 transformation, scaleMat, translateMat;
 		Rescale rescaler(0.0f, static_cast<float>(animation->mDuration), 0.0f, 1.0f);
 		const float sampleUnscaled = rescaler.Unscale(animSample);
+        std::unordered_map<std::string, unsigned int>::iterator itor;
+        unsigned int boneId;
 		// 遍历骨骼变换信息，生成父节点坐标系下自身的变换矩阵
 		{
 			aiNodeAnim* channel = nullptr;
@@ -498,14 +539,24 @@ namespace customGL
                     translation = aiVector3D(0, 0, 0);
                 }
                 // 旋转
-				const auto rotation = Assimp::InterpolationGet<aiQuaternion>(sampleUnscaled, channel->mRotationKeys, channel->mNumRotationKeys, interpolateAnimation);
+				auto rotation = Assimp::InterpolationGet<aiQuaternion>(sampleUnscaled, channel->mRotationKeys, channel->mNumRotationKeys, interpolateAnimation);
 				// 缩放
-				const auto scale = Assimp::InterpolationGet<aiVector3D>(sampleUnscaled, channel->mScalingKeys, channel->mNumScalingKeys, interpolateAnimation);
+				auto scale = Assimp::InterpolationGet<aiVector3D>(sampleUnscaled, channel->mScalingKeys, channel->mNumScalingKeys, interpolateAnimation);
+                // 记录骨骼变换
+                itor = m_mBonesIdMap.find(channel->mNodeName.C_Str());
+                if(itor != m_mBonesIdMap.end())
+                {
+                    boneId = itor->second;
+                    bonesPosition[boneId] = std::move(Assimp::ConvertToGLM(translation));
+                    bonesRotation[boneId] = std::move(Assimp::ConvertToGLM(rotation));
+                    bonesScale[boneId] = std::move(Assimp::ConvertToGLM(scale));
+                }
 				// 计算单个骨骼自身坐标系下的变换矩阵
 				aiMatrix4x4::Translation(translation, translateMat);
 				aiMatrix4x4 rotateMat(rotation.GetMatrix());
 				aiMatrix4x4::Scaling(scale, scaleMat);
 				transformation = translateMat * rotateMat * scaleMat;
+                
 
 //                nodeTrans.insert(make_pair(node, transformation));
                 nodeTrans[node] = std::move(transformation);

@@ -18,6 +18,7 @@
 		148177B921D8CB5E0037E11D /* TransformSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 148177B821D8CB5E0037E11D /* TransformSystem.cpp */; };
 		14941422221EF7B200A735DA /* libassimp.4.1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 14FF768421C4B6D80008462D /* libassimp.4.1.0.dylib */; };
 		149C01FF21F4AF910011DAE2 /* GLProgramCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 149C01FE21F4AF910011DAE2 /* GLProgramCache.cpp */; };
+		14B1AA832258AD99000AB04E /* SkinnedMeshRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B1AA822258AD99000AB04E /* SkinnedMeshRenderer.cpp */; };
 		14B45A21220C227400FE5777 /* BaseBoundBox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B45A1F220C227400FE5777 /* BaseBoundBox.cpp */; };
 		14B45A24220C25AD00FE5777 /* AABBBoundBox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B45A23220C25AD00FE5777 /* AABBBoundBox.cpp */; };
 		14B45A27220C269800FE5777 /* BoundBoxSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B45A25220C269800FE5777 /* BoundBoxSystem.cpp */; };
@@ -99,6 +100,8 @@
 		148177B821D8CB5E0037E11D /* TransformSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TransformSystem.cpp; sourceTree = "<group>"; };
 		149C01FD21F4AA320011DAE2 /* GLProgramCache.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GLProgramCache.h; sourceTree = "<group>"; };
 		149C01FE21F4AF910011DAE2 /* GLProgramCache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GLProgramCache.cpp; sourceTree = "<group>"; };
+		14B1AA812258AD99000AB04E /* SkinnedMeshRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkinnedMeshRenderer.h; sourceTree = "<group>"; };
+		14B1AA822258AD99000AB04E /* SkinnedMeshRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SkinnedMeshRenderer.cpp; sourceTree = "<group>"; };
 		14B45A1F220C227400FE5777 /* BaseBoundBox.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BaseBoundBox.cpp; sourceTree = "<group>"; };
 		14B45A20220C227400FE5777 /* BaseBoundBox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseBoundBox.h; sourceTree = "<group>"; };
 		14B45A22220C25AD00FE5777 /* AABBBoundBox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AABBBoundBox.h; sourceTree = "<group>"; };
@@ -450,6 +453,8 @@
 				14B9066221BABC8F00554B0B /* Material.cpp */,
 				14B9066121BABC8F00554B0B /* BaseRender.h */,
 				14B9066321BABC8F00554B0B /* BaseRender.cpp */,
+				14B1AA812258AD99000AB04E /* SkinnedMeshRenderer.h */,
+				14B1AA822258AD99000AB04E /* SkinnedMeshRenderer.cpp */,
 			);
 			path = Render;
 			sourceTree = "<group>";
@@ -640,6 +645,7 @@
 				14C29E8A220FDF0300A514BE /* DirectionalLight.cpp in Sources */,
 				14B45A27220C269800FE5777 /* BoundBoxSystem.cpp in Sources */,
 				14B9068721BABC8F00554B0B /* AutoReleasePool.cpp in Sources */,
+				14B1AA832258AD99000AB04E /* SkinnedMeshRenderer.cpp in Sources */,
 				14EB1187222019C000D3C29D /* GUIFramework.cpp in Sources */,
 				14EB11852220185800D3C29D /* imgui.cpp in Sources */,
 				1405E89F21F426F400FBDD71 /* Mesh.cpp in Sources */,

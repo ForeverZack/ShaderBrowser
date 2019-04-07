@@ -3,6 +3,7 @@
 #include "Browser/Components/Render/Material.h"
 #include "Browser/Components/Mesh/MeshFilter.h"
 #include "Browser/Components/BoundBox/BaseBoundBox.h"
+#include "Browser/Components/Render/SkinnedMeshRenderer.h"
 #include "Browser/Components/Animation/Animator.h"
 #include "Browser/Components/Render/Pass.h"
 #include "Common/System/Cache/GLProgramCache.h"
@@ -189,13 +190,13 @@ namespace browser
 		m_uFaceCount = 0;
         
 		// 渲染主相机场景
-		renderScene(CameraSystem::getInstance()->getMainCamera());
+		renderScene(CameraSystem::getInstance()->getMainCamera(), deltaTime);
 
 		// 当前第几帧
 		++m_uFrameIndex;
 	}
 
-	void RenderSystem::renderScene(Camera* camera)
+	void RenderSystem::renderScene(Camera* camera, float deltaTime)
 	{
 		//	清理FrameBuffer
 		glClearColor(0.45f, 0.55f, 0.60f, 1.00f);
@@ -222,7 +223,7 @@ namespace browser
 #endif
                         
                         // 前向渲染
-						forwardRenderScene(camera);
+						forwardRenderScene(camera, deltaTime);
 
 #ifdef _SHADER_BROWSER_RENDER_SYSTEM_DEBUG
 						float deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - timeRec).count() / 1000.0f;
@@ -250,18 +251,25 @@ namespace browser
         // 开启深度测试
         GLStateCache::getInstance()->openDepthTest();
         {
-
+            BaseRender* renderer = nullptr;
+            SkinnedMeshRenderer* skinnedRenderer = nullptr;
             BaseBoundBox* boundBox = nullptr;
             GLProgram* linesProgram = GLProgramCache::getInstance()->getGLProgram(GLProgram::DEFAULT_LINES_GLPROGRAM_NAME);
             for(auto itor = m_mComponentsList.begin(); itor!=m_mComponentsList.end(); ++itor)
             {
+                skinnedRenderer = nullptr;
                 entity = itor->first;
                 if (entity->isRenderable() && entity->getIsVisible() && entity->getIsBoundBoxVisible() && entity->checkVisibility(camera))
                 {
                     vao = m_oAxisMesh->getVAO();    // TODO: 这里使用的是模型坐标轴的vao,后面看看要不要换掉
 					vbos = m_oAxisMesh->getVBOs();
+                    renderer = entity->getRenderer();
                     transform = entity->getTransform();
-                    boundBox = entity->getBoundBox();
+                    if(renderer->getRendererType()==BaseRender::RendererType::Skinned)
+                    {
+                        skinnedRenderer = static_cast<SkinnedMeshRenderer*>(renderer);
+                    }
+                    boundBox = skinnedRenderer ? skinnedRenderer->getBoundBox() : entity->getBoundBox();
                     
                     BROWSER_ASSERT(boundBox, "Entity have no BoundBox compoent, block in function RenderSystem::renderScene(Camera* camera)");
                     // 显示包围盒的顶点
@@ -361,7 +369,7 @@ namespace browser
 
 	}
     
-    void RenderSystem::forwardRenderScene(Camera* camera)
+    void RenderSystem::forwardRenderScene(Camera* camera, float deltaTime)
     {
 #ifdef _SHADER_BROWSER_RENDER_SYSTEM_DEBUG
 		auto timeRec = std::chrono::steady_clock::now();
@@ -382,6 +390,7 @@ namespace browser
         size_t vertCount;
         int indexCount;
         BaseRender* render;
+        SkinnedMeshRenderer* skinRenderer;
         Transform* transform;
         MeshFilter* meshFilter;
         Mesh* mesh;
@@ -408,8 +417,16 @@ namespace browser
 			totalParamTime += deltaTime;
 #endif
             
+            // 蒙皮渲染器
+            skinRenderer = nullptr;
+            if(render->getRendererType() == BaseRender::RendererType::Skinned)
+            {
+                skinRenderer = static_cast<SkinnedMeshRenderer*>(render);
+                skinRenderer->updateRenderer(deltaTime);
+            }
+            
             // 遍历messh
-            const std::vector<Mesh*>& meshes = meshFilter->getMeshes();
+            const std::vector<Mesh*>& meshes = skinRenderer ? skinRenderer->getMeshes() : meshFilter->getMeshes();
             for (int i = 0; i < meshes.size(); ++i)
             {
 #ifdef _SHADER_BROWSER_RENDER_SYSTEM_DEBUG

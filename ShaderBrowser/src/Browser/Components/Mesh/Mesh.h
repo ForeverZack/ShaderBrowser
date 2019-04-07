@@ -17,6 +17,15 @@ namespace browser
 {
     class Mesh : public Reference
 	{
+    public:
+        enum MeshType
+        {
+            // 普通网格模型
+            CommonMesh = 0,
+            // 含骨骼的网格模型
+            MeshWithBone,
+        };
+        
 	public:
 #define ANALYSIS_ARRAY_DATA_VEC2(varName, data)  \
         glm::vec2* values = (glm::vec2*)(data);  \
@@ -67,10 +76,10 @@ namespace browser
 		static const char* DEFAULT_MESH_NAME;
         
     public:
-        static Mesh* create(int length, const std::string& meshName = DEFAULT_MESH_NAME);
+        static Mesh* create(int length, const std::string& meshName = DEFAULT_MESH_NAME, MeshType type = MeshType::CommonMesh);
         
 	public:
-		Mesh(const std::string& meshName = DEFAULT_MESH_NAME);
+        Mesh(const std::string& meshName = DEFAULT_MESH_NAME, MeshType type = MeshType::CommonMesh);
 		~Mesh();
 
 	public:
@@ -92,6 +101,7 @@ namespace browser
         // 向RenderSystem注册vao
         void setupVAO();
         
+        REGISTER_PROPERTY_GET(MeshType, m_eMeshType, MeshType)
         REGISTER_PROPERTY_GET(unsigned int, m_uVAO, VAO)
         REGISTER_PROPERTY_GET(unsigned int, m_uVertexCount, VertexCount)
 		REGISTER_PROPERTY_CONSTREF_GET(std::vector<VertexData>, m_vVertices, Vertices)
@@ -118,6 +128,8 @@ namespace browser
         
         
 	protected:
+        // 模型类型
+        MeshType m_eMeshType;
 		// 模型名称
 		std::string m_sMeshName;
         // 顶点个数

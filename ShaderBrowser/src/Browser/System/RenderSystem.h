@@ -51,9 +51,9 @@ namespace browser
 		// 每帧更新
 		void update(float deltaTime);
 		// 绘制场景
-		void renderScene(Camera* camera);
+		void renderScene(Camera* camera, float deltaTime);
         // 前向渲染
-        void forwardRenderScene(Camera* camera);
+        void forwardRenderScene(Camera* camera, float deltaTime);
         
         // 设置vao和vbo
         void setupVAO(GLuint vao, unsigned int vbos[], const std::unordered_map<GLuint, VertexAttribDeclaration*>& declarations);

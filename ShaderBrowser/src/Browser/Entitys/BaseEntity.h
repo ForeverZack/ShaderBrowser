@@ -39,6 +39,7 @@ namespace browser
         // 传递组件消息(在同一个Entity内部传递)
         // 注意:这里的BaseComponentMessage是一个Reference，每帧结束时会自动清除，并且这套消息机制是实时的，接收者会立刻处理
         void deliverComponentMessage(ComponentEvent event, BaseComponentMessage* msg);
+        void deliverComponentMessageToChildren(ComponentEvent event, BaseComponentMessage* msg);
 
 		// Transform组件相关操作
         // 添加子实体

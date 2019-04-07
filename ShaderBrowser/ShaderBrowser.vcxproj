@@ -34,6 +34,7 @@
     <ClCompile Include="src\Browser\Components\Render\BaseRender.cpp" />
     <ClCompile Include="src\Browser\Components\Render\Material.cpp" />
     <ClCompile Include="src\Browser\Components\Render\Pass.cpp" />
+    <ClCompile Include="src\Browser\Components\Render\SkinnedMeshRenderer.cpp" />
     <ClCompile Include="src\Browser\Components\Transform\Transform.cpp" />
     <ClCompile Include="src\Browser\Entitys\BaseEntity.cpp" />
     <ClCompile Include="src\Browser\System\AnimationSystem.cpp" />
@@ -84,6 +85,7 @@
     <ClInclude Include="src\Browser\Components\Render\BaseRender.h" />
     <ClInclude Include="src\Browser\Components\Render\Material.h" />
     <ClInclude Include="src\Browser\Components\Render\Pass.h" />
+    <ClInclude Include="src\Browser\Components\Render\SkinnedMeshRenderer.h" />
     <ClInclude Include="src\Browser\Components\Transform\Transform.h" />
     <ClInclude Include="src\Browser\Entitys\BaseEntity.h" />
     <ClInclude Include="src\Browser\System\AnimationSystem.h" />

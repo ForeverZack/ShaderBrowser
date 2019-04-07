@@ -35,6 +35,14 @@ namespace browser
             m_oBelongEntity->deliverComponentMessage(event, msg);
         }
     }
+    
+    void BaseComponent::dispatchEventToChildren(ComponentEvent event, BaseComponentMessage* msg)
+    {
+        if (m_oBelongEntity)
+        {
+            m_oBelongEntity->deliverComponentMessageToChildren(event, msg);
+        }
+    }
 
     
 }

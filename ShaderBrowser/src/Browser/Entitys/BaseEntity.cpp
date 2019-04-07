@@ -1,6 +1,8 @@
 #include "BaseEntity.h"
 #include "Common/System/ECSManager.h"
 #include "Browser/Components/BoundBox/AABBBoundBox.h"
+#include "Browser/Components/Render/SkinnedMeshRenderer.h"
+#include <deque>
 #ifdef  _WIN32
 #pragma warning(disable:4996)
 #endif //  _WIN32
@@ -123,13 +125,39 @@ namespace browser
 
 	bool BaseEntity::isRenderable()
 	{
-        // 是否需要被渲染 TODO: isVisible()
-        return m_oRenderer && m_oMeshFilterComponent;
+        // 是否需要被渲染
+        if (m_oRenderer)
+        {
+            switch(m_oRenderer->getRendererType())
+            {
+                case BaseRender::RendererType::Base:
+                    {
+                        if(m_oMeshFilterComponent)
+                        {
+                            return true;
+                        }
+                    }
+                    break;
+                    
+                case BaseRender::RendererType::Skinned:
+                    {
+                        return true;
+                    }
+                    break;
+            }
+        }
+        
+        return false;
 	}
     
     bool BaseEntity::checkVisibility(Camera* camera, bool reCalculate/* = false*/)
     {
-        return m_oBoundBox && m_oBoundBox->checkVisibility(camera, reCalculate);
+        return (
+                // 普通网格检测
+                (m_oBoundBox && m_oBoundBox->checkVisibility(camera, reCalculate))
+                // 蒙皮网格检测
+                || (m_oRenderer->getRendererType()==BaseRender::RendererType::Skinned ? static_cast<SkinnedMeshRenderer*>(m_oRenderer)->checkVisibility(camera, reCalculate) : false)
+        );
     }
     
     const std::vector<VertexData>& BaseEntity::getVertices(Mesh* mesh, bool& dirty)
@@ -280,11 +308,43 @@ namespace browser
     
     void BaseEntity::deliverComponentMessage(ComponentEvent event, BaseComponentMessage* msg)
     {
-        BaseComponent* component;
         for (int i=0; i<m_vComponents.size(); ++i)
         {
-            component = m_vComponents[i];
-            component->handleEvent(event, msg);
+            m_vComponents[i]->handleEvent(event, msg);
+        }
+    }
+    
+    void BaseEntity::deliverComponentMessageToChildren(ComponentEvent event, BaseComponentMessage* msg)
+    {
+        std::deque<Transform*> traverseVec;
+        if (m_oTransformComponent)
+        {
+            traverseVec.push_back(m_oTransformComponent);
+        }
+        
+        Transform* node = nullptr;
+        BaseEntity* entity = nullptr;
+        while(!traverseVec.empty())
+        {
+            node = traverseVec.front();
+            traverseVec.pop_front();
+            
+            // 派发事件
+            {
+                entity = node->getBelongEntity();
+                const std::vector<BaseComponent*>& components = entity->getComponents();
+                for(auto itor=components.begin(); itor!=components.end(); ++itor)
+                {
+                    (*itor)->handleEvent(event, msg);
+                }
+            }
+            
+            // 遍历子节点
+            const std::vector<Transform*>& children = node->getChildren();
+            for(int i=0; i<children.size(); ++i)
+            {
+                traverseVec.push_back(children[i]);
+            }
         }
     }
 

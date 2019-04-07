@@ -106,6 +106,36 @@ namespace customGL
 		glm::vec4 boneWeights;
     };
     
+    // 单个顶点数据结构（含骨骼）
+    class VertexDataWithBone
+    {
+    public:
+        VertexDataWithBone()
+        : boneWeights(0.0f)
+        , boneIndices(0)
+        {
+        }
+        ~VertexDataWithBone()
+        {
+        }
+        
+    public:
+        // 位置
+        glm::vec4 position;
+        // 顶点颜色
+        glm::vec4 color;
+        // 主纹理uv
+        glm::vec2 uv_main;
+        // 法线
+        glm::vec3 normal;
+        // 切线
+        glm::vec3 tangent;
+        // 骨骼id索引    (一个顶点最多被4根骨骼所影响)
+        glm::uvec4 boneIndices;
+        // 骨骼权重
+        glm::vec4 boneWeights;
+    };
+    
     // 顶点属性格式(供设置vao使用)
     // void glVertexAttribPointer( GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride,const GLvoid * pointer);
     class VertexAttribDeclaration

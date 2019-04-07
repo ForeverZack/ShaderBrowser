@@ -51,6 +51,7 @@ namespace browser
         
         // 发送事件
         virtual void dispatchEvent(ComponentEvent event, BaseComponentMessage* msg);
+        virtual void dispatchEventToChildren(ComponentEvent event, BaseComponentMessage* msg);
         
         // 接受事件
         virtual void handleEvent(ComponentEvent event, BaseComponentMessage* msg) {}
@@ -58,8 +59,10 @@ namespace browser
 		REGISTER_PROPERTY_GET(SystemType, m_eBelongSystem, BelongSystem)
 		REGISTER_PROPERTY_GET_SET(BaseEntity*, m_oBelongEntity, BelongEntity)
         REGISTER_PROPERTY_CONSTREF_GET(std::string, m_sComponentName, ComponentName)
+        REGISTER_PROPERTY_GET_SET(MeshFilter*, m_oMeshFilter, MeshFilter)
+        REGISTER_PROPERTY_GET_SET(Transform*, m_oTransform, Transform)
         
-    protected:
+    public:
         // 获取Transform组件
         template <typename MsgType>
         void getTransformFromMsg(BaseComponentMessage* msg)
@@ -71,9 +74,6 @@ namespace browser
                 m_oTransform = transform;
             }
         }
-        // Transform组件
-        Transform* m_oTransform;
-        
         // 获取MeshFilter组件
         template <typename MsgType>
         void getMeshFilterFromMsg(BaseComponentMessage* msg)
@@ -85,6 +85,9 @@ namespace browser
                 m_oMeshFilter = meshFilter;
             }
         }
+    protected:
+        // Transform组件
+        Transform* m_oTransform;
         // MeshFilter组件
         MeshFilter* m_oMeshFilter;
         

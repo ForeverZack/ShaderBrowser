@@ -29,12 +29,12 @@ namespace common
 		m_vPanels.push_back(m_oInspectorPanel);
         
         // Hierarchy面板
-        m_oHierarchyPanel = std::make_shared<HierarchyPanel>(270, winHeight-150, false, 0, 0);
+        m_oHierarchyPanel = std::make_shared<HierarchyPanel>(400, winHeight-150, false, 0, 0);
 		m_oHierarchyPanel->setWindowStyleColor(ImGuiCol_TitleBgActive, 0.04f, 0.04f, 0.04f, 1.00f);
         m_vPanels.push_back(m_oHierarchyPanel);
 
 		// GameStatus面板
-		m_oGameStatusPanel = std::make_shared<GameStatusPanel>(270, 150, false, 0, winHeight-150);
+		m_oGameStatusPanel = std::make_shared<GameStatusPanel>(400, 150, false, 0, winHeight-150);
 		m_oGameStatusPanel->setWindowStyleColor(ImGuiCol_TitleBgActive, 0.04f, 0.04f, 0.04f, 1.00f);
 		m_vPanels.push_back(m_oGameStatusPanel);
 	}

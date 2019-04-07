@@ -22,6 +22,17 @@ namespace browser
 	{
 	public:
 		static BaseRender* createBaseRender(const std::string& materialName = Material::DEFAULT_MATERIAL_NAME, const std::string& programeName = GLProgram::DEFAULT_GLPROGRAM_NAME);
+    
+    public:
+        // 渲染器类型
+        enum RendererType
+        {
+            // 普通渲染器
+            Base = 0,
+            // 蒙皮渲染器
+            Skinned,
+        };
+        
 	public:
 		BaseRender();
 		~BaseRender();
@@ -41,6 +52,9 @@ namespace browser
 		// 重载属性面板显示方法
 		virtual void onInspectorGUI(InspectorPanel* inspector);
         
+        
+        REGISTER_PROPERTY_GET(RendererType, m_eRendererType, RendererType)
+        
     protected:
         // 处理组件事件
         void handleEvent(ComponentEvent event, BaseComponentMessage* msg);
@@ -48,10 +62,12 @@ namespace browser
 		// 创建材质(根据shader名字)
 		Material* createMaterial(const std::string& programName, const std::string& materialName = Material::DEFAULT_MATERIAL_NAME);
         
-	private:
+	protected:
         // 材质map	std::string绑定Mesh的MaterialName
         std::unordered_map<std::string, Material*> m_mMaterials;
         
+        // 渲染器类型
+        RendererType m_eRendererType;
 	};
 }
 

@@ -115,6 +115,10 @@ namespace browser
         std::unordered_map<aiNode*, aiMatrix4x4> m_mTransformations;
         // 骨骼变换矩阵
         std::vector<glm::mat4> m_vBonesMatrix;
-	};
+        // TODO: 骨骼节点的变换后的位置,需要传给transform
+        std::unordered_map<unsigned int, glm::vec3> m_mBonesPosition;
+        std::unordered_map<unsigned int, glm::quat> m_mBonesRotation;
+        std::unordered_map<unsigned int, glm::vec3> m_mBonesScale;
+    };
 }
 

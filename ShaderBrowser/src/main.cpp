@@ -12,6 +12,7 @@
 #include "Browser/Components/Mesh/MeshFilter.h"
 #include "Browser/Components/Mesh/Mesh.h"
 #include "Browser/Components/Render/BaseRender.h"
+#include "Browser/Components/Render/SkinnedMeshRenderer.h"
 #include "Browser/Components/Render/Material.h"
 #include "Browser/Components/Render/Pass.h"
 #include "Browser/Components/BoundBox/AABBBoundBox.h"
@@ -283,11 +284,14 @@ void testVal()
     modelEntity->setPosition(1, 0, -2);
     scene->addChild(modelEntity);
     modelEntity->playAnimation("Take 001", true);
-    modelEntity->changeAllMeshesMaterial(GLProgram::DEFAULT_SKELETON_GLPROGRAM_NAME);
+//    modelEntity->changeAllMeshesMaterial(GLProgram::DEFAULT_SKELETON_GLPROGRAM_NAME);
+    MeshFilter* fighterMeshFilter = static_cast<SkinnedMeshRenderer*>(modelEntity->getTransform()->getChildren()[0]->getChildren()[0]->getBelongEntity()->getRenderer())->getMeshFilter();
+    fighterMeshFilter->getMeshes()[0]->setTexture(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_TEXUTRE0], TextureCache::getInstance()->getTexture("models/Fighter/Fighter.png"));
+
     // MeshFilter组件
 //    MeshFilter* fighterMeshFilter = modelEntity->getTransform()->getChildren()[0]->getBelongEntity()->getMeshFilter();
-    MeshFilter* fighterMeshFilter = modelEntity->getTransform()->getChildren()[0]->getChildren()[0]->getBelongEntity()->getMeshFilter();
-	fighterMeshFilter->getMeshes()[0]->setTexture(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_TEXUTRE0], TextureCache::getInstance()->getTexture("models/Fighter/Fighter.png"));
+//    MeshFilter* fighterMeshFilter = modelEntity->getTransform()->getChildren()[0]->getChildren()[0]->getBelongEntity()->getMeshFilter();
+//    fighterMeshFilter->getMeshes()[0]->setTexture(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_TEXUTRE0], TextureCache::getInstance()->getTexture("models/Fighter/Fighter.png"));
 
 	// 渲染模型3
 	modelEntity = m_oModelLamp->createNewEntity("LampBob");
@@ -296,7 +300,7 @@ void testVal()
 	scene->addChild(modelEntity);
     modelEntity->playAnimation(Animator::DEFAULT_ANIMATION_NAME+"0", true);
 	//modelEntity->getAnimator()->setUseGPU(false);
-    modelEntity->changeAllMeshesMaterial(GLProgram::DEFAULT_SKELETON_GLPROGRAM_NAME);
+//    modelEntity->changeAllMeshesMaterial(GLProgram::DEFAULT_SKELETON_GLPROGRAM_NAME);
     
     // 模型4 RawMocap
     modelEntity = m_oModelUnity->createNewEntity("RawMocap");
@@ -305,7 +309,7 @@ void testVal()
     scene->addChild(modelEntity);
 //    modelEntity->playAnimation("_1_Edit1_WalkFWD", true);
     modelEntity->playAnimation("_3_a_U1_M_P_WalkAvoid_ToLeft_Both_Fb_p0_No_0_1", true);
-    modelEntity->changeAllMeshesMaterial(GLProgram::DEFAULT_SKELETON_GLPROGRAM_NAME);
+//    modelEntity->changeAllMeshesMaterial(GLProgram::DEFAULT_SKELETON_GLPROGRAM_NAME);
 //    modelEntity->getAnimator()->setUseGPU(false);
     
     // 模型5 yBot
@@ -314,7 +318,7 @@ void testVal()
     modelEntity->setPosition(-10, 0, 5);
     scene->addChild(modelEntity);
     modelEntity->playAnimation(1, true);
-    modelEntity->changeAllMeshesMaterial(GLProgram::DEFAULT_SKELETON_GLPROGRAM_NAME);
+//    modelEntity->changeAllMeshesMaterial(GLProgram::DEFAULT_SKELETON_GLPROGRAM_NAME);
     m_YBotEntity = modelEntity;
 
     

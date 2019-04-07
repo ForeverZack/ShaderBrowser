@@ -53,6 +53,9 @@ namespace browser
         
         // 清除
         m_mVertices.clear();
+        m_mBonesPosition.clear();
+        m_mBonesRotation.clear();
+        m_mBonesScale.clear();
 	}
 
 	Animator::~Animator()
@@ -92,6 +95,9 @@ namespace browser
         {
             // 重置容器大小
             m_vBonesMatrix.reserve(m_oSrcModel->getBoneNum());
+            m_mBonesPosition.reserve(m_oSrcModel->getBoneNum());
+            m_mBonesRotation.reserve(m_oSrcModel->getBoneNum());
+            m_mBonesScale.reserve(m_oSrcModel->getBoneNum());
             m_mVertices.clear();
             const std::vector<Mesh*>& meshes = m_oSrcModel->getMeshes();
             for(auto itor=meshes.begin(); itor!=meshes.end(); ++itor)
@@ -122,6 +128,9 @@ namespace browser
         {
             // 重置容器大小
             m_vBonesMatrix.reserve(m_oSrcModel->getBoneNum());
+            m_mBonesPosition.reserve(m_oSrcModel->getBoneNum());
+            m_mBonesRotation.reserve(m_oSrcModel->getBoneNum());
+            m_mBonesScale.reserve(m_oSrcModel->getBoneNum());
             m_mVertices.clear();
             const std::vector<Mesh*>& meshes = m_oSrcModel->getMeshes();
             for(auto itor=meshes.begin(); itor!=meshes.end(); ++itor)
@@ -220,8 +229,11 @@ namespace browser
             // 重置
             m_mTransformations.clear();
             m_vBonesMatrix.clear();
+            m_mBonesPosition.clear();
+            m_mBonesRotation.clear();
+            m_mBonesScale.clear();
             m_vBonesMatrix.resize(m_oSrcModel->getBoneNum());
-            
+ 
             // 计算时间
             m_oCurAnimation.elapsed += deltaTime * m_oCurAnimation.speed;
             if (m_oCurAnimation.elapsed > m_oCurAnimation.duration)
@@ -269,12 +281,15 @@ namespace browser
             else
             {
                 // 只有一个动画在播放
-                m_oSrcModel->computeBonesTransform(m_oCurAnimation.animation, m_oCurAnimation.elapsed, m_mTransformations, m_vBonesMatrix, m_oCurAnimation.interpolate, m_bApplyRootMotion);
+                m_oSrcModel->computeBonesTransform(m_oCurAnimation.animation, m_oCurAnimation.elapsed, m_mTransformations, m_vBonesMatrix, m_mBonesPosition, m_mBonesRotation, m_mBonesScale, m_oCurAnimation.interpolate, m_bApplyRootMotion);
             }
             
             //float deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - timeRec).count() / 1000.0f;
             //timeRec = std::chrono::steady_clock::now();
             //BROWSER_LOG("========computeBonesTransform==========="+ std::to_string(deltaTime) + "ms");
+            
+            // 更新骨骼的Transform
+            dispatchEventToChildren(ComponentEvent::Animator_UpdateBonesTransform, new AnimatorUpdateBonesTransformMessage(m_oSrcModel->getBonesIdMapPointer(), &m_mBonesPosition, &m_mBonesRotation, &m_mBonesScale));
             
             // cpu计算顶点位置
             if(!m_bUseGPU)
