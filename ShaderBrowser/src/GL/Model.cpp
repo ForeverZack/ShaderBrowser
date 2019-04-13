@@ -142,6 +142,7 @@ namespace customGL
                     aiMesh = std::get<0>(*itor);
                     meshNode = std::get<1>(*itor);
                     parentNode = meshNode->mParent;
+                    aiMatrix4x4 globalTransformation;
                     
                     while(parentNode)
                     {
@@ -154,8 +155,10 @@ namespace customGL
                             std::vector<VertexData>& vertices = mesh->getVerticesRef();
                             if (vertices.size()>0 && vertices[0].boneWeights[0]==0.0f)
                             {
+                                // 计算骨骼节点下的变换矩阵（模型空间->骨骼节点空间，因为普通网格渲染器BaseRender会根据Transform来做空间变换，而现在会为骨骼节点建立Transform组件，并会实时更新它）
+                                calculateTrasformMatrix(meshNode, parentNode, globalTransformation);
                                 // 绑定模型到骨骼
-                                bindMeshOnSingleBone(mesh, boneIdx);
+                                bindMeshOnSingleBone(mesh, boneIdx, Assimp::ConvertToGLM(globalTransformation));
                             }
                             
                             break;
@@ -233,7 +236,7 @@ namespace customGL
 		if (node->mNumMeshes > 0)
 		{
 			// MeshFilter组件
-			MeshFilter* meshFilter = nullptr;
+            browser::MeshFilter* meshFilter = nullptr;
 			// 渲染组件
 			BaseRender* renderer = nullptr;
             BaseRender* skinnedRender = nullptr;
@@ -296,6 +299,15 @@ namespace customGL
 
 		return entity;
 	}
+    
+    void Model::calculateTrasformMatrix(aiNode* node, aiNode* endNode, aiMatrix4x4& transformation)
+    {
+        if(node != endNode)
+        {
+            transformation = node->mTransformation * transformation;
+            calculateTrasformMatrix(node->mParent, endNode, transformation);
+        }
+    }
     
     void Model::findModelRootBondNode(aiNode* node)
     {
@@ -711,7 +723,7 @@ namespace customGL
 		}
 	}
     
-    bool Model::bindMeshOnSingleBone(browser::Mesh* mesh, const std::string& boneName)
+    bool Model::bindMeshOnSingleBone(browser::Mesh* mesh, const std::string& boneName, const glm::mat4& transformation /*= GLM_MAT4_UNIT*/)
     {
         std::unordered_map<std::string, unsigned int>::iterator itor = m_mBonesIdMap.find(boneName);
         if(itor == m_mBonesIdMap.end())
@@ -722,7 +734,7 @@ namespace customGL
         return bindMeshOnSingleBone(mesh, itor->second);
     }
     
-    bool Model::bindMeshOnSingleBone(browser::Mesh* mesh, unsigned int boneIdx)
+    bool Model::bindMeshOnSingleBone(browser::Mesh* mesh, unsigned int boneIdx, const glm::mat4& transformation /*= GLM_MAT4_UNIT*/)
     {
         if(boneIdx >= m_uBoneNum)
         {
@@ -733,6 +745,9 @@ namespace customGL
         for (auto itor=vertices.begin(); itor!=vertices.end(); ++itor)
         {
             VertexData& vertex = (*itor);
+            
+            vertex.position = transformation * vertex.position;
+            
             vertex.boneIndices = GLM_VEC4_ZERO;
             vertex.boneWeights = GLM_VEC4_ZERO;
             vertex.boneIndices[0] = boneIdx;

@@ -17,7 +17,7 @@ namespace browser
         : BaseComponent("Mesh Filter")
 	{
         // 组件所属系统
-        m_eBelongSystem = SystemType::Mesh;
+        m_eBelongSystem = SystemType::MeshFilter;
      
 		// 清理
 		m_vMeshes.clear();

@@ -156,7 +156,7 @@ namespace browser
                 // 普通网格检测
                 (m_oBoundBox && m_oBoundBox->checkVisibility(camera, reCalculate))
                 // 蒙皮网格检测
-                || (m_oRenderer->getRendererType()==BaseRender::RendererType::Skinned ? static_cast<SkinnedMeshRenderer*>(m_oRenderer)->checkVisibility(camera, reCalculate) : false)
+                || (m_oRenderer && m_oRenderer->getRendererType()==BaseRender::RendererType::Skinned ? static_cast<SkinnedMeshRenderer*>(m_oRenderer)->checkVisibility(camera, reCalculate) : false)
         );
     }
     
@@ -359,7 +359,7 @@ namespace browser
 			deliverComponentMessage(ComponentEvent::Transform_AddComponent, new TransformAddComponentMessage(m_oTransformComponent));
 			break;
                 
-        case SystemType::Mesh:
+        case SystemType::MeshFilter:
             //MeshFilter组件
 			MARK_SPECIAL_COMPONENT(m_oMeshFilterComponent, component, bEmpty);
             deliverComponentMessage(ComponentEvent::MeshFilter_AddComponent, new MeshFilterAddComponentMessage(m_oMeshFilterComponent));

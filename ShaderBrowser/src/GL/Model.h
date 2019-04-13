@@ -90,8 +90,8 @@ namespace customGL
         void blendBonesTransform(aiAnimation* befAnimation, float befElapsed, bool befInterpolate, aiAnimation* animation, float elapsedTime, bool interpolate, float blendWeight, std::unordered_map<aiNode*, aiMatrix4x4>& nodeTrans, std::vector<glm::mat4>& bonesMatrix, bool applyRootMotion = false);
         
         // 绑定网格模型到单个骨骼
-        bool bindMeshOnSingleBone(browser::Mesh* mesh, const std::string& boneName);
-        bool bindMeshOnSingleBone(browser::Mesh* mesh, unsigned int boneIdx);
+        bool bindMeshOnSingleBone(browser::Mesh* mesh, const std::string& boneName, const glm::mat4& transformation = GLM_MAT4_UNIT);
+        bool bindMeshOnSingleBone(browser::Mesh* mesh, unsigned int boneIdx, const glm::mat4& transformation = GLM_MAT4_UNIT);
         
 	private:
         // 初始化
@@ -106,6 +106,8 @@ namespace customGL
         browser::Mesh* generateMesh(aiMesh* aiMesh, const aiScene*& scene, unsigned int& boneOffset);
         // 读取纹理数据
         void readTextureData(browser::Mesh* mesh, aiMaterial* material, aiTextureType type, const char* uniformName = GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_TEXUTRE0]);
+        // 计算到endNode空间下的变换矩阵，用来将模型空间下的网格坐标，转换到骨骼节点下。(应该只有含有骨骼的模型中，包含普通网格模型(没有绑定骨骼，只是单纯的放在骨骼节点下，需要用代码手动绑定)时才需要用到，因为这部分网格模型的顶点坐标是模型空间的，他们的原点是RootNode。如果自己单独创建了一个不相干的模型(有自己的原点)，则不需要这个空间变换)
+        void calculateTrasformMatrix(aiNode* node, aiNode* endNode, aiMatrix4x4& transformation);
 
 		// 递归遍历模型，生成Entity
 		BaseEntity* traverseNodeAndCreateEntity(aiNode* node, BaseEntity* parent, BaseEntity* root);
@@ -149,7 +151,7 @@ namespace customGL
         
     private:
         // 生成的MeshFilter组件
-        MeshFilter* m_oMeshFilter;
+        browser::MeshFilter* m_oMeshFilter;
         
 		// assimp加载器列表(除了网格的顶点数据外，还有很多其他的数据如动画等，如果释放场景，这些数据也会被释放，所以要一直留着，等删除模型时，在移除这些数据)
 		std::vector<std::shared_ptr<Assimp::Importer>> m_vImporters;

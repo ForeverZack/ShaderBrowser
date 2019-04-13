@@ -258,7 +258,7 @@ void testVal()
     // 包围盒
     entity->addComponent(new AABBBoundBox());
     // meshFilter
-    MeshFilter* meshFilter = MeshFilter::create();
+    browser::MeshFilter* meshFilter = MeshFilter::create();
     meshFilter->addMesh(mesh);
     entity->addComponent(meshFilter);
 
@@ -285,7 +285,8 @@ void testVal()
     scene->addChild(modelEntity);
     modelEntity->playAnimation("Take 001", true);
 //    modelEntity->changeAllMeshesMaterial(GLProgram::DEFAULT_SKELETON_GLPROGRAM_NAME);
-    MeshFilter* fighterMeshFilter = static_cast<SkinnedMeshRenderer*>(modelEntity->getTransform()->getChildren()[0]->getChildren()[0]->getBelongEntity()->getRenderer())->getMeshFilter();
+    browser::MeshFilter* fighterMeshFilter = static_cast<SkinnedMeshRenderer*>(modelEntity->getTransform()->getChildren()[0]->getChildren()[0]->getBelongEntity()->getRenderer())->getMeshFilter();
+//    MeshFilter* fighterMeshFilter = static_cast<SkinnedMeshRenderer*>(modelEntity->getTransform()->getChildren()[0]->getBelongEntity()->getRenderer())->getMeshFilter();
     fighterMeshFilter->getMeshes()[0]->setTexture(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_TEXUTRE0], TextureCache::getInstance()->getTexture("models/Fighter/Fighter.png"));
 
     // MeshFilter组件
@@ -387,6 +388,17 @@ void testVal()
 int main()
 {
 	GLFWwindow* window = init();
+
+//    // mac获取extension的方法：3.0+的profile对glGetString传GL_EXTENSIONS已经被deprecated，属于invalid enumeration，正确的方法是用glGetStringi代替
+//    {
+//        GLint n, i;
+//        glGetIntegerv(GL_NUM_EXTENSIONS, &n);
+//        for (i = 0; i < n; i++)
+//        {
+//            printf("%s\n", glGetStringi(GL_EXTENSIONS, i));
+//        }
+//    }
+
 
 	// 关闭垂直同步
 #ifdef _WIN32
@@ -510,7 +522,7 @@ GLFWwindow* init()
 	// 初始化系统
 	ECSManager::getInstance()->initSystem(SystemType::RenderSystem);    // 渲染系统
     ECSManager::getInstance()->initSystem(SystemType::Transform);    // Transform
-	ECSManager::getInstance()->initSystem(SystemType::Mesh);    // Mesh
+	ECSManager::getInstance()->initSystem(SystemType::MeshFilter);    // Mesh
 	ECSManager::getInstance()->initSystem(SystemType::Camera);    // Camera
     ECSManager::getInstance()->initSystem(SystemType::BoundBox);    // 包围盒
     ECSManager::getInstance()->initSystem(SystemType::Light);   // Light
@@ -548,10 +560,10 @@ void mainLoop(GLFWwindow *window)
 	GLStateCache::getInstance()->update(deltaTime);
 
 	// 2.render
-    ECSManager::getInstance()->updateSystem(SystemType::Animation, deltaTime);   // 更新动画系统
 	ECSManager::getInstance()->updateSystem(SystemType::Transform, deltaTime);  // 更新transform
 	ECSManager::getInstance()->updateSystem(SystemType::Camera, deltaTime);  // 更新camera
     ECSManager::getInstance()->updateSystem(SystemType::BoundBox, deltaTime);   // 更新BoundBox
+    ECSManager::getInstance()->updateSystem(SystemType::Animation, deltaTime);   // 更新动画系统
 	ECSManager::getInstance()->updateSystem(SystemType::RenderSystem, deltaTime);   // 更新渲染系统
     //BROWSER_LOG(deltaTime);
 

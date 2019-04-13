@@ -12,7 +12,7 @@ namespace common
         // 形变位移系统
         Transform,
         // 网格系统
-        Mesh,
+        MeshFilter,
 		// 相机
 		Camera,
         // 包围盒
