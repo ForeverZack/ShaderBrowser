@@ -39,6 +39,7 @@ namespace customGL {
     
     UniformValue::UniformValue()
         : m_eType(UniformValueType::UniformValueType_Undefined)
+        , m_bDirty(true)
     {
         
     }
@@ -60,6 +61,7 @@ namespace customGL {
                                || m_eType==UniformValueType::UniformValueType_Int,
                                "UniformValueType has already defined, you cannot change it again in function UniformValue::setInt");
         
+        m_bDirty = true;
         m_eType = UniformValueType::UniformValueType_Int;
         _value.intValue = value;
     }
@@ -70,6 +72,7 @@ namespace customGL {
                                || m_eType==UniformValueType::UniformValueType_Float,
                                "UniformValueType has already defined, you cannot change it again in function UniformValue::setFloat");
         
+        m_bDirty = true;
         m_eType = UniformValueType::UniformValueType_Float;
         _value.floatValue = value;
     }
@@ -80,6 +83,7 @@ namespace customGL {
                                || m_eType==UniformValueType::UniformValueType_Mat3,
                                "UniformValueType has already defined, you cannot change it again in function UniformValue::setMat3");
         
+        m_bDirty = true;
         m_eType = UniformValueType::UniformValueType_Mat3;
         _value.mat3 = value;
     }
@@ -90,6 +94,7 @@ namespace customGL {
                                || m_eType==UniformValueType::UniformValueType_Mat3x4,
                                "UniformValueType has already defined, you cannot change it again in function UniformValue::setMat3x4");
         
+        m_bDirty = true;
         m_eType = UniformValueType_Mat3x4;
         _value.mat3x4 = value;
     }
@@ -100,6 +105,7 @@ namespace customGL {
                                || m_eType==UniformValueType::UniformValueType_Mat4,
                                "UniformValueType has already defined, you cannot change it again in function UniformValue::setMat4");
         
+        m_bDirty = true;
         m_eType = UniformValueType::UniformValueType_Mat4;
         _value.mat4 = value;
     }
@@ -110,6 +116,7 @@ namespace customGL {
                                || m_eType==UniformValueType::UniformValueType_Mat4x3,
                                "UniformValueType has already defined, you cannot change it again in function UniformValue::setMat4x3");
         
+        m_bDirty = true;
         m_eType = UniformValueType::UniformValueType_Mat4x3;
         _value.mat4x3 = value;
     }
@@ -120,6 +127,7 @@ namespace customGL {
                || m_eType==UniformValueType::UniformValueType_FloatV,
                "UniformValueType has already defined, you cannot change it again in function UniformValue::setFloatV");
         
+        m_bDirty = true;
         m_eType = UniformValueType::UniformValueType_FloatV;
         _value.floatv.size = size;
         _value.floatv.pointer = value;
@@ -131,6 +139,7 @@ namespace customGL {
                || m_eType==UniformValueType::UniformValueType_Vec2,
                "UniformValueType has already defined, you cannot change it again in function UniformValue::setVec2");
         
+        m_bDirty = true;
         m_eType = UniformValueType::UniformValueType_Vec2;
         _value.v2f.pointer = value;
     }
@@ -141,6 +150,7 @@ namespace customGL {
                || m_eType==UniformValueType::UniformValueType_Vec3,
                "UniformValueType has already defined, you cannot change it again in function UniformValue::setVec3");
         
+        m_bDirty = true;
         m_eType = UniformValueType::UniformValueType_Vec3;
         _value.v3f.pointer = value;
     }
@@ -151,6 +161,7 @@ namespace customGL {
                || m_eType==UniformValueType::UniformValueType_Vec4,
                "UniformValueType has already defined, you cannot change it again in function UniformValue::setVec4");
         
+        m_bDirty = true;
         m_eType = UniformValueType::UniformValueType_Vec4;
         _value.v4f.pointer = value;
     }
@@ -161,12 +172,19 @@ namespace customGL {
                                || m_eType==UniformValueType::UniformValueType_Sampler2D,
                                "UniformValueType has already defined, you cannot change it again in function UniformValue::setTex2D");
         
+        m_bDirty = true;
         m_eType = UniformValueType::UniformValueType_Sampler2D;
         _value.tex2D.textureId = textureId;
     }
     
     void UniformValue::updateGLProgramUniformValue(GLProgram* glProgram, std::string uniformName)
     {
+        if(!m_bDirty)
+        {
+            return;
+        }
+        
+        m_bDirty = false;
         switch (m_eType)
         {
             case UniformValueType_Int:

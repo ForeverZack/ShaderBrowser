@@ -32,6 +32,8 @@ namespace browser
 	public:
 		// 初始化材质
 		void init(GLProgram* program);
+        // 设置参数列表（从所属的material获得）
+        void setUniformsFromMaterial(std::unordered_map<std::string, UniformValue>* uniforms);
 		// 添加\设置uniform
         void setUniformInt(const std::string& uniformName, int value);
         void setUniformFloat(const std::string& uniformName, float value);
@@ -51,8 +53,8 @@ namespace browser
 		REGISTER_PROPERTY_GET(GLProgram*, m_oGLProgram, GLProgram)
 
 	private:
-		// uniform数据
-        std::unordered_map<std::string, UniformValue> m_mUniforms;
+		// uniform数据指针（从所属material获得）
+        std::unordered_map<std::string, UniformValue>* m_mUniforms;
 		// 对应的shader程序
 		GLProgram* m_oGLProgram;
 	};

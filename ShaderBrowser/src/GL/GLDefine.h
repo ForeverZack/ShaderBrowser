@@ -259,6 +259,8 @@ namespace customGL
         void updateGLProgramUniformValue(GLProgram* glProgram, std::string uniformName);
         
     protected:
+        // uniform数据是否改变了
+        bool m_bDirty;
         // uniform数值类型
         UniformValueType m_eType;
         // uniform数据值

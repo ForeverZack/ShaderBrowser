@@ -445,7 +445,7 @@ namespace browser
                 const std::vector<GLushort>& indices = mesh->getIndices();
                 indexCount = mesh->getIndexCount();
                 
-				//if (verticesDirty)
+                if (verticesDirty)
 				{
 					// 1.绑定对应的vao
 					glBindVertexArray(vao);

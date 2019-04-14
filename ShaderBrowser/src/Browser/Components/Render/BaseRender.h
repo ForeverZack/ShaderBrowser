@@ -47,6 +47,8 @@ namespace browser
 		// 添加材质
 		void addMaterial(Material* material);
 		void addMaterial(const std::string& materialName, const std::string& programName);
+        // 检测材质是否存在
+        bool checkMaterialExist(const std::string& materialName);
 
 
 		// 重载属性面板显示方法

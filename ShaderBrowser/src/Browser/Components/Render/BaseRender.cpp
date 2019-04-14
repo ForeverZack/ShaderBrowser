@@ -80,6 +80,11 @@ namespace browser
 		addMaterial(material);
 	}
     
+    bool BaseRender::checkMaterialExist(const std::string& materialName)
+    {
+        return m_mMaterials.find(materialName) != m_mMaterials.end();
+    }
+    
     void BaseRender::addMaterial(Material* material)
     {
 		const std::string& name = material->getMaterialName();

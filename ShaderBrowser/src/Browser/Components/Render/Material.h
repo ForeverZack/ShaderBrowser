@@ -47,6 +47,9 @@ namespace browser
 	private:
 		// 名称
 		std::string m_sMaterialName;
+        // uniform数据
+        std::unordered_map<std::string, UniformValue> m_mUniforms;
+        
 		// Pass队列
 		std::vector<Pass*> m_vPass;
 	};

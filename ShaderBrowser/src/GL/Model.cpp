@@ -246,6 +246,11 @@ namespace customGL
 				browser::Mesh* mesh = m_vMeshes[node->mMeshes[i]];
 				if (mesh)
 				{
+                    if(mesh->getMeshName()=="Unity_Body_Mesh")
+                    {
+                        int iiii=0;
+                    }
+                    
                     // 检测是否需要蒙皮
                     if (mesh->getMeshType() == browser::Mesh::MeshType::MeshWithBone)
                     {
@@ -256,11 +261,15 @@ namespace customGL
                     {
                         if(!skinnedRender)
                         {
-                            skinnedRender = SkinnedMeshRenderer::createSkinnedMeshRenderer();
+//                            skinnedRender = SkinnedMeshRenderer::createSkinnedMeshRenderer();
+                            skinnedRender = SkinnedMeshRenderer::createSkinnedMeshRenderer(mesh->getMaterialName(), GLProgram::DEFAULT_SKELETON_GLPROGRAM_NAME);
                             entity->addComponent(skinnedRender);
                         }
                         
-                        skinnedRender->addMaterial(mesh->getMaterialName(), GLProgram::DEFAULT_SKELETON_GLPROGRAM_NAME);
+                        if (!skinnedRender->checkMaterialExist(mesh->getMaterialName()))
+                        {
+                            skinnedRender->addMaterial(mesh->getMaterialName(), GLProgram::DEFAULT_SKELETON_GLPROGRAM_NAME);
+                        }
                         static_cast<SkinnedMeshRenderer*>(skinnedRender)->addMesh(mesh);
                     }
                     else
@@ -272,11 +281,15 @@ namespace customGL
                         }
                         if (!renderer)
                         {
-                            renderer = BaseRender::createBaseRender();
+//                            renderer = BaseRender::createBaseRender();
+                            renderer = BaseRender::createBaseRender(mesh->getMaterialName(), GLProgram::DEFAULT_GLPROGRAM_NAME);
                             entity->addComponent(renderer);
                         }
                         
-                        renderer->addMaterial(mesh->getMaterialName(), GLProgram::DEFAULT_GLPROGRAM_NAME);
+                        if(!renderer->checkMaterialExist(mesh->getMaterialName()))
+                        {
+                            renderer->addMaterial(mesh->getMaterialName(), GLProgram::DEFAULT_GLPROGRAM_NAME);
+                        }
                         meshFilter->addMesh(mesh);
                     }
 

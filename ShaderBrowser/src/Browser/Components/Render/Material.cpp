@@ -29,11 +29,13 @@ namespace browser
 
 	void Material::init()
 	{
+        m_mUniforms.clear();
         m_vPass.clear();
 	}
 
     void Material::addPass(Pass* pass)
     {
+        pass->setUniformsFromMaterial(&m_mUniforms);
         m_vPass.push_back(pass);
     }
 
