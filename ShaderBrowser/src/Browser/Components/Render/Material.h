@@ -9,6 +9,7 @@
 #include "Common/Tools/Utils.h"
 #include "Browser/Components/Mesh/Mesh.h"
 #include "Browser/Components/Camera/Camera.h"
+#include "Common/CommonDefine.h"
 
 using namespace std;
 using namespace customGL;
@@ -25,6 +26,8 @@ namespace browser
 	public:
 		// TODO: 这里的vao应该是生成material之后自动生成的(可以从缓存中找)
 		static Material* createMaterial(const std::string& materialName = DEFAULT_MATERIAL_NAME);
+        static Material* createMaterial(const std::string& programName, const std::string& materialName);
+
 
 	public:
 		Material(const std::string& materialName);
@@ -41,17 +44,40 @@ namespace browser
 		Pass* getUsePass(int index = 0);
 
 
+        REGISTER_PROPERTY_GET_SET(unsigned int, m_uMaterialId, MaterialId)
 		REGISTER_PROPERTY_CONSTREF_GET(std::vector<Pass*>, m_vPass, Pass)
 		REGISTER_PROPERTY_CONSTREF_GET(std::string, m_sMaterialName, MaterialName)
 
 	private:
+        // id
+        unsigned int m_uMaterialId;
 		// 名称
 		std::string m_sMaterialName;
+        // 渲染队列
+        RenderQueue m_eQueue;
         // uniform数据
         std::unordered_map<std::string, UniformValue> m_mUniforms;
+        // Pass队列
+        std::vector<Pass*> m_vPass;
+        // 是否是共享材质
+        bool m_bSharedFlag;
+        // 是否是默认材质
+        bool m_bDefaultMaterialFlag;
+        // 是否透明
+        bool m_bTransparentFlag;
         
-		// Pass队列
-		std::vector<Pass*> m_vPass;
+        // 深度测试
+        bool m_bOpenZTest;
+        // ...
+        
+        // 模板测试
+        bool m_bStencilTest;
+        // ...
+
+        // 混合
+        // ...
+        
+        
 	};
 }
 

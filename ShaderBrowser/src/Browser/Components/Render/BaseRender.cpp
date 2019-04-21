@@ -8,10 +8,16 @@ namespace browser
 	BaseRender* BaseRender::createBaseRender(const std::string& materialName /*= Material::DEFAULT_MATERIAL_NAME*/, const std::string& programeName /*= GLProgram::DEFAULT_GLPROGRAM_NAME*/)
 	{
 		BaseRender* renderer = new BaseRender();
-		renderer->init(materialName, programeName);
-
+        renderer->init(materialName, programeName);
 		return renderer;
 	}
+    
+    BaseRender* BaseRender::createBaseRender(Material* material)
+    {
+        BaseRender* renderer = new BaseRender();
+        renderer->init(material);
+        return renderer;
+    }
 
 	BaseRender::BaseRender()
         : BaseComponent("Base Render")
@@ -21,7 +27,7 @@ namespace browser
 		m_eBelongSystem = SystemType::RenderSystem;
         
         // 清理
-        m_mMaterials.clear();
+        m_vMaterials.clear();
 	}
 
 	BaseRender::~BaseRender()
@@ -31,9 +37,9 @@ namespace browser
 	void BaseRender::onInspectorGUI(InspectorPanel* inspector)
 	{
 		// 材质列表(临时)
-		for (auto itor = m_mMaterials.begin(); itor != m_mMaterials.end(); ++itor)
+		for (auto itor = m_vMaterials.begin(); itor != m_vMaterials.end(); ++itor)
 		{
-			inspector->addPropertyText("Materials : " + itor->first);
+			inspector->addPropertyText("Materials : " + (*itor)->getMaterialName());
 		}
 	}
 
@@ -42,23 +48,40 @@ namespace browser
         addMaterial(materialName, programName);
 	}
     
-    void BaseRender::changeMeshMaterial(Mesh* mesh, const std::string& programName)
+    void BaseRender::init(Material* material)
     {
-        BROWSER_WARNING(m_mMaterials.find(mesh->getMaterialName())==m_mMaterials.end(), "The material has already exist, and you are trying to change it, please confirm your program in function BaseRender::changeMeshMaterial");
-        
-        Material* material = createMaterial(programName, mesh->getMaterialName());
         addMaterial(material);
     }
     
-    Material* BaseRender::getMaterialByMesh(Mesh* mesh)
+    void BaseRender::changeMaterial(int index, const std::string& materialName, const std::string& programName)
     {
-        auto itor = m_mMaterials.find(mesh->getMaterialName());
-        if (itor != m_mMaterials.end())
-        {
-            return itor->second;
-        }
+        BROWSER_WARNING(0<index && index<m_vMaterials.size()+1, "The material index is out of range, and you are trying to change it, please confirm your program in function BaseRender::changeMaterial");
         
-        return nullptr;
+        Material* material = createMaterial(programName, materialName);
+        addMaterial(material);
+    }
+    
+    void BaseRender::changeMaterial(int index, Material* material)
+    {
+        BROWSER_WARNING(0<index && index<m_vMaterials.size()+1, "The material index is out of range, and you are trying to change it, please confirm your program in function BaseRender::changeMaterial");
+        
+        if (index < m_vMaterials.size())
+        {
+            m_vMaterials[index]->release();
+            m_vMaterials[index] = material;
+            material->retain();
+        }
+        else
+        {
+            addMaterial(material);
+        }
+    }
+    
+    Material* BaseRender::getMaterialByIndex(int index /*= 0*/)
+    {
+        BROWSER_ASSERT(index<m_vMaterials.size(), "The material index is out of materils range in function BaseRender::getMaterialByMeshIndex");
+        
+        return m_vMaterials[index];
     }
 
 	Material* BaseRender::createMaterial(const std::string& programName, const std::string& materialName /*= Material::DEFAULT_MATERIAL_NAME*/)
@@ -80,27 +103,23 @@ namespace browser
 		addMaterial(material);
 	}
     
-    bool BaseRender::checkMaterialExist(const std::string& materialName)
+    bool BaseRender::checkMaterialExist(Material* material)
     {
-        return m_mMaterials.find(materialName) != m_mMaterials.end();
+        for(auto itor=m_vMaterials.begin(); itor!=m_vMaterials.end(); ++itor)
+        {
+            if(material == (*itor))
+            {
+                return true;
+            }
+        }
+        
+        return false;
     }
     
     void BaseRender::addMaterial(Material* material)
     {
 		const std::string& name = material->getMaterialName();
-        auto itor = m_mMaterials.find(name);
-        if (itor != m_mMaterials.end())
-        {
-            // 释放上一个material
-            itor->second->release();
-            BROWSER_WARNING(false, "you already have a same name material in BaseRender, you must confirm your emplace operate in function BaseRender::addMaterial");
-        
-            // 替换
-            m_mMaterials.erase(itor);
-        }
-
-        // 插入新的material
-        m_mMaterials.emplace(name, material);
+        m_vMaterials.push_back(material);
         material->retain();
     }
     

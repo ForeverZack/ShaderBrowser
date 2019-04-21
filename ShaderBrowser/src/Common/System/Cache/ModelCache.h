@@ -10,7 +10,7 @@ using namespace customGL;
 
 namespace common
 {
-    class ModelCache : public BaseMapCache<std::string, Model, ModelCache>, public BaseAsyncLoader<Model, std::function<void(Model*)>, std::vector<std::string>>
+    class ModelCache : public BaseMapCache<std::string, Model*, ModelCache>, public BaseAsyncLoader<Model, std::function<void(Model*)>, std::vector<std::string>>
 	{
 	public:
 		ModelCache();

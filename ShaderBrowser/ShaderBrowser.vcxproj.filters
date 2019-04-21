@@ -222,6 +222,9 @@
     <ClCompile Include="src\Browser\Components\Render\SkinnedMeshRenderer.cpp">
       <Filter>src\Browser\Components\Render</Filter>
     </ClCompile>
+    <ClCompile Include="src\Common\System\Cache\MaterialCache.cpp">
+      <Filter>src\Common\System\Cache</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\GL\GLProgram.h">
@@ -376,6 +379,9 @@
     </ClInclude>
     <ClInclude Include="src\Browser\Components\Render\SkinnedMeshRenderer.h">
       <Filter>src\Browser\Components\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Common\System\Cache\MaterialCache.h">
+      <Filter>src\Common\System\Cache</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

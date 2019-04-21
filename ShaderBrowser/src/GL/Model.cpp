@@ -1,5 +1,6 @@
 #include "Model.h"
 #include "Common/Tools/FileUtils.h"
+#include "Common/System/Cache/MaterialCache.h"
 #include "GL/Assimp.h"
 #include "Rescale.h"
 #include "Browser/Components/Transform/Transform.h"
@@ -62,6 +63,7 @@ namespace customGL
         m_vMeshTextureData.clear();
 		m_vAnimations.clear();
         m_vAnimationNames.clear();
+        m_mSharedMaterials.clear();
 	}
 
 	Model::~Model()
@@ -102,6 +104,7 @@ namespace customGL
 			std::shared_ptr<Assimp::Importer> importer = make_shared<Assimp::Importer>();
 			// 设置importer的属性
 //            importer->SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, false);    // 防止FBX自己生成枢轴，干扰Node结构树
+//            importer->SetPropertyBool(AI_CONFIG_IMPORT_FBX_READ_LIGHTS, false);
 			const aiScene* scene = importer->ReadFile(m_sFullPath, pFlags);
 			if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 			{
@@ -178,6 +181,7 @@ namespace customGL
 				std::shared_ptr<Assimp::Importer> importer = make_shared<Assimp::Importer>();
 				// 设置importer的属性
 //                importer->SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, false);    // 防止FBX自己生成枢轴，干扰Node结构树
+//                importer->SetPropertyBool(AI_CONFIG_IMPORT_FBX_READ_LIGHTS, false);
                 std::string full_path = *itor;
 				const aiScene* scene = importer->ReadFile(full_path, aiProcess_GenSmoothNormals |
 					aiProcess_LimitBoneWeights |
@@ -246,11 +250,6 @@ namespace customGL
 				browser::Mesh* mesh = m_vMeshes[node->mMeshes[i]];
 				if (mesh)
 				{
-                    if(mesh->getMeshName()=="Unity_Body_Mesh")
-                    {
-                        int iiii=0;
-                    }
-                    
                     // 检测是否需要蒙皮
                     if (mesh->getMeshType() == browser::Mesh::MeshType::MeshWithBone)
                     {
@@ -262,13 +261,12 @@ namespace customGL
                         if(!skinnedRender)
                         {
 //                            skinnedRender = SkinnedMeshRenderer::createSkinnedMeshRenderer();
-                            skinnedRender = SkinnedMeshRenderer::createSkinnedMeshRenderer(mesh->getMaterialName(), GLProgram::DEFAULT_SKELETON_GLPROGRAM_NAME);
+                            skinnedRender = SkinnedMeshRenderer::createSkinnedMeshRenderer(getSharedMaterial(mesh, mesh->getMaterialName(), GLProgram::DEFAULT_SKELETON_GLPROGRAM_NAME));
                             entity->addComponent(skinnedRender);
                         }
-                        
-                        if (!skinnedRender->checkMaterialExist(mesh->getMaterialName()))
+                        else
                         {
-                            skinnedRender->addMaterial(mesh->getMaterialName(), GLProgram::DEFAULT_SKELETON_GLPROGRAM_NAME);
+                            skinnedRender->addMaterial(getSharedMaterial(mesh, mesh->getMaterialName(), GLProgram::DEFAULT_SKELETON_GLPROGRAM_NAME));
                         }
                         static_cast<SkinnedMeshRenderer*>(skinnedRender)->addMesh(mesh);
                     }
@@ -279,16 +277,16 @@ namespace customGL
                             meshFilter = MeshFilter::create();
                             entity->addComponent(meshFilter);
                         }
+                        
                         if (!renderer)
                         {
 //                            renderer = BaseRender::createBaseRender();
-                            renderer = BaseRender::createBaseRender(mesh->getMaterialName(), GLProgram::DEFAULT_GLPROGRAM_NAME);
+                            renderer = BaseRender::createBaseRender(getSharedMaterial(mesh, mesh->getMaterialName(), GLProgram::DEFAULT_GLPROGRAM_NAME));
                             entity->addComponent(renderer);
                         }
-                        
-                        if(!renderer->checkMaterialExist(mesh->getMaterialName()))
+                        else
                         {
-                            renderer->addMaterial(mesh->getMaterialName(), GLProgram::DEFAULT_GLPROGRAM_NAME);
+                            renderer->addMaterial(getSharedMaterial(mesh, mesh->getMaterialName(), GLProgram::DEFAULT_GLPROGRAM_NAME));
                         }
                         meshFilter->addMesh(mesh);
                     }
@@ -312,6 +310,37 @@ namespace customGL
 
 		return entity;
 	}
+    
+    Material* Model::getSharedMaterial(Mesh* mesh, const std::string& materialName, const std::string& defaultProgramName)
+    {
+        Material* material = nullptr;
+        
+        auto mapItor = m_mSharedMaterials.find(mesh);
+        if(mapItor == m_mSharedMaterials.end())
+        {
+            std::vector<Material*> vec;
+            vec.clear();
+            m_mSharedMaterials.emplace(mesh, std::move(vec));
+        }
+        
+        const std::vector<Material*>& materials = m_mSharedMaterials[mesh];
+        for(auto itor=materials.begin(); itor!=materials.end(); ++itor)
+        {
+            if ((*itor)->getMaterialName() == materialName)
+            {
+                material = (*itor);
+                break;
+            }
+        }
+        
+        if (!material)
+        {
+            material = Material::createMaterial(defaultProgramName, materialName);
+            MaterialCache::getInstance()->addSharedMaterial(material);
+        }
+        
+        return material;
+    }
     
     void Model::calculateTrasformMatrix(aiNode* node, aiNode* endNode, aiMatrix4x4& transformation)
     {

@@ -23,7 +23,7 @@ namespace common
 
 	protected:
 		// map操作
-		bool add(K key, T* val)
+		bool add(K key, T val)
 		{
 			bool eraseFlag = false;
 
@@ -37,7 +37,7 @@ namespace common
 
 			return eraseFlag;
 		}
-		T* get(K key)
+		T get(K key)
 		{
 			auto itor = m_mContents.find(key);
 			if (itor != m_mContents.end())
@@ -47,7 +47,7 @@ namespace common
 
 			return nullptr;
 		}
-		bool removeByValue(T* val)
+		bool removeByValue(T val)
 		{
 			for (auto itor = m_mContents.begin(); itor != m_mContents.end(); ++itor)
 			{
@@ -73,7 +73,7 @@ namespace common
 
 	protected:
 		// 元素map
-		std::unordered_map<K, T*> m_mContents;
+		std::unordered_map<K, T> m_mContents;
 
 	};
 
@@ -91,11 +91,11 @@ namespace common
 
 	protected:
 		// vector操作
-		void add(T* val)
+		void add(T val)
 		{
 			m_mContents.push_back(val);
 		}
-		bool remove(T* val)
+		bool remove(T val)
 		{
 			for (auto itor = m_mContents.begin(); itor != m_mContents.end(); ++itor)
 			{
@@ -110,7 +110,7 @@ namespace common
 
 	protected:
 		// 元素队列
-		std::vector<T*> m_mContents;
+		std::vector<T> m_mContents;
 
 	};
 

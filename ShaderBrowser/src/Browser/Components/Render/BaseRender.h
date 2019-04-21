@@ -2,7 +2,7 @@
 #define COMS_RENDER_BASERENDER_H
 
 #include <glad/glad.h>
-#include <unordered_map>
+#include <vector>
 #include "GL/GLDefine.h"
 #include "Common/Tools/Utils.h"
 #include "Browser/Components/BaseComponent.h"
@@ -22,6 +22,7 @@ namespace browser
 	{
 	public:
 		static BaseRender* createBaseRender(const std::string& materialName = Material::DEFAULT_MATERIAL_NAME, const std::string& programeName = GLProgram::DEFAULT_GLPROGRAM_NAME);
+        static BaseRender* createBaseRender(Material* material);
     
     public:
         // 渲染器类型
@@ -40,15 +41,18 @@ namespace browser
 	public:
 		// init
 		void init(const std::string& materialName, const std::string& programName);
+        void init(Material* material);
         
 		// 修改模型材质shader
-        void changeMeshMaterial(Mesh* mesh, const std::string& programName);
-        Material* getMaterialByMesh(Mesh* mesh);
+        void changeMaterial(int index, const std::string& materialName, const std::string& programName);
+        void changeMaterial(int index, Material* material);
+        // 获取材质队列中对应的材质（对于一个节点包含多个mesh的情况，现在的处理方式是：mesh队列和material队列一一对应，对于多出的material将会用来对最后一个mesh进行重复渲染）
+        Material* getMaterialByIndex(int index = 0);
 		// 添加材质
 		void addMaterial(Material* material);
 		void addMaterial(const std::string& materialName, const std::string& programName);
         // 检测材质是否存在
-        bool checkMaterialExist(const std::string& materialName);
+        bool checkMaterialExist(Material* material);
 
 
 		// 重载属性面板显示方法
@@ -66,7 +70,7 @@ namespace browser
         
 	protected:
         // 材质map	std::string绑定Mesh的MaterialName
-        std::unordered_map<std::string, Material*> m_mMaterials;
+        std::vector<Material*> m_vMaterials;
         
         // 渲染器类型
         RendererType m_eRendererType;

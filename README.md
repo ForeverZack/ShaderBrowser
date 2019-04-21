@@ -18,6 +18,11 @@
 13）内存的管理与检查。 <br>
 等等<br>
 
+## 2019.4.21 <br>
+关闭Mac下的垂直同步。添加MaterialCache(针对SharedMaterial)，初步整理了一下材质相关的结构，Renderer中的材质采用了vector，后面将支持多个材质的渲染。另外，
+对一个节点存在多个Mesh的情况，简单的观察了一下unity的处理方式，应该是mesh队列和material队列是一一对应的，超出的material将使用最后
+一个mesh来进行重复的渲染工作。 <br>
+
 ## 2019.4.14 <br>
 整理一些之前对渲染组件理解的错误，顺便理一下渲染架构重写的思路，后面会对这块整个重写的。小优化了一下UniformValue，加了个dirty标记。 <br>
 

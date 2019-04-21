@@ -9,7 +9,13 @@ namespace browser
     {
         SkinnedMeshRenderer* renderer = new SkinnedMeshRenderer();
         renderer->init(materialName, programeName);
-
+        return renderer;
+    }
+    
+    SkinnedMeshRenderer* SkinnedMeshRenderer::createSkinnedMeshRenderer(Material* material)
+    {
+        SkinnedMeshRenderer* renderer = new SkinnedMeshRenderer();
+        renderer->init(material);
         return renderer;
     }
 
@@ -52,9 +58,9 @@ namespace browser
 	void SkinnedMeshRenderer::onInspectorGUI(InspectorPanel* inspector)
 	{
 		// 材质列表(临时)
-		for (auto itor = m_mMaterials.begin(); itor != m_mMaterials.end(); ++itor)
+		for (auto itor = m_vMaterials.begin(); itor != m_vMaterials.end(); ++itor)
 		{
-			inspector->addPropertyText("Materials : " + itor->first);
+			inspector->addPropertyText("Materials : " + (*itor)->getMaterialName());
 		}
 	}
     

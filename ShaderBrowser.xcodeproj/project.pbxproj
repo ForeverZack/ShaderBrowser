@@ -44,6 +44,7 @@
 		14BE47A32201EE0500EFE57C /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14BE47A12201EE0500EFE57C /* Camera.cpp */; };
 		14BE47A62201EE6600EFE57C /* CameraSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14BE47A42201EE6600EFE57C /* CameraSystem.cpp */; };
 		14C1CCFF21FF517000470798 /* FileUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14C1CCFE21FF517000470798 /* FileUtils.cpp */; };
+		14C23F35226C64DC00AFE69B /* MaterialCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14C23F34226C64DC00AFE69B /* MaterialCache.cpp */; };
 		14C29E8A220FDF0300A514BE /* DirectionalLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14C29E89220FDF0300A514BE /* DirectionalLight.cpp */; };
 		14C29E8D220FFB9E00A514BE /* PointLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14C29E8C220FFB9E00A514BE /* PointLight.cpp */; };
 		14C29E902210345600A514BE /* SpotLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14C29E8F2210345600A514BE /* SpotLight.cpp */; };
@@ -152,6 +153,8 @@
 		14C1CCFE21FF517000470798 /* FileUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileUtils.cpp; sourceTree = "<group>"; };
 		14C1CD0021FF517A00470798 /* BaseSingleton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BaseSingleton.h; sourceTree = "<group>"; };
 		14C1CD0121FF519700470798 /* BaseCache.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BaseCache.h; sourceTree = "<group>"; };
+		14C23F33226C64DC00AFE69B /* MaterialCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MaterialCache.h; sourceTree = "<group>"; };
+		14C23F34226C64DC00AFE69B /* MaterialCache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MaterialCache.cpp; sourceTree = "<group>"; };
 		14C29E88220FDF0300A514BE /* DirectionalLight.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectionalLight.h; sourceTree = "<group>"; };
 		14C29E89220FDF0300A514BE /* DirectionalLight.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectionalLight.cpp; sourceTree = "<group>"; };
 		14C29E8B220FFB9E00A514BE /* PointLight.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PointLight.h; sourceTree = "<group>"; };
@@ -284,6 +287,8 @@
 				14D46D20220096D900E21D4C /* TextureCache.cpp */,
 				149C01FD21F4AA320011DAE2 /* GLProgramCache.h */,
 				149C01FE21F4AF910011DAE2 /* GLProgramCache.cpp */,
+				14C23F33226C64DC00AFE69B /* MaterialCache.h */,
+				14C23F34226C64DC00AFE69B /* MaterialCache.cpp */,
 				14E1431922084723001A2EB1 /* ModelCache.h */,
 				14E1431822084723001A2EB1 /* ModelCache.cpp */,
 			);
@@ -642,6 +647,7 @@
 				14B9068C21BABC8F00554B0B /* Texture2D.cpp in Sources */,
 				1405E8A321F432FF00FBDD71 /* ComponentEvent.cpp in Sources */,
 				148177B921D8CB5E0037E11D /* TransformSystem.cpp in Sources */,
+				14C23F35226C64DC00AFE69B /* MaterialCache.cpp in Sources */,
 				14C29E8A220FDF0300A514BE /* DirectionalLight.cpp in Sources */,
 				14B45A27220C269800FE5777 /* BoundBoxSystem.cpp in Sources */,
 				14B9068721BABC8F00554B0B /* AutoReleasePool.cpp in Sources */,

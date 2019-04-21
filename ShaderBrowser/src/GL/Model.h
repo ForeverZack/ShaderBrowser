@@ -111,6 +111,8 @@ namespace customGL
 
 		// 递归遍历模型，生成Entity
 		BaseEntity* traverseNodeAndCreateEntity(aiNode* node, BaseEntity* parent, BaseEntity* root);
+        // 获取共享材质
+        Material* getSharedMaterial(Mesh* mesh, const std::string& materialName, const std::string& defaultProgramName);
         
     public:
         REGISTER_PROPERTY_CONSTREF_GET(std::string, m_sDirectory, Directory);
@@ -183,6 +185,8 @@ namespace customGL
         std::vector<Texture2D*> m_vTextures;
         // 纹理数据(中转)
         std::vector<MeshTextureData> m_vMeshTextureData;
+        // 共享材质
+        std::unordered_map<browser::Mesh*, std::vector<Material*>> m_mSharedMaterials;
 
 
         // 是否有骨骼动画

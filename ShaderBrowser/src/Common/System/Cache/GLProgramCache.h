@@ -8,7 +8,7 @@ using namespace customGL;
 
 namespace common
 {
-	class GLProgramCache : public BaseMapCache<std::string, GLProgram, GLProgramCache>
+	class GLProgramCache : public BaseMapCache<std::string, GLProgram*, GLProgramCache>
 	{
 	public:
 		GLProgramCache();
@@ -18,10 +18,10 @@ namespace common
         // 初始化
         void init();
         // 添加
-        void addGLProgram(std::string name, GLProgram* program);
-		void addGLProgram(std::string name, const std::string& vertFilename, const std::string& fragFilename);
+        void addGLProgram(const std::string& name, GLProgram* program);
+		void addGLProgram(const std::string& name, const std::string& vertFilename, const std::string& fragFilename);
         // 获取
-        GLProgram* getGLProgram(std::string name);
+        GLProgram* getGLProgram(const std::string& name);
 
 	};
 }

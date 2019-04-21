@@ -37,6 +37,8 @@
 #ifdef __APPLE__
 // macOS
 #include <unistd.h>
+#include <OpenGL/CGLCurrent.h>
+#include <OpenGL/OpenGL.h>
 #else
 // win32
 #include <windows.h>
@@ -253,7 +255,7 @@ void testVal()
     entity->setPosition(0, 1, 0);
     // 组件：渲染组件
     BaseRender* renderCom = BaseRender::createBaseRender();
-    renderCom->changeMeshMaterial(mesh, "Triangles");   // 修改mesh的材质对应的shader
+    renderCom->changeMaterial(0, mesh->getMaterialName(), "Triangles");   // 修改mesh的材质对应的shader
     entity->addComponent(renderCom);
     // 包围盒
     entity->addComponent(new AABBBoundBox());
@@ -389,17 +391,6 @@ int main()
 {
 	GLFWwindow* window = init();
 
-//    // mac获取extension的方法：3.0+的profile对glGetString传GL_EXTENSIONS已经被deprecated，属于invalid enumeration，正确的方法是用glGetStringi代替
-//    {
-//        GLint n, i;
-//        glGetIntegerv(GL_NUM_EXTENSIONS, &n);
-//        for (i = 0; i < n; i++)
-//        {
-//            printf("%s\n", glGetStringi(GL_EXTENSIONS, i));
-//        }
-//    }
-
-
 	// 关闭垂直同步
 #ifdef _WIN32
 	// win32
@@ -409,6 +400,22 @@ int main()
 		SetVSyncState(false);
 	}
 #endif // WIN32
+    
+#ifdef __APPLE__
+    //    // mac获取extension的方法：3.0+的profile对glGetString传GL_EXTENSIONS已经被deprecated，属于invalid enumeration，正确的方法是用glGetStringi代替
+    //    {
+    //        GLint n, i;
+    //        glGetIntegerv(GL_NUM_EXTENSIONS, &n);
+    //        for (i = 0; i < n; i++)
+    //        {
+    //            printf("%s\n", glGetStringi(GL_EXTENSIONS, i));
+    //        }
+    //    }
+    // 禁用mac垂直同步
+    GLint sync = 0;
+    CGLContextObj ctx = CGLGetCurrentContext();
+    CGLSetParameter(ctx, kCGLCPSwapInterval, &sync);
+#endif
 
 	int total = 0;
 	TextureCache::getInstance()->addTexturesAsync({ "texture/awesomeface.png", "texture/HelloWorld.png", "models/Fighter/Fighter.png" }, [&](Texture2D* texture) {

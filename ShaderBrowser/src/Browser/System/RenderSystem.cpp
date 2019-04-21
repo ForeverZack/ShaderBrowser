@@ -435,7 +435,7 @@ namespace browser
 
                 mesh = meshes[i];
                 vao = mesh->getVAO();
-                material = render->getMaterialByMesh(mesh);
+                material = render->getMaterialByIndex(i);
                 
                 
                 // 顶点属性

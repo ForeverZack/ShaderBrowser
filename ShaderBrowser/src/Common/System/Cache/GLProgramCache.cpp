@@ -26,7 +26,7 @@ namespace common
         GLProgramCache::getInstance()->addGLProgram(GLProgram::DEFAULT_LINES_GLPROGRAM_NAME, "shaders/default/lines_default.vert", "shaders/default/lines_default.frag");
     }
     
-    void GLProgramCache::addGLProgram(std::string name, GLProgram* program)
+    void GLProgramCache::addGLProgram(const std::string& name, GLProgram* program)
     {
         BROWSER_ASSERT(program, "GLProgram is not invalid in function GLProgramCache::addGLProgram(std::string name, GLProgram* program)");
 		if (add(name, program))
@@ -35,7 +35,7 @@ namespace common
 		}
     }
 
-	void GLProgramCache::addGLProgram(std::string name, const std::string& vertFilename, const std::string& fragFilename)
+	void GLProgramCache::addGLProgram(const std::string& name, const std::string& vertFilename, const std::string& fragFilename)
 	{
 		const std::string vert_full_path = FileUtils::getInstance()->getAbsolutePathForFilename(vertFilename);
 		const std::string frag_full_path = FileUtils::getInstance()->getAbsolutePathForFilename(fragFilename);
@@ -47,7 +47,7 @@ namespace common
 		}
 	}
     
-    GLProgram* GLProgramCache::getGLProgram(std::string name)
+    GLProgram* GLProgramCache::getGLProgram(const std::string& name)
     {
 		GLProgram* program = get(name);
         

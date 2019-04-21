@@ -25,6 +25,22 @@ namespace common
 		// 自定义的系统
 		CustomSystem,
 	};
+    
+    // 渲染队列
+    enum RenderQueue
+    {
+        // 背景
+        Background = 0,
+        // 天空盒
+        SkyBox = 5,
+        
+        // 几何
+        Geometry = 1000,
+        
+        // 透明
+        Transparent = 2000,
+    };
+    
 }
 
 #endif

@@ -235,9 +235,9 @@ namespace browser
 			if (renderer && meshFilter)
 			{
 				const std::vector<Mesh*>& meshes = meshFilter->getMeshes();
-				for (auto itor = meshes.begin(); itor != meshes.end(); ++itor)
+				for (int i=0; i<meshes.size(); ++i)
 				{
-					renderer->changeMeshMaterial(*itor, programName);
+					renderer->changeMaterial(i, meshes[i]->getMaterialName(), programName);
 				}
 			}
 		});

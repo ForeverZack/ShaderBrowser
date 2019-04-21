@@ -1,9 +1,10 @@
 #include "Material.h"
 #include "Common/Tools/Utils.h"
+#include "Common/System/Cache/GLProgramCache.h"
 
 namespace browser
 {
-	// Ä¬ÈÏ²ÄÖÊÃû³Æ
+	// é»˜è®¤æè´¨åç§°
 	const char* Material::DEFAULT_MATERIAL_NAME = "ShaderBrowser_DefaultMaterial";
 
 	Material* Material::createMaterial(const std::string& materialName /*= DEFAULT_MATERIAL_NAME*/)
@@ -15,11 +16,27 @@ namespace browser
         
 		return material;
 	}
+    
+    Material* Material::createMaterial(const std::string& programName, const std::string& materialName)
+    {
+        GLProgram* program = GLProgramCache::getInstance()->getGLProgram(programName);
+        Pass* pass = Pass::createPass(program);
+        
+        Material* material = Material::createMaterial(materialName);
+        material->addPass(pass);
+        
+        return material;
+    }
 
 	Material::Material(const std::string& materialName)
 		: m_sMaterialName(materialName)
+        , m_uMaterialId(0)
+        , m_eQueue(RenderQueue::Geometry)
+        , m_bSharedFlag(false)
+        , m_bDefaultMaterialFlag(false)
+        , m_bTransparentFlag(false)
 	{
-
+        m_vPass.clear();
 	}
 
 	Material::~Material()
