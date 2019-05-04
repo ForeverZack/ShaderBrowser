@@ -22,6 +22,8 @@ namespace common
 		void addGLProgram(const std::string& name, const std::string& vertFilename, const std::string& fragFilename);
         // 获取
         GLProgram* getGLProgram(const std::string& name);
+        // 获取GLProgram的拷贝
+        GLProgram* getGLProgramCopy(const std::string& name);
 
 	};
 }

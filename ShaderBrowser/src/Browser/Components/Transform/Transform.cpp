@@ -543,10 +543,16 @@ namespace browser
         
 	}
     
+    void Transform::beforeUpdate(float deltaTime)
+    {
+        m_bCurFrameDirty = false;
+    }
+    
     void Transform::visit(const glm::mat4& parentMMatrix, bool bDirty)
     {
         // 是否需要更新
         bool dirty = bDirty || m_bTransDirty;
+        m_bCurFrameDirty = dirty | m_bCurFrameDirty;
         
         // 计算自己的model矩阵
         if (dirty)

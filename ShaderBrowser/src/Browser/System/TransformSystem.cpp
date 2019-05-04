@@ -28,6 +28,15 @@ namespace browser
         m_oScene = scene;
         m_oScene->retain();
     }
+    
+    void TransformSystem::beforeUpdate(float deltaTime)
+    {
+        for(auto itor = m_mComponentsList.begin(); itor!=m_mComponentsList.end(); ++itor)
+        {
+            const std::list<BaseComponent*>& transList = itor->second;
+            static_cast<Transform*>(*(transList.begin()))->beforeUpdate(deltaTime);
+        }
+    }
 
 	void TransformSystem::update(float deltaTime)
 	{

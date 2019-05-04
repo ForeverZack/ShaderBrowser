@@ -20,11 +20,17 @@ namespace browser
 
 	Pass::~Pass()
 	{
+        if (m_oGLProgram)
+        {
+            m_oGLProgram->release();
+        }
+        
         m_mUniforms = nullptr;
 	}
 
 	void Pass::init(GLProgram* program)
 	{
+        program->retain();
 		m_oGLProgram = program;
 	}
     
@@ -32,210 +38,18 @@ namespace browser
     {
         m_mUniforms = uniforms;
     }
-    
-    void Pass::setUniformInt(const std::string& uniformName, int value)
-    {
-        auto itor = m_mUniforms->find(uniformName);
-        if (itor == m_mUniforms->end())
-        {
-            UniformValue uniformValue;
-            uniformValue.setInt(value);
-            m_mUniforms->emplace(uniformName, std::move(uniformValue));
-        }
-        else
-        {
-            UniformValue& uniformValue = itor->second;
-            uniformValue.setInt(value);
-        }
-    }
-    void Pass::setUniformFloat(const std::string& uniformName, float value)
-    {
-        auto itor = m_mUniforms->find(uniformName);
-        if (itor == m_mUniforms->end())
-        {
-            UniformValue uniformValue;
-            uniformValue.setFloat(value);
-            m_mUniforms->emplace(uniformName, std::move(uniformValue));
-        }
-        else
-        {
-            UniformValue& uniformValue = itor->second;
-            uniformValue.setFloat(value);
-        }
-    }
-    void Pass::setUniformMat3(const std::string& uniformName, const glm::mat3& value)
-    {
-        auto itor = m_mUniforms->find(uniformName);
-        if (itor == m_mUniforms->end())
-        {
-            UniformValue uniformValue;
-            uniformValue.setMat3(value);
-            m_mUniforms->emplace(uniformName, std::move(uniformValue));
-        }
-        else
-        {
-            UniformValue& uniformValue = itor->second;
-            uniformValue.setMat3(value);
-        }
-    }
-    void Pass::setUniformMat3x4(const std::string& uniformName, const glm::mat3x4& value)
-    {
-        auto itor = m_mUniforms->find(uniformName);
-        if (itor == m_mUniforms->end())
-        {
-            UniformValue uniformValue;
-            uniformValue.setMat3x4(value);
-            m_mUniforms->emplace(uniformName, std::move(uniformValue));
-        }
-        else
-        {
-            UniformValue& uniformValue = itor->second;
-            uniformValue.setMat3x4(value);
-        }
-    }
-    void Pass::setUniformMat4(const std::string& uniformName, const glm::mat4& value)
-    {
-        auto itor = m_mUniforms->find(uniformName);
-        if (itor == m_mUniforms->end())
-        {
-            UniformValue uniformValue;
-            uniformValue.setMat4(value);
-            m_mUniforms->emplace(uniformName, std::move(uniformValue));
-        }
-        else
-        {
-            UniformValue& uniformValue = itor->second;
-            uniformValue.setMat4(value);
-        }
-    }
-    
-    void Pass::setUniformMat4x3(const std::string& uniformName, const glm::mat4x3& value)
-    {
-        auto itor = m_mUniforms->find(uniformName);
-        if (itor == m_mUniforms->end())
-        {
-            UniformValue uniformValue;
-            uniformValue.setMat4x3(value);
-            m_mUniforms->emplace(uniformName, std::move(uniformValue));
-        }
-        else
-        {
-            UniformValue& uniformValue = itor->second;
-            uniformValue.setMat4x3(value);
-        }
-    }
-    
-    void Pass::setUniformFloatV(const std::string& uniformName, int size, const float* value)
-    {
-        auto itor = m_mUniforms->find(uniformName);
-        if (itor == m_mUniforms->end())
-        {
-            UniformValue uniformValue;
-            uniformValue.setFloatV(size, value);
-            m_mUniforms->emplace(uniformName, std::move(uniformValue));
-        }
-        else
-        {
-            UniformValue& uniformValue = itor->second;
-            uniformValue.setFloatV(size, value);
-        }
-    }
-    
-    void Pass::setUniformV2f(const std::string& uniformName, const glm::vec2& value)
-    {
-        auto itor = m_mUniforms->find(uniformName);
-        if (itor == m_mUniforms->end())
-        {
-            UniformValue uniformValue;
-            uniformValue.setVec2(value);
-            m_mUniforms->emplace(uniformName, std::move(uniformValue));
-        }
-        else
-        {
-            UniformValue& uniformValue = itor->second;
-            uniformValue.setVec2(value);
-        }
-    }
-    
-    void Pass::setUniformV3f(const std::string& uniformName, const glm::vec3& value)
-    {
-        auto itor = m_mUniforms->find(uniformName);
-        if (itor == m_mUniforms->end())
-        {
-            UniformValue uniformValue;
-            uniformValue.setVec3(value);
-            m_mUniforms->emplace(uniformName, std::move(uniformValue));
-        }
-        else
-        {
-            UniformValue& uniformValue = itor->second;
-            uniformValue.setVec3(value);
-        }
-    }
 
-	void Pass::setUniformV4f(const std::string& uniformName, const glm::vec4& value)
+	void Pass::usePass()
 	{
-		auto itor = m_mUniforms->find(uniformName);
-		if (itor == m_mUniforms->end())
-		{
-			UniformValue uniformValue;
-            uniformValue.setVec4(value);
-            m_mUniforms->emplace(uniformName, std::move(uniformValue));
-		}
-		else
-		{
-            UniformValue& uniformValue = itor->second;
-            uniformValue.setVec4(value);
-		}
-	}
-    
-    void Pass::setUniformTex2D(const std::string& uniformName, GLuint textureId)
-    {
-        auto itor = m_mUniforms->find(uniformName);
-        if (itor == m_mUniforms->end())
-        {
-            UniformValue uniformValue;
-            uniformValue.setTex2D(textureId);
-            m_mUniforms->emplace(uniformName, std::move(uniformValue));
-        }
-        else
-        {
-            UniformValue& uniformValue = itor->second;
-            uniformValue.setTex2D(textureId);
-        }
-    }
-
-	void Pass::usePass(Mesh* mesh, Transform* transform, Camera* camera)
-	{
-        // 应用网格的纹理
-        const std::unordered_map<std::string, TextureData>& textureInfos = mesh->getTextures();
-        Texture2D* texture;
-        for (auto itor = textureInfos.cbegin(); itor!=textureInfos.cend(); ++itor)
-        {
-            texture = itor->second.texture;
-            setUniformTex2D(itor->second.uniformName.c_str(), texture->getTextureId());
-        }
-        
-		// 注意在更新uniform变量的值之前，要先使用着色器glUseProgram
+        // 注意在更新uniform变量的值之前，要先使用着色器glUseProgram
 		m_oGLProgram->useProgram();
 
-		// 设置uniform（uniform需要每帧更新！！！！）
-		// 设置模型材质属性到pass （TODO: pass理论上可以修改它们的值，应该做判断，这里先覆盖）
-		const std::unordered_map<std::string, glm::vec4>& colorProperties = mesh->getColorProperties();
-		for (auto itor = colorProperties.begin(); itor != colorProperties.end(); ++itor)
-		{
-			setUniformV4f(itor->first, itor->second);
-		}
 		// 更新属性
 		for (auto itor = m_mUniforms->begin(); itor != m_mUniforms->end(); ++itor)
 		{
 			itor->second.updateGLProgramUniformValue(m_oGLProgram, itor->first);
 		}
-		// 设置model矩阵
-		m_oGLProgram->setUniformWithMat4(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_MODEL_MATRIX], transform->getModelMatrix());
-		// 设置view矩阵,projection矩阵
-		m_oGLProgram->setUniformWithMat4(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_VIEW_MATRIX], camera->getViewMatrix());
-		m_oGLProgram->setUniformWithMat4(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_PROJECTION_MATRIX], camera->getProjectionMatrix());
+
 	}
 
 

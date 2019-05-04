@@ -292,10 +292,10 @@ namespace browser
         const std::vector<Mesh*>& meshes = m_oInUseMeshFilter->getMeshes();
         for(auto itor=meshes.begin(); itor!=meshes.end(); ++itor)
         {
-            const std::vector<VertexData>& vertices = (*itor)->getVertices();
-            for (auto vItor=vertices.begin(); vItor!=vertices.end(); ++vItor)
+            glm::vec4* vertices = (*itor)->getVertices22();
+            for (int i=0; i<(*itor)->getVertexCount(); ++i)
             {
-                const glm::vec3& position = (*vItor).position;
+                const glm::vec3& position = vertices[i];
                 
                 // 初始化
                 if(!hasInit)

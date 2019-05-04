@@ -1,5 +1,7 @@
 #include "RenderSystem.h"
 #include "CameraSystem.h"
+#include "Browser/Components/Render/Commands/BaseRenderCommand.h"
+#include "Browser/Components/Render/Commands/SkinnedRenderCommand.h"
 #include "Browser/Components/Render/Material.h"
 #include "Browser/Components/Mesh/MeshFilter.h"
 #include "Browser/Components/BoundBox/BaseBoundBox.h"
@@ -57,6 +59,7 @@ namespace browser
 		: m_uDrawCalls(0)
 		, m_uVerticesCount(0)
 		, m_uFrameIndex(0)
+        , m_uNoRenderVertices(0)
 	{
 		m_iPriority = 0;
 		m_eSystemType = common::SystemType::RenderSystem;
@@ -67,13 +70,15 @@ namespace browser
 	{
 		clearRenders();
 
+        m_vRenderCommands.clear();
+        
 		// 生成VBO
 		glGenBuffers(RenderSystem_Buffer_Maxcount, m_uVBOs);
 
         // 生成坐标轴模型
         m_oAxisMesh = Mesh::create(6);
-        m_oAxisMesh->addVertexAttribute(GLProgram::VERTEX_ATTR_POSITION, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), axis_vertices);
-        m_oAxisMesh->addVertexAttribute(GLProgram::VERTEX_ATTR_COLOR, 4, GL_FLOAT, GL_FALSE, sizeof(VertexData), axis_colors);
+        m_oAxisMesh->addVertexAttribute(GLProgram::VERTEX_ATTR_POSITION, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), axis_vertices);
+        m_oAxisMesh->addVertexAttribute(GLProgram::VERTEX_ATTR_COLOR, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), axis_colors);
         m_oAxisMesh->setupVAO();
         m_oAxisMesh->retain();
         // 坐标轴缩放矩阵
@@ -83,12 +88,58 @@ namespace browser
 
 	void RenderSystem::clearRenders()
 	{
-		for (auto itor = m_mComponentsList.begin(); itor != m_mComponentsList.end(); ++itor)
-		{
-			itor->second.clear();
-		}
-		m_mComponentsList.clear();
+        m_vRenderCommands.clear();
+        
+//        for (auto itor = m_mComponentsList.begin(); itor != m_mComponentsList.end(); ++itor)
+//        {
+//            itor->second.clear();
+//        }
+//        m_mComponentsList.clear();
 	}
+    
+    void RenderSystem::flushRenders()
+    {
+        std::stable_sort(std::begin(m_vRenderCommands), std::end(m_vRenderCommands), [](BaseRenderCommand* c1, BaseRenderCommand* c2) {
+            return c1->getMaterial()->getSharedId() < c2->getMaterial()->getSharedId();
+        });
+        
+        Material* lastMaterial = nullptr;
+        Material* curMaterial = nullptr;
+        BaseRenderCommand* command;
+        for(int i=0; i<m_vRenderCommands.size(); ++i)
+        {
+            command = m_vRenderCommands[i];
+            
+            curMaterial = command->getMaterial();
+            if(command->getRenderType() == BaseRender::RendererType::Base
+               && curMaterial->getSharedId() != 0
+               && lastMaterial == curMaterial
+               && command->getVertexCount() <= MAX_DYNAMIC_BATCH_VERTEX_COUNT)
+            {
+                // 可以合批的条件
+//                int iii = 0;
+            }
+            lastMaterial = curMaterial;
+            
+            //
+            command->draw();
+            
+            // 增加1次draw call
+            ++m_uDrawCalls;
+            // 增加顶点数量
+            m_uVerticesCount += command->getVertexCount();
+            // 增加三角面数量
+            m_uFaceCount += command->getIndexCount() / 3;
+            
+            // 删除命令
+            delete command;
+        }
+        
+        
+        // 重置
+        m_vRenderCommands.clear();
+        m_uNoRenderVertices = 0;
+    }
     
 //    void RenderSystem::setupVAO(GLuint vao)
 //    {
@@ -117,7 +168,7 @@ namespace browser
     {
         // 1.绑定vao和vbo
         glBindVertexArray(vao);
-        glBindBuffer(GL_ARRAY_BUFFER, vbos[RenderSystem_Vertices_Buffer]);
+        
         
         // 2.设置顶点属性
         for (auto itor=declarations.cbegin(); itor!=declarations.cend(); ++itor)
@@ -128,44 +179,51 @@ namespace browser
                 case GLProgram::VERTEX_ATTR_POSITION:
                     {
                         // 1.顶点位置
-                        glVertexAttribPointer(declaration->index, declaration->size, declaration->type, declaration->normalized, declaration->stride, (void*)offsetof(VertexData, position));
+                        glBindBuffer(GL_ARRAY_BUFFER, vbos[RenderSystem_ArrayBuffer_Position]);
+                        glVertexAttribPointer(declaration->index, declaration->size, declaration->type, declaration->normalized, declaration->stride, (void*)0);
                     }
                     break;
                 case GLProgram::VERTEX_ATTR_COLOR:
                     {
                         // 2.顶点颜色
-                        glVertexAttribPointer(declaration->index, declaration->size, declaration->type, declaration->normalized, declaration->stride, (void*)offsetof(VertexData, color));
+                        glBindBuffer(GL_ARRAY_BUFFER, vbos[RenderSystem_ArrayBuffer_Color]);
+                        glVertexAttribPointer(declaration->index, declaration->size, declaration->type, declaration->normalized, declaration->stride, (void*)0);
                     }
                     break;
                 case GLProgram::VERTEX_ATTR_TEX_COORD:
                     {
                         // 3.主纹理坐标
-                        glVertexAttribPointer(declaration->index, declaration->size, declaration->type, declaration->normalized, declaration->stride, (void*)offsetof(VertexData, uv_main));
+                        glBindBuffer(GL_ARRAY_BUFFER, vbos[RenderSystem_ArrayBuffer_UV1]);
+                        glVertexAttribPointer(declaration->index, declaration->size, declaration->type, declaration->normalized, declaration->stride, (void*)0);
                     }
                     break;
                 case GLProgram::VERTEX_ATTR_NORMAL:
                     {
                         // 4.法线
-                        glVertexAttribPointer(declaration->index, declaration->size, declaration->type, declaration->normalized, declaration->stride, (void*)offsetof(VertexData, normal));
+                        glBindBuffer(GL_ARRAY_BUFFER, vbos[RenderSystem_ArrayBuffer_Normal]);
+                        glVertexAttribPointer(declaration->index, declaration->size, declaration->type, declaration->normalized, declaration->stride, (void*)0);
                     }
                     break;
                 case GLProgram::VERTEX_ATTR_TANGENT:
                     {
                         // 5.切线
-                        glVertexAttribPointer(declaration->index, declaration->size, declaration->type, declaration->normalized, declaration->stride, (void*)offsetof(VertexData, tangent));
+                        glBindBuffer(GL_ARRAY_BUFFER, vbos[RenderSystem_ArrayBuffer_Tangent]);
+                        glVertexAttribPointer(declaration->index, declaration->size, declaration->type, declaration->normalized, declaration->stride, (void*)0);
                     }
                     break;
 				case GLProgram::VERTEX_ATTR_BONE_IDS:
 					{
 						// 6.骨骼id
 						// 注意！！！这里要用glVertexAttribIPointer来传递int值，不然都是float类型的，索引数组会找不到
-						glVertexAttribIPointer(declaration->index, declaration->size, declaration->type, declaration->stride, (void*)offsetof(VertexData, boneIndices));
+                        glBindBuffer(GL_ARRAY_BUFFER, vbos[RenderSystem_ArrayBuffer_BoneIndices]);
+						glVertexAttribIPointer(declaration->index, declaration->size, declaration->type, declaration->stride, (void*)0);
 					}
 					break;
 				case GLProgram::VERTEX_ATTR_BONE_WEIGHTS:
 					{
 						// 7.骨骼权重
-						glVertexAttribPointer(declaration->index, declaration->size, declaration->type, declaration->normalized, declaration->stride, (void*)offsetof(VertexData, boneWeights));
+                        glBindBuffer(GL_ARRAY_BUFFER, vbos[RenderSystem_ArrayBuffer_BoneWeights]);
+						glVertexAttribPointer(declaration->index, declaration->size, declaration->type, declaration->normalized, declaration->stride, (void*)0);
 					}
 					break;
             }
@@ -188,6 +246,8 @@ namespace browser
 		m_uVerticesCount = 0;
 		// 重置三角面数量
 		m_uFaceCount = 0;
+        // 重置待渲染顶点数量
+        m_uNoRenderVertices = 0;
         
 		// 渲染主相机场景
 		renderScene(CameraSystem::getInstance()->getMainCamera(), deltaTime);
@@ -213,6 +273,9 @@ namespace browser
 		// 4. 正向渲染透明物体
         if (camera)
         {
+            // 清空渲染队列
+            clearRenders();
+            
             switch(camera->getRenderPathType())
             {
                 case Camera::RenderPathType::Forward:
@@ -280,19 +343,23 @@ namespace browser
                     vertCount = vertices.size();
                     
                     // 在CPU中处理顶点位置
-                    VertexData* trans_vertices = (VertexData*)malloc(sizeof(VertexData) * vertCount);
+                    glm::vec4* trans_vertices =  new glm::vec4[vertCount];
+                    glm::vec4* trans_colors = new glm::vec4[vertCount];
                     for(int i=0; i<vertCount; ++i)
                     {
-                        trans_vertices[i].position = glm::vec4(vertices[i], 1.0f);
-                        trans_vertices[i].color = SHOW_BOUND_BOX_COLOR;
+                        trans_vertices[i] = glm::vec4(vertices[i], 1.0f);
+                        trans_colors[i] = SHOW_BOUND_BOX_COLOR;
                     }
                     
                     // 1.绑定对应的vao
                     glBindVertexArray(vao);
                     
                     // 2.传递顶点数据
-                    glBindBuffer(GL_ARRAY_BUFFER, vbos[RenderSystem_Vertices_Buffer]);
-                    glBufferData(GL_ARRAY_BUFFER, vertCount * sizeof(VertexData), trans_vertices, GL_STATIC_DRAW);
+                    glBindBuffer(GL_ARRAY_BUFFER, vbos[RenderSystem_ArrayBuffer_Position]);
+                    glBufferData(GL_ARRAY_BUFFER, vertCount * sizeof(glm::vec4), &trans_vertices[0], GL_STATIC_DRAW);
+                    glBindBuffer(GL_ARRAY_BUFFER, vbos[RenderSystem_ArrayBuffer_Color]);
+                    glBufferData(GL_ARRAY_BUFFER, vertCount * sizeof(glm::vec4), &trans_colors[0], GL_STATIC_DRAW);
+                    
                     
                     glBindBuffer(GL_ARRAY_BUFFER, 0);
                     glBindVertexArray(0);
@@ -302,15 +369,16 @@ namespace browser
                     linesProgram->setUniformWithMat4(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_VIEW_MATRIX], camera->getViewMatrix());
                     linesProgram->setUniformWithMat4(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_PROJECTION_MATRIX], camera->getProjectionMatrix());
                     glBindVertexArray(vao);
-                    //typedef void (APIENTRYP PFNGLDRAWELEMENTSPROC)(GLenum mode, GLsizei count, GLenum type, const void *indices);
                     glDrawArrays(GL_LINES, 0, (int)vertCount);
                     glBindVertexArray(0);
                     
                     // 释放cpu的顶点数组
-                    free(trans_vertices);
+                    delete[] trans_vertices;
+                    delete[] trans_colors;
                 }
             }
         }
+        
         // 2.坐标轴
         // 关闭深度测试
         GLStateCache::getInstance()->closeDepthTest();
@@ -329,24 +397,27 @@ namespace browser
                     
                     
                     // 顶点属性
-                    const std::vector<VertexData>& vertices = m_oAxisMesh->getVertices();
+                    glm::vec4* vertices = m_oAxisMesh->getVertices22();
                     vertCount = m_oAxisMesh->getVertexCount();
                     
                     // 在CPU中处理顶点位置
-                    VertexData* trans_vertices = (VertexData*)malloc(sizeof(VertexData) * vertCount);
+                    glm::vec4* trans_vertices = new glm::vec4[vertCount];
+                    glm::vec4* trans_colors = new glm::vec4[vertCount];
 					glm::mat4 noScaleModelMatrix = transform->traverseNoScaleModelMatrix();
                     for(int i=0; i<vertCount; ++i)
                     {
-                        trans_vertices[i].position = noScaleModelMatrix * m_oAxisScaleMatrix * vertices[i].position;
-                        trans_vertices[i].color = vertices[i].color;
+                        trans_vertices[i] = noScaleModelMatrix * m_oAxisScaleMatrix * vertices[i];
+                        trans_colors[i] = axis_colors[i];
                     }
                     
                     // 1.绑定对应的vao
                     glBindVertexArray(vao);
                     
                     // 2.传递顶点数据
-                    glBindBuffer(GL_ARRAY_BUFFER, vbos[RenderSystem_Vertices_Buffer]);
-                    glBufferData(GL_ARRAY_BUFFER, vertCount * sizeof(VertexData), trans_vertices, GL_STATIC_DRAW);
+                    glBindBuffer(GL_ARRAY_BUFFER, vbos[RenderSystem_ArrayBuffer_Position]);
+                    glBufferData(GL_ARRAY_BUFFER, vertCount * sizeof(glm::vec4), &trans_vertices[0], GL_STATIC_DRAW);
+                    glBindBuffer(GL_ARRAY_BUFFER, vbos[RenderSystem_ArrayBuffer_Color]);
+                    glBufferData(GL_ARRAY_BUFFER, vertCount * sizeof(glm::vec4), &trans_colors[0], GL_STATIC_DRAW);
                     
                     glBindBuffer(GL_ARRAY_BUFFER, 0);
                     glBindVertexArray(0);
@@ -361,7 +432,8 @@ namespace browser
                     glBindVertexArray(0);
                     
                     // 释放cpu的顶点数组
-                    free(trans_vertices);
+                    delete[] trans_vertices;
+                    delete[] trans_colors;
                 }
             }
         }
@@ -395,8 +467,8 @@ namespace browser
         MeshFilter* meshFilter;
         Mesh* mesh;
         BaseEntity* entity;
-		Pass* pass;
 		Animator* animator;
+        BaseRenderCommand* command;
 		bool verticesDirty;
         for (auto itor = m_mComponentsList.begin(); itor != m_mComponentsList.end(); ++itor)
         {
@@ -425,7 +497,7 @@ namespace browser
                 skinRenderer->updateRenderer(deltaTime);
             }
             
-            // 遍历messh
+            // 遍历mesh
             const std::vector<Mesh*>& meshes = skinRenderer ? skinRenderer->getMeshes() : meshFilter->getMeshes();
             for (int i = 0; i < meshes.size(); ++i)
             {
@@ -434,34 +506,29 @@ namespace browser
 #endif
 
                 mesh = meshes[i];
-                vao = mesh->getVAO();
                 material = render->getMaterialByIndex(i);
-                
-                
-                // 顶点属性
-                const std::vector<VertexData>& vertices = entity->getVertices(mesh, verticesDirty);
                 vertCount = mesh->getVertexCount();
-                // 顶点索引数组
-                const std::vector<GLushort>& indices = mesh->getIndices();
-                indexCount = mesh->getIndexCount();
                 
-                if (verticesDirty)
-				{
-					// 1.绑定对应的vao
-					glBindVertexArray(vao);
-					
-					// 2.传递顶点数据
-					glBindBuffer(GL_ARRAY_BUFFER, mesh->getVBOs()[RenderSystem_Vertices_Buffer]);
-					glBufferData(GL_ARRAY_BUFFER, vertCount * sizeof(VertexData), &vertices[0], GL_STATIC_DRAW);
-					//
-					//// 3.传递索引数组
-					//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_uVBOs[RenderSystem_Indices_Buffer]);
-					//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLushort)*indexCount, &indices[0], GL_STATIC_DRAW);
-					//
-					
-					glBindBuffer(GL_ARRAY_BUFFER, 0);
-					glBindVertexArray(0);
-				}
+                
+                // 生成渲染命令
+                switch(render->getRendererType())
+                {
+                    case BaseRender::RendererType::Base:
+                        {
+                            command = new BaseRenderCommand();
+                            command->init(material, mesh, transform, camera);
+                        }
+                        break;
+                        
+                    case BaseRender::RendererType::Skinned:
+                        {
+                            command = new SkinnedRenderCommand();
+                            static_cast<SkinnedRenderCommand*>(command)->init(entity, material, mesh, transform, camera);
+                        }
+                        break;
+                }
+                m_vRenderCommands.push_back(command);
+                m_uNoRenderVertices += vertCount;
 
 
 #ifdef _SHADER_BROWSER_RENDER_SYSTEM_DEBUG
@@ -470,28 +537,18 @@ namespace browser
 				totalBufferDataTime += deltaTime;
 #endif
                 
-                // 4.使用材质
-				pass = material->getUsePass();
-				entity->useBonesMatrix(pass);
-				material->useMaterial(mesh, transform, camera);
+
 #ifdef _SHADER_BROWSER_RENDER_SYSTEM_DEBUG
 				deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - timeRec).count() / 1000.0f;
 				timeRec = std::chrono::steady_clock::now();
 				totalUniformTime += deltaTime;
 #endif
-				// 5.绘制
-                glBindVertexArray(vao);
-                //typedef void (APIENTRYP PFNGLDRAWELEMENTSPROC)(GLenum mode, GLsizei count, GLenum type, const void *indices);
-                glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_SHORT, (void*)0);
-                //            glDrawArrays(GL_TRIANGLES, 0, vertCount);
-                glBindVertexArray(0);
-                
-                // 增加1次draw call
-                ++m_uDrawCalls;
-				// 增加顶点数量
-				m_uVerticesCount += vertCount;
-				// 增加三角面数量
-				m_uFaceCount += indexCount / 3;
+   
+//                // 递交渲染命令
+//                if(m_uNoRenderVertices >= COMMIT_COMMAND_VERTEX_COUNT)
+//                {
+//                    flushRenders();
+//                }
 
 #ifdef _SHADER_BROWSER_RENDER_SYSTEM_DEBUG
 				deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - timeRec).count() / 1000.0f;
@@ -500,6 +557,9 @@ namespace browser
             }
             
         }
+        
+        // 递交渲染命令
+        flushRenders();
 
 
 #ifdef _SHADER_BROWSER_RENDER_SYSTEM_DEBUG

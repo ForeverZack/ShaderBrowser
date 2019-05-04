@@ -31,6 +31,8 @@ namespace browser
         // GUI属性面板
         virtual void onInspectorGUI(InspectorPanel* inspector) {}
 
+        // 每帧刷新所有系统之前
+        virtual void beforeUpdate(float deltaTime) {}
 		// 每帧刷新
 		virtual void update(float deltaTime) {}
 

@@ -73,6 +73,9 @@
     <Filter Include="src\Browser\Components\Animation">
       <UniqueIdentifier>{f469d4db-d267-4f20-b41d-82d326160913}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Browser\Components\Render\Commands">
+      <UniqueIdentifier>{155f9594-8b52-41a9-8160-3593101f9b84}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -224,6 +227,12 @@
     </ClCompile>
     <ClCompile Include="src\Common\System\Cache\MaterialCache.cpp">
       <Filter>src\Common\System\Cache</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Browser\Components\Render\Commands\BaseRenderCommand.cpp">
+      <Filter>src\Browser\Components\Render\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Browser\Components\Render\Commands\SkinnedRenderCommand.cpp">
+      <Filter>src\Browser\Components\Render\Commands</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -382,6 +391,12 @@
     </ClInclude>
     <ClInclude Include="src\Common\System\Cache\MaterialCache.h">
       <Filter>src\Common\System\Cache</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Browser\Components\Render\Commands\BaseRenderCommand.h">
+      <Filter>src\Browser\Components\Render\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Browser\Components\Render\Commands\SkinnedRenderCommand.h">
+      <Filter>src\Browser\Components\Render\Commands</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

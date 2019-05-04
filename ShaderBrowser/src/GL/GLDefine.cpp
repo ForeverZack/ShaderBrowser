@@ -48,6 +48,7 @@ namespace customGL {
     {
         m_eType = uniformVal.m_eType;
         _value = uniformVal._value;
+        m_bDirty = uniformVal.m_bDirty;
     }
     
     UniformValue::~UniformValue()
@@ -177,7 +178,12 @@ namespace customGL {
         _value.tex2D.textureId = textureId;
     }
     
-    void UniformValue::updateGLProgramUniformValue(GLProgram* glProgram, std::string uniformName)
+    const glm::mat4& UniformValue::getMat4()
+    {
+        return _value.mat4;
+    }
+    
+    void UniformValue::updateGLProgramUniformValue(GLProgram* glProgram, std::string uniformName, bool forceUpdate/* = false*/)
     {
         if(!m_bDirty)
         {

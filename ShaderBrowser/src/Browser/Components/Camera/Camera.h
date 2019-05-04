@@ -56,12 +56,15 @@ namespace browser
 		REGISTER_PROPERTY_CONSTREF_GET(glm::mat4, m_oViewMatrix, ViewMatrix)
 		REGISTER_PROPERTY_CONSTREF_GET(glm::mat4, m_oProjectionMatrix, ProjectionMatrix)
         REGISTER_PROPERTY_GET_SET(RenderPathType, m_eRenderPathType, RenderPathType)
+        REGISTER_PROPERTY_GET(bool, m_bTransDirty, TransDirty)
 
 	protected:
 		// view matrix 相关
 		// view matrix
 		glm::mat4 m_oViewMatrix;
-
+        // 本帧是否发生了移动
+        bool m_bTransDirty;
+        
 		// projection matrix 相关
 		// 投影类型
 		ProjectionType m_eProjectionType;

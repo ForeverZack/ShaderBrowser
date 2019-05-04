@@ -49,6 +49,15 @@ namespace common
 			system->init();
 		}
 	}
+    
+    void ECSManager::beforeUpdateSystem(SystemType type, float deltaTime)
+    {
+        BaseSystem* system = getSystem(type);
+        if (system)
+        {
+            system->beforeUpdate(deltaTime);
+        }
+    }
 
 	void ECSManager::updateSystem(SystemType type, float deltaTime)
 	{

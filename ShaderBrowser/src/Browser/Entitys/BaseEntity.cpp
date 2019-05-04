@@ -160,23 +160,23 @@ namespace browser
         );
     }
     
-    const std::vector<VertexData>& BaseEntity::getVertices(Mesh* mesh, bool& dirty)
+    glm::vec4* BaseEntity::getVertices(Mesh* mesh, bool& dirty)
     {
         // 检测模型根节点是否含有动画组件
         if(m_oModelRootEntity && m_oModelRootEntity->m_oAnimator && m_oModelRootEntity->m_oAnimator->getIsPlaying() && !m_oModelRootEntity->m_oAnimator->getUseGPU())
         {
 			dirty = true;
-            const std::unordered_map<Mesh*, std::vector<VertexData>>& vertices = m_oModelRootEntity->m_oAnimator->getVertices();
+            const std::unordered_map<Mesh*, glm::vec4*>& vertices = m_oModelRootEntity->m_oAnimator->getVertices();
             return vertices.find(mesh)->second;
         }
         else
         {
 			dirty = false;
-            return mesh->getVertices();
+            return mesh->getVertices22();
         }
     }
 
-	void BaseEntity::useBonesMatrix(Pass* pass)
+	void BaseEntity::useBonesMatrix(Material* material)
 	{
 		if (!m_oModelRootEntity || !m_oModelRootEntity->m_oAnimator)
 		{
@@ -191,7 +191,7 @@ namespace browser
 //            BROWSER_LOG_MAT4(bonesMatrix[i]);
             
             // 方式1:
-            pass->setUniformMat3x4(uniformName, glm::mat3x4(boneMatrix[0][0], boneMatrix[1][0], boneMatrix[2][0], boneMatrix[3][0],
+            material->setUniformMat3x4(uniformName, glm::mat3x4(boneMatrix[0][0], boneMatrix[1][0], boneMatrix[2][0], boneMatrix[3][0],
                                                             boneMatrix[0][1], boneMatrix[1][1], boneMatrix[2][1], boneMatrix[3][1],
                                                             boneMatrix[0][2], boneMatrix[1][2], boneMatrix[2][2], boneMatrix[3][2]));
             // 方式2:

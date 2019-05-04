@@ -45,7 +45,7 @@ namespace browser
 		//static Transform* create();
         
         // 定义脏标记赋值方法
-        #define TRANS_DIRTY(trans, dirty) trans->m_bTransDirty = dirty;
+        #define TRANS_DIRTY(trans, dirty) trans->m_bTransDirty = dirty; trans->m_bCurFrameDirty = dirty | m_bCurFrameDirty;
         // 定义向量vec3赋值方法
         #define TRANS_SET_VEC3(vec3, x, y, z) vec3.x = x; vec3.y = y; vec3.z = z;
         // 定义向量vec4赋值方法
@@ -79,6 +79,9 @@ namespace browser
         
         // 平移
         void Translate(const glm::vec3& offset, customGL::Space sp = customGL::Space::Self);
+        
+        
+        void beforeUpdate(float deltaTime);
         
         // 获取方向向量
         // Forward (axis: z)
@@ -123,6 +126,7 @@ namespace browser
 		REGISTER_PROPERTY_CONSTREF_GET(std::vector<Transform*>, m_vChildren, Children)
         // dirty标记
         REGISTER_PROPERTY_GET(bool, m_bTransDirty, TransDirty)
+        REGISTER_PROPERTY_GET(bool, m_bCurFrameDirty, CurFrameDirty)
         
         // 获取\设置全局坐标系下的属性(并不建议过多使用，因为每次使用都会遍历父级节点，更新他们的model矩阵)
         // 获取世界坐标系下的位置
@@ -189,8 +193,10 @@ namespace browser
         // 是否需要更新属性面板欧拉角的值
         bool m_bUpdateInspectorEuler;
         
-        // 变换脏标记
+        // 变换脏标记（供Transform内部使用，用来处理变换）
         bool m_bTransDirty;
+        // 当前帧是否变换（供外部使用，用来判断是否发生变换）
+        bool m_bCurFrameDirty;
         // 延迟旋转角度队列
         std::vector<glm::vec3> m_vRotateDelayRotations;
         // 延迟旋转坐标空间队列

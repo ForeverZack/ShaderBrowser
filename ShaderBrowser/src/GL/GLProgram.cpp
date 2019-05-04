@@ -30,6 +30,7 @@ namespace customGL
 		// 定义一些基本的数据结构
 		"struct DirectionalLight { vec3 direction; float intensity; vec4 color; };\n"
 		"const int MAX_BONES = 100;\n"
+        "const int MAX_DYNAMIC_BATCH_COUNT = 1000;\n"
 
 		// shader中可以使用的内置的uniform变量名字(不一定会有值,看具体怎么使用)
 		"uniform sampler2D CGL_TEXTURE0;\n"
@@ -39,7 +40,8 @@ namespace customGL
 		"uniform mat4 CGL_PROJECTION_MATRIX;\n"
 		"uniform vec4 CGL_ALBEDO_COLOR = vec4(1.0f, 1.0f, 1.0f, 1.0f);\n"
 		"uniform DirectionalLight CGL_DIRECTIONAL_LIGHT;\n"
-		"uniform mat3x4 CGL_BONES_MATRIX[MAX_BONES];\n";
+		"uniform mat3x4 CGL_BONES_MATRIX[MAX_BONES];\n"
+        "uniform mat4 CGL_DYNAMIC_BATCH_MODEL_MATRIX[MAX_DYNAMIC_BATCH_COUNT];\n";
 	 // uniform变量名称
 	const char* GLProgram::SHADER_UNIFORMS_ARRAY[] =
 	{
@@ -50,7 +52,8 @@ namespace customGL
 		"CGL_PROJECTION_MATRIX",
 		"CGL_ALBEDO_COLOR",
 		"CGL_DIRECTIONAL_LIGHT",
-		"CGL_BONES_MATRIX[%d]"
+		"CGL_BONES_MATRIX[%d]",
+        "CGL_DYNAMIC_BATCH_MODEL_MATRIX[%d]"
 	};
 
 	GLProgram* GLProgram::create(const char* vertSrc, const char* fragSrc)
@@ -61,15 +64,27 @@ namespace customGL
 			delete program;
 			return nullptr;
 		}
-		program->m_Path = std::string(vertSrc);
 		return program;
 	}
+    
+    GLProgram* GLProgram::createAndSaveSource(const char* vertSrc, const char* fragSrc)
+    {
+        GLProgram* program = new GLProgram();
+        if (!program->initProgram(vertSrc, fragSrc, true))
+        {
+            delete program;
+            return nullptr;
+        }
+        return program;
+    }
 
 	GLProgram::GLProgram()
 		: m_uProgram(0)
 		, m_uVertShader(0)
 		, m_uFragShader(0)
 		, m_uTextureUnitIndex(0)
+        , m_sVertexSource(nullptr)
+        , m_sFragSource(nullptr)
 	{
         for (int i=0; i<MAX_ACTIVE_TEXTURE; ++i)
         {
@@ -92,10 +107,31 @@ namespace customGL
 		{
 			glDeleteShader(m_uFragShader);
 		}
+        if (m_sVertexSource)
+        {
+            delete[] m_sVertexSource;
+        }
+        if (m_sFragSource)
+        {
+            delete[] m_sFragSource;
+        }
 		m_uVertShader = m_uFragShader = 0;
 
 		glDeleteProgram(m_uProgram);
 	}
+    
+    GLProgram* GLProgram::clone()
+    {
+        BROWSER_ASSERT(m_sVertexSource && m_sFragSource, "No shader source code in GLProgram obeject, you cannot use GLProgram::clone function.");
+        
+        GLProgram* program = new GLProgram();
+        if (!program->cloneProgram(this))
+        {
+            delete program;
+            return nullptr;
+        }
+        return program;
+    }
 
 	void GLProgram::bindPredefinedVertexAttribs()
 	{
@@ -120,25 +156,25 @@ namespace customGL
 		}
 	}
 
-	bool GLProgram::initProgram(const char* vertSrc, const char* fragSrc)
+	bool GLProgram::initProgram(const char* vertSrc, const char* fragSrc, bool saveSource /*= false*/)
 	{
 		if (!vertSrc || strlen(vertSrc) == 0 || !fragSrc || strlen(fragSrc) == 0)
 		{
 			return false;
 		}
-
+        
 		// 1.创建着色器程序
 		GLuint program = glCreateProgram();
 		m_uProgram = program;
 
 		// 2.创建shader
 		// 顶点着色器
-		if (!createShader(GL_VERTEX_SHADER, m_uVertShader, vertSrc))
+		if (!createShader(GL_VERTEX_SHADER, m_uVertShader, vertSrc, saveSource))
 		{
 			return false;
 		}
 		// 片段着色器
-		if (!createShader(GL_FRAGMENT_SHADER, m_uFragShader, fragSrc))
+		if (!createShader(GL_FRAGMENT_SHADER, m_uFragShader, fragSrc, saveSource))
 		{
 			return false;
 		}
@@ -181,56 +217,153 @@ namespace customGL
 
 		return true;
 	}
+    
+    bool GLProgram::cloneProgram(GLProgram* srcGLProgram)
+    {
+        
+        // 1.创建着色器程序
+        GLuint program = glCreateProgram();
+        m_uProgram = program;
+        
+        // 2.创建shader
+        // 顶点着色器
+        if (!createShader(GL_VERTEX_SHADER, m_uVertShader, srcGLProgram->getSourceSavePointer(GL_VERTEX_SHADER)))
+        {
+            return false;
+        }
+        // 片段着色器
+        if (!createShader(GL_FRAGMENT_SHADER, m_uFragShader, srcGLProgram->getSourceSavePointer(GL_FRAGMENT_SHADER)))
+        {
+            return false;
+        }
+        
+        
+        // 3.着色器程序绑定shader
+        // 顶点shader
+        glAttachShader(m_uProgram, m_uVertShader);
+        // 片段shader
+        glAttachShader(m_uProgram, m_uFragShader);
+        
+        // 绑定预定义的顶点属性
+        bindPredefinedVertexAttribs();
+        
+        // 4.链接着色器程序
+        glLinkProgram(m_uProgram);
+        
+        // 5.记录uniform变量位置
+        updatePreDefinedUniformsLocation();
+        
+        
+        // 检查着色器程序链接状态信息
+        GLint linked;
+        glGetProgramiv(m_uProgram, GL_LINK_STATUS, &linked);
+        if (!linked)
+        {
+            //#ifdef _DEBUG
+            GLsizei len;
+            glGetProgramiv(m_uProgram, GL_INFO_LOG_LENGTH, &len);
+            
+            GLchar* log = new GLchar[len + 1];
+            glGetProgramInfoLog(m_uProgram, len, &len, log);
+            std::cerr << "Shader linking failed: " << log << std::endl;
+            delete[] log;
+            
+            //#endif /* DEBUG */
+            common::BROWSER_ASSERT(linked, "shader program linked error in function GLProgram::initProgram");
+            
+            return false;
+        }
+        
+        return true;
+    }
 
-	bool GLProgram::createShader(GLenum type, GLuint& shader, const char* shaderSrc)
+	bool GLProgram::createShader(GLenum type, GLuint& shader, const char* shaderSrc, bool saveSource)
 	{
 		// 读取着色器内容
-		const GLchar* source = common::Utils::readFile(shaderSrc);
+		GLchar* source = common::Utils::readFile(shaderSrc);
 		if (source == NULL)
 		{
 			std::cerr << "shader src is empty: " << shaderSrc << std::endl;
 			return false;
 		}
 
-		// 1.创建shader
-		shader = glCreateShader(type);
+        bool successFlag = createShader(type, shader, source);
 
-		// 2.绑定shader源码
-		const GLchar *sources[] = 
-		{
-			"#version 330 core\n",	// 头
-			SHADER_UNIFORMS,	// 预定义uniform
-			source // 源码
-		};
-		glShaderSource(shader, sizeof(sources) / sizeof(*sources), sources, NULL);
+        if(saveSource)
+        {
+            GLchar*& save_pointer = getSourceSavePointer(type);
+            save_pointer = source;
+        }
+        else
+        {
+            delete[] source;
+        }
 
-		// 3.编译shader
-		glCompileShader(shader);
-
-		delete[] source;
-
-		// 检查编译情况
-		GLint compiled;
-		glGetShaderiv(shader, GL_COMPILE_STATUS, &compiled);
-		if (!compiled) 
-		{
-//#ifdef _DEBUG
-			GLsizei len;
-			glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &len);
-
-			GLchar* log = new GLchar[len + 1];
-			glGetShaderInfoLog(shader, len, &len, log);
-			std	::cerr << "Shader compilation failed: " << log << std::endl;
-			delete[] log;
-//#endif /* DEBUG */
+        return successFlag;
+	}
+    
+    bool GLProgram::createShader(GLenum type, GLuint& shader, const char* shaderSource)
+    {
+        if (shaderSource == NULL)
+        {
+            std::cerr << "shader source code pointer is empty: " << std::endl;
+            return false;
+        }
+        
+        // 1.创建shader
+        shader = glCreateShader(type);
+        
+        // 2.绑定shader源码
+        const GLchar *sources[] =
+        {
+            "#version 330 core\n",    // 头
+            SHADER_UNIFORMS,    // 预定义uniform
+            shaderSource // 源码
+        };
+        glShaderSource(shader, sizeof(sources) / sizeof(*sources), sources, NULL);
+        
+        // 3.编译shader
+        glCompileShader(shader);
+        
+        // 检查编译情况
+        GLint compiled;
+        glGetShaderiv(shader, GL_COMPILE_STATUS, &compiled);
+        if (!compiled)
+        {
+            //#ifdef _DEBUG
+            GLsizei len;
+            glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &len);
+            
+            GLchar* log = new GLchar[len + 1];
+            glGetShaderInfoLog(shader, len, &len, log);
+            std    ::cerr << "Shader compilation failed: " << log << std::endl;
+            delete[] log;
+            //#endif /* DEBUG */
             
             common::BROWSER_ASSERT(compiled, "shader program compiled error in function GLProgram::createShader");
+            
+            return false;
+        }
+        
+        return true;
+    }
+    
+    GLchar*& GLProgram::getSourceSavePointer(GLenum type)
+    {
+        switch (type) {
+            case GL_VERTEX_SHADER:
+            {
+                return m_sVertexSource;
+            }
 
-			return false;
-		}
-
-		return true;
-	}
+            case GL_FRAGMENT_SHADER:
+            {
+                return m_sFragSource;
+            }
+        }
+        
+        return m_sVertexSource;
+    }
 
 	void GLProgram::useProgram()
 	{
@@ -249,7 +382,7 @@ namespace customGL
 			{
 				for (int j = 0; j < MAX_BONES_COUNT; ++j)
 				{
-					sprintf(tmpUniform, SHADER_UNIFORMS_ARRAY[UNIFORM_CGL_BONES_MATRIX], j);
+					sprintf(tmpUniform, SHADER_UNIFORMS_ARRAY[i], j);
 					location = glGetUniformLocation(m_uProgram, tmpUniform);
 					if (location == -1)
 					{

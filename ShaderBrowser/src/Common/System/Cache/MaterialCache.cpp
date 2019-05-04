@@ -20,20 +20,22 @@ namespace common
     {
     }
     
-    void MaterialCache::addSharedMaterial(Material* material)
+    void MaterialCache::addSharedMaterial(Material* material, bool isDefault /*= false*/)
     {
         BROWSER_ASSERT(material, "Material is not invalid in function MaterialCache::addShareMaterial(Material* material)");
         BROWSER_WARNING(material->getMaterialId()==0, "Material has been added, please check your program in function MaterialCache::addShareMaterial(Material* material)");
 
         material->setMaterialId(generateId());
+        material->setSharedId(material->getMaterialId());
+        material->setDefaultMaterialFlag(isDefault);
         material->retain();
         add(material->getMaterialId(), material);
     }
     
-    Material* MaterialCache::addSharedMaterial(const std::string& materialName /*= DEFAULT_MATERIAL_NAME*/)
+    Material* MaterialCache::addSharedMaterial(const std::string& materialName /*= DEFAULT_MATERIAL_NAME*/, bool isDefault /*= false*/)
     {
         Material* material = Material::createMaterial(materialName);
-        addSharedMaterial(material);
+        addSharedMaterial(material, isDefault);
         
         return material;
     }

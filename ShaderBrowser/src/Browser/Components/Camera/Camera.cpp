@@ -17,6 +17,7 @@ namespace browser
 	Camera::Camera(ProjectionType type, float nearPlane, float farPlane, int viewportWidth, int viewportHeight, float FOV)
 		: BaseComponent("Camera")
         , m_oViewMatrix(GLM_MAT4_UNIT)
+        , m_bTransDirty(true)
 		, m_eProjectionType(type)
 		, m_fFieldOfView(FOV)
 		, m_fNearPlane(nearPlane)
@@ -24,7 +25,7 @@ namespace browser
 		, m_iViewportWidth(viewportWidth)
 		, m_iViewportHeight(viewportHeight)
 		, m_oProjectionMatrix(GLM_MAT4_UNIT)
-        , m_eRenderPathType(RenderPathType::Forward)
+        , m_eRenderPathType(RenderPathType::Forward)    
 	{
 		// 组件所属系统
 		m_eBelongSystem = SystemType::Camera;
@@ -33,6 +34,7 @@ namespace browser
 	Camera::Camera()
 		: BaseComponent("Camera")
         , m_oViewMatrix(GLM_MAT4_UNIT)
+        , m_bTransDirty(true)
 		, m_eProjectionType(ProjectionType::Perspective)
 		, m_fFieldOfView(60.0f)
 		, m_fNearPlane(0.3f)
@@ -75,6 +77,7 @@ namespace browser
 			// 计算视矩阵	( glm::LookAt函数需要一个位置、目标和上向量 )
 			m_oViewMatrix = glm::lookAt(camera_position, camera_target, camera_up);
 
+            m_bTransDirty = m_oTransform->getCurFrameDirty();
 		}
 	}
 

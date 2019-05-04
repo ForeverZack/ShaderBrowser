@@ -61,6 +61,7 @@ namespace common
 		void initSystem(SystemType type);
 
 		// 根据类型更新系统
+        void beforeUpdateSystem(SystemType type, float deltaTime);
 		void updateSystem(SystemType type, float deltaTime);
 
 		// 将组件添加进对应的系统

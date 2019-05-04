@@ -27,16 +27,32 @@ namespace browser
         , m_uIndexCount(0)
         , m_sMaterialName(Material::DEFAULT_MATERIAL_NAME)
 		, m_sMeshName(meshName)
+        , m_vVertices(nullptr)
+        , m_vIndices(nullptr)
+        , m_vColors(nullptr)
+        , m_vTexcoords1(nullptr)
+        , m_vNormals(nullptr)
+        , m_vTangents(nullptr)
+        , m_vBoneIndices(nullptr)
+        , m_vBoneWeights(nullptr)
 	{
         // 清空
         m_mVertexAttribDeclarations.clear();
-        m_vIndices.clear();
-        m_vVertices.clear();
         m_mTextures.clear();
 	}
 
 	Mesh::~Mesh()
 	{
+        // 删除数据
+        BROWSER_SAFE_RELEASE_ARRAY_POINTER(m_vVertices);
+        BROWSER_SAFE_RELEASE_ARRAY_POINTER(m_vColors);
+        BROWSER_SAFE_RELEASE_ARRAY_POINTER(m_vIndices);
+        BROWSER_SAFE_RELEASE_ARRAY_POINTER(m_vTexcoords1);
+        BROWSER_SAFE_RELEASE_ARRAY_POINTER(m_vNormals);
+        BROWSER_SAFE_RELEASE_ARRAY_POINTER(m_vTangents);
+        BROWSER_SAFE_RELEASE_ARRAY_POINTER(m_vBoneIndices);
+        BROWSER_SAFE_RELEASE_ARRAY_POINTER(m_vBoneWeights);
+        
         // 删除vao
         glDeleteVertexArrays(1, &m_uVAO);
 	}
@@ -49,26 +65,68 @@ namespace browser
             // 生成vao
             glGenVertexArrays(1, &m_uVAO);
 			// 生成vbo
-			glGenBuffers(2, m_uVBOs);
+			glGenBuffers(8, m_uVBOs);
         }
 
 		// 设置vao
         RenderSystem::getInstance()->setupVAO(m_uVAO, m_uVBOs, m_mVertexAttribDeclarations);
-
+        
 		// 绑定数据
 		// 1.绑定对应的vao
 		glBindVertexArray(m_uVAO);
 
 		// 2.传递顶点数据
-		glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[RenderSystem::VertexBufferType::RenderSystem_Vertices_Buffer]);
-		glBufferData(GL_ARRAY_BUFFER, getVertexCount() * sizeof(VertexData), &m_vVertices[0], GL_STATIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[RenderSystem::VertexBufferType::RenderSystem_ArrayBuffer_Position]);
+        glBufferData(GL_ARRAY_BUFFER, getVertexCount() * sizeof(glm::vec4), &m_vVertices[0], GL_STATIC_DRAW);
 
 		// 3.传递索引数组
-		if (m_vIndices.size() > 0)
+        if (m_uIndexCount > 0)
 		{
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_uVBOs[RenderSystem::VertexBufferType::RenderSystem_Indices_Buffer]);
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLushort)*getIndexCount(), &m_vIndices[0], GL_STATIC_DRAW);
 		}
+        
+        // uv
+        if (m_vTexcoords1)
+        {
+            glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[RenderSystem::VertexBufferType::RenderSystem_ArrayBuffer_UV1]);
+            glBufferData(GL_ARRAY_BUFFER, getVertexCount() * sizeof(glm::vec2), &m_vTexcoords1[0], GL_STATIC_DRAW);
+        }
+        
+        // colors
+//        if(m_vColors)
+        {
+            glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[RenderSystem::VertexBufferType::RenderSystem_ArrayBuffer_Color]);
+            glBufferData(GL_ARRAY_BUFFER, getVertexCount() * sizeof(glm::vec4), &m_vColors[0], GL_STATIC_DRAW);
+        }
+        
+        // normal
+        if (m_vNormals)
+        {
+            glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[RenderSystem::VertexBufferType::RenderSystem_ArrayBuffer_Normal]);
+            glBufferData(GL_ARRAY_BUFFER, getVertexCount() * sizeof(glm::vec3), &m_vNormals[0], GL_STATIC_DRAW);
+        }
+        
+        // tangents
+        if (m_vTangents)
+        {
+            glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[RenderSystem::VertexBufferType::RenderSystem_ArrayBuffer_Tangent]);
+            glBufferData(GL_ARRAY_BUFFER, getVertexCount() * sizeof(glm::vec3), &m_vTangents[0], GL_STATIC_DRAW);
+        }
+                                                  
+        // boneIndices
+        if (m_vBoneIndices)
+        {
+            glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[RenderSystem::VertexBufferType::RenderSystem_ArrayBuffer_BoneIndices]);
+            glBufferData(GL_ARRAY_BUFFER, getVertexCount() * sizeof(glm::uvec4), &m_vBoneIndices[0], GL_STATIC_DRAW);
+        }
+        
+        // boneWeights
+        if (m_vBoneWeights)
+        {
+            glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[RenderSystem::VertexBufferType::RenderSystem_ArrayBuffer_BoneWeights]);
+            glBufferData(GL_ARRAY_BUFFER, getVertexCount() * sizeof(glm::vec4), &m_vBoneWeights[0], GL_STATIC_DRAW);
+        }
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindVertexArray(0);
@@ -82,7 +140,25 @@ namespace browser
          调用reserve(n)后，若容器的capacity<n，则重新分配内存空间，从而使得capacity等于n。如果capacity>=n呢？capacity无变化。
          */
         m_uVertexCount = length;
-        m_vVertices.resize(length);
+        m_vVertices = new glm::vec4[length];
+        
+
+        if(m_eMeshType == MeshType::MeshWithBone)
+        {
+            initBonesData();
+        }
+    }
+    
+    void Mesh::initBonesData()
+    {
+        m_vBoneIndices = new glm::uvec4[m_uVertexCount];
+        m_vBoneWeights = new glm::vec4[m_uVertexCount];
+        
+        for(int i=0; i<m_uVertexCount; ++i)
+        {
+            m_vBoneIndices[i] = GLM_VEC4_ZERO;
+            m_vBoneWeights[i] = GLM_VEC4_ZERO;
+        }
     }
     
     void Mesh::addTexture(const std::string& uniformName, Texture2D* texture)
@@ -110,10 +186,15 @@ namespace browser
     void Mesh::setIndicesInfo(GLushort* data, unsigned int length)
     {
         m_uIndexCount = length;
-        m_vIndices.assign(data, data+length);
+        
+        m_vIndices = new GLushort[length];
+        for(int i=0; i<length; ++i)
+        {
+            m_vIndices[i] = data[i];
+        }
     }
     
-    void Mesh::setIndicesInfo(std::function<void(std::vector<GLushort>&, unsigned int&)> setFunc)
+    void Mesh::setIndicesInfo(std::function<void(GLushort*&, unsigned int&)> setFunc)
     {
         setFunc(m_vIndices, m_uIndexCount);
     }
@@ -169,35 +250,51 @@ namespace browser
             case GLProgram::VERTEX_ATTR_POSITION:
                 {
                     // 位置属性
-                    ANALYSIS_ARRAY_DATA_VERTEX(position, data);
+                    ANALYSIS_ARRAY_DATA_VERTEX(data);
                 }
                 break;
                 
             case GLProgram::VERTEX_ATTR_COLOR:
                 {
                     // 颜色属性
-                    ANALYSIS_ARRAY_DATA_VEC4(color, data);
+                    if(!m_vColors)
+                    {
+                        m_vColors = new glm::vec4[m_uVertexCount];
+                    }
+                    ANALYSIS_ARRAY_DATA_VEC4(m_vColors, data);
                 }
                 break;
                 
             case GLProgram::VERTEX_ATTR_TEX_COORD:
                 {
                     // 纹理uv属性
-                    ANALYSIS_ARRAY_DATA_TEXCOORD(uv_main, data);
+                    if(!m_vTexcoords1)
+                    {
+                        m_vTexcoords1 = new glm::vec2[m_uVertexCount];
+                    }
+                    ANALYSIS_ARRAY_DATA_TEXCOORD(m_vTexcoords1, data);
                 }
                 break;
                 
             case GLProgram::VERTEX_ATTR_NORMAL:
                 {
                     // 法线属性
-                    ANALYSIS_ARRAY_DATA_VEC3(normal, data);
+                    if(!m_vNormals)
+                    {
+                        m_vNormals = new glm::vec3[m_uVertexCount];
+                    }
+                    ANALYSIS_ARRAY_DATA_VEC3(m_vNormals, data);
                 }
                 break;
                 
             case GLProgram::VERTEX_ATTR_TANGENT:
                 {
                     // 切线属性
-                    ANALYSIS_ARRAY_DATA_VEC3(tangent, data);
+                    if(!m_vTangents)
+                    {
+                        m_vTangents = new glm::vec3[m_uVertexCount];
+                    }
+                    ANALYSIS_ARRAY_DATA_VEC3(m_vTangents, data);
                 }
                 break;
                 

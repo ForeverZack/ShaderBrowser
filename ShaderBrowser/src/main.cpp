@@ -232,9 +232,9 @@ void testVal()
     // MeshFilter
     // (GLuint location, GLint size, GLenum type, GLboolean normalized, GLsizei stride, void* data)
     browser::Mesh* mesh = Mesh::create(6);
-    mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_POSITION, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), vertices);
-    mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_COLOR, 4, GL_FLOAT, GL_FALSE, sizeof(VertexData), colors);
-    mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_TEX_COORD, 2, GL_FLOAT, GL_FALSE, sizeof(VertexData), coords);
+    mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_POSITION, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), vertices);
+    mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_COLOR, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), colors);
+    mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_TEX_COORD, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), coords);
     mesh->setIndicesInfo(indices, 6);
     mesh->addTexture("CGL_TEXTURE0", texture1);
     mesh->addTexture("CGL_TEXTURE1", texture2);
@@ -248,8 +248,8 @@ void testVal()
 
 
     // 将组件加入渲染系统队列
-    BaseEntity* entity = BaseEntity::create();
-//    scene->addChild(entity);
+    BaseEntity* entity = BaseEntity::create("Triangle");
+    scene->addChild(entity);
     entity->setEulerAngle(0, 45, 0);
     entity->setScale(2, 1, 1);
     entity->setPosition(0, 1, 0);
@@ -271,16 +271,16 @@ void testVal()
     m_oModelLamp = m_mModels[FileUtils::getInstance()->getAbsolutePathForFilename("models/man/model.dae")];
     m_oModelYBot = m_mModels[FileUtils::getInstance()->getAbsolutePathForFilename("models/YBot/ybot.fbx")];
     m_oModelUnity = m_mModels[FileUtils::getInstance()->getAbsolutePathForFilename("models/RawMocap/DefaultAvatar.fbx")];
-    
+
     // 渲染模型0
-	BaseEntity* modelEntity = m_oModel->createNewEntity("namizhuang");
-	modelEntity->setScale(0.2f, 0.2f, 0.2f);
-	modelEntity->setEulerAngle(0, 180, 0);
-	modelEntity->setPosition(0, 1, 0);
-	scene->addChild(modelEntity);
-    
+    BaseEntity* modelEntity = m_oModel->createNewEntity("namizhuang");
+    modelEntity->setScale(0.2f, 0.2f, 0.2f);
+    modelEntity->setEulerAngle(0, 180, 0);
+    modelEntity->setPosition(0, 1, 0);
+    scene->addChild(modelEntity);
+
     // 渲染模型2    fighter => aabb Min:-20, 0, -13  Max:20, 80, 15
-	modelEntity = m_oModel2->createNewEntity("fighter");
+    modelEntity = m_oModel2->createNewEntity("fighter");
     modelEntity->setScale(0.2f, 0.2f, 0.2f);
     modelEntity->setEulerAngle(0, 90, 0);
     modelEntity->setPosition(1, 0, -2);
@@ -296,15 +296,15 @@ void testVal()
 //    MeshFilter* fighterMeshFilter = modelEntity->getTransform()->getChildren()[0]->getChildren()[0]->getBelongEntity()->getMeshFilter();
 //    fighterMeshFilter->getMeshes()[0]->setTexture(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_TEXUTRE0], TextureCache::getInstance()->getTexture("models/Fighter/Fighter.png"));
 
-	// 渲染模型3
-	modelEntity = m_oModelLamp->createNewEntity("LampBob");
-	modelEntity->setEulerAngle(0, 90, 0);
-	modelEntity->setPosition(10, 0, 5);
-	scene->addChild(modelEntity);
+    // 渲染模型3
+    modelEntity = m_oModelLamp->createNewEntity("LampBob");
+    modelEntity->setEulerAngle(0, 90, 0);
+    modelEntity->setPosition(10, 0, 5);
+    scene->addChild(modelEntity);
     modelEntity->playAnimation(Animator::DEFAULT_ANIMATION_NAME+"0", true);
-	//modelEntity->getAnimator()->setUseGPU(false);
+    //modelEntity->getAnimator()->setUseGPU(false);
 //    modelEntity->changeAllMeshesMaterial(GLProgram::DEFAULT_SKELETON_GLPROGRAM_NAME);
-    
+
     // 模型4 RawMocap
     modelEntity = m_oModelUnity->createNewEntity("RawMocap");
     modelEntity->setScale(0.1f, 0.1f, 0.1f);
@@ -314,7 +314,7 @@ void testVal()
     modelEntity->playAnimation("_3_a_U1_M_P_WalkAvoid_ToLeft_Both_Fb_p0_No_0_1", true);
 //    modelEntity->changeAllMeshesMaterial(GLProgram::DEFAULT_SKELETON_GLPROGRAM_NAME);
 //    modelEntity->getAnimator()->setUseGPU(false);
-    
+
     // 模型5 yBot
     modelEntity = m_oModelYBot->createNewEntity("yBot");
     modelEntity->setScale(0.05f, 0.05f, 0.05f);
@@ -557,8 +557,8 @@ void mainLoop(GLFWwindow *window)
 	// 1.input
 	glfwPollEvents();
 	processInput(window);
-
-
+    
+    
 	// temp
 	TextureCache::getInstance()->update(deltaTime);
     ModelCache::getInstance()->update(deltaTime);
@@ -566,6 +566,10 @@ void mainLoop(GLFWwindow *window)
 	// 重置GL状态（这里主要是为了防止插件如imgui绑定纹理，造成缓存失效）
 	GLStateCache::getInstance()->update(deltaTime);
 
+    
+    // beforeUpdate
+    ECSManager::getInstance()->beforeUpdateSystem(SystemType::Transform, deltaTime); // 在所有系统刷新前刷新transform
+    
 	// 2.render
 	ECSManager::getInstance()->updateSystem(SystemType::Transform, deltaTime);  // 更新transform
 	ECSManager::getInstance()->updateSystem(SystemType::Camera, deltaTime);  // 更新camera

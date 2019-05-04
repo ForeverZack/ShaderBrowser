@@ -67,9 +67,9 @@ namespace browser
         void playAnimation(int animIdx, bool repeat = false, float speed = 1.0f, bool interpolate = true);  
 		void setAnimatorUseGPU(bool useGPU);
         // 获取顶点数组
-        const std::vector<VertexData>& getVertices(Mesh* mesh, bool& dirty);
+        glm::vec4* getVertices(Mesh* mesh, bool& dirty);
 		// 获取骨骼数组
-		void useBonesMatrix(Pass* pass);
+		void useBonesMatrix(Material* material);
         
 		REGISTER_PROPERTY_GET(MeshFilter*, m_oMeshFilterComponent, MeshFilter);
 		REGISTER_PROPERTY_GET(Transform*, m_oTransformComponent, Transform);

@@ -80,7 +80,7 @@ namespace browser
 		REGISTER_PROPERTY_CONSTREF_GET(std::vector<glm::mat4>, m_vBonesMatrix, BonesMatrix)
 		REGISTER_PROPERTY_GET(bool, m_bIsPlaying, IsPlaying)
 		REGISTER_PROPERTY_GET_SET(bool, m_bUseGPU, UseGPU)
-        const std::unordered_map<Mesh*, std::vector<VertexData>>& getVertices()
+        const std::unordered_map<Mesh*, glm::vec4*>& getVertices()
         {
             return m_mVertices;
         }
@@ -92,7 +92,11 @@ namespace browser
         bool m_bHasInit;
         
         // 顶点数组
-        std::unordered_map<Mesh*, std::vector<VertexData>> m_mVertices;
+        std::unordered_map<Mesh*, glm::vec4*> m_mVertices;
+        std::unordered_map<Mesh*, glm::uvec4*> m_mBoneIndices;
+        std::unordered_map<Mesh*, glm::vec4*> m_mBoneWeights;
+        std::unordered_map<Mesh*, glm::vec3*> m_mNormals;
+        std::unordered_map<Mesh*, glm::vec3*> m_mTangents;
 
         
         // 当前正在播放的动画

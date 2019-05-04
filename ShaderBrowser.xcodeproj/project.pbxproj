@@ -16,6 +16,8 @@
 		147BBAF9222277EF00B3079B /* HierarchyPanel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 147BBAF8222277EE00B3079B /* HierarchyPanel.cpp */; };
 		148177B621D8A86D0037E11D /* Transform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 148177B421D8A86C0037E11D /* Transform.cpp */; };
 		148177B921D8CB5E0037E11D /* TransformSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 148177B821D8CB5E0037E11D /* TransformSystem.cpp */; };
+		148C358C227ADD16008CB8B1 /* BaseRenderCommand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 148C358B227ADD16008CB8B1 /* BaseRenderCommand.cpp */; };
+		148C358F227AFC62008CB8B1 /* SkinnedRenderCommand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 148C358E227AFC62008CB8B1 /* SkinnedRenderCommand.cpp */; };
 		14941422221EF7B200A735DA /* libassimp.4.1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 14FF768421C4B6D80008462D /* libassimp.4.1.0.dylib */; };
 		149C01FF21F4AF910011DAE2 /* GLProgramCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 149C01FE21F4AF910011DAE2 /* GLProgramCache.cpp */; };
 		14B1AA832258AD99000AB04E /* SkinnedMeshRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B1AA822258AD99000AB04E /* SkinnedMeshRenderer.cpp */; };
@@ -99,6 +101,10 @@
 		148177B521D8A86C0037E11D /* Transform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Transform.h; sourceTree = "<group>"; };
 		148177B721D8CB5E0037E11D /* TransformSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TransformSystem.h; sourceTree = "<group>"; };
 		148177B821D8CB5E0037E11D /* TransformSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TransformSystem.cpp; sourceTree = "<group>"; };
+		148C358A227AC4E7008CB8B1 /* BaseRenderCommand.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BaseRenderCommand.h; sourceTree = "<group>"; };
+		148C358B227ADD16008CB8B1 /* BaseRenderCommand.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BaseRenderCommand.cpp; sourceTree = "<group>"; };
+		148C358D227AFC62008CB8B1 /* SkinnedRenderCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkinnedRenderCommand.h; sourceTree = "<group>"; };
+		148C358E227AFC62008CB8B1 /* SkinnedRenderCommand.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SkinnedRenderCommand.cpp; sourceTree = "<group>"; };
 		149C01FD21F4AA320011DAE2 /* GLProgramCache.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GLProgramCache.h; sourceTree = "<group>"; };
 		149C01FE21F4AF910011DAE2 /* GLProgramCache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GLProgramCache.cpp; sourceTree = "<group>"; };
 		14B1AA812258AD99000AB04E /* SkinnedMeshRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkinnedMeshRenderer.h; sourceTree = "<group>"; };
@@ -278,6 +284,17 @@
 			path = Transform;
 			sourceTree = "<group>";
 		};
+		148C3588227AC4E7008CB8B1 /* Commands */ = {
+			isa = PBXGroup;
+			children = (
+				148C358A227AC4E7008CB8B1 /* BaseRenderCommand.h */,
+				148C358B227ADD16008CB8B1 /* BaseRenderCommand.cpp */,
+				148C358D227AFC62008CB8B1 /* SkinnedRenderCommand.h */,
+				148C358E227AFC62008CB8B1 /* SkinnedRenderCommand.cpp */,
+			);
+			path = Commands;
+			sourceTree = "<group>";
+		};
 		149C01FB21F4AA320011DAE2 /* Cache */ = {
 			isa = PBXGroup;
 			children = (
@@ -452,6 +469,7 @@
 		14B9065F21BABC8F00554B0B /* Render */ = {
 			isa = PBXGroup;
 			children = (
+				148C3588227AC4E7008CB8B1 /* Commands */,
 				14E349D021C647AA00EB5785 /* Pass.h */,
 				14E349D121C647AA00EB5785 /* Pass.cpp */,
 				14B9066021BABC8F00554B0B /* Material.h */,
@@ -657,6 +675,7 @@
 				1405E89F21F426F400FBDD71 /* Mesh.cpp in Sources */,
 				14C29E8D220FFB9E00A514BE /* PointLight.cpp in Sources */,
 				14B9068421BABC8F00554B0B /* BaseRender.cpp in Sources */,
+				148C358C227ADD16008CB8B1 /* BaseRenderCommand.cpp in Sources */,
 				14C1CCFF21FF517000470798 /* FileUtils.cpp in Sources */,
 				14B9068921BABC8F00554B0B /* Reference.cpp in Sources */,
 				14B9068621BABC8F00554B0B /* Utils.cpp in Sources */,
@@ -665,6 +684,7 @@
 				14EB11832220184D00D3C29D /* imgui_draw.cpp in Sources */,
 				1469977F220F14B600F4C802 /* BaseLight.cpp in Sources */,
 				14B9067D21BABC8F00554B0B /* glad.c in Sources */,
+				148C358F227AFC62008CB8B1 /* SkinnedRenderCommand.cpp in Sources */,
 				149C01FF21F4AF910011DAE2 /* GLProgramCache.cpp in Sources */,
 				14EB118922201A8B00D3C29D /* BaseGUIPanel.cpp in Sources */,
 				14B45A24220C25AD00FE5777 /* AABBBoundBox.cpp in Sources */,

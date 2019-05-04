@@ -19,6 +19,9 @@ namespace browser
 
 		// init
 		void init();
+        
+        // 每帧前刷新
+        void beforeUpdate(float deltaTime);
 		// 每帧更新
 		void update(float deltaTime);
         

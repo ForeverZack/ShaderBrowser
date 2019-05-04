@@ -155,11 +155,15 @@ namespace customGL
                             unsigned int boneIdx = boneItor->second;
                             
                             browser::Mesh* mesh = m_vMeshes[index];
-                            std::vector<VertexData>& vertices = mesh->getVerticesRef();
-                            if (vertices.size()>0 && vertices[0].boneWeights[0]==0.0f)
+                            glm::vec4* boneWeights = mesh->getBoneWeights();
+                            if (mesh->getVertexCount()>0 && mesh->getMeshType()==Mesh::MeshType::CommonMesh && (!boneWeights || boneWeights[0][0]==0.0f))
                             {
+                                if(!boneWeights)
+                                {
+                                    mesh->initBonesData();
+                                }
                                 // 计算骨骼节点下的变换矩阵（模型空间->骨骼节点空间，因为普通网格渲染器BaseRender会根据Transform来做空间变换，而现在会为骨骼节点建立Transform组件，并会实时更新它）
-                                calculateTrasformMatrix(meshNode, parentNode, globalTransformation);
+                                calculateTransformMatrix(meshNode, parentNode, globalTransformation);
                                 // 绑定模型到骨骼
                                 bindMeshOnSingleBone(mesh, boneIdx, Assimp::ConvertToGLM(globalTransformation));
                             }
@@ -336,18 +340,18 @@ namespace customGL
         if (!material)
         {
             material = Material::createMaterial(defaultProgramName, materialName);
-            MaterialCache::getInstance()->addSharedMaterial(material);
+            MaterialCache::getInstance()->addSharedMaterial(material, true);
         }
         
         return material;
     }
     
-    void Model::calculateTrasformMatrix(aiNode* node, aiNode* endNode, aiMatrix4x4& transformation)
+    void Model::calculateTransformMatrix(aiNode* node, aiNode* endNode, aiMatrix4x4& transformation)
     {
         if(node != endNode)
         {
             transformation = node->mTransformation * transformation;
-            calculateTrasformMatrix(node->mParent, endNode, transformation);
+            calculateTransformMatrix(node->mParent, endNode, transformation);
         }
     }
     
@@ -402,41 +406,49 @@ namespace customGL
             // 注意:如果纹理创建不成功(例如没有找到),应该有一张白色默认纹理来代替,以防程序出问题
             browser::Mesh* mesh = browser::Mesh::create(aiMesh->mNumVertices, aiMesh->mName.C_Str(), aiMesh->HasBones() ? browser::Mesh::MeshType::MeshWithBone : browser::Mesh::MeshType::CommonMesh );
             // 顶点位置
-            mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_POSITION, 4, GL_FLOAT, GL_FALSE, sizeof(VertexData), aiMesh->mVertices);
+            mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_POSITION, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), aiMesh->mVertices);
             // 顶点颜色
 			if (aiMesh->mColors[0] && aiMesh->mColors[1])
 			{
-				mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_COLOR, 4, GL_FLOAT, GL_FALSE, sizeof(VertexData), aiMesh->mColors);
+				mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_COLOR, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), aiMesh->mColors);
 			}
             // 顶点uv坐标
             if (aiMesh->mTextureCoords[0])
             {
-                mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_TEX_COORD, 2, GL_FLOAT, GL_FALSE, sizeof(VertexData), aiMesh->mTextureCoords[0]);
+                mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_TEX_COORD, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), aiMesh->mTextureCoords[0]);
             }
             // 法线
-            mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_NORMAL, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), aiMesh->mNormals);
+            mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_NORMAL, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), aiMesh->mNormals);
             // 切线
-            mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_TANGENT, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), aiMesh->mTangents);
+            mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_TANGENT, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), aiMesh->mTangents);
             // 索引信息
-            mesh->setIndicesInfo([=](std::vector<GLushort>& indices, unsigned int& indexCount) -> void
+            mesh->setIndicesInfo([=](GLushort*& indices, unsigned int& indexCount) -> void
                  {
-                     indices.clear();
                      indexCount = 0;
-                     
                      for(int i=0; i<aiMesh->mNumFaces; ++i)
                      {
                          const aiFace& face = aiMesh->mFaces[i];
                          indexCount += face.mNumIndices;
+                     }
+                     
+                     indices = new GLushort[indexCount];
+                     
+                     int now_index = 0;
+                     for(int i=0; i<aiMesh->mNumFaces; ++i)
+                     {
+                         const aiFace& face = aiMesh->mFaces[i];
                          for(int j=0; j<face.mNumIndices; ++j)
                          {
-                             indices.push_back(face.mIndices[j]);
+                             indices[now_index] = face.mIndices[j];
+                             ++now_index;
                          }
                          
                      }
                  });
 
 			// 骨骼信息
-			std::vector<VertexData>& vertices = mesh->getVerticesRef();
+            glm::uvec4* mesh_boneIndices = mesh->getBoneIndices();
+            glm::vec4* mesh_boneWeights = mesh->getBoneWeights();
 			aiBone* bone = nullptr;
 			aiVertexWeight * vertexWeight = nullptr;
 			unsigned int boneIdx;
@@ -463,25 +475,26 @@ namespace customGL
 				for (unsigned int w = 0; w < bone->mNumWeights; ++w)
 				{
 					vertexWeight = &(bone->mWeights[w]);
-					VertexData& vertexData = vertices[vertexWeight->mVertexId];
+                    glm::uvec4& vertexBoneIndices = mesh_boneIndices[vertexWeight->mVertexId];
+                    glm::vec4& vertexBoneWeights = mesh_boneWeights[vertexWeight->mVertexId];
 					
 					// 一个顶点最多能被4个骨骼控制，这里我们要在这个数组中找到第一个空着的骨骼信息
 					for (unsigned int j = 0; j < 4; ++j)
 					{
-						if (vertexData.boneWeights[j] != 0.0f)
+						if (vertexBoneWeights[j] != 0.0f)
 						{
 							continue;
 						}
 
-						vertexData.boneIndices[j] = boneIdx;
-						vertexData.boneWeights[j] = vertexWeight->mWeight;
+						vertexBoneIndices[j] = boneIdx;
+						vertexBoneWeights[j] = vertexWeight->mWeight;
 						break;
 					}
 				}
 				
 			}
-			mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_BONE_IDS, 4, GL_UNSIGNED_INT, GL_FALSE, sizeof(VertexData), nullptr);
-			mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_BONE_WEIGHTS, 4, GL_FLOAT, GL_FALSE, sizeof(VertexData), nullptr);
+            mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_BONE_IDS, 4, GL_UNSIGNED_INT, GL_FALSE, sizeof(glm::uvec4), nullptr);
+            mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_BONE_WEIGHTS, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), nullptr);
             // 增加骨骼id偏移
             boneOffset += currentBoneOffset;
 
@@ -783,17 +796,17 @@ namespace customGL
             return false;
         }
         
-        std::vector<VertexData>& vertices = mesh->getVerticesRef();
-        for (auto itor=vertices.begin(); itor!=vertices.end(); ++itor)
+        glm::vec4* vertices = mesh->getVertices22();
+        glm::uvec4* boneIndices = mesh->getBoneIndices();
+        glm::vec4* boneWeights = mesh->getBoneWeights();
+        for (int i=0; i<mesh->getVertexCount(); ++i)
         {
-            VertexData& vertex = (*itor);
+            vertices[i] = transformation * vertices[i];
             
-            vertex.position = transformation * vertex.position;
-            
-            vertex.boneIndices = GLM_VEC4_ZERO;
-            vertex.boneWeights = GLM_VEC4_ZERO;
-            vertex.boneIndices[0] = boneIdx;
-            vertex.boneWeights[0] = 1.0f;
+            boneIndices[i] = GLM_VEC4_ZERO;
+            boneWeights[i] = GLM_VEC4_ZERO;
+            boneIndices[i][0] = boneIdx;
+            boneWeights[i][0] = 1.0f;
         }
         
         return true;

@@ -61,6 +61,7 @@ namespace browser
 		for (auto itor = m_vMaterials.begin(); itor != m_vMaterials.end(); ++itor)
 		{
 			inspector->addPropertyText("Materials : " + (*itor)->getMaterialName());
+            inspector->addPropertyText("    sharedId : " + std::to_string((*itor)->getSharedId()));
 		}
 	}
     

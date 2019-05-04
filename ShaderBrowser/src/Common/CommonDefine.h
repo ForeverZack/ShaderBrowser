@@ -34,6 +34,9 @@ namespace common
         // 天空盒
         SkyBox = 5,
         
+        // 投射阴影
+        CastShadows = 50,
+        
         // 几何
         Geometry = 1000,
         

@@ -18,8 +18,8 @@ namespace common
         // 初始化
         void init();
         // 添加
-        void addSharedMaterial(Material* material);
-        Material* addSharedMaterial(const std::string& materialName = browser::Material::DEFAULT_MATERIAL_NAME);
+        void addSharedMaterial(Material* material, bool isDefault = false);
+        Material* addSharedMaterial(const std::string& materialName = browser::Material::DEFAULT_MATERIAL_NAME, bool isDefault = false);
         // 移除
         void removeSharedMaterial(Material* material);
         void removeSharedMaterial(unsigned int materialId);

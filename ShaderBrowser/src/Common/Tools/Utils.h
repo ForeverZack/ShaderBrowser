@@ -38,10 +38,27 @@ namespace common
         std::cout<<mat4[0][1]<<", "<<mat4[1][1]<<", "<<mat4[2][1]<<", "<<mat4[3][1]<<endl;\
         std::cout<<mat4[0][2]<<", "<<mat4[1][2]<<", "<<mat4[2][2]<<", "<<mat4[3][2]<<endl;\
         std::cout<<mat4[0][3]<<", "<<mat4[1][3]<<", "<<mat4[2][3]<<", "<<mat4[3][3]<<endl;
+    // 打印vec2
+    #define BROWSER_LOG_VEC2(vec2) std::cout<<vec2[0]<<", "<<vec2[1]<<endl;
     // 打印vec3
     #define BROWSER_LOG_VEC3(vec3) std::cout<<vec3[0]<<", "<<vec3[1]<<", "<<vec3[2]<<endl;
     // 打印quaternion
     #define BROWSER_LOG_QUATERNION(quat) std::cout<<quat.x<<", "<<quat.y<<", "<<quat.z<<", "<<quat.w<<endl;
+    
+    // 安全删除指针
+    #define BROWSER_SAFE_RELEASE_POINTER(pointerName)   \
+        if (pointerName)    \
+        {   \
+            delete pointerName; \
+            pointerName = nullptr;  \
+        }
+    // 安全删除指针数组
+    #define BROWSER_SAFE_RELEASE_ARRAY_POINTER(pointerName)   \
+        if (pointerName)    \
+        {   \
+            delete[] pointerName; \
+            pointerName = nullptr;  \
+        }
 
 	// 断言(如果不满足条件，会中断)
 	void BROWSER_ASSERT(bool condition, const char* msg);
@@ -55,7 +72,7 @@ namespace common
 	{
 	public:
 		// 读取文件（shader）
-		static const GLchar* readFile(const char* filename);
+		static GLchar* readFile(const char* filename);
 
         // 创建VertexAttribDeclaration
         static VertexAttribDeclaration* createVertexAttribDeclaration(GLuint location, GLint size, GLenum type, GLboolean normalized, GLsizei stride);

@@ -107,7 +107,7 @@ namespace customGL
         // 读取纹理数据
         void readTextureData(browser::Mesh* mesh, aiMaterial* material, aiTextureType type, const char* uniformName = GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_TEXUTRE0]);
         // 计算到endNode空间下的变换矩阵，用来将模型空间下的网格坐标，转换到骨骼节点下。(应该只有含有骨骼的模型中，包含普通网格模型(没有绑定骨骼，只是单纯的放在骨骼节点下，需要用代码手动绑定)时才需要用到，因为这部分网格模型的顶点坐标是模型空间的，他们的原点是RootNode。如果自己单独创建了一个不相干的模型(有自己的原点)，则不需要这个空间变换)
-        void calculateTrasformMatrix(aiNode* node, aiNode* endNode, aiMatrix4x4& transformation);
+        void calculateTransformMatrix(aiNode* node, aiNode* endNode, aiMatrix4x4& transformation);
 
 		// 递归遍历模型，生成Entity
 		BaseEntity* traverseNodeAndCreateEntity(aiNode* node, BaseEntity* parent, BaseEntity* root);
@@ -204,9 +204,9 @@ namespace customGL
 		// 
 		// 辅助数据：（用来显示骨骼）
 		// 骨骼顶点数据 
-		std::vector<VertexData> m_vSkeletonVertices;
+//        std::vector<VertexData> m_vSkeletonVertices;
 		// 骨骼索引
-		std::vector<glm::uvec2> m_vSkieletonIndices;
+//        std::vector<glm::uvec2> m_vSkieletonIndices;
 	};
 }
 

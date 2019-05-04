@@ -53,6 +53,10 @@ namespace browser
         
         // 清除
         m_mVertices.clear();
+        m_mBoneIndices.clear();
+        m_mBoneWeights.clear();
+        m_mNormals.clear();
+        m_mTangents.clear();
         m_mBonesPosition.clear();
         m_mBonesRotation.clear();
         m_mBonesScale.clear();
@@ -99,12 +103,18 @@ namespace browser
             m_mBonesRotation.reserve(m_oSrcModel->getBoneNum());
             m_mBonesScale.reserve(m_oSrcModel->getBoneNum());
             m_mVertices.clear();
+            m_mBoneIndices.clear();
+            m_mBoneIndices.clear();
+            m_mNormals.clear();
+            m_mTangents.clear();
             const std::vector<Mesh*>& meshes = m_oSrcModel->getMeshes();
             for(auto itor=meshes.begin(); itor!=meshes.end(); ++itor)
             {
-                std::vector<VertexData> vertices;
-                vertices.resize((*itor)->getVertexCount());
-                m_mVertices.emplace((*itor), std::move(vertices));
+                m_mVertices.emplace((*itor), new glm::vec4[(*itor)->getVertexCount()]);
+                m_mBoneIndices.emplace((*itor), new glm::uvec4[(*itor)->getVertexCount()]);
+                m_mBoneWeights.emplace((*itor), new glm::vec4[(*itor)->getVertexCount()]);
+                m_mNormals.emplace((*itor), new glm::vec3[(*itor)->getVertexCount()]);
+                m_mTangents.emplace((*itor), new glm::vec3[(*itor)->getVertexCount()]);
             }
         }
 
@@ -132,12 +142,18 @@ namespace browser
             m_mBonesRotation.reserve(m_oSrcModel->getBoneNum());
             m_mBonesScale.reserve(m_oSrcModel->getBoneNum());
             m_mVertices.clear();
+            m_mBoneIndices.clear();
+            m_mBoneIndices.clear();
+            m_mNormals.clear();
+            m_mTangents.clear();
             const std::vector<Mesh*>& meshes = m_oSrcModel->getMeshes();
             for(auto itor=meshes.begin(); itor!=meshes.end(); ++itor)
             {
-                std::vector<VertexData> vertices;
-                vertices.resize((*itor)->getVertexCount());
-                m_mVertices.emplace((*itor), std::move(vertices));
+                m_mVertices.emplace((*itor), new glm::vec4[(*itor)->getVertexCount()]);
+                m_mBoneIndices.emplace((*itor), new glm::uvec4[(*itor)->getVertexCount()]);
+                m_mBoneWeights.emplace((*itor), new glm::vec4[(*itor)->getVertexCount()]);
+                m_mNormals.emplace((*itor), new glm::vec3[(*itor)->getVertexCount()]);
+                m_mTangents.emplace((*itor), new glm::vec3[(*itor)->getVertexCount()]);
             }
         }
         
@@ -298,33 +314,56 @@ namespace browser
                 const std::vector<Mesh*>& meshes = m_oSrcModel->getMeshes();
                 for(auto itor=meshes.begin(); itor!=meshes.end(); ++itor)
                 {
-                    const std::vector<VertexData>& vertices = (*itor)->getVertices();
-                    m_mVertices[(*itor)].assign(vertices.begin(), vertices.end());
+                    glm::vec4* vertices = (*itor)->getVertices22();
+                    glm::uvec4* boneIndices = (*itor)->getBoneIndices();
+                    glm::vec4* boneWeights = (*itor)->getBoneWeights();
+                    glm::vec3* normals = (*itor)->getNormals();
+                    glm::vec3* tangents = (*itor)->getTangents();
+                    
+                    glm::vec4* dst_vertices = m_mVertices[(*itor)];
+                    glm::uvec4* dst_boneIndices = m_mBoneIndices[(*itor)];
+                    glm::vec4* dst_boneWeights = m_mBoneWeights[(*itor)];
+                    glm::vec3* dst_normals = m_mNormals[(*itor)];
+                    glm::vec3* dst_tangents = m_mTangents[(*itor)];
+                    for(int i=0; i<(*itor)->getVertexCount(); ++i)
+                    {
+                        dst_vertices[i] = vertices[i];
+                        dst_boneIndices[i] = boneIndices[i];
+                        dst_boneWeights[i] = boneWeights[i];
+                        dst_normals[i] = normals[i];
+                        dst_tangents[i] = tangents[i];
+                    }
+                    
                 }
                 // 根据骨骼矩阵，计算新的顶点位置、法线和切线
                 glm::mat4 skinning;
                 bool hasSkinning;
                 for(auto itor=m_mVertices.begin(); itor!=m_mVertices.end(); ++itor)
                 {
-                    std::vector<VertexData>& vertices = itor->second;
-                    for(int i=0; i<vertices.size(); ++i)
+                    glm::vec4* vertices = itor->second;
+                    glm::uvec4* boneIndices = m_mBoneIndices[itor->first];
+                    glm::vec4* boneWeights = m_mBoneWeights[itor->first];
+                    glm::vec3* normals = m_mNormals[itor->first];
+                    glm::vec3* tangents = m_mTangents[itor->first];
+                    for(int i=0; i<itor->first->getVertexCount(); ++i)
                     {
-                        VertexData& vertex = vertices[i];
+                        glm::uvec4& vertexBoneIndices = boneIndices[i];
+                        glm::vec4& vertexBoneWeights = boneWeights[i];
                         
                         // 计算蒙皮矩阵（顶点的骨骼变换矩阵，每个顶点最多被4个骨骼控制）
-                        skinning = m_vBonesMatrix[vertex.boneIndices[0]] * vertex.boneWeights[0]
-                        + m_vBonesMatrix[vertex.boneIndices[1]] * vertex.boneWeights[1]
-                        + m_vBonesMatrix[vertex.boneIndices[2]] * vertex.boneWeights[2]
-                        + m_vBonesMatrix[vertex.boneIndices[3]] * vertex.boneWeights[3];
+                        skinning = m_vBonesMatrix[vertexBoneIndices[0]] * vertexBoneWeights[0]
+                        + m_vBonesMatrix[vertexBoneIndices[1]] * vertexBoneWeights[1]
+                        + m_vBonesMatrix[vertexBoneIndices[2]] * vertexBoneWeights[2]
+                        + m_vBonesMatrix[vertexBoneIndices[3]] * vertexBoneWeights[3];
                         
                         
                         //BROWSER_LOG_MAT4(skinning);
                         // 计算变换后的顶点位置、法线等信息
                         if (skinning != GLM_MAT4_ZERO)
                         {
-                            vertex.position = skinning * vertex.position;
-                            vertex.normal = skinning * glm::vec4(vertex.normal, 0.0f);
-                            vertex.tangent = skinning * glm::vec4(vertex.tangent, 0.0f);
+                            vertices[i] = skinning * vertices[i];
+                            normals[i] = skinning * glm::vec4(normals[i], 0.0f);
+                            tangents[i] = skinning * glm::vec4(tangents[i], 0.0f);
                         }
                         
                     }

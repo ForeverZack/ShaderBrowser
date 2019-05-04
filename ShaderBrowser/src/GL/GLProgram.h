@@ -3,8 +3,11 @@
 
 #include <glad/glad.h>
 #include <glm/glm.hpp>
+#include <vector>
 #include <unordered_map>
 #include <string>
+#include "Common/Components/Reference.h"
+
 
 namespace customGL
 {
@@ -13,7 +16,7 @@ namespace customGL
 	// 最大支持骨骼矩阵数量
 	static const int MAX_BONES_COUNT = 100;
     
-	class GLProgram
+    class GLProgram : public common::Reference
 	{
 	public:
 		// 默认GLProgram名称(网格模型着色器)
@@ -67,6 +70,8 @@ namespace customGL
 
 			// 骨骼矩阵
 			UNIFORM_CGL_BONES_MATRIX,
+            // 动态合批用的model矩阵
+            UNIFORM_CGL_DYNAMIC_BATCH_MODEL_MATRIX,
             
             
             // 预定义Uniform变量个数
@@ -87,11 +92,14 @@ namespace customGL
 
 	public:
 		static GLProgram* create(const char* vertSrc, const char* fragSrc);
+        static GLProgram* createAndSaveSource(const char* vertSrc, const char* fragSrc);
 
 	public:
 		GLProgram();
 		~GLProgram();
 
+        // 拷贝glProgram
+        GLProgram* clone();
 		// 使用着色器程序
 		void useProgram();
 		// 更新预定义uniform位置
@@ -114,12 +122,15 @@ namespace customGL
 
 	private:
 		// 初始化着色器程序
-		bool initProgram(const char* vertSrc, const char* fragSrc);
+		bool initProgram(const char* vertSrc, const char* fragSrc, bool saveSource = false);
+        bool cloneProgram(GLProgram* srcGLProgram);
 		// 创建着色器
-		bool createShader(GLenum type, GLuint& shader, const char* shaderSrc);
+		bool createShader(GLenum type, GLuint& shader, const char* shaderSrc, bool saveSource);
+        bool createShader(GLenum type, GLuint& shader, const char* shaderSource);
 		// 绑定预定义的顶点属性变量位置
 		void bindPredefinedVertexAttribs();
-        
+        // 获取存储着色器源码的指针
+        GLchar*& getSourceSavePointer(GLenum type);
 
 
 	private:
@@ -138,7 +149,12 @@ namespace customGL
 		// 纹理单元计数
 		GLuint m_uTextureUnitIndex;
 
-		std::string m_Path;
+
+        // 顶点着色器源码
+        GLchar* m_sVertexSource;
+        // 片段着色器源码
+        GLchar* m_sFragSource;
+
 	};
 }
 

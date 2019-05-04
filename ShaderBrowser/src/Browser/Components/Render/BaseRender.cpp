@@ -40,6 +40,7 @@ namespace browser
 		for (auto itor = m_vMaterials.begin(); itor != m_vMaterials.end(); ++itor)
 		{
 			inspector->addPropertyText("Materials : " + (*itor)->getMaterialName());
+            inspector->addPropertyText("    sharedId : " + std::to_string((*itor)->getSharedId()));
 		}
 	}
 
@@ -86,13 +87,7 @@ namespace browser
 
 	Material* BaseRender::createMaterial(const std::string& programName, const std::string& materialName /*= Material::DEFAULT_MATERIAL_NAME*/)
 	{
-		// 缓存中获取glProgram
-		GLProgram* program = GLProgramCache::getInstance()->getGLProgram(programName);
-		// （注意！！！Pass中会存储uniform的值，所以要考虑好pass能不能复用，可以给场景物体一个isStatic选项，让他们可以合批noMVP。cocos中只有使用了noMVP的才能复用，所以暂时不对pass做cache处理）
-		Pass* pass = Pass::createPass(program);
-
-		Material* material = Material::createMaterial(materialName);
-		material->addPass(pass);
+		Material* material = Material::createMaterial(programName, materialName);
 
 		return material;
 	}

@@ -75,6 +75,14 @@ namespace customGL
         // 绕惯性坐标系旋转（z-x-y）
         World,
     };
+    // 顶点数据类型
+    enum VertexDataType
+    {
+        // 基础
+        Base = 0,
+        // 带骨骼
+        BaseBones,
+    };
     
     // 单个顶点数据结构
     class VertexData
@@ -107,7 +115,7 @@ namespace customGL
     };
     
     // 单个顶点数据结构（含骨骼）
-    class VertexDataWithBone
+    class VertexDataWithBone : public VertexData
     {
     public:
         VertexDataWithBone()
@@ -120,16 +128,6 @@ namespace customGL
         }
         
     public:
-        // 位置
-        glm::vec4 position;
-        // 顶点颜色
-        glm::vec4 color;
-        // 主纹理uv
-        glm::vec2 uv_main;
-        // 法线
-        glm::vec3 normal;
-        // 切线
-        glm::vec3 tangent;
         // 骨骼id索引    (一个顶点最多被4根骨骼所影响)
         glm::uvec4 boneIndices;
         // 骨骼权重
@@ -142,20 +140,24 @@ namespace customGL
     {
     public:
         VertexAttribDeclaration()
-        : index(-1)
+        : data_type(VertexDataType::Base)
+        , index(-1)
         , size(3)
         , type(GL_FLOAT)
         , normalized(GL_FALSE)
         , stride(0)
         , pointer(nullptr)
         , name("")
-        {}
+        {
+        }
         ~VertexAttribDeclaration()
         {
         }
         
     public:
         // 必须填写的属性
+        // 顶点属性类型
+        VertexDataType data_type;
         // index: 指定要修改的顶点属性的索引值
         GLuint index;
         // size: 指定每个顶点属性的组件数量。必须为1、2、3或者4。初始值为4。（如position是由3个（x,y,z）组成，而颜色是4个（r,g,b,a））
@@ -254,11 +256,16 @@ namespace customGL
         void setVec4(const glm::vec4& value);
         void setTex2D(GLuint textureId);
         
+        const glm::mat4& getMat4();
+        
         
         // 更新设置GLProgram的数值
-        void updateGLProgramUniformValue(GLProgram* glProgram, std::string uniformName);
+        void updateGLProgramUniformValue(GLProgram* glProgram, std::string uniformName, bool forceUpdate = false);
         
-    protected:
+        // 重置dirty 标记
+        void resetDirty();
+        
+    public:
         // uniform数据是否改变了
         bool m_bDirty;
         // uniform数值类型

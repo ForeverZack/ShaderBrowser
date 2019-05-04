@@ -41,12 +41,28 @@ namespace browser
 		// 使用材质的第几个Pass
 		// TODO: 这里实际上应该根据pass的类型来决定，而不是根据index ( 这里的类型也跟渲染队列有关，比方说如果在进行阴影深度贴图的渲染，应该使用对应的简单的pass )
 		void useMaterial(Mesh* mesh, Transform* transform, Camera* camera, int index = 0);
-		Pass* getUsePass(int index = 0);
+        
+
+        // 添加\设置uniform
+        void setUniformInt(const std::string& uniformName, int value);
+        void setUniformFloat(const std::string& uniformName, float value);
+        void setUniformMat3(const std::string& uniformName, const glm::mat3& value);
+        void setUniformMat3x4(const std::string& uniformName, const glm::mat3x4& value);
+        void setUniformMat4(const std::string& uniformName, const glm::mat4& value);
+        void setUniformMat4x3(const std::string& uniformName, const glm::mat4x3& value);
+        void setUniformFloatV(const std::string& uniformName, int size, const float* value);
+        void setUniformV2f(const std::string& uniformName, const glm::vec2& value);
+        void setUniformV3f(const std::string& uniformName, const glm::vec3& value);
+        void setUniformV4f(const std::string& uniformName, const glm::vec4& value);
+        void setUniformTex2D(const std::string& uniformName, GLuint textureId);
 
 
         REGISTER_PROPERTY_GET_SET(unsigned int, m_uMaterialId, MaterialId)
 		REGISTER_PROPERTY_CONSTREF_GET(std::vector<Pass*>, m_vPass, Pass)
 		REGISTER_PROPERTY_CONSTREF_GET(std::string, m_sMaterialName, MaterialName)
+        REGISTER_PROPERTY_GET_SET(unsigned int, m_uSharedId, SharedId)
+        REGISTER_PROPERTY_GET_SET(bool, m_bDefaultMaterialFlag, DefaultMaterialFlag)
+        REGISTER_PROPERTY_GET_SET(RenderQueue, m_eQueue, RenderQueue)
 
 	private:
         // id
@@ -59,8 +75,10 @@ namespace browser
         std::unordered_map<std::string, UniformValue> m_mUniforms;
         // Pass队列
         std::vector<Pass*> m_vPass;
-        // 是否是共享材质
-        bool m_bSharedFlag;
+        // 是否使用gpuInstance
+        bool m_bGpuInstance;
+        // 共享材质Id  TODO: 如果不是共享材质，也可以从这个id找到对应的共享材质
+        unsigned int m_uSharedId;
         // 是否是默认材质
         bool m_bDefaultMaterialFlag;
         // 是否透明
@@ -76,6 +94,15 @@ namespace browser
 
         // 混合
         // ...
+        
+        
+        
+        // 一些其他属性
+        // 是否已经初始化mesh的原始color
+        bool m_bInitColorProperties;
+        // 当前渲染用的相机
+        Camera* m_oCurCamera;
+        
         
         
 	};

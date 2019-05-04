@@ -19,7 +19,7 @@ namespace common
         }
     }
 
-	const GLchar* Utils::readFile(const char* filename)
+	GLchar* Utils::readFile(const char* filename)
 	{
 #ifdef _WIN32
         // WIN32
@@ -48,7 +48,7 @@ namespace common
 
 		source[len] = 0;
 
-		return const_cast<const GLchar*>(source);
+		return source;
 	}
     
     VertexAttribDeclaration* Utils::createVertexAttribDeclaration(GLuint location, GLint size, GLenum type, GLboolean normalized, GLsizei stride)

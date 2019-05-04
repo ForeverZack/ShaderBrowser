@@ -9,13 +9,13 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "ShaderBrowser/src/Browser/Components/Render/BaseRender.cpp"
-            timestampString = "577548453.299044"
+            filePath = "ShaderBrowser/src/Browser/Components/Mesh/Mesh.cpp"
+            timestampString = "578632027.551267"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "48"
-            endingLineNumber = "48"
-            landmarkName = "BaseRender::init(const std::string&amp; materialName, const std::string&amp; programName)"
+            startingLineNumber = "192"
+            endingLineNumber = "192"
+            landmarkName = "Mesh::setIndicesInfo(GLushort* data, unsigned int length)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -25,13 +25,29 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "ShaderBrowser/src/Browser/Components/Render/Pass.cpp"
-            timestampString = "576946735.690861"
+            filePath = "ShaderBrowser/src/Browser/Components/Mesh/Mesh.cpp"
+            timestampString = "578632027.551312"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "33"
-            endingLineNumber = "33"
-            landmarkName = "Pass::setUniformsFromMaterial(std::unordered_map&lt;std::string, UniformValue&gt;* uniforms)"
+            startingLineNumber = "186"
+            endingLineNumber = "186"
+            landmarkName = "Mesh::setIndicesInfo(GLushort* data, unsigned int length)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ShaderBrowser/src/Browser/Components/Render/Commands/BaseRenderCommand.cpp"
+            timestampString = "578591054.036323"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "46"
+            endingLineNumber = "46"
+            landmarkName = "BaseRenderCommand::draw()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -42,12 +58,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ShaderBrowser/src/Browser/System/RenderSystem.cpp"
-            timestampString = "577548453.29914"
+            timestampString = "578591054.036463"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "451"
-            endingLineNumber = "451"
-            landmarkName = "RenderSystem::forwardRenderScene(Camera* camera, float deltaTime)"
+            startingLineNumber = "111"
+            endingLineNumber = "111"
+            landmarkName = "RenderSystem::flushRenders()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -57,13 +73,13 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "ShaderBrowser/src/GL/GLDefine.cpp"
-            timestampString = "577523924.9062769"
+            filePath = "ShaderBrowser/src/Browser/System/RenderSystem.cpp"
+            timestampString = "578591054.0366009"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "186"
-            endingLineNumber = "186"
-            landmarkName = "UniformValue::updateGLProgramUniformValue(GLProgram* glProgram, std::string uniformName)"
+            startingLineNumber = "112"
+            endingLineNumber = "112"
+            landmarkName = "RenderSystem::flushRenders()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -73,13 +89,13 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "ShaderBrowser/src/Browser/Components/Render/Pass.cpp"
-            timestampString = "576946735.690989"
+            filePath = "ShaderBrowser/src/Browser/System/RenderSystem.cpp"
+            timestampString = "578591054.0366451"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "227"
-            endingLineNumber = "227"
-            landmarkName = "Pass::usePass(Mesh* mesh, Transform* transform, Camera* camera)"
+            startingLineNumber = "125"
+            endingLineNumber = "125"
+            landmarkName = "RenderSystem::flushRenders()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -89,13 +105,13 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "ShaderBrowser/src/Browser/Components/Render/Pass.cpp"
-            timestampString = "576946735.691029"
+            filePath = "ShaderBrowser/src/Browser/Components/Render/Commands/SkinnedRenderCommand.cpp"
+            timestampString = "578591054.036688"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "178"
-            endingLineNumber = "178"
-            landmarkName = "Pass::setUniformV4f(const std::string&amp; uniformName, const glm::vec4&amp; value)"
+            startingLineNumber = "37"
+            endingLineNumber = "37"
+            landmarkName = "SkinnedRenderCommand::draw()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -105,14 +121,158 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "ShaderBrowser/src/Common/Tools/Utils.cpp"
-            timestampString = "577534975.668637"
+            filePath = "ShaderBrowser/src/Browser/System/RenderSystem.cpp"
+            timestampString = "578591054.036855"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "18"
-            endingLineNumber = "18"
-            landmarkName = "BROWSER_WARNING(bool condition, const char* msg)"
-            landmarkType = "9">
+            startingLineNumber = "174"
+            endingLineNumber = "174"
+            landmarkName = "RenderSystem::setupVAO(GLuint vao, unsigned int vbos[], const std::unordered_map&lt;GLuint, VertexAttribDeclaration*&gt;&amp; declarations)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ShaderBrowser/src/Browser/System/RenderSystem.cpp"
+            timestampString = "578591054.036895"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "400"
+            endingLineNumber = "400"
+            landmarkName = "RenderSystem::renderScene(Camera* camera, float deltaTime)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ShaderBrowser/src/Browser/System/RenderSystem.cpp"
+            timestampString = "578591054.036932"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "426"
+            endingLineNumber = "426"
+            landmarkName = "RenderSystem::renderScene(Camera* camera, float deltaTime)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ShaderBrowser/src/Browser/Components/Mesh/Mesh.cpp"
+            timestampString = "578632027.551404"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "71"
+            endingLineNumber = "71"
+            landmarkName = "Mesh::setupVAO()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ShaderBrowser/src/Browser/System/RenderSystem.cpp"
+            timestampString = "578591054.0370049"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "355"
+            endingLineNumber = "355"
+            landmarkName = "RenderSystem::renderScene(Camera* camera, float deltaTime)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ShaderBrowser/src/Browser/System/RenderSystem.cpp"
+            timestampString = "578591054.0370409"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "364"
+            endingLineNumber = "364"
+            landmarkName = "RenderSystem::renderScene(Camera* camera, float deltaTime)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ShaderBrowser/src/Browser/System/RenderSystem.cpp"
+            timestampString = "578591054.037074"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "372"
+            endingLineNumber = "372"
+            landmarkName = "RenderSystem::renderScene(Camera* camera, float deltaTime)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ShaderBrowser/src/GL/Model.cpp"
+            timestampString = "578591054.0371079"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "354"
+            endingLineNumber = "354"
+            landmarkName = "Model::calculateTransformMatrix(aiNode* node, aiNode* endNode, aiMatrix4x4&amp; transformation)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ShaderBrowser/src/GL/Model.cpp"
+            timestampString = "578591054.037481"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "351"
+            endingLineNumber = "351"
+            landmarkName = "Model::calculateTransformMatrix(aiNode* node, aiNode* endNode, aiMatrix4x4&amp; transformation)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ShaderBrowser/src/GL/Model.cpp"
+            timestampString = "578591054.037666"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "159"
+            endingLineNumber = "159"
+            landmarkName = "Model::initWithFile(const char* fileName, const std::vector&lt;std::string&gt;&amp; animFiles, unsigned int pFlags)"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>
