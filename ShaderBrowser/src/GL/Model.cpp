@@ -765,6 +765,7 @@ namespace customGL
 		}
 
 		// 当前节点是否含有骨骼
+        // 之前从来没有注意过mOffsetMatrix，其实mOffsetMatrix很重要，是用来将网格中模型空间的顶点转换到骨骼空间中，变换到骨骼空间后才可以使用骨骼矩阵！！！
 		auto boneItor = m_mBonesIdMap.find(std::string(node->mName.C_Str()));
 		if (boneItor != m_mBonesIdMap.end())
 		{

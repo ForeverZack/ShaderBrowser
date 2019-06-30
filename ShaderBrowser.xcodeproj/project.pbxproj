@@ -16,6 +16,8 @@
 		147BBAF9222277EF00B3079B /* HierarchyPanel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 147BBAF8222277EE00B3079B /* HierarchyPanel.cpp */; };
 		148177B621D8A86D0037E11D /* Transform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 148177B421D8A86C0037E11D /* Transform.cpp */; };
 		148177B921D8CB5E0037E11D /* TransformSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 148177B821D8CB5E0037E11D /* TransformSystem.cpp */; };
+		1486090422C8EC8000DD1B96 /* BinaryFileUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1486090222C8EC8000DD1B96 /* BinaryFileUtils.cpp */; };
+		1486090622C8ED2600DD1B96 /* libflatbuffers.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1486090522C8ED2600DD1B96 /* libflatbuffers.a */; };
 		148C358C227ADD16008CB8B1 /* BaseRenderCommand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 148C358B227ADD16008CB8B1 /* BaseRenderCommand.cpp */; };
 		148C358F227AFC62008CB8B1 /* SkinnedRenderCommand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 148C358E227AFC62008CB8B1 /* SkinnedRenderCommand.cpp */; };
 		14941422221EF7B200A735DA /* libassimp.4.1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 14FF768421C4B6D80008462D /* libassimp.4.1.0.dylib */; };
@@ -101,6 +103,9 @@
 		148177B521D8A86C0037E11D /* Transform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Transform.h; sourceTree = "<group>"; };
 		148177B721D8CB5E0037E11D /* TransformSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TransformSystem.h; sourceTree = "<group>"; };
 		148177B821D8CB5E0037E11D /* TransformSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TransformSystem.cpp; sourceTree = "<group>"; };
+		1486090222C8EC8000DD1B96 /* BinaryFileUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BinaryFileUtils.cpp; sourceTree = "<group>"; };
+		1486090322C8EC8000DD1B96 /* BinaryFileUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BinaryFileUtils.h; sourceTree = "<group>"; };
+		1486090522C8ED2600DD1B96 /* libflatbuffers.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libflatbuffers.a; path = ShaderBrowser/src/Plugins/flatbuffer/lib/mac/libflatbuffers.a; sourceTree = "<group>"; };
 		148C358A227AC4E7008CB8B1 /* BaseRenderCommand.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BaseRenderCommand.h; sourceTree = "<group>"; };
 		148C358B227ADD16008CB8B1 /* BaseRenderCommand.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BaseRenderCommand.cpp; sourceTree = "<group>"; };
 		148C358D227AFC62008CB8B1 /* SkinnedRenderCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkinnedRenderCommand.h; sourceTree = "<group>"; };
@@ -204,6 +209,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1486090622C8ED2600DD1B96 /* libflatbuffers.a in Frameworks */,
 				14941422221EF7B200A735DA /* libassimp.4.1.0.dylib in Frameworks */,
 				14B902F921BA9CF800554B0B /* IOKit.framework in Frameworks */,
 				14B902F721BA9CED00554B0B /* Cocoa.framework in Frameworks */,
@@ -326,6 +332,7 @@
 		14B902EF21BA9CCB00554B0B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1486090522C8ED2600DD1B96 /* libflatbuffers.a */,
 				14EAC0B8221EEBB700981AF7 /* libAntTweakBar.dylib */,
 				14EAC0B6221EEB9D00981AF7 /* libAntTweakBar.a */,
 				14FF768421C4B6D80008462D /* libassimp.4.1.0.dylib */,
@@ -498,6 +505,8 @@
 			children = (
 				14EB11712220172700D3C29D /* UI */,
 				14C1CD0021FF517A00470798 /* BaseSingleton.h */,
+				1486090322C8EC8000DD1B96 /* BinaryFileUtils.h */,
+				1486090222C8EC8000DD1B96 /* BinaryFileUtils.cpp */,
 				14C1CCFD21FF517000470798 /* FileUtils.h */,
 				14C1CCFE21FF517000470798 /* FileUtils.cpp */,
 				14B9066721BABC8F00554B0B /* Utils.h */,
@@ -658,6 +667,7 @@
 				14E723E621E8C31E002A8A89 /* MeshFilter.cpp in Sources */,
 				14B9068521BABC8F00554B0B /* BaseComponent.cpp in Sources */,
 				14B9068A21BABC8F00554B0B /* Image.cpp in Sources */,
+				1486090422C8EC8000DD1B96 /* BinaryFileUtils.cpp in Sources */,
 				14E143172208115B001A2EB1 /* GLStateCache.cpp in Sources */,
 				14B9068221BABC8F00554B0B /* RenderSystem.cpp in Sources */,
 				14B9068B21BABC8F00554B0B /* GLProgram.cpp in Sources */,
@@ -833,6 +843,8 @@
 					"\"$(SRCROOT)/ShaderBrowser/src\"",
 					"\"$(SRCROOT)/ShaderBrowser/src/Plugins/stb\"",
 					"\"$(SRCROOT)/ShaderBrowser/src/Plugins/imgui\"",
+					"\"$(SRCROOT)/ShaderBrowser/src/Plugins/flatbuffer/include\"",
+					"\"$(SRCROOT)/ShaderBrowser/src/Plugins/flatbuffer/generated_header\"",
 				);
 				LD_RUNPATH_SEARCH_PATHS = "$(PROJECT_DIR)/ShaderBrowser/src/Plugins/assimp/lib/mac";
 				LIBRARY_SEARCH_PATHS = (
@@ -841,6 +853,7 @@
 					"$(PROJECT_DIR)/ShaderBrowser/src/Plugins/GLFW/lib/mac",
 					"$(PROJECT_DIR)/ShaderBrowser/src/Plugins/GLFW/lib/win32",
 					"$(PROJECT_DIR)/ShaderBrowser/src/Plugins/assimp/lib/mac",
+					"$(PROJECT_DIR)/ShaderBrowser/src/Plugins/flatbuffer/lib/mac",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -856,6 +869,7 @@
 					"$(PROJECT_DIR)/ShaderBrowser/src/Plugins/GLFW/lib/win32",
 					"$(PROJECT_DIR)/ShaderBrowser/src/Plugins/assimp/lib/mac",
 					"$(PROJECT_DIR)/ShaderBrowser/src/Plugins/AntTweakBar/lib/mac",
+					"$(PROJECT_DIR)/ShaderBrowser/src/Plugins/flatbuffer/lib/mac",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};

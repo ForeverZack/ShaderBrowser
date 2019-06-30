@@ -22,6 +22,7 @@
 #include "Browser/System/LightSystem.h"
 #include "Browser/System/AnimationSystem.h"
 #include "Common/Tools/FileUtils.h"
+#include "Common/Tools/BinaryFileUtils.h"
 #include "Browser/System/CameraSystem.h"
 #include "Browser/System/BoundBoxSystem.h"
 #include "Common/System/AutoReleasePool.h"
@@ -517,6 +518,10 @@ GLFWwindow* init()
 	// 添加搜索路径
 	FileUtils::getInstance()->addSearchPath(".");
 	FileUtils::getInstance()->addSearchPath("res");
+
+    // test flatbuffer
+//    BinaryFileUtils::getInstance()->serialize();
+//    BinaryFileUtils::getInstance()->deserialize();
 
 	// 注册基本系统
 	ECSManager::getInstance()->registerSystem(browser::RenderSystem::getInstance());	// 渲染系统

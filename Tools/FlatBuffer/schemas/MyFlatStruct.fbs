@@ -1,0 +1,12 @@
+namespace Texture;  
+  
+table Texture_Fb 
+{  
+	x:float;
+	y:float;
+	width:float;
+	height:float;
+}  
+  
+
+root_type Texture_Fb;

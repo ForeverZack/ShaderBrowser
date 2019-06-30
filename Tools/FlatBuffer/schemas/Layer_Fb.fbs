@@ -1,0 +1,22 @@
+namespace Layer;  
+  
+table Point_Fb 
+{  
+	x:float;
+	y:float;
+}  
+  
+table Node_Fb  
+{  
+	name:string;
+	position:Point_Fb;
+}  
+  
+table Layer_Fb
+{
+	super:Node_Fb;
+	friend:Node_Fb;
+	children:[Node_Fb];
+	transform:[Point_Fb];
+}
+root_type Layer_Fb;

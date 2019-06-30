@@ -53,6 +53,7 @@
     <ClCompile Include="src\Common\System\Cache\ModelCache.cpp" />
     <ClCompile Include="src\Common\System\Cache\TextureCache.cpp" />
     <ClCompile Include="src\Common\System\ECSManager.cpp" />
+    <ClCompile Include="src\Common\Tools\BinaryFileUtils.cpp" />
     <ClCompile Include="src\Common\Tools\FileUtils.cpp" />
     <ClCompile Include="src\Common\Tools\UI\BaseGUIPanel.cpp" />
     <ClCompile Include="src\Common\Tools\UI\GameStatusPanel.cpp" />
@@ -112,6 +113,7 @@
     <ClInclude Include="src\Common\System\Cache\TextureCache.h" />
     <ClInclude Include="src\Common\System\ECSManager.h" />
     <ClInclude Include="src\Common\Tools\BaseSingleton.h" />
+    <ClInclude Include="src\Common\Tools\BinaryFileUtils.h" />
     <ClInclude Include="src\Common\Tools\FileUtils.h" />
     <ClInclude Include="src\Common\Tools\UI\BaseGUIPanel.h" />
     <ClInclude Include="src\Common\Tools\UI\GameStatusPanel.h" />
@@ -181,8 +183,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)\ShaderBrowser\src;$(SolutionDir)\ShaderBrowser\src\Plugins\GLFW\include;$(SolutionDir)\ShaderBrowser\src\Plugins\glm\include;$(SolutionDir)\ShaderBrowser\src\Plugins\glad\include;$(SolutionDir)\ShaderBrowser\src\Plugins\assimp\include;$(SolutionDir)ShaderBrowser\src\Plugins\imgui;$(SolutionDir)ShaderBrowser\src\Plugins\stb;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)ShaderBrowser\src\Plugins\GLFW\lib\win32\Debug;$(SolutionDir)ShaderBrowser\src\Plugins\assimp\lib\win32;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)\ShaderBrowser\src;$(SolutionDir)\ShaderBrowser\src\Plugins\GLFW\include;$(SolutionDir)\ShaderBrowser\src\Plugins\glm\include;$(SolutionDir)\ShaderBrowser\src\Plugins\glad\include;$(SolutionDir)\ShaderBrowser\src\Plugins\assimp\include;$(SolutionDir)ShaderBrowser\src\Plugins\imgui;$(SolutionDir)ShaderBrowser\src\Plugins\stb;$(SolutionDir)ShaderBrowser\src\Plugins\flatbuffer\include;$(SolutionDir)ShaderBrowser\src\Plugins\flatbuffer\generated_header;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)ShaderBrowser\src\Plugins\GLFW\lib\win32\Debug;$(SolutionDir)ShaderBrowser\src\Plugins\assimp\lib\win32;$(SolutionDir)ShaderBrowser\src\Plugins\flatbuffer\lib\win32\Debug;$(LibraryPath)</LibraryPath>
     <LibraryWPath>$(LibraryWPath)</LibraryWPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -192,8 +194,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)\ShaderBrowser\src;$(SolutionDir)\ShaderBrowser\src\Plugins\GLFW\include;$(SolutionDir)\ShaderBrowser\src\Plugins\glm\include;$(SolutionDir)\ShaderBrowser\src\Plugins\glad\include;$(SolutionDir)\ShaderBrowser\src\Plugins\assimp\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)ShaderBrowser\src\Plugins\GLFW\lib\win32\Release;$(SolutionDir)ShaderBrowser\src\Plugins\assimp\lib\win32;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)\ShaderBrowser\src;$(SolutionDir)\ShaderBrowser\src\Plugins\GLFW\include;$(SolutionDir)\ShaderBrowser\src\Plugins\glm\include;$(SolutionDir)\ShaderBrowser\src\Plugins\glad\include;$(SolutionDir)\ShaderBrowser\src\Plugins\assimp\include;$(SolutionDir)ShaderBrowser\src\Plugins\imgui;$(SolutionDir)ShaderBrowser\src\Plugins\stb;$(SolutionDir)ShaderBrowser\src\Plugins\flatbuffer\include;$(SolutionDir)ShaderBrowser\src\Plugins\flatbuffer\generated_header;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)ShaderBrowser\src\Plugins\GLFW\lib\win32\Release;$(SolutionDir)ShaderBrowser\src\Plugins\assimp\lib\win32;$(SolutionDir)ShaderBrowser\src\Plugins\flatbuffer\lib\win32\Debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -211,7 +213,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;assimp-vc140-mt.lib;flatbuffers.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -250,7 +252,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;assimp-vc140-mt.lib;flatbuffers.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

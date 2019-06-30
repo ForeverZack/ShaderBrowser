@@ -234,6 +234,9 @@
     <ClCompile Include="src\Browser\Components\Render\Commands\SkinnedRenderCommand.cpp">
       <Filter>src\Browser\Components\Render\Commands</Filter>
     </ClCompile>
+    <ClCompile Include="src\Common\Tools\BinaryFileUtils.cpp">
+      <Filter>src\Common\Tools</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\GL\GLProgram.h">
@@ -397,6 +400,9 @@
     </ClInclude>
     <ClInclude Include="src\Browser\Components\Render\Commands\SkinnedRenderCommand.h">
       <Filter>src\Browser\Components\Render\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Common\Tools\BinaryFileUtils.h">
+      <Filter>src\Common\Tools</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
