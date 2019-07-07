@@ -51,7 +51,7 @@ namespace common
 		return source;
 	}
     
-    VertexAttribDeclaration* Utils::createVertexAttribDeclaration(GLuint location, GLint size, GLenum type, GLboolean normalized, GLsizei stride)
+    VertexAttribDeclaration* Utils::createVertexAttribDeclaration(GLuint location, GLint size, GLenum type, GLboolean normalized, GLsizei stride, VertexDataType dataType /*= VertexDataType::Float*/)
     {
         VertexAttribDeclaration* declaration = new VertexAttribDeclaration();
         declaration->index = location;
@@ -59,10 +59,36 @@ namespace common
         declaration->type = type;
         declaration->normalized = normalized;
         declaration->stride = stride;
+        declaration->data_type = dataType;
+        
+        return declaration;
+    }
+    
+    VertexAttribDeclaration* Utils::createVertexAttribDeclaration(GLuint location, GLint size, GLenum type, GLboolean normalized, GLsizei stride, GLvoid* pointer, GLvoid* data, GLint dataSize, VertexDataType dataType /*=VertexDataType::Float*/)
+    {
+        VertexAttribDeclaration* declaration = new VertexAttribDeclaration();
+        declaration->index = location;
+        declaration->size = size;
+        declaration->type = type;
+        declaration->normalized = normalized;
+        declaration->stride = stride;
+        declaration->pointer = pointer;
+        declaration->data = data;
+        declaration->data_size = dataSize;
+        declaration->data_type = dataType;
         
         return declaration;
     }
 
-
+    FeedbackBufferDeclaration* Utils::createFeedbackBufferDeclaration(GLuint bindIdx, GLuint size, const string& name, FeedbackBufferType type/* = FeedbackBufferType::ArrayBuffer*/)
+    {
+        FeedbackBufferDeclaration* declaration = new FeedbackBufferDeclaration();
+        declaration->varying = name;
+        declaration->bindIdx = bindIdx;
+        declaration->size = size;
+        declaration->type = type;
+        
+        return declaration;
+    }
 
 }

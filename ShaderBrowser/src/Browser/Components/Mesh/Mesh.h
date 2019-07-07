@@ -16,6 +16,9 @@ using namespace customGL;
 
 namespace browser
 {
+    // mesh的顶点属性数量
+#define MESH_VERTEX_ATTR_COUNT 8
+    
     class Mesh : public Reference
 	{
     public:
@@ -184,7 +187,7 @@ namespace browser
         // 是否生成vao
         bool m_bGenVAO;
         // vbo
-        unsigned int m_uVBOs[8];
+        unsigned int m_uVBOs[MESH_VERTEX_ATTR_COUNT];
 	};
 }
 

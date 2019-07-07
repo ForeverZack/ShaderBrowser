@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include "GL/GLProgram.h"
+#include "Browser/Components/Feedback/BaseFeedback.h"
 #include "Browser/Components/Transform/Transform.h"
 #include "Browser/Components/Camera/Camera.h"
 #include "Browser/Components/Mesh/MeshFilter.h"
@@ -19,6 +20,7 @@
 #include "Browser/System/RenderSystem.h"
 #include "Browser/System/TransformSystem.h"
 #include "Browser/System/MeshSystem.h"
+#include "Browser/System/FeedbackSystem.h"
 #include "Browser/System/LightSystem.h"
 #include "Browser/System/AnimationSystem.h"
 #include "Common/Tools/FileUtils.h"
@@ -80,8 +82,9 @@ void testVal();
 const unsigned int SCR_WIDTH = 1280;
 const unsigned int SCR_HEIGHT = 720;
 
-// 标题
-char strTitle[150];
+// 加载进度
+int _curLoadedNum = 0;
+int _totalLoadNum = 8;
 
 // 上一次更新的时间戳
 std::chrono::steady_clock::time_point _lastUpdate;
@@ -418,10 +421,10 @@ int main()
     CGLSetParameter(ctx, kCGLCPSwapInterval, &sync);
 #endif
 
-	int total = 0;
 	TextureCache::getInstance()->addTexturesAsync({ "texture/awesomeface.png", "texture/HelloWorld.png", "models/Fighter/Fighter.png" }, [&](Texture2D* texture) {
-		++total;
-		if (total == 8)
+		++_curLoadedNum;
+		common::GUIFramework::getInstance()->getGameStatusPanel()->setLoadPercent(_curLoadedNum/(float)_totalLoadNum);
+		if (_curLoadedNum == _totalLoadNum)
 		{
 			testVal();
 		}
@@ -436,8 +439,9 @@ int main()
              {
                     m_mModels.insert(make_pair(mo->getFullPath(), mo));
                     ++modelIdx;
-                    ++total;
-                    if (total == 8)
+                    ++_curLoadedNum;
+					common::GUIFramework::getInstance()->getGameStatusPanel()->setLoadPercent(_curLoadedNum / (float)_totalLoadNum);
+                    if (_curLoadedNum == _totalLoadNum)
                     {
                         testVal();
                     }
@@ -531,6 +535,7 @@ GLFWwindow* init()
     ECSManager::getInstance()->registerSystem(browser::BoundBoxSystem::getInstance()); // 包围盒
     ECSManager::getInstance()->registerSystem(browser::LightSystem::getInstance()); // 灯光系统
     ECSManager::getInstance()->registerSystem(browser::AnimationSystem::getInstance()); // 动画系统
+    ECSManager::getInstance()->registerSystem(browser::FeedbackSystem::getInstance());  // Tranform Feedback
 	// 初始化系统
 	ECSManager::getInstance()->initSystem(SystemType::RenderSystem);    // 渲染系统
     ECSManager::getInstance()->initSystem(SystemType::Transform);    // Transform
@@ -539,6 +544,7 @@ GLFWwindow* init()
     ECSManager::getInstance()->initSystem(SystemType::BoundBox);    // 包围盒
     ECSManager::getInstance()->initSystem(SystemType::Light);   // Light
     ECSManager::getInstance()->initSystem(SystemType::Animation);   // Animation
+    ECSManager::getInstance()->initSystem(SystemType::TransformFeedback);   // Transform Feedback
     // 加载缓存
     GLProgramCache::getInstance()->init();  // 着色器缓存
 
@@ -578,6 +584,7 @@ void mainLoop(GLFWwindow *window)
 	// 2.render
 	ECSManager::getInstance()->updateSystem(SystemType::Transform, deltaTime);  // 更新transform
 	ECSManager::getInstance()->updateSystem(SystemType::Camera, deltaTime);  // 更新camera
+    ECSManager::getInstance()->updateSystem(SystemType::TransformFeedback, deltaTime);  // 更新TransformFeedback
     ECSManager::getInstance()->updateSystem(SystemType::BoundBox, deltaTime);   // 更新BoundBox
     ECSManager::getInstance()->updateSystem(SystemType::Animation, deltaTime);   // 更新动画系统
 	ECSManager::getInstance()->updateSystem(SystemType::RenderSystem, deltaTime);   // 更新渲染系统
@@ -622,6 +629,8 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 	//}
 }
 
+BaseFeedback* _feedback = nullptr;
+int _feedbackData[] = {0, 1, 2, 3, 4};
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
 void processInput(GLFWwindow *window)
@@ -667,6 +676,28 @@ void processInput(GLFWwindow *window)
         {
             static int playAniIndx = 2;
             m_YBotEntity->getAnimator()->blendTo(playAniIndx, true, 1, true);
+        }
+        else if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS)
+        {
+            if (!_feedback)
+            {
+                _feedback = new BaseFeedback();
+                const char* varyings[] = {"outValue"};
+                const std::string vert_full_path = FileUtils::getInstance()->getAbsolutePathForFilename("shaders/default/anim_feedback_test.vert");
+                _feedback->initFeedback(vert_full_path.c_str(), varyings, 1);
+                _feedback->retain();
+                
+                _feedback->addVertexAttribute(0, 1, GL_INT, GL_FALSE, 0, (void*)0, _feedbackData, sizeof(_feedbackData), VertexDataType::Int);
+                _feedback->addFeedbackBuffer(0, sizeof(_feedbackData), varyings[0]);
+                _feedback->setupVAOandVBOs();
+            }
+            _feedback->flushAsPoints();
+            
+            GLfloat output[5];
+//            _feedback->getOutputDataFromVBOs(0, output, sizeof(output));
+            _feedback->getOutputDataFromVBOs("outValue", output, sizeof(output));
+            printf("%f %f %f %f %f\n", output[0], output[1], output[2], output[3], output[4]);
+            
         }
 	}
 	

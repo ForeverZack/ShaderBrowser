@@ -55,6 +55,9 @@ namespace browser
         
         // 删除vao
         glDeleteVertexArrays(1, &m_uVAO);
+        
+        // 删除vbo
+        glDeleteBuffers(MESH_VERTEX_ATTR_COUNT, m_uVBOs);
 	}
     
     void Mesh::setupVAO()
@@ -65,7 +68,7 @@ namespace browser
             // 生成vao
             glGenVertexArrays(1, &m_uVAO);
 			// 生成vbo
-			glGenBuffers(8, m_uVBOs);
+			glGenBuffers(MESH_VERTEX_ATTR_COUNT, m_uVBOs);
         }
 
 		// 设置vao

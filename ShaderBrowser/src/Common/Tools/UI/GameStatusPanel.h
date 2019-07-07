@@ -20,6 +20,7 @@ namespace common
 			FaceCount,
 			OpenGLVersion,
 			Hardware,
+			LoadPercent,
 
 
 			MaxCount,
@@ -36,6 +37,7 @@ namespace common
         
 
 		REGISTER_PROPERTY_GET_SET(float, m_fDeltaTime, DeltaTime)
+		REGISTER_PROPERTY_GET_SET(float, m_fLoadPercent, LoadPercent)
 
 	protected:
 		// 是否已经初始化
@@ -45,6 +47,9 @@ namespace common
 
 		// 临时字符串用来生成信息
 		char m_sInfo[200];
+
+		// temp
+		float m_fLoadPercent;
 	};
 
 }

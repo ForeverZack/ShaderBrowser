@@ -15,6 +15,7 @@ namespace common
 		: BaseGUIPanel("Game Status", true, width, height, showClose, posX, posY, bgAlpha, flags)
 		, m_bHasInit(false)
 		, m_fDeltaTime(0)
+		, m_fLoadPercent(0)
 	{
 		// 按顺序生成信息表
 		for (int i = 0; i < GameStatusType::MaxCount; ++i)
@@ -60,6 +61,13 @@ namespace common
 					addPropertyText("Hardware: " + std::string(hardwareInfos));
 				}
 				break;
+
+			case GameStatusType::LoadPercent:
+				{
+					// 加载进度
+					addPropertyText("");
+				}
+				break;
 			}
 		}
 	}
@@ -91,6 +99,9 @@ namespace common
 		sprintf(m_sInfo, "Face Count: %d", browser::RenderSystem::getInstance()->getFaceCount());
 		m_vContents[GameStatusType::FaceCount].value.text.show_name = m_sInfo;
 
+		// Load percent
+		sprintf(m_sInfo, "Load Percent: %.2f", m_fLoadPercent*100);
+		m_vContents[GameStatusType::LoadPercent].value.text.show_name = m_sInfo;
     }
 
 }

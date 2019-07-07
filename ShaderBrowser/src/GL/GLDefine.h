@@ -78,11 +78,20 @@ namespace customGL
     // 顶点数据类型
     enum VertexDataType
     {
-        // 基础
-        Base = 0,
-        // 带骨骼
-        BaseBones,
+        // 浮点型
+        Float = 0,
+        // 整形
+        Int,
     };
+    // Transform Feedback缓存类型枚举
+    enum FeedbackBufferType
+    {
+        // vbo
+        ArrayBuffer = 0,
+        // tbo
+        TextureBuffer,
+    };
+    
     
     // 单个顶点数据结构
     class VertexData
@@ -140,7 +149,7 @@ namespace customGL
     {
     public:
         VertexAttribDeclaration()
-        : data_type(VertexDataType::Base)
+        : data_type(VertexDataType::Float)
         , index(-1)
         , size(3)
         , type(GL_FLOAT)
@@ -148,6 +157,8 @@ namespace customGL
         , stride(0)
         , pointer(nullptr)
         , name("")
+        , data(nullptr)
+        , data_size(0)
         {
         }
         ~VertexAttribDeclaration()
@@ -156,7 +167,7 @@ namespace customGL
         
     public:
         // 必须填写的属性
-        // 顶点属性类型
+        // 顶点属性类型(整形还是浮点型)
         VertexDataType data_type;
         // index: 指定要修改的顶点属性的索引值
         GLuint index;
@@ -174,6 +185,33 @@ namespace customGL
         // 可选属性(根据需要填写数据)
         // 属性名称，可以通过glGetAttribLocation(GLuint program, )获取attribute的location
         std::string name;
+        // 数据
+        GLvoid* data;
+        // 数据大小
+        GLint data_size;
+    };
+    
+    // Transform feedback输出buffer属性
+    class FeedbackBufferDeclaration
+    {
+    public:
+        FeedbackBufferDeclaration()
+        : type(FeedbackBufferType::ArrayBuffer)
+        , varying("")
+        , bindIdx(0)
+        , size(0)
+        {
+        }
+    public:
+        // 必须填写的属性
+        // 名称
+        std::string varying;
+        // GL_TRANSFORM_FEEDBACK_BUFFER的绑定点
+        GLuint bindIdx;
+        // 数据大小
+        GLuint size;
+        // 缓存类型
+        FeedbackBufferType type;
     };
 
 	// 纹理数据

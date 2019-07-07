@@ -54,7 +54,7 @@ namespace browser
 
 	public:
 		RenderSystem();
-		~RenderSystem() {};
+		~RenderSystem();
 
 		// init
 		void init();

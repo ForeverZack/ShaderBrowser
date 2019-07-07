@@ -76,6 +76,9 @@
     <Filter Include="src\Browser\Components\Render\Commands">
       <UniqueIdentifier>{155f9594-8b52-41a9-8160-3593101f9b84}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Browser\Components\Feedback">
+      <UniqueIdentifier>{b4e24185-de44-4dbf-beaf-1fb1cac5c4f3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -236,6 +239,15 @@
     </ClCompile>
     <ClCompile Include="src\Common\Tools\BinaryFileUtils.cpp">
       <Filter>src\Common\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Browser\Components\Feedback\BaseFeedback.cpp">
+      <Filter>src\Browser\Components\Feedback</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GL\GLFeedback.cpp">
+      <Filter>src\GL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Browser\System\FeedbackSystem.cpp">
+      <Filter>src\Browser\System</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -403,6 +415,15 @@
     </ClInclude>
     <ClInclude Include="src\Common\Tools\BinaryFileUtils.h">
       <Filter>src\Common\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Browser\Components\Feedback\BaseFeedback.h">
+      <Filter>src\Browser\Components\Feedback</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GL\GLFeedback.h">
+      <Filter>src\GL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Browser\System\FeedbackSystem.h">
+      <Filter>src\Browser\System</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

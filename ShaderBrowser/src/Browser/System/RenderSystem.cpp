@@ -65,6 +65,11 @@ namespace browser
 		m_eSystemType = common::SystemType::RenderSystem;
 		m_bComponentMutex = true;
 	}
+    
+    RenderSystem::~RenderSystem()
+    {
+        glDeleteBuffers(RenderSystem_Buffer_Maxcount, m_uVBOs);
+    }
 
 	void RenderSystem::init()
 	{
@@ -171,6 +176,7 @@ namespace browser
         
         
         // 2.设置顶点属性
+        // 在glBindBuffer后使用glVertexAttribPointer，会让该vbo(刚绑定的)绑定到对应的vertex attr上
         for (auto itor=declarations.cbegin(); itor!=declarations.cend(); ++itor)
         {
             const VertexAttribDeclaration* declaration = itor->second;

@@ -20,7 +20,7 @@ namespace browser
         , m_oBelongEntity(nullptr)
         , m_sComponentName(name)
     {
-        
+		this->autorelease();
     }
 
 	BaseComponent::~BaseComponent()

@@ -93,6 +93,7 @@ namespace customGL
 	public:
 		static GLProgram* create(const char* vertSrc, const char* fragSrc);
         static GLProgram* createAndSaveSource(const char* vertSrc, const char* fragSrc);
+        static bool createShader(GLenum type, GLuint& shader, const char* shaderSource);
 
 	public:
 		GLProgram();
@@ -120,20 +121,19 @@ namespace customGL
         // 获取uniform的位置
         GLint getUniformLocation(const std::string& uniformName);
 
-	private:
+	protected:
 		// 初始化着色器程序
 		bool initProgram(const char* vertSrc, const char* fragSrc, bool saveSource = false);
         bool cloneProgram(GLProgram* srcGLProgram);
 		// 创建着色器
 		bool createShader(GLenum type, GLuint& shader, const char* shaderSrc, bool saveSource);
-        bool createShader(GLenum type, GLuint& shader, const char* shaderSource);
 		// 绑定预定义的顶点属性变量位置
 		void bindPredefinedVertexAttribs();
         // 获取存储着色器源码的指针
         GLchar*& getSourceSavePointer(GLenum type);
 
 
-	private:
+	protected:
 		// 着色器程序(1.创建Program 2.绑定顶点片段着色器 3.链接)
 		GLuint m_uProgram;
 		// 顶点着色器(1.创建shader 2.绑定着色器内容 3.编译)
