@@ -10,7 +10,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ShaderBrowser/src/Browser/Components/Feedback/BaseFeedback.cpp"
-            timestampString = "584688113.4561599"
+            timestampString = "584715044.691547"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "222"
@@ -26,7 +26,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ShaderBrowser/src/Browser/Components/Feedback/BaseFeedback.cpp"
-            timestampString = "584688113.4562351"
+            timestampString = "584715044.691596"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "225"
@@ -42,7 +42,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ShaderBrowser/src/Browser/Components/Feedback/BaseFeedback.cpp"
-            timestampString = "584688113.456273"
+            timestampString = "584715044.691631"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "273"
@@ -58,7 +58,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ShaderBrowser/src/Browser/Components/Feedback/BaseFeedback.cpp"
-            timestampString = "584688113.456305"
+            timestampString = "584715044.691661"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "202"
@@ -74,12 +74,28 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ShaderBrowser/src/Browser/Components/Feedback/BaseFeedback.cpp"
-            timestampString = "584688113.456337"
+            timestampString = "584715044.691691"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "174"
             endingLineNumber = "174"
             landmarkName = "BaseFeedback::setupVAOandVBOs()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ShaderBrowser/src/GL/Model.cpp"
+            timestampString = "584715044.691722"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "767"
+            endingLineNumber = "767"
+            landmarkName = "Model::traverseNodeToComputeBonesTransform(aiNode* node, const aiMatrix4x4 parentMatrix, std::unordered_map&lt;aiNode*, aiMatrix4x4&gt;&amp; nodeTrans, std::vector&lt;glm::mat4&gt;&amp; bonesMatrix)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

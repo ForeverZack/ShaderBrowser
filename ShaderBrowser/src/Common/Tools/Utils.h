@@ -4,6 +4,12 @@
 #include <glad/glad.h>
 #include <iostream>
 #include "GL/GLDefine.h"
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/quaternion.hpp>
+#include <glm/ext/quaternion_trigonometric.hpp>
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/quaternion.hpp>
 
 using namespace std;
 using namespace customGL;
@@ -33,7 +39,7 @@ namespace common
 	// 打印日志
 	#define BROWSER_LOG(content) std::cout<<content<<endl;
     
-    // 打印矩阵 (列主序，)
+    // 打印矩阵 (列主序，第一个维度代表列号)
     #define BROWSER_LOG_MAT4(mat4) std::cout<<mat4[0][0]<<", "<<mat4[1][0]<<", "<<mat4[2][0]<<", "<<mat4[3][0]<<endl;\
         std::cout<<mat4[0][1]<<", "<<mat4[1][1]<<", "<<mat4[2][1]<<", "<<mat4[3][1]<<endl;\
         std::cout<<mat4[0][2]<<", "<<mat4[1][2]<<", "<<mat4[2][2]<<", "<<mat4[3][2]<<endl;\
@@ -81,7 +87,10 @@ namespace common
         // 创建FeedbackBufferDeclaration
         static FeedbackBufferDeclaration* createFeedbackBufferDeclaration(GLuint bindIdx, GLuint size, const string& name, FeedbackBufferType type = FeedbackBufferType::ArrayBuffer, GLenum internalFormat = GL_RGBA32F);
         
-        
+        // 拆解矩阵 （从矩阵中，获取位移、旋转和缩放）
+        static void parseMatrix(const glm::mat4& matrix, glm::vec3& position, glm::quat& rotation, glm::vec3& scale);
+        // 矩阵转四元素 (glm::toquat可能会得到两个不一样的结果(刚好对称，应该是三角函数处理的问题)，所以这里自己写方法代替了)
+        static glm::quat convertMatrix2Quat(const glm::mat4& matrix);
 	};
 }
 

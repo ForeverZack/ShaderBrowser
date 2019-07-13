@@ -47,7 +47,9 @@ void main()
 {
     // test
     getLocalBoneMatrix(boneInfo[0], result_position, result_rotation, result_scale);
-    
+//    result_position = vec4(boneInfo[0], boneInfo[1], 0, 0);
+//    result_rotation = vec4(0, 0, 0, 0);
+//    result_scale = vec4(0, 0, 0, 0);
 }
 
 // 插值
@@ -202,9 +204,6 @@ void computeBoneMatrix(int boneId, out vec4 position_out, out vec4 rotation_out,
     position_out = position;
     rotation_out = rotation;
     scale_out = scale;
-    
-    // test
-//    return mat4_identity;
 }
 
 // 根据骨骼id得到骨骼自身的变换矩阵
@@ -223,8 +222,6 @@ void getLocalBoneMatrix(int boneId, out vec4 position_out, out vec4 rotation_out
         // wrong!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 应该传入node->mTransformation(应该是bindpose)
         position_out = vec4(0, 0, 0, 0);
         rotation_out = vec4(0, 0, 0, 0);
-        scale_out = vec4(1, 1, 1, 0);
-        
-//        return mat4_identity;
+        scale_out = vec4(2, 2, 2, 0);
     }
 }

@@ -20,6 +20,11 @@
 13）内存的管理与检查。 <br>
 等等<br>
 
+## 2019.7.13 <br>
+增加将矩阵拆解到位移、旋转和缩放的方法，为后面重构骨骼动画做好理论准备。之前的骨骼动画的计算没有使用到渲染引擎中的Transform类
+，造成播放骨骼动画的模型，没法通过transform进行移动。另外，之前的结构也不利于使用Transform Feedback来回传骨骼动画的信息。
+后面将进行重构，将骨骼的变换设置到对应的Transform上，骨骼矩阵boneMatrix也将通过Transform系统来计算，而非现在单独计算。<br>
+
 ## 2019.7.10～2019.7.13 <br>
 让TransformFeedback支持GL_SEPARATE_ATTRIBS模式，可以使得各个buffer之间分开。之前在读取回传的buffer时遇到了一些问题，原因
 在于这些buffer在创建的时候其实是GL_ARRAY_BUFFER或GL_TEXTURE_BUFFER并被绑定到GL_TRANSFORM_FEEDBACK_BUFFER对应

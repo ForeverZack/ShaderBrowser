@@ -134,7 +134,7 @@ namespace browser
     
     void Transform::RotateDelay(const glm::mat4& parentMMatrix)
     {
-        glm::quat parentQuat = glm::toQuat(parentMMatrix);
+        glm::quat parentQuat = Utils::convertMatrix2Quat(parentMMatrix);
         
 //        BROWSER_LOG(m_sName);
         
@@ -270,7 +270,7 @@ namespace browser
         // 计算模型坐标空间下的欧拉角
         m_oEulerAngle = quaternion2EulerAngle(m_oQuaternion);   // 模型->惯性 四元数转欧拉角
         // 计算惯性坐标空间下的四元数和欧拉角
-        m_oGlobalQuaternion = glm::toQuat(parentMMatrix) * m_oQuaternion;
+        m_oGlobalQuaternion = Utils::convertMatrix2Quat(parentMMatrix) * m_oQuaternion;
         m_oGlobalEulerAngle = quaternion2EulerAngle(m_oGlobalQuaternion);
     }
     
@@ -390,7 +390,7 @@ namespace browser
         m_oGlobalEulerAngle = quaternion2EulerAngle(m_oGlobalQuaternion);
         
         // 计算模型坐标空间下的四元数欧拉角
-        m_oQuaternion = glm::inverse(glm::toQuat(parentMMatrix)) * globalQuaternion;
+        m_oQuaternion = glm::inverse(Utils::convertMatrix2Quat(parentMMatrix)) * globalQuaternion;
         m_oEulerAngle = quaternion2EulerAngle(m_oQuaternion);   // 模型->惯性 四元数转欧拉角
         
         TRANS_DIRTY(this, true);
@@ -539,8 +539,17 @@ namespace browser
 
 //                    BROWSER_LOG_MAT4(m_oModelMatrix);
         
-        
-        
+//        if (m_sName == "namizhuang")
+//        {
+//            std::cout<<"mPos=("<<m_oObjectPos.x<<","<<m_oObjectPos.y<<","<<m_oObjectPos.z<<"), mRotate=("<<m_oQuaternion.x<<","<<m_oQuaternion.y<<","<<m_oQuaternion.z<<","<<m_oQuaternion.w<<") , mScale=("<<m_oScale.x<<","<<m_oScale.y<<","<<m_oScale.z<<")"<<endl;
+//            glm::vec3 pos, scale;
+//            glm::quat rot;
+//            Utils::parseMatrix(m_oModelMatrix, pos, rot, scale);
+//            std::cout<<"parse mPos=("<<pos.x<<","<<pos.y<<","<<pos.z<<"), mRotate=("<<rot.x<<","<<rot.y<<","<<rot.z<<","<<rot.w<<") , mScale=("<<scale.x<<","<<scale.y<<","<<scale.z<<")"<<endl;
+//            
+//            int aaa = 0;
+//        }
+
 	}
     
     void Transform::beforeUpdate(float deltaTime)

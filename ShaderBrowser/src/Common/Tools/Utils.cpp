@@ -91,5 +91,102 @@ namespace common
         
         return declaration;
     }
+    
+    void Utils::parseMatrix(const glm::mat4& matrix, glm::vec3& position, glm::quat& rotation, glm::vec3& scale)
+    {
+        /* 假设有列主序矩阵M（其变换顺序为M=Translate*Rotate*Scale=Translate*Scale*Rotate）
+                      m00, m10, m20, m30
+                M = { m01, m11, m21, m31 }
+                      m02, m13, m22, m32
+                      m03, m13, m23, m33
+            另L0,L1,L2分别为矩阵M第0列，第1列，第2列所构成向量的长度,则拆分后的矩阵为:
+                   1, 0, 0, m30           L0, 0, 0, 0           m00/L0, m10/L1, m20/L2, 0
+             T = { 0, 1, 0, m31 } , S = { 0, L1, 0, 0 } , R = { m01/L0, m11/L1, m21/L2, 0 }
+                   0, 0, 0, m32           0, 0, L2, 0           m02/L0, m12/L1, m22/L2, 0
+                   0, 0, 0, 1             0, 0,  0, 1             0,      0,      0,    1
+         */
+        position = glm::vec3(matrix[3][0], matrix[3][1], matrix[3][2]);
+        float L0 = glm::length(glm::vec4(matrix[0][0], matrix[0][1], matrix[0][2], matrix[0][3]));
+        float L1 = glm::length(glm::vec4(matrix[1][0], matrix[1][1], matrix[1][2], matrix[1][3]));
+        float L2 = glm::length(glm::vec4(matrix[2][0], matrix[2][1], matrix[2][2], matrix[2][3]));
+        scale = glm::vec3(L0, L1, L2);
+        glm::mat4 rotateMat(matrix[0][0]/L0, matrix[1][0]/L1, matrix[2][0]/L2, 0,
+                            matrix[0][1]/L0, matrix[1][1]/L1, matrix[2][1]/L2, 0,
+                            matrix[0][2]/L0, matrix[1][2]/L1, matrix[2][2]/L2, 0,
+                            0, 0, 0, 1);
+        rotation = convertMatrix2Quat(rotateMat);
+    }
+    
+    glm::quat Utils::convertMatrix2Quat(const glm::mat4& matrix)
+    {
+        float x, y, z, w;
+        
+        float fourWSquaredMinus1 = matrix[0][0] + matrix[1][1] + matrix[2][2];
+        float fourXSquaredMinus1 = matrix[0][0] - matrix[1][1] - matrix[2][2];
+        float fourYSquaredMinus1 = matrix[1][1] - matrix[0][0] - matrix[2][2];
+        float fourZSquaredMinus1 = matrix[2][2] - matrix[0][0] - matrix[1][1];
+        
+        int biggestIndex = 0;
+        float fourBiggestSquaredMinus1 = fourWSquaredMinus1;
+        if (fourXSquaredMinus1 > fourBiggestSquaredMinus1)
+        {
+            fourBiggestSquaredMinus1 = fourXSquaredMinus1;
+            biggestIndex = 1;
+        }
+        if (fourYSquaredMinus1 > fourBiggestSquaredMinus1)
+        {
+            fourBiggestSquaredMinus1 = fourYSquaredMinus1;
+            biggestIndex = 2;
+        }
+        if (fourZSquaredMinus1 > fourBiggestSquaredMinus1)
+        {
+            fourBiggestSquaredMinus1 = fourZSquaredMinus1;
+            biggestIndex = 3;
+        }
+        
+        float biggestVal = sqrt(fourBiggestSquaredMinus1 + 1.0f) * 0.5f;
+        float mult = 0.25f / biggestVal;
+        switch (biggestIndex)
+        {
+            case 0:
+                {
+                    w = biggestVal;
+                    x = (matrix[2][1] - matrix[1][2]) * mult;
+                    y = (matrix[0][2] - matrix[2][0]) * mult;
+                    z = (matrix[1][0] - matrix[0][1]) * mult;
+                }
+                break;
+                
+            case 1:
+                {
+                    x = biggestVal;
+                    w = (matrix[2][1] - matrix[1][2]) * mult;
+                    y = (matrix[1][0] + matrix[0][1]) * mult;
+                    z = (matrix[0][2] + matrix[2][0]) * mult;
+                }
+                break;
+                
+            case 2:
+                {
+                    y = biggestVal;
+                    w = (matrix[0][2] - matrix[2][0]) * mult;
+                    x = (matrix[1][0] + matrix[0][1]) * mult;
+                    z = (matrix[2][1] + matrix[1][2]) * mult;
+                }
+                break;
+                
+            case 3:
+                {
+                    z = biggestVal;
+                    w = (matrix[1][0] - matrix[0][1]) * mult;
+                    x = (matrix[0][2] + matrix[2][0]) * mult;
+                    y = (matrix[2][1] + matrix[1][2]) * mult;
+                }
+                break;
+        }
+        
+        
+        return glm::quat(w, x, y, z);
+    }
 
 }

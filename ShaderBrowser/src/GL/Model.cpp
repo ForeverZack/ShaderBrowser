@@ -764,7 +764,7 @@ namespace customGL
 		}
 		else
 		{
-			nodeMatrix = parentMatrix * node->mTransformation;
+            nodeMatrix = parentMatrix * node->mTransformation;
 		}
 
 		// 当前节点是否含有骨骼
