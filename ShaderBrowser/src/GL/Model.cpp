@@ -186,6 +186,7 @@ namespace customGL
 				// 设置importer的属性
 //                importer->SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, false);    // 防止FBX自己生成枢轴，干扰Node结构树
 //                importer->SetPropertyBool(AI_CONFIG_IMPORT_FBX_READ_LIGHTS, false);
+                
                 std::string full_path = *itor;
 				const aiScene* scene = importer->ReadFile(full_path, aiProcess_GenSmoothNormals |
 					aiProcess_LimitBoneWeights |
@@ -587,18 +588,20 @@ namespace customGL
 
 		aiMatrix4x4 transformation, scaleMat, translateMat;
 		Rescale rescaler(0.0f, static_cast<float>(animation->mDuration), 0.0f, 1.0f);
-		const float sampleUnscaled = rescaler.Unscale(animSample);
+		const float sampleUnscaled = rescaler.Unscale(animSample);  // 采样帧数位置(例如，第2.52帧)
         std::unordered_map<std::string, unsigned int>::iterator itor;
         unsigned int boneId;
 		// 遍历骨骼变换信息，生成父节点坐标系下自身的变换矩阵
 		{
 			aiNodeAnim* channel = nullptr;
 			aiNode* node = nullptr;
+            // 遍历发生变换的骨骼节点的变换信息
 			for (unsigned int i = 0; i < animation->mNumChannels; ++i)
 			{
 				channel = animation->mChannels[i];
 				node = m_oRootNode->FindNode(channel->mNodeName);
 
+                // 根据当前动画播放到第几帧，插值得到变换信息
 				// 位移
 				auto translation = Assimp::InterpolationGet<aiVector3D>(sampleUnscaled, channel->mPositionKeys, channel->mNumPositionKeys, interpolateAnimation);
                 if (!applyRootMotion && node==m_oRootBoneNode)
@@ -765,7 +768,8 @@ namespace customGL
 		}
 
 		// 当前节点是否含有骨骼
-        // 之前从来没有注意过mOffsetMatrix，其实mOffsetMatrix很重要，是用来将网格中模型空间的顶点转换到骨骼空间中，变换到骨骼空间后才可以使用骨骼矩阵！！！
+        /* 之前从来没有注意过mOffsetMatrix，其实mOffsetMatrix很重要，是用来将网格中骨骼空间的顶点转换到模型空间中(也就是bindpose，模型在建模时的姿势)，我们这里计算的骨骼矩阵实际上是对模型空间的顶点进行变换的(顶点被绑定到骨骼上时，顶点是从模型空间直接放到了骨骼空间中（原点从模型空间的原点，变成了骨骼），所以这个时候必须要用mOffsetMatrix(记录了bindpose状态骨骼到模型空间的变换)来将顶点从骨骼空间变换回模型空间)
+         */
 		auto boneItor = m_mBonesIdMap.find(std::string(node->mName.C_Str()));
 		if (boneItor != m_mBonesIdMap.end())
 		{

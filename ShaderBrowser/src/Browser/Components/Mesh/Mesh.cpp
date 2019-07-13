@@ -58,6 +58,12 @@ namespace browser
         
         // 删除vbo
         glDeleteBuffers(MESH_VERTEX_ATTR_COUNT, m_uVBOs);
+        
+        for (auto itor=m_mVertexAttribDeclarations.begin(); itor!=m_mVertexAttribDeclarations.end(); ++itor)
+        {
+            BROWSER_SAFE_RELEASE_POINTER(itor->second);
+        }
+        m_mVertexAttribDeclarations.clear();
 	}
     
     void Mesh::setupVAO()

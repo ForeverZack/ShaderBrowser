@@ -79,7 +79,7 @@ namespace common
         static VertexAttribDeclaration* createVertexAttribDeclaration(GLuint location, GLint size, GLenum type, GLboolean normalized, GLsizei stride, GLvoid* pointer, GLvoid* data, GLint dataSize, VertexDataType dataType = VertexDataType::Float);
         
         // 创建FeedbackBufferDeclaration
-        static FeedbackBufferDeclaration* createFeedbackBufferDeclaration(GLuint bindIdx, GLuint size, const string& name, FeedbackBufferType type = FeedbackBufferType::ArrayBuffer);
+        static FeedbackBufferDeclaration* createFeedbackBufferDeclaration(GLuint bindIdx, GLuint size, const string& name, FeedbackBufferType type = FeedbackBufferType::ArrayBuffer, GLenum internalFormat = GL_RGBA32F);
         
         
 	};

@@ -93,6 +93,10 @@ namespace common
 		REGISTER_PROPERTY_GET_SET(int, m_iPriority, Priority)
 		REGISTER_PROPERTY_GET_SET(bool, m_bComponentMutex, ComponentMutex)
 		REGISTER_PROPERTY_GET(SystemType, m_eSystemType, SystemType)
+        const std::unordered_map<BaseEntity*, std::list<BaseComponent*>>& getComponentsList() const
+        {
+            return m_mComponentsList;
+        }
 
 	protected:
 		// 实体-组件 map（这里组件用list主要是为了custom自定义的组件类型，使他们可以都放在CustomSystem中，在互斥的组件系统中，list中只允许有一个对象）

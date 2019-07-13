@@ -20,7 +20,14 @@
 13）内存的管理与检查。 <br>
 等等<br>
 
+## 2019.7.10～2019.7.13 <br>
+让TransformFeedback支持GL_SEPARATE_ATTRIBS模式，可以使得各个buffer之间分开。之前在读取回传的buffer时遇到了一些问题，原因
+在于这些buffer在创建的时候其实是GL_ARRAY_BUFFER或GL_TEXTURE_BUFFER并被绑定到GL_TRANSFORM_FEEDBACK_BUFFER对应
+的绑定位置bindIdx上，但读取的时候仍然需要按照创建buffer时的类型来读取，不能以GL_TRANSFORM_FEEDBACK_BUFFER类型来读取。<br>
 
+## 2019.7.8～2019.7.9 <br>
+优化健全Transform Feedback的基类，添加对纹理缓存(Texture Buffer Object的支持)，丰富了GLProgram的uniform类型的接口，为后面在
+顶点着色器中计算骨骼动画做好准备。 <br>
 
 ## 2019.7.6~2019.7.7 <br>
 添加Transform Feedback，后续将用来计算骨骼矩阵。由于骨骼节点之间是有父子关系的，子级节点想要得到自己的骨骼矩阵，就必须先得到

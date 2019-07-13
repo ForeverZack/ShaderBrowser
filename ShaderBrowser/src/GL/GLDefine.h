@@ -200,6 +200,8 @@ namespace customGL
         , varying("")
         , bindIdx(0)
         , size(0)
+        , internalFormat(GL_RGBA32F)
+        , vbo(0)
         {
         }
     public:
@@ -212,6 +214,11 @@ namespace customGL
         GLuint size;
         // 缓存类型
         FeedbackBufferType type;
+        // 纹理缓存格式 internalformat
+        GLenum internalFormat;
+        
+        // 对应vbo
+        GLuint vbo;
     };
 
 	// 纹理数据
@@ -273,6 +280,37 @@ namespace customGL
             UniformValueType_Mat3x4,
             // sampler2D
             UniformValueType_Sampler2D,
+            // samplerBuffer
+            UniformValueType_SamplerBuffer,
+            
+            // intv
+            UniformValueType_IntV,
+            // ivec2
+            UniformValueType_IVec2,
+            // vec2v
+            UniformValueType_Vec2V,
+            // ivec2v
+            UniformValueType_IVec2V,
+            // ivec3
+            UniformValueType_IVec3,
+            // vec3v
+            UniformValueType_Vec3V,
+            // ivec3v
+            UniformValueType_IVec3V,
+            // ivec4
+            UniformValueType_IVec4,
+            // vec4v
+            UniformValueType_Vec4V,
+            // ivec4v
+            UniformValueType_IVec4V,
+            // matrix4x4v
+            UniformValueType_Mat4V,
+            // matrix4x3v
+            UniformValueType_Mat4x3V,
+            // matrix3x3v
+            UniformValueType_Mat3V,
+            // matrix3x4v
+            UniformValueType_Mat3x4V,
         };
     public:
         // 构造函数
@@ -288,13 +326,31 @@ namespace customGL
         void setMat3x4(const glm::mat3x4& value);
         void setMat4(const glm::mat4& value);
         void setMat4x3(const glm::mat4x3& value);
-        void setFloatV(int size, const float* value);
+        void setFloatV(int count, const float* value);
         void setVec2(const glm::vec2& value);
         void setVec3(const glm::vec3& value);
         void setVec4(const glm::vec4& value);
         void setTex2D(GLuint textureId);
+        void setSamplerBuffer(GLuint textureId);
+        
+        void setIntV(int count, const int* value);
+        void setIVec2(const glm::ivec2& value);
+        void setVec2V(int count, const float* value);
+        void setIVec2V(int count, const int* value);
+        void setIVec3(const glm::ivec3& value);
+        void setVec3V(int count, const float* value);
+        void setIVec3V(int count, const int* value);
+        void setIVec4(const glm::ivec4& value);
+        void setVec4V(int count, const float* value);
+        void setIVec4V(int count, const int* value);
+        void setMat4V(int count, const float* value);
+        void setMat4x3V(int count, const float* value);
+        void setMat3V(int count, const float* value);
+        void setMat3x4V(int count, const float* value);
+        
         
         const glm::mat4& getMat4();
+        const UniformValueType& getUniformValueType() const;
         
         
         // 更新设置GLProgram的数值
@@ -311,7 +367,13 @@ namespace customGL
         // uniform数据值
         union U {
             float floatValue;
+            glm::vec2 v2f;
+            glm::vec3 v3f;
+            glm::vec4 v4f;
             int intValue;
+            glm::ivec2 ivec2;
+            glm::ivec3 ivec3;
+            glm::ivec4 ivec4;
             glm::mat3 mat3;
             glm::mat3x4 mat3x4;
             glm::mat4 mat4;
@@ -321,18 +383,16 @@ namespace customGL
                 //GLuint textureUnit;
             } tex2D;
             struct {
+                GLuint textureId;
+            } samplerBuffer;
+            struct {
+                const int* pointer;
+                GLsizei count;
+            } intv,ivec2v,ivec3v,ivec4v;
+            struct{
                 const float* pointer;
-                GLsizei size;
-            } floatv;
-            struct {
-                glm::vec2 pointer;
-            } v2f;
-            struct {
-                glm::vec3 pointer;
-            } v3f;
-            struct {
-                glm::vec4 pointer;
-            } v4f;
+                GLsizei count;
+            } floatv,v2fv,v3fv,v4fv,mat4v,mat4x3v,mat3v,mat3x4v;
             
             U() { memset(this, 0, sizeof(*this)); }
             ~U() {}

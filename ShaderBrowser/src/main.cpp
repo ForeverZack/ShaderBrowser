@@ -631,6 +631,45 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 
 BaseFeedback* _feedback = nullptr;
 int _feedbackData[] = {0, 1, 2, 3, 4};
+glm::vec4 _feedbackInput[] = {
+    glm::vec4(101, 102, 100, 100),
+    glm::vec4(201, 102, 100, 100),
+    glm::vec4(301, 102, 100, 100),
+    glm::vec4(401, 102, 100, 100),
+    glm::vec4(501, 102, 100, 100),
+};
+
+glm::ivec2 _feedbackData2[] = {
+    glm::ivec2(0, -1),
+    glm::ivec2(1, 0),
+    glm::ivec2(2, 1),
+    glm::ivec2(3, 1)
+};
+glm::vec4 _feedbackPosition[] = {
+    // 骨骼1
+    glm::vec4(0, 0, 0, 1),
+    glm::vec4(1, 0, 0, 2),
+    glm::vec4(2, 0, 0, 3),
+    glm::vec4(3, 0, 0, 4),
+};
+glm::vec4 _feedbackRotation[] = {
+    // 骨骼1
+    glm::vec4(0, 0, 0, 0)
+};
+float _feedbackRotationTime[] = {
+    // 骨骼1
+    0
+};
+glm::vec4 _feedbackScale[] = {
+    glm::vec4(1, 1, 1, 4)
+};
+int contains_bones[] = {
+    -1, 0, -1, -1
+};
+glm::ivec3 trans_bone_keyframe_count[] = {
+    glm::ivec3(4, 1, 1)
+};
+glm::vec4 animation_info(0, 0, 0, 0);
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
 void processInput(GLFWwindow *window)
@@ -682,21 +721,87 @@ void processInput(GLFWwindow *window)
             if (!_feedback)
             {
                 _feedback = new BaseFeedback();
-                const char* varyings[] = {"outValue"};
-                const std::string vert_full_path = FileUtils::getInstance()->getAbsolutePathForFilename("shaders/default/anim_feedback_test.vert");
-                _feedback->initFeedback(vert_full_path.c_str(), varyings, 1);
+                const char* varyings[] = {"outValue", "outValue2"};
+                const std::string vert_full_path = FileUtils::getInstance()->getAbsolutePathForFilename("shaders/default/anim_feedback_test2.vert");
+                _feedback->initFeedback(vert_full_path.c_str(), varyings, 2, GL_SEPARATE_ATTRIBS);
                 _feedback->retain();
                 
+                BROWSER_LOG(GL_MAX_TRANSFORM_FEEDBACK_BUFFERS)
+
                 _feedback->addVertexAttribute(0, 1, GL_INT, GL_FALSE, 0, (void*)0, _feedbackData, sizeof(_feedbackData), VertexDataType::Int);
-                _feedback->addFeedbackBuffer(0, sizeof(_feedbackData), varyings[0]);
+                _feedback->addFeedbackBuffer(sizeof(_feedbackData), "outValue", FeedbackBufferType::TextureBuffer);
+                _feedback->addFeedbackBuffer(sizeof(_feedbackData), "outValue2", FeedbackBufferType::TextureBuffer);
                 _feedback->setupVAOandVBOs();
+
+                // tbo
+                GLuint vbo, tex;
+                glGenTextures(1, &tex);
+                glGenBuffers(1, &vbo);
+                glBindBuffer(GL_TEXTURE_BUFFER, vbo);
+                glBufferData(GL_TEXTURE_BUFFER, sizeof(_feedbackInput), _feedbackInput, GL_STATIC_DRAW);
+                glBindTexture(GL_TEXTURE_BUFFER, tex);
+                // 将缓存区关联到纹理对象上tbo
+                glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA32F, vbo);
+                _feedback->setUniformSamplerBuffer("testInput", tex);
             }
-            _feedback->flushAsPoints();
-            
+            _feedback->flushAsPoints(5);
+
             GLfloat output[5];
-//            _feedback->getOutputDataFromVBOs(0, output, sizeof(output));
             _feedback->getOutputDataFromVBOs("outValue", output, sizeof(output));
-            printf("%f %f %f %f %f\n", output[0], output[1], output[2], output[3], output[4]);
+            printf("outValue === %f %f %f %f %f\n", output[0], output[1], output[2], output[3], output[4]);
+            _feedback->getOutputDataFromVBOs("outValue2", output, sizeof(output));
+            printf("outValue2 === %f %f %f %f %f\n", output[0], output[1], output[2], output[3], output[4]);
+
+//            if (!_feedback)
+//            {
+//                _feedback = new BaseFeedback();
+//                const char* varyings[] = {"result_position", "result_rotation", "result_scale"};
+//                const std::string vert_full_path = FileUtils::getInstance()->getAbsolutePathForFilename("shaders/default/anim_feedback.vert");
+//                _feedback->initFeedback(vert_full_path.c_str(), varyings, 3);
+//                _feedback->retain();
+//
+//                _feedback->addVertexAttribute(0, 2, GL_INT, GL_FALSE, 2, (void*)0, _feedbackData2, sizeof(_feedbackData2), VertexDataType::Int);
+//                _feedback->addFeedbackBuffer(0, sizeof(glm::vec4)*4, varyings[0], FeedbackBufferType::TextureBuffer); //boneMatrix1
+//                _feedback->addFeedbackBuffer(1, sizeof(glm::vec4)*4, varyings[1], FeedbackBufferType::TextureBuffer); //boneMatrix2
+//                _feedback->addFeedbackBuffer(2, sizeof(glm::vec4)*4, varyings[2], FeedbackBufferType::TextureBuffer); //boneMatrix3
+//                _feedback->setupVAOandVBOs();
+//
+//                // tbo
+//                GLuint vbos[3], texs[3];
+//                glGenTextures(3, texs);
+//                glGenBuffers(3, vbos);
+//                // position
+//                glBindBuffer(GL_TEXTURE_BUFFER, vbos[0]);
+//                glBufferData(GL_TEXTURE_BUFFER, sizeof(_feedbackPosition), _feedbackPosition, GL_STATIC_DRAW);
+//                glBindTexture(GL_TEXTURE_BUFFER, texs[0]);
+//                glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA32F, vbos[0]);
+//                _feedback->setUniformSamplerBuffer("position_keys", texs[0]);
+//                // rotation
+//                glBindBuffer(GL_TEXTURE_BUFFER, vbos[1]);
+//                glBufferData(GL_TEXTURE_BUFFER, sizeof(_feedbackRotation), _feedbackRotation, GL_STATIC_DRAW);
+//                glBindTexture(GL_TEXTURE_BUFFER, texs[1]);
+//                glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA32F, vbos[1]);
+//                _feedback->setUniformSamplerBuffer("rotation_keys", texs[1]);
+//                _feedback->setUniformFloatV("rotation_times", 1, _feedbackRotationTime);
+//                //scale
+//                glBindBuffer(GL_TEXTURE_BUFFER, vbos[2]);
+//                glBufferData(GL_TEXTURE_BUFFER, sizeof(_feedbackScale), _feedbackScale, GL_STATIC_DRAW);
+//                glBindTexture(GL_TEXTURE_BUFFER, texs[2]);
+//                glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA32F, vbos[2]);
+//                _feedback->setUniformSamplerBuffer("scale_keys", texs[2]);
+//                // contains_bones
+//                _feedback->setUniformIntV("contains_bones", 4, contains_bones);
+//                // trans_bone_keyframe_count
+//                _feedback->setUniformIVec3V("trans_bone_keyframe_count", 1, glm::value_ptr(trans_bone_keyframe_count[0]));
+//                // animation_info
+//                _feedback->setUniformV4f("animation_info", animation_info);
+//            }
+//            _feedback->flushAsPoints();
+//
+//            GLfloat output[16];
+//            //            _feedback->getOutputDataFromVBOs(0, output, sizeof(output));
+//            _feedback->getOutputDataFromVBOs("result_position", output, sizeof(output));
+//            printf("(%f, %f, %f, %f), (%f, %f ,%f, %f), (%f, %f ,%f, %f), (%f, %f ,%f, %f)\n", output[0], output[1], output[2], output[3], output[4], output[5], output[6], output[7], output[8], output[9], output[10], output[11], output[12], output[13], output[14], output[15]);
             
         }
 	}

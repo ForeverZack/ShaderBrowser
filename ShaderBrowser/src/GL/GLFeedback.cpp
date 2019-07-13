@@ -17,13 +17,27 @@ namespace customGL
 		}
 		return feedback;
 	}
+    
+    GLFeedback* GLFeedback::create(const char* vertSrc, const char* varyings[], int length, const std::string& addtionVertCode, GLenum bufferMode /*= GL_INTERLEAVED_ATTRIBS*/)
+    {
+        GLFeedback* feedback = new GLFeedback();
+        feedback->setAddtionVertCode(addtionVertCode);  // 附加顶点着色器源码
+        if (!feedback->initFeedback(vertSrc, varyings, length, bufferMode))
+        {
+            delete feedback;
+            return nullptr;
+        }
+        return feedback;
+    }
 
 	GLFeedback::GLFeedback()
 	{
+        glGenTransformFeedbacks(1, &m_uFeed);
 	}
 
 	GLFeedback::~GLFeedback()
 	{
+        glDeleteTransformFeedbacks(1, &m_uFeed);
 	}
 
 	bool GLFeedback::initFeedback(const char* vertSrc, const char* varyings[], int length, GLenum bufferMode /*= GL_INTERLEAVED_ATTRIBS*/)
@@ -83,6 +97,7 @@ namespace customGL
 
 		return true;
 	}
+    
     
     
 }

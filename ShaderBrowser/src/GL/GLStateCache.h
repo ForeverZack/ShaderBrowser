@@ -18,6 +18,7 @@ namespace customGL
 		void update(float deltaTime);
         // 绑定纹理到opengl
         void bindTexture2DN(GLuint textureUnit, GLuint textureId);
+        void bindSamplerBuffer(GLuint textureUnit, GLuint textureId);
         
         // 开启深度缓存测试
         void openDepthTest(GLenum depthFunc = GL_LESS, GLenum depthMask = GL_TRUE);

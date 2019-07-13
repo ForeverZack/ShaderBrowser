@@ -33,6 +33,16 @@ namespace customGL
         }
     }
     
+    void GLStateCache::bindSamplerBuffer(GLuint textureUnit, GLuint textureId)
+    {
+        if (m_vTexIds[textureUnit] != textureId)
+        {
+            m_vTexIds[textureUnit] = textureId;
+            glActiveTexture(GL_TEXTURE0 + textureUnit);
+            glBindTexture(GL_TEXTURE_BUFFER, textureId);
+        }
+    }
+    
     void GLStateCache::openDepthTest(GLenum depthFunc/* = GL_LESS*/, GLenum depthMask/* = GL_TRUE*/)
     {
         // 开启深度测试

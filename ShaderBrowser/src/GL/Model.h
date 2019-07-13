@@ -84,6 +84,7 @@ namespace customGL
         void loadTextures(const std::string& directory);
 		// 计算模型动画
 		// interpolateAnimation：是否插值动画（false使用前一帧, true在两帧间插值）
+        // applyRootMotion: 是否允许根节点移动（参考unity）
         void computeBonesTransform(aiAnimation* animation, float elapsedTime, std::unordered_map<aiNode*, aiMatrix4x4>& nodeTrans, std::vector<glm::mat4>& bonesMatrix, std::unordered_map<unsigned int, glm::vec3>& bonesPosition, std::unordered_map<unsigned int, glm::quat>& bonesRotation, std::unordered_map<unsigned int, glm::vec3>& bonesScale, bool interpolateAnimation = true, bool applyRootMotion = false);
 		void traverseNodeToComputeBonesTransform(aiNode* node, const aiMatrix4x4 parentMatrix, std::unordered_map<aiNode*, aiMatrix4x4>& nodeTrans, std::vector<glm::mat4>& bonesMatrix);
         // 混合模型动画

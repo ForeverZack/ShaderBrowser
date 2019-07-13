@@ -93,7 +93,6 @@ namespace customGL
 	public:
 		static GLProgram* create(const char* vertSrc, const char* fragSrc);
         static GLProgram* createAndSaveSource(const char* vertSrc, const char* fragSrc);
-        static bool createShader(GLenum type, GLuint& shader, const char* shaderSource);
 
 	public:
 		GLProgram();
@@ -112,14 +111,35 @@ namespace customGL
         void setUniformWithMat3x4(const std::string& uniformName, const glm::mat3x4& value);
         void setUniformWithMat4(const std::string& uniformName, const glm::mat4& value);
         void setUniformWithMat4x3(const std::string& uniformName, const glm::mat4x3& value);
-        void setUniformWithFloatV(const std::string& uniformName, int size, const float* fv);
+        void setUniformWithFloatV(const std::string& uniformName, int count, const float* fv);
+        void setUniformWithIntV(const std::string& uniformName, int count, const int* iv);
         void setUniformWithVec2(const std::string& uniformName, GLfloat f1, GLfloat f2);
+        void setUniformWithIVec2(const std::string& uniformName, int i1, int i2);
+        void setUniformWithVec2V(const std::string& uniformName, int count, const GLfloat* fv);
+        void setUniformWithIVec2V(const std::string& uniformName, int count, const int* iv);
         void setUniformWithVec3(const std::string& uniformName, GLfloat f1, GLfloat f2, GLfloat f3);
+        void setUniformWithIVec3(const std::string& uniformName, int i1, int i2, int i3);
+        void setUniformWithVec3V(const std::string& uniformName, int count, const GLfloat* fv);
+        void setUniformWithIVec3V(const std::string& uniformName, int count, const int* iv);
 		void setUniformWithVec4(const std::string& uniformName, GLfloat f1, GLfloat f2, GLfloat f3, GLfloat f4);
+        void setUniformWithIVec4(const std::string& uniformName, int i1, int i2, int i3, int i4);
+        void setUniformWithVec4V(const std::string& uniformName, int count, const GLfloat* fv);
+        void setUniformWithIVec4V(const std::string& uniformName, int count, const int* iv);
         void setUniformWithTex2D(const std::string& uniformName, GLuint textureId);
+        void setUniformWithSamplerBuffer(const std::string& uniformName, GLuint textureId);
+        
+        void setUniformWithMat3V(const std::string& uniformName, int count, const float* fv);
+        void setUniformWithMat3x4V(const std::string& uniformName, int count, const float* fv);
+        void setUniformWithMat4v(const std::string& uniformName, int count, const float* fv);
+        void setUniformWithMat4x3v(const std::string& uniformName, int count, const float* fv);
         
         // 获取uniform的位置
         GLint getUniformLocation(const std::string& uniformName);
+        
+        
+        // property
+        REGISTER_PROPERTY_GET_SET(std::string, m_sAddtionVertCode, AddtionVertCode)
+        REGISTER_PROPERTY_GET_SET(std::string, m_sAddtionFragCode, AddtionFragCode)
 
 	protected:
 		// 初始化着色器程序
@@ -127,6 +147,7 @@ namespace customGL
         bool cloneProgram(GLProgram* srcGLProgram);
 		// 创建着色器
 		bool createShader(GLenum type, GLuint& shader, const char* shaderSrc, bool saveSource);
+        bool createShader(GLenum type, GLuint& shader, const char* shaderSource);
 		// 绑定预定义的顶点属性变量位置
 		void bindPredefinedVertexAttribs();
         // 获取存储着色器源码的指针
@@ -148,7 +169,11 @@ namespace customGL
 		std::unordered_map<std::string, GLuint> m_mTextureUnits;
 		// 纹理单元计数
 		GLuint m_uTextureUnitIndex;
-
+        
+        // 附加顶点着色器代码（在预定义头和源码之间）
+        std::string m_sAddtionVertCode;
+        // 附加片段着色器代码（在预定义头和源码之间）
+        std::string m_sAddtionFragCode;
 
         // 顶点着色器源码
         GLchar* m_sVertexSource;

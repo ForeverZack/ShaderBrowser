@@ -42,7 +42,7 @@ namespace customGL
 		"uniform DirectionalLight CGL_DIRECTIONAL_LIGHT;\n"
 		"uniform mat3x4 CGL_BONES_MATRIX[MAX_BONES];\n"
         "uniform mat4 CGL_DYNAMIC_BATCH_MODEL_MATRIX[MAX_DYNAMIC_BATCH_COUNT];\n";
-	 // uniform变量名称
+    // uniform变量名称
 	const char* GLProgram::SHADER_UNIFORMS_ARRAY[] =
 	{
 		"CGL_TEXTURE0",
@@ -85,6 +85,8 @@ namespace customGL
 		, m_uTextureUnitIndex(0)
         , m_sVertexSource(nullptr)
         , m_sFragSource(nullptr)
+        , m_sAddtionVertCode("")
+        , m_sAddtionFragCode("")
 	{
         for (int i=0; i<MAX_ACTIVE_TEXTURE; ++i)
         {
@@ -314,10 +316,26 @@ namespace customGL
         shader = glCreateShader(type);
         
         // 2.绑定shader源码
+        const char* additionCode = "";
+        switch(type)
+        {
+            case GL_VERTEX_SHADER:
+                {
+                    additionCode = m_sAddtionVertCode.c_str();
+                }
+                break;
+                
+            case GL_FRAGMENT_SHADER:
+                {
+                    additionCode = m_sAddtionFragCode.c_str();
+                }
+                break;
+        }
         const GLchar *sources[] =
         {
             "#version 330 core\n",    // 头
             SHADER_UNIFORMS,    // 预定义uniform
+            additionCode, //附加代码
             shaderSource // 源码
         };
         glShaderSource(shader, sizeof(sources) / sizeof(*sources), sources, NULL);
@@ -434,11 +452,25 @@ namespace customGL
         glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(value));
     }
     
+    void GLProgram::setUniformWithMat3V(const std::string& uniformName, int count, const float* fv)
+    {
+        GLint location = getUniformLocation(uniformName);
+        //        typedef void (APIENTRYP PFNGLUNIFORMMATRIX3FVPROC)(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
+        glUniformMatrix3fv(location, count, GL_FALSE, fv);
+    }
+    
     void GLProgram::setUniformWithMat3x4(const std::string& uniformName, const glm::mat3x4& value)
     {
         GLint location = getUniformLocation(uniformName);
         //        typedef void (APIENTRYP PFNGLUNIFORMMATRIX3X4FVPROC)(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value)
         glUniformMatrix3x4fv(location, 1, GL_FALSE, glm::value_ptr(value));
+    }
+    
+    void GLProgram::setUniformWithMat3x4V(const std::string& uniformName, int count, const float* fv)
+    {
+        GLint location = getUniformLocation(uniformName);
+        //        typedef void (APIENTRYP PFNGLUNIFORMMATRIX3X4FVPROC)(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value)
+        glUniformMatrix3x4fv(location, count, GL_FALSE, fv);
     }
     
     void GLProgram::setUniformWithMat4(const std::string& uniformName, const glm::mat4& value)
@@ -448,6 +480,13 @@ namespace customGL
         glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
     }
     
+    void GLProgram::setUniformWithMat4v(const std::string& uniformName, int count, const float* fv)
+    {
+        GLint location = getUniformLocation(uniformName);
+        //        typedef void (APIENTRYP PFNGLUNIFORMMATRIX4FVPROC)(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
+        glUniformMatrix4fv(location, count, GL_FALSE, fv);
+    }
+    
     void GLProgram::setUniformWithMat4x3(const std::string& uniformName, const glm::mat4x3& value)
     {
         GLint location = getUniformLocation(uniformName);
@@ -455,10 +494,23 @@ namespace customGL
         glUniformMatrix4x3fv(location, 1, GL_FALSE, glm::value_ptr(value));
     }
     
-    void GLProgram::setUniformWithFloatV(const std::string& uniformName, int size, const float* fv)
+    void GLProgram::setUniformWithMat4x3v(const std::string& uniformName, int count, const float* fv)
     {
         GLint location = getUniformLocation(uniformName);
-        glUniform1fv(location, size, fv);
+        //        typedef void (APIENTRYP PFNGLUNIFORMMATRIX4X3FVPROC)(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value)
+        glUniformMatrix4x3fv(location, count, GL_FALSE, fv);
+    }
+    
+    void GLProgram::setUniformWithFloatV(const std::string& uniformName, int count, const float* fv)
+    {
+        GLint location = getUniformLocation(uniformName);
+        glUniform1fv(location, count, fv);
+    }
+    
+    void GLProgram::setUniformWithIntV(const std::string& uniformName, int count, const int* iv)
+    {
+        GLint location = getUniformLocation(uniformName);
+        glUniform1iv(location, count, iv);
     }
     
     void GLProgram::setUniformWithVec2(const std::string& uniformName, GLfloat f1, GLfloat f2)
@@ -467,10 +519,46 @@ namespace customGL
         glUniform2f(location, f1, f2);
     }
     
+    void GLProgram::setUniformWithIVec2(const std::string& uniformName, int i1, int i2)
+    {
+        GLint location = getUniformLocation(uniformName);
+        glUniform2i(location, i1, i2);
+    }
+    
+    void GLProgram::setUniformWithVec2V(const std::string& uniformName, int count, const GLfloat* fv)
+    {
+        GLint location = getUniformLocation(uniformName);
+        glUniform2fv(location, count, fv);
+    }
+    
+    void GLProgram::setUniformWithIVec2V(const std::string& uniformName, int count, const int* iv)
+    {
+        GLint location = getUniformLocation(uniformName);
+        glUniform2iv(location, count, iv);
+    }
+    
     void GLProgram::setUniformWithVec3(const std::string& uniformName, GLfloat f1, GLfloat f2, GLfloat f3)
     {
         GLint location = getUniformLocation(uniformName);
         glUniform3f(location, f1, f2, f3);
+    }
+    
+    void GLProgram::setUniformWithIVec3(const std::string& uniformName, int i1, int i2, int i3)
+    {
+        GLint location = getUniformLocation(uniformName);
+        glUniform3i(location, i1, i2, i3);
+    }
+    
+    void GLProgram::setUniformWithVec3V(const std::string& uniformName, int count, const GLfloat* fv)
+    {
+        GLint location = getUniformLocation(uniformName);
+        glUniform3fv(location, count, fv);
+    }
+    
+    void GLProgram::setUniformWithIVec3V(const std::string& uniformName, int count, const int* iv)
+    {
+        GLint location = getUniformLocation(uniformName);
+        glUniform3iv(location, count, iv);
     }
 
 	void GLProgram::setUniformWithVec4(const std::string& uniformName, GLfloat f1, GLfloat f2, GLfloat f3, GLfloat f4)
@@ -478,6 +566,24 @@ namespace customGL
 		GLint location = getUniformLocation(uniformName);
 		glUniform4f(location, f1, f2, f3, f4);
 	}
+    
+    void GLProgram::setUniformWithIVec4(const std::string& uniformName, int i1, int i2, int i3, int i4)
+    {
+        GLint location = getUniformLocation(uniformName);
+        glUniform4i(location, i1, i2, i3, i4);
+    }
+    
+    void GLProgram::setUniformWithVec4V(const std::string& uniformName, int count, const GLfloat* fv)
+    {
+        GLint location = getUniformLocation(uniformName);
+        glUniform4fv(location, count, fv);
+    }
+    
+    void GLProgram::setUniformWithIVec4V(const std::string& uniformName, int count, const int* iv)
+    {
+        GLint location = getUniformLocation(uniformName);
+        glUniform4iv(location, count, iv);
+    }
     
     void GLProgram::setUniformWithTex2D(const std::string& uniformName, GLuint textureId)
     {
@@ -500,6 +606,29 @@ namespace customGL
         
         // 绑定纹理到opengl
         GLStateCache::getInstance()->bindTexture2DN(textureUnit, textureId);
+    }
+    
+    void GLProgram::setUniformWithSamplerBuffer(const std::string& uniformName, GLuint textureId)
+    {
+        // 自动生成纹理单元
+        GLuint textureUnit;
+        if (m_mTextureUnits.find(uniformName) != m_mTextureUnits.end())
+        {
+            textureUnit = m_mTextureUnits[uniformName];
+        }
+        else
+        {
+            textureUnit = m_uTextureUnitIndex++;
+            m_mTextureUnits[uniformName] = textureUnit;
+            
+            // 注意！！！！ 还要通过使用glUniform1i设置每个采样器的方式告诉OpenGL每个着色器采样器属于哪个纹理单元。我们只需要设置一次即可
+            setUniformWithInt(uniformName.c_str(), textureUnit);
+        }
+        
+        common::BROWSER_ASSERT(textureUnit<MAX_ACTIVE_TEXTURE, "texture unit value is too big, it is out off support range in function GLProgram::setUniformSamplerBuffer");
+        
+        // 绑定纹理到opengl
+        GLStateCache::getInstance()->bindSamplerBuffer(textureUnit, textureId);
     }
     
 }

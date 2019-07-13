@@ -70,6 +70,7 @@
 		14EB1187222019C000D3C29D /* GUIFramework.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14EB1186222019C000D3C29D /* GUIFramework.cpp */; };
 		14EB118922201A8B00D3C29D /* BaseGUIPanel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14EB118822201A8B00D3C29D /* BaseGUIPanel.cpp */; };
 		14EB118C22202A0100D3C29D /* InspectorPanel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14EB118A22202A0100D3C29D /* InspectorPanel.cpp */; };
+		14F240B922D2E54B008A67F4 /* AnimatorFeedback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14F240B822D2E54B008A67F4 /* AnimatorFeedback.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -210,6 +211,8 @@
 		14EB118822201A8B00D3C29D /* BaseGUIPanel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BaseGUIPanel.cpp; sourceTree = "<group>"; };
 		14EB118A22202A0100D3C29D /* InspectorPanel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InspectorPanel.cpp; sourceTree = "<group>"; };
 		14EB118B22202A0100D3C29D /* InspectorPanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InspectorPanel.h; sourceTree = "<group>"; };
+		14F240B722D2E54B008A67F4 /* AnimatorFeedback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnimatorFeedback.h; sourceTree = "<group>"; };
+		14F240B822D2E54B008A67F4 /* AnimatorFeedback.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AnimatorFeedback.cpp; sourceTree = "<group>"; };
 		14FF768421C4B6D80008462D /* libassimp.4.1.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libassimp.4.1.0.dylib; path = ShaderBrowser/src/Plugins/assimp/lib/mac/libassimp.4.1.0.dylib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -330,6 +333,8 @@
 		149F475E22D0C103001C4294 /* Feedback */ = {
 			isa = PBXGroup;
 			children = (
+				14F240B722D2E54B008A67F4 /* AnimatorFeedback.h */,
+				14F240B822D2E54B008A67F4 /* AnimatorFeedback.cpp */,
 				149F476022D0C103001C4294 /* BaseFeedback.h */,
 				141098F122D0E28700C9F982 /* BaseFeedback.cpp */,
 			);
@@ -685,6 +690,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				148177B621D8A86D0037E11D /* Transform.cpp in Sources */,
+				14F240B922D2E54B008A67F4 /* AnimatorFeedback.cpp in Sources */,
 				14E349D221C647AA00EB5785 /* Pass.cpp in Sources */,
 				14EB11822220184D00D3C29D /* imgui_impl_glfw_gl3.cpp in Sources */,
 				141098ED22D0C5F800C9F982 /* FeedbackSystem.cpp in Sources */,

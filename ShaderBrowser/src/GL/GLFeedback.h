@@ -15,6 +15,7 @@ namespace customGL
 	{
     public:
 		static GLFeedback* create(const char* vertSrc, const char* varyings[], int length, GLenum bufferMode = GL_INTERLEAVED_ATTRIBS);
+        static GLFeedback* create(const char* vertSrc, const char* varyings[], int length, const std::string& addtionVertCode, GLenum bufferMode = GL_INTERLEAVED_ATTRIBS);
 
 	public:
 		GLFeedback();
@@ -22,12 +23,16 @@ namespace customGL
     
     public:
         
-        
         REGISTER_PROPERTY_GET_SET(GLuint, m_uProgram, Program)
+        REGISTER_PROPERTY_GET_SET(GLuint, m_uFeed, Feed)
 
     protected:
         // 初始化Feedback
         bool initFeedback(const char* vertSrc, const char* varyings[], int length, GLenum bufferMode = GL_INTERLEAVED_ATTRIBS);
+        
+    protected:
+        // Transform Feedback
+        GLuint m_uFeed;
 
 	};
 }

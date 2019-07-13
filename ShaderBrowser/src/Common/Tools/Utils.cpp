@@ -80,13 +80,14 @@ namespace common
         return declaration;
     }
 
-    FeedbackBufferDeclaration* Utils::createFeedbackBufferDeclaration(GLuint bindIdx, GLuint size, const string& name, FeedbackBufferType type/* = FeedbackBufferType::ArrayBuffer*/)
+    FeedbackBufferDeclaration* Utils::createFeedbackBufferDeclaration(GLuint bindIdx, GLuint size, const string& name, FeedbackBufferType type/* = FeedbackBufferType::ArrayBuffer*/, GLenum internalFormat /*= GL_RGBA32F*/)
     {
         FeedbackBufferDeclaration* declaration = new FeedbackBufferDeclaration();
         declaration->varying = name;
         declaration->bindIdx = bindIdx;
         declaration->size = size;
         declaration->type = type;
+        declaration->internalFormat = internalFormat;
         
         return declaration;
     }

@@ -397,7 +397,7 @@ namespace browser
                 
 //                if (entity->getIsVisible() && entity->getIsAxisVisible() && entity->checkVisibility(camera))
                 if (entity->getIsVisible() && entity->getIsAxisVisible())
-                {
+                {                    
                     vao = m_oAxisMesh->getVAO();
 					vbos = m_oAxisMesh->getVBOs();
                     

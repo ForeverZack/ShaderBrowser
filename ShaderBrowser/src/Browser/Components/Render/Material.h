@@ -55,7 +55,22 @@ namespace browser
         void setUniformV3f(const std::string& uniformName, const glm::vec3& value);
         void setUniformV4f(const std::string& uniformName, const glm::vec4& value);
         void setUniformTex2D(const std::string& uniformName, GLuint textureId);
-
+        void setUniformSamplerBuffer(const std::string& uniformName, GLuint textureId);
+        void setUniformIntV(const std::string& uniformName, int count, const int* value);
+        void setUniformIVec2(const std::string& uniformName, const glm::ivec2& value);
+        void setUniformVec2V(const std::string& uniformName, int count, const float* value);
+        void setUniformIVec2V(const std::string& uniformName, int count, const int* value);
+        void setUniformIVec3(const std::string& uniformName, const glm::ivec3& value);
+        void setUniformVec3V(const std::string& uniformName, int count, const float* value);
+        void setUniformIVec3V(const std::string& uniformName, int count, const int* value);
+        void setUniformIVec4(const std::string& uniformName, const glm::ivec4& value);
+        void setUniformVec4V(const std::string& uniformName, int count, const float* value);
+        void setUniformIVec4V(const std::string& uniformName, int count, const int* value);
+        void setUniformMat4V(const std::string& uniformName, int count, const float* value);
+        void setUniformMat4x3V(const std::string& uniformName, int count, const float* value);
+        void setUniformMat3V(const std::string& uniformName, int count, const float* value);
+        void setUniformMat3x4V(const std::string& uniformName, int count, const float* value);
+        
 
         REGISTER_PROPERTY_GET_SET(unsigned int, m_uMaterialId, MaterialId)
 		REGISTER_PROPERTY_CONSTREF_GET(std::vector<Pass*>, m_vPass, Pass)
