@@ -8,6 +8,9 @@
 
 namespace customGL
 {
+    // 交换缓冲数量
+#define EXCHANGE_BUFFERS_COUNT 2
+    
     class GLProgram;
 	class Texture2D;
     
@@ -201,8 +204,11 @@ namespace customGL
         , bindIdx(0)
         , size(0)
         , internalFormat(GL_RGBA32F)
-        , vbo(0)
         {
+            for (int i=0; i<EXCHANGE_BUFFERS_COUNT; ++i)
+            {
+                vbos[i] = 0;
+            }
         }
     public:
         // 必须填写的属性
@@ -218,7 +224,7 @@ namespace customGL
         GLenum internalFormat;
         
         // 对应vbo
-        GLuint vbo;
+        GLuint vbos[EXCHANGE_BUFFERS_COUNT];
     };
 
 	// 纹理数据

@@ -16,19 +16,296 @@ using namespace common;
 
 namespace customGL
 {
-
-	Model* Model::create(const char* fileName, shared_ptr<std::vector<std::string>> animFileNames)
-	{
-		Model* model = new Model();
-		if (!model->initWithFile(fileName, *animFileNames, DEFAULT_ASSIMP_FLAG))
-		{
-			delete model;
-			return nullptr;
-		}
-
-		return model;
-	}
-       
+    
+    ModelGpuAnimationData::ModelGpuAnimationData(int boneNum)
+        : src_boneNum(boneNum)
+    {
+    }
+    
+    ModelGpuAnimationData::~ModelGpuAnimationData()
+    {
+        glDeleteBuffers(ModelGpuAnimBufferType::Max_Buffer_Count, vbos);
+        glDeleteTextures(ModelGpuAnimBufferType::Max_Buffer_Count, texs);
+    }
+    
+    GLuint ModelGpuAnimationData::getSamplerBuffer(ModelGpuAnimBufferType type)
+    {
+        BROWSER_ASSERT(type<ModelGpuAnimBufferType::Max_Buffer_Count, "Can not find buffer in function ModelGpuAnimationData::getSamplerBuffer");
+        return texs[type];
+    }
+    
+    const std::vector<int>& ModelGpuAnimationData::getContainsBones(aiAnimation* animation)
+    {
+        auto itor = contains_bones_vec.find(animation);
+        BROWSER_ASSERT(itor!=contains_bones_vec.end(), "Cannot find contains_bones_vec in function ModelGpuAnimationData::getContainsBones, please check your code.");
+        return itor->second;
+    }
+    
+    const std::vector<glm::ivec3>& ModelGpuAnimationData::getTransBoneKeyframeCount(aiAnimation* animation)
+    {
+        auto itor = trans_bone_keyframe_count_vec.find(animation);
+        BROWSER_ASSERT(itor!=trans_bone_keyframe_count_vec.end(), "Cannot find trans_bone_keyframe_count_vec in function ModelGpuAnimationData::getTransBoneKeyframeCount, please check your code.");
+        return itor->second;
+    }
+    
+    const glm::ivec3& ModelGpuAnimationData::getKeysOffset(aiAnimation* animation)
+    {
+        auto itor = keys_offsets.find(animation);
+        BROWSER_ASSERT(itor!=keys_offsets.end(), "Cannot find keys_offsets in function ModelGpuAnimationData::getKeysOffset, please check your code.");
+        return itor->second;
+    }
+//    void ModelGpuAnimationData::generateData(aiAnimation* animation, int boneNum, const std::unordered_map<std::string, unsigned int>& bonesIdMap)
+//    {
+//        contains_bones.resize(boneNum);
+//        contains_bones.insert(contains_bones.begin(), boneNum, -1);   // 全部重置为-1
+//        trans_bone_keyframe_count.resize(animation->mNumChannels);
+//        
+//        int pos_keys_size=0, rot_keys_size=0, scal_keys_size=0;
+//        int boneId;
+//        //            std::unordered_map<std::string, unsigned int>::iterator itor;
+//        aiNodeAnim* channel = nullptr;
+//        for (int i=0; i<animation->mNumChannels; ++i)
+//        {
+//            channel = animation->mChannels[i];
+//            
+//            // test 测试是否按照id排序 (非按照id排序！！)
+//            auto itor = bonesIdMap.find(channel->mNodeName.C_Str());
+//            if (itor != bonesIdMap.end())
+//            {
+//                boneId = itor->second;
+//                std::cout<<"insert bone id = "<<boneId<<endl;
+//                
+//                contains_bones[boneId] = i;
+//                trans_bone_keyframe_count[i][0] = channel->mNumPositionKeys;
+//                trans_bone_keyframe_count[i][1] = channel->mNumRotationKeys;
+//                trans_bone_keyframe_count[i][2] = channel->mNumScalingKeys;
+//                
+//                pos_keys_size += channel->mNumPositionKeys;
+//                rot_keys_size += channel->mNumRotationKeys;
+//                scal_keys_size += channel->mNumScalingKeys;
+//            }
+//        }
+//        
+//        position_keys.resize(pos_keys_size);
+//        rotation_keys.resize(rot_keys_size);
+//        rotation_times.resize(rot_keys_size);
+//        scale_keys.resize(scal_keys_size);
+//        
+//        
+//        int pos_idx=0, rot_idx=0, scal_idx=0;
+//        for (int i=0; i<animation->mNumChannels; ++i)
+//        {
+//            channel = animation->mChannels[i];
+//            
+//            // test 测试是否按照id排序 (非按照id排序！！)
+//            auto itor = bonesIdMap.find(channel->mNodeName.C_Str());
+//            if (itor != bonesIdMap.end())
+//            {
+//                // position
+//                for (int j=0; j<channel->mNumPositionKeys; ++j)
+//                {
+//                    position_keys[pos_idx] = std::move(glm::vec4(channel->mPositionKeys[j].mValue.x, channel->mPositionKeys[j].mValue.y, channel->mPositionKeys[j].mValue.z, channel->mPositionKeys[j].mTime));
+//                    ++pos_idx;
+//                }
+//                // rotation
+//                for (int j=0; j<channel->mNumRotationKeys; ++j)
+//                {
+//                    rotation_keys[rot_idx] = std::move(glm::vec4(channel->mRotationKeys[j].mValue.x, channel->mRotationKeys[j].mValue.y, channel->mRotationKeys[j].mValue.z, channel->mRotationKeys[j].mValue.w));
+//                    rotation_times[rot_idx] = channel->mRotationKeys[j].mTime;
+//                    ++rot_idx;
+//                }
+//                // scale
+//                for (int j=0; j<channel->mNumScalingKeys; ++j)
+//                {
+//                    scale_keys[scal_idx] = std::move(glm::vec4(channel->mScalingKeys[j].mValue.x, channel->mScalingKeys[j].mValue.y, channel->mScalingKeys[j].mValue.z, channel->mScalingKeys[j].mTime));
+//                    ++scal_idx;
+//                }
+//            }
+//            
+//        }
+//    }
+//    
+//    void ModelGpuAnimationData::generateDataBuffer(const std::unordered_map<std::string, unsigned int>& bonesIdMap)
+//    {
+//        // 生成数据
+//        generateData(src_animation, src_boneNum, bonesIdMap);
+//        
+//        // 生成buffer
+//        glGenTextures(ModelGpuAnimBufferType::Max_Buffer_Count, texs);
+//        glGenBuffers(ModelGpuAnimBufferType::Max_Buffer_Count, vbos);
+//        // position keys
+//        glBindBuffer(GL_TEXTURE_BUFFER, vbos[ModelGpuAnimBufferType::PositionKeys]);
+//        glBufferData(GL_TEXTURE_BUFFER, sizeof(glm::vec4)*position_keys.size(), &position_keys[0], GL_STATIC_DRAW);
+//        glBindTexture(GL_TEXTURE_BUFFER, texs[ModelGpuAnimBufferType::PositionKeys]);
+//        glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA32F, vbos[ModelGpuAnimBufferType::PositionKeys]);
+//        // rotation keys
+//        glBindBuffer(GL_TEXTURE_BUFFER, vbos[ModelGpuAnimBufferType::RotationKeys]);
+//        glBufferData(GL_TEXTURE_BUFFER, sizeof(glm::vec4)*rotation_keys.size(), &rotation_keys[0], GL_STATIC_DRAW);
+//        glBindTexture(GL_TEXTURE_BUFFER, texs[ModelGpuAnimBufferType::RotationKeys]);
+//        glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA32F, vbos[ModelGpuAnimBufferType::RotationKeys]);
+//        // rotation times
+//        glBindBuffer(GL_TEXTURE_BUFFER, vbos[ModelGpuAnimBufferType::RotationTimes]);
+//        glBufferData(GL_TEXTURE_BUFFER, sizeof(float)*rotation_times.size(), &rotation_times[0], GL_STATIC_DRAW);
+//        glBindTexture(GL_TEXTURE_BUFFER, texs[ModelGpuAnimBufferType::RotationTimes]);
+//        glTexBuffer(GL_TEXTURE_BUFFER, GL_R32F, vbos[ModelGpuAnimBufferType::RotationTimes]);
+//        // scale keys
+//        glBindBuffer(GL_TEXTURE_BUFFER, vbos[ModelGpuAnimBufferType::ScaleKeys]);
+//        glBufferData(GL_TEXTURE_BUFFER, sizeof(glm::vec4)*scale_keys.size(), &scale_keys[0], GL_STATIC_DRAW);
+//        glBindTexture(GL_TEXTURE_BUFFER, texs[ModelGpuAnimBufferType::ScaleKeys]);
+//        glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA32F, vbos[ModelGpuAnimBufferType::ScaleKeys]);
+//    }
+    
+    void ModelGpuAnimationData::calculateBufferSize(const std::vector<std::tuple<aiAnimation*, std::string>>& animations, const std::unordered_map<std::string, unsigned int>& bonesIdMap, int& pos_keys_size, int& rot_keys_size, int& scal_keys_size)
+    {
+        keys_offsets.clear();
+        contains_bones_vec.clear();
+        trans_bone_keyframe_count_vec.clear();
+        pos_keys_size=0; rot_keys_size=0; scal_keys_size=0;
+        
+        int boneId;
+        aiAnimation* animation = nullptr;
+        aiNodeAnim* channel = nullptr;
+        
+        for (auto itor=animations.begin(); itor!=animations.end(); ++itor)
+        {
+            animation = std::get<0>(*itor);
+            std::vector<int> contains_bone22;
+            std::vector<glm::ivec3> trans_bone_keyframe_count22;
+            contains_bone22.resize(src_boneNum);
+//            contains_bone22.insert(contains_bone22.begin(), src_boneNum, -1);   // 全部重置为-1
+            contains_bone22.assign(src_boneNum, -1);
+            trans_bone_keyframe_count22.resize(animation->mNumChannels);
+        
+            for (int i=0; i<animation->mNumChannels; ++i)
+            {
+                channel = animation->mChannels[i];
+                
+                // test 测试是否按照id排序 (非按照id排序！！)
+                auto boneItor = bonesIdMap.find(channel->mNodeName.C_Str());
+                if (boneItor != bonesIdMap.end())
+                {
+                    boneId = boneItor->second;
+//                    std::cout<<"insert bone id = "<<boneId<<endl;
+                    
+                    contains_bone22[boneId] = i;
+                    trans_bone_keyframe_count22[i][0] = channel->mNumPositionKeys;
+                    trans_bone_keyframe_count22[i][1] = channel->mNumRotationKeys;
+                    trans_bone_keyframe_count22[i][2] = channel->mNumScalingKeys;
+                    
+                    pos_keys_size += channel->mNumPositionKeys;
+                    rot_keys_size += channel->mNumRotationKeys;
+                    scal_keys_size += channel->mNumScalingKeys;
+                }
+            }
+            
+            contains_bones_vec[animation] = std::move(contains_bone22);
+            trans_bone_keyframe_count_vec[animation] = std::move(trans_bone_keyframe_count22);
+        }
+        
+        position_keys.resize(pos_keys_size + src_boneNum);
+        rotation_keys.resize(rot_keys_size + src_boneNum);
+        rotation_times.resize(rot_keys_size + src_boneNum);
+        scale_keys.resize(scal_keys_size + src_boneNum);
+    }
+    
+    void ModelGpuAnimationData::generateDataBuffer(const std::vector<std::tuple<aiAnimation*, std::string>>& animations, const std::unordered_map<std::string, unsigned int>& bonesIdMap, const std::vector<glm::vec4>& bonesInitPos, const std::vector<glm::vec4>& bonesInitRot, const std::vector<glm::vec4>& bonesInitScal)
+    {
+        // 计算buffer大小
+        int pos_keys_size, rot_keys_size, scal_keys_size;
+        calculateBufferSize(animations, bonesIdMap, pos_keys_size, rot_keys_size, scal_keys_size);
+        // 给骨骼初始变换赋值(拷贝)
+        for (int i=0; i<src_boneNum; ++i)
+        {
+            position_keys[i] = bonesInitPos[i];
+            rotation_keys[i] = bonesInitRot[i];
+            scale_keys[i] = bonesInitScal[i];
+        }
+//        position_keys.assign(bonesInitPos.cbegin(), bonesInitPos.cend());
+//        rotation_keys.assign(bonesInitRot.cbegin(), bonesInitRot.cend());
+//        scale_keys.assign(bonesInitScal.cbegin(), bonesInitScal.cend());
+        
+        int pos_idx=src_boneNum, rot_idx=src_boneNum, scal_idx=src_boneNum;
+        aiAnimation* animation = nullptr;
+        aiNodeAnim* channel = nullptr;
+        for (auto itor=animations.begin(); itor!=animations.end(); ++itor)
+        {
+            animation = std::get<0>(*itor);
+            
+            // 记录不同动画的uv偏移量 例如：第一个动画的偏移量为0, 第二个动画偏移量为第一个动画长度...
+            keys_offsets[animation] = std::move(glm::ivec3(pos_idx, rot_idx, scal_idx));
+            
+            for (int i=0; i<animation->mNumChannels; ++i)
+            {
+                channel = animation->mChannels[i];
+                
+                // test 测试是否按照id排序 (非按照id排序！！)
+                auto itor = bonesIdMap.find(channel->mNodeName.C_Str());
+                if (itor != bonesIdMap.end())
+                {
+                    // position
+                    for (int j=0; j<channel->mNumPositionKeys; ++j)
+                    {
+                        position_keys[pos_idx] = std::move(glm::vec4(channel->mPositionKeys[j].mValue.x, channel->mPositionKeys[j].mValue.y, channel->mPositionKeys[j].mValue.z, channel->mPositionKeys[j].mTime));
+                        ++pos_idx;
+                    }
+                    // rotation
+                    for (int j=0; j<channel->mNumRotationKeys; ++j)
+                    {
+                        rotation_keys[rot_idx] = std::move(glm::vec4(channel->mRotationKeys[j].mValue.x, channel->mRotationKeys[j].mValue.y, channel->mRotationKeys[j].mValue.z, channel->mRotationKeys[j].mValue.w));
+                        rotation_times[rot_idx] = channel->mRotationKeys[j].mTime;
+                        ++rot_idx;
+                    }
+                    // scale
+                    for (int j=0; j<channel->mNumScalingKeys; ++j)
+                    {
+                        scale_keys[scal_idx] = std::move(glm::vec4(channel->mScalingKeys[j].mValue.x, channel->mScalingKeys[j].mValue.y, channel->mScalingKeys[j].mValue.z, channel->mScalingKeys[j].mTime));
+                        ++scal_idx;
+                    }
+                }
+    
+            }
+        }
+        
+        // 生成buffer
+        glGenTextures(ModelGpuAnimBufferType::Max_Buffer_Count, texs);
+        glGenBuffers(ModelGpuAnimBufferType::Max_Buffer_Count, vbos);
+        // position keys
+        glBindBuffer(GL_TEXTURE_BUFFER, vbos[ModelGpuAnimBufferType::PositionKeys]);
+        glBufferData(GL_TEXTURE_BUFFER, sizeof(glm::vec4)*position_keys.size(), &position_keys[0], GL_STATIC_DRAW);
+        glBindTexture(GL_TEXTURE_BUFFER, texs[ModelGpuAnimBufferType::PositionKeys]);
+        glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA32F, vbos[ModelGpuAnimBufferType::PositionKeys]);
+        // rotation keys
+        glBindBuffer(GL_TEXTURE_BUFFER, vbos[ModelGpuAnimBufferType::RotationKeys]);
+        glBufferData(GL_TEXTURE_BUFFER, sizeof(glm::vec4)*rotation_keys.size(), &rotation_keys[0], GL_STATIC_DRAW);
+        glBindTexture(GL_TEXTURE_BUFFER, texs[ModelGpuAnimBufferType::RotationKeys]);
+        glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA32F, vbos[ModelGpuAnimBufferType::RotationKeys]);
+        // rotation times
+        glBindBuffer(GL_TEXTURE_BUFFER, vbos[ModelGpuAnimBufferType::RotationTimes]);
+        glBufferData(GL_TEXTURE_BUFFER, sizeof(float)*rotation_times.size(), &rotation_times[0], GL_STATIC_DRAW);
+        glBindTexture(GL_TEXTURE_BUFFER, texs[ModelGpuAnimBufferType::RotationTimes]);
+        glTexBuffer(GL_TEXTURE_BUFFER, GL_R32F, vbos[ModelGpuAnimBufferType::RotationTimes]);
+        // scale keys
+        glBindBuffer(GL_TEXTURE_BUFFER, vbos[ModelGpuAnimBufferType::ScaleKeys]);
+        glBufferData(GL_TEXTURE_BUFFER, sizeof(glm::vec4)*scale_keys.size(), &scale_keys[0], GL_STATIC_DRAW);
+        glBindTexture(GL_TEXTURE_BUFFER, texs[ModelGpuAnimBufferType::ScaleKeys]);
+        glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA32F, vbos[ModelGpuAnimBufferType::ScaleKeys]);
+    }
+    
+    
+    
+    // ==================================== Model class ================= start ===================
+    Model* Model::create(const char* fileName, shared_ptr<std::vector<std::string>> animFileNames)
+    {
+        Model* model = new Model();
+        if (!model->initWithFile(fileName, *animFileNames, DEFAULT_ASSIMP_FLAG))
+        {
+            delete model;
+            return nullptr;
+        }
+        
+        return model;
+    }
+    
     Model* Model::createAlone(std::string fileName, const std::vector<std::string>& animFiles, std::function<void(Model*)> success, unsigned int pFlags /*= DEFAULT_ASSIMP_FLAG*/)
     {
         Model* model = new Model();
@@ -43,8 +320,8 @@ namespace customGL
         
         return model;
     }
-
-	Model::Model()
+    
+    Model::Model()
         : m_bLoadSuccess(false)
         , m_oSuccessCallback(nullptr)
         , m_iLoadTextureNum(0)
@@ -64,6 +341,7 @@ namespace customGL
 		m_vAnimations.clear();
         m_vAnimationNames.clear();
         m_mSharedMaterials.clear();
+        m_oGpuAnimData = nullptr;
 	}
 
 	Model::~Model()
@@ -92,7 +370,7 @@ namespace customGL
 			const shared_ptr<Assimp::Importer>& importer = (*itor);
 			importer->FreeScene();
 		}
-	}
+    }
 
 	bool Model::initWithFile(const char* fileName, const std::vector<std::string>& animFiles, unsigned int pFlags)
 	{
@@ -103,7 +381,7 @@ namespace customGL
 
 			std::shared_ptr<Assimp::Importer> importer = make_shared<Assimp::Importer>();
 			// 设置importer的属性
-//            importer->SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, false);    // 防止FBX自己生成枢轴，干扰Node结构树
+            importer->SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, false);    // 防止FBX自己生成枢轴，干扰Node结构树
 //            importer->SetPropertyBool(AI_CONFIG_IMPORT_FBX_READ_LIGHTS, false);
 			const aiScene* scene = importer->ReadFile(m_sFullPath, pFlags);
 			if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
@@ -114,8 +392,6 @@ namespace customGL
 			}
             // 记录importer，否则场景数据会被析构
 			m_vImporters.push_back(importer);
-			// 加载模型动画数据
-			loadAnimations(scene);
 			// 初始化骨骼数据
 			{
 				m_uBoneNum = 0;
@@ -162,8 +438,10 @@ namespace customGL
                                 {
                                     mesh->initBonesData();
                                 }
-                                // 计算骨骼节点下的变换矩阵（模型空间->骨骼节点空间，因为普通网格渲染器BaseRender会根据Transform来做空间变换，而现在会为骨骼节点建立Transform组件，并会实时更新它）
-                                calculateTransformMatrix(meshNode, parentNode, globalTransformation);
+                                
+                                // now：之前是将模型作为一个整体来计算变换的(boneMatrix)，其实并没有使用到Transform来计算骨骼矩阵，Transform对象的属性也不一定正确。现在改用Transform来计算，所以要绑定的网格只要将骨骼节点作为父节点即可
+//                                calculateTransformMatrix(meshNode, parentNode, globalTransformation);
+                                
                                 // 绑定模型到骨骼
                                 bindMeshOnSingleBone(mesh, boneIdx, Assimp::ConvertToGLM(globalTransformation));
                             }
@@ -176,6 +454,9 @@ namespace customGL
                     ++index;
                 }
             }
+            
+            // 加载模型动画数据
+            loadAnimations(scene);
 		}
 		
 		// 加载其余的动画文件（动画文件列表）
@@ -213,22 +494,38 @@ namespace customGL
             loadTextures(m_sDirectory);
         }
         
+        // 记录骨骼初始变换
+        recordBonesInitialTransform();
+        // 创建gpu动画数据
+        if (m_vAnimations.size() > 0)
+        {
+            m_oGpuAnimData = make_shared<ModelGpuAnimationData>(m_uBoneNum);
+        }
+        
 		return true;
 	}
 
 	BaseEntity* Model::createNewEntity(const std::string& name)
 	{
-		BaseEntity* entity = traverseNodeAndCreateEntity(m_oRootNode, nullptr, nullptr);
-		entity->setName(name);
-		entity->setModel(this);
+        BaseEntity* entity;
         if(m_bHasSkeletonAnim)
         {
-            entity->addComponent(new Animator());
+            Animator* animator = new Animator();
+            animator->setBoneInfo(m_uBoneNum);
+            entity = traverseNodeAndCreateEntity(m_oRootNode, nullptr, nullptr, animator);
+            entity->setModel(this);
+            entity->addComponent(animator);
         }
+        else
+        {
+            entity = traverseNodeAndCreateEntity(m_oRootNode);
+            entity->setModel(this);
+        }
+		entity->setName(name);
 		return entity;
 	}
 
-	BaseEntity* Model::traverseNodeAndCreateEntity(aiNode* node, BaseEntity* parent, BaseEntity* root)
+	BaseEntity* Model::traverseNodeAndCreateEntity(aiNode* node, BaseEntity* parent/* = nullptr*/, BaseEntity* root/* = nullptr*/, Animator* animator/* = nullptr*/)
 	{
 		BaseEntity* entity = BaseEntity::create(node->mName.C_Str());
 		if (parent)
@@ -240,7 +537,29 @@ namespace customGL
             root = entity;
         }
         entity->setModelRootEntity(root);
-
+        
+        // 设置当前node的变换
+        {
+            glm::vec3 position, scale;
+            glm::quat rotation;
+            Utils::parseMatrix(node->mTransformation, position, rotation, scale);
+            auto itor = m_mBonesIdMap.find(node->mName.C_Str());
+            if (itor != m_mBonesIdMap.end())
+            {
+                // 骨骼
+                int boneId = itor->second;
+                entity->setBoneInfo(boneId, Assimp::ConvertToGLM(m_vBones[boneId]->mOffsetMatrix));
+                if (animator)
+                {
+                    animator->addBone(boneId, entity->getTransform());
+                }
+//                entity->setPosition(position.x, position.y, position.z);
+//                entity->setQuaternion(rotation.x, rotation.y, rotation.z, rotation.w);
+//                entity->setScale(scale.x, scale.y, scale.z);
+            }
+            entity->getTransform()->setSrcModelTransformation(position, rotation, scale);
+        }
+        
         bool skinned = false;
 		if (node->mNumMeshes > 0)
 		{
@@ -310,7 +629,7 @@ namespace customGL
 		// 继续遍历子节点
 		for (unsigned int i = 0; i < node->mNumChildren; ++i)
 		{
-			traverseNodeAndCreateEntity(node->mChildren[i], entity, root);
+			traverseNodeAndCreateEntity(node->mChildren[i], entity, root, animator);
 		}
 
 		return entity;
@@ -356,6 +675,30 @@ namespace customGL
         }
     }
     
+    GLuint Model::getGpuAnimSamplerBuffer(ModelGpuAnimationData::ModelGpuAnimBufferType type)
+    {
+        BROWSER_ASSERT(m_oGpuAnimData!=nullptr, "Variable m_oGpuAnimaData is nullptr in function Model::getGpuAnimSamplerBuffer");
+        return m_oGpuAnimData->getSamplerBuffer(type);
+    }
+    
+    const std::vector<int>& Model::getContainsBones(aiAnimation* animation)
+    {
+        BROWSER_ASSERT(m_oGpuAnimData!=nullptr, "Variable m_oGpuAnimaData is nullptr in function Model::getContainsBones");
+        return m_oGpuAnimData->getContainsBones(animation);
+    }
+    
+    const std::vector<glm::ivec3>& Model::getTransBonesKeyframeCount(aiAnimation* animation)
+    {
+        BROWSER_ASSERT(m_oGpuAnimData!=nullptr, "Variable m_oGpuAnimaData is nullptr in function Model::getTransBonesKeyframeCount");
+        return m_oGpuAnimData->getTransBoneKeyframeCount(animation);
+    }
+    
+    const glm::ivec3& Model::getKeysOffset(aiAnimation* animation)
+    {
+        BROWSER_ASSERT(m_oGpuAnimData!=nullptr, "Variable m_oGpuAnimaData is nullptr in function Model::getKeysOffset");
+        return m_oGpuAnimData->getKeysOffset(animation);
+    }
+    
     void Model::findModelRootBondNode(aiNode* node)
     {
         if(m_oRootBoneNode)
@@ -376,6 +719,24 @@ namespace customGL
         }
     }
     
+    void Model::recordBonesInitialTransform()
+    {
+        m_vBonesInitPosition.resize(m_uBoneNum);
+        m_vBonesInitRotation.resize(m_uBoneNum);
+        m_vBonesInitScale.resize(m_uBoneNum);
+        
+        aiNode* boneNode = nullptr;
+        int index;
+        for (auto itor=m_mBonesIdMap.begin(); itor!=m_mBonesIdMap.end(); ++itor)
+        {
+            const std::string& boneName = itor->first;
+            boneNode = m_oRootNode->FindNode(boneName.c_str());
+            
+            index = itor->second;
+            Utils::parseMatrix(boneNode->mTransformation, m_vBonesInitPosition[index], m_vBonesInitRotation[index], m_vBonesInitScale[index]);
+        }
+    }
+    
     void Model::traverseNode(aiNode* node, const aiScene*& scene)
     {
         // 处理该节点所有的网格
@@ -390,7 +751,26 @@ namespace customGL
                 m_vAiMeshes[node->mMeshes[i]] = make_tuple(aiMesh, node);
 			}
 		}
-            
+        
+//        std::string nodeName(node->mName.C_Str());
+//        if (FileUtils::getInstance()->getAbsolutePathForFilename("models/Fighter/fighterChar.FBX") == m_sFullPath)
+//        {
+//            int iii = 0;
+//        }
+//        if (nodeName.find("$AssimpFbx$") != -1)  // "Bip001_$AssimpFbx$_Translation"
+//        {
+//            auto boneIdItor = m_mBonesIdMap.find(nodeName);
+//            if (boneIdItor == m_mBonesIdMap.end())
+//            {
+//                // 骨骼id要自己生成
+//                aiBone* bone = new aiBone();
+//                bone->mOffsetMatrix = node->mTransformation;
+//                m_vBones.push_back(bone);
+//                m_mBonesIdMap[nodeName] = m_uRecBoneOffset;
+//                ++m_uRecBoneOffset;
+//            }
+//        }
+        
         // 继续遍历子节点
         for (unsigned int i=0; i<node->mNumChildren; ++i)
         {
@@ -530,11 +910,17 @@ namespace customGL
         return nullptr;
     }
     
-    void Model::setupMeshesVAO()
+    void Model::setupGpuData()
     {
+        // 处理网格模型vao
         for(auto itor=m_vMeshes.begin(); itor!=m_vMeshes.end(); ++itor)
         {
             (*itor)->setupVAO();
+        }
+        // 处理动画数据
+        if (m_oGpuAnimData != nullptr)
+        {
+            m_oGpuAnimData->generateDataBuffer(m_vAnimations, m_mBonesIdMap, m_vBonesInitPosition, m_vBonesInitRotation, m_vBonesInitScale);
         }
     }
     
@@ -574,13 +960,13 @@ namespace customGL
 //                std::string name = Animator::DEFAULT_ANIMATION_NAME + std::to_string(m_uUnnamedAnimCount++);
 				m_vAnimations.push_back(std::make_tuple(animation, name));
                 m_vAnimationNames.push_back(name);
-			}
+            }
             
             m_bHasSkeletonAnim = true;
 		}
 	}
 
-	void Model::computeBonesTransform(aiAnimation* animation, float elapsedTime, std::unordered_map<aiNode*, aiMatrix4x4>& nodeTrans, std::vector<glm::mat4>& bonesMatrix, std::unordered_map<unsigned int, glm::vec3>& bonesPosition, std::unordered_map<unsigned int, glm::quat>& bonesRotation, std::unordered_map<unsigned int, glm::vec3>& bonesScale, bool interpolateAnimation /*= true*/, bool applyRootMotion /*= false*/)
+	void Model::computeBonesTransform(aiAnimation* animation, float elapsedTime, std::unordered_map<unsigned int, glm::vec3>& bonesPosition, std::unordered_map<unsigned int, glm::quat>& bonesRotation, std::unordered_map<unsigned int, glm::vec3>& bonesScale, bool interpolateAnimation /*= true*/, bool applyRootMotion /*= false*/)
 	{
 		// 将采样范围变换到 [0, 1]
 		float animSample = static_cast<float>(animation->mTicksPerSecond / animation->mDuration) * elapsedTime;
@@ -591,6 +977,8 @@ namespace customGL
 		const float sampleUnscaled = rescaler.Unscale(animSample);  // 采样帧数位置(例如，第2.52帧)
         std::unordered_map<std::string, unsigned int>::iterator itor;
         unsigned int boneId;
+        
+//        BROWSER_LOG(sampleUnscaled)
 		// 遍历骨骼变换信息，生成父节点坐标系下自身的变换矩阵
 		{
 			aiNodeAnim* channel = nullptr;
@@ -604,10 +992,10 @@ namespace customGL
                 // 根据当前动画播放到第几帧，插值得到变换信息
 				// 位移
 				auto translation = Assimp::InterpolationGet<aiVector3D>(sampleUnscaled, channel->mPositionKeys, channel->mNumPositionKeys, interpolateAnimation);
-                if (!applyRootMotion && node==m_oRootBoneNode)
-                {
-                    translation = aiVector3D(0, 0, 0);
-                }
+//                if (!applyRootMotion && node==m_oRootBoneNode)
+//                {
+//                    translation = aiVector3D(0, 0, 0);
+//                }
                 // 旋转
 				auto rotation = Assimp::InterpolationGet<aiQuaternion>(sampleUnscaled, channel->mRotationKeys, channel->mNumRotationKeys, interpolateAnimation);
 				// 缩放
@@ -621,29 +1009,20 @@ namespace customGL
                     bonesRotation[boneId] = std::move(Assimp::ConvertToGLM(rotation));
                     bonesScale[boneId] = std::move(Assimp::ConvertToGLM(scale));
                 }
-				// 计算单个骨骼自身坐标系下的变换矩阵
-				aiMatrix4x4::Translation(translation, translateMat);
-				aiMatrix4x4 rotateMat(rotation.GetMatrix());
-				aiMatrix4x4::Scaling(scale, scaleMat);
-				transformation = translateMat * rotateMat * scaleMat;
-                
 
-//                nodeTrans.insert(make_pair(node, transformation));
-                nodeTrans[node] = std::move(transformation);
 			}
 		}
-
-        // 从根节点遍历下去，得到每个节点相对于根节点的变换矩阵
-		aiMatrix4x4 identity;
-		traverseNodeToComputeBonesTransform(m_oRootNode, identity, nodeTrans, bonesMatrix);
+        
 	}
     
-    void Model::blendBonesTransform(aiAnimation* befAnimation, float befElapsed, bool befInterpolate, aiAnimation* animation, float elapsedTime, bool interpolate, float blendWeight, std::unordered_map<aiNode*, aiMatrix4x4>& nodeTrans, std::vector<glm::mat4>& bonesMatrix, bool applyRootMotion /*= false*/)
+    void Model::blendBonesTransform(aiAnimation* befAnimation, float befElapsed, bool befInterpolate, aiAnimation* animation, float elapsedTime, bool interpolate, float blendWeight, std::unordered_map<unsigned int, glm::vec3>& bonesPosition, std::unordered_map<unsigned int, glm::quat>& bonesRotation, std::unordered_map<unsigned int, glm::vec3>& bonesScale, bool applyRootMotion /*= false*/)
     {
         // 记录所有变换的node信息<位移, 旋转, 缩放>
         std::unordered_map<aiNode*, aiVector3D> translateVec;
         std::unordered_map<aiNode*, aiQuaternion> rotateVec;
         std::unordered_map<aiNode*, aiVector3D> scaleVec;
+        std::unordered_map<std::string, unsigned int>::iterator itor;
+        unsigned int boneId;
         
         // 遍历记录beforeAnimation骨骼变换信息
         {
@@ -653,6 +1032,7 @@ namespace customGL
             aiMatrix4x4 transformation, scaleMat, translateMat;
             Rescale rescaler(0.0f, static_cast<float>(befAnimation->mDuration), 0.0f, 1.0f);
             const float sampleUnscaled = rescaler.Unscale(animSample);
+            
         
             aiNodeAnim* channel = nullptr;
             aiNode* node = nullptr;
@@ -671,18 +1051,23 @@ namespace customGL
                 // 缩放
                 const auto scale = Assimp::InterpolationGet<aiVector3D>(sampleUnscaled, channel->mScalingKeys, channel->mNumScalingKeys, befInterpolate);
                 
-                translateVec[node] = std::move(translation);
-                rotateVec[node] = std::move(rotation);
-                scaleVec[node] = std::move(scale);
+                itor = m_mBonesIdMap.find(channel->mNodeName.C_Str());
+                if(itor != m_mBonesIdMap.end())
+                {
+                    boneId = itor->second;
+                    bonesPosition[boneId] = std::move(Assimp::ConvertToGLM(translation));
+                    bonesRotation[boneId] = std::move(Assimp::ConvertToGLM(rotation));
+                    bonesScale[boneId] = std::move(Assimp::ConvertToGLM(scale));
+                }
             }
         }
         
         // 
         {
             // 插值函数
-            const auto ipVect = Assimp::Interpolator<aiVector3D>();
-            const auto ipQuat = Assimp::Interpolator<aiQuaternion>();
-            const auto ipScale = Assimp::Interpolator<aiVector3D>();
+            const auto ipVect = Assimp::Interpolator<glm::vec3>();
+            const auto ipQuat = Assimp::Interpolator<glm::quat>();
+            const auto ipScale = Assimp::Interpolator<glm::vec3>();
             
             float animSample = static_cast<float>(animation->mTicksPerSecond / animation->mDuration) * befElapsed;
             animSample = std::min(animSample, 1.0f);
@@ -708,47 +1093,52 @@ namespace customGL
                 // 缩放
                 auto scale = Assimp::InterpolationGet<aiVector3D>(sampleUnscaled, channel->mScalingKeys, channel->mNumScalingKeys, interpolate);
                 
-                if(translateVec.find(node) != translateVec.end())
+                
+                itor = m_mBonesIdMap.find(channel->mNodeName.C_Str());
+                if(itor != m_mBonesIdMap.end())
                 {
-                    // 如果前一个动画存在相同的骨骼有变化，则对他们进行插值
-                    ipVect(translateVec[node], translateVec[node], translation, blendWeight);
-                    ipQuat(rotateVec[node], rotateVec[node], rotation, blendWeight);
-                    ipScale(scaleVec[node], scaleVec[node], scale, blendWeight);
+                    boneId = itor->second;
+                    if(bonesPosition.find(boneId) != bonesPosition.end())
+                    {
+                        // 如果前一个动画存在相同的骨骼有变化，则对他们进行插值
+                        ipVect(bonesPosition[boneId], bonesPosition[boneId], Assimp::ConvertToGLM(translation), blendWeight);
+                        ipQuat(bonesRotation[boneId], bonesRotation[boneId], Assimp::ConvertToGLM(rotation), blendWeight);
+                        ipScale(bonesScale[boneId], bonesScale[boneId], Assimp::ConvertToGLM(scale), blendWeight);
+                    }
+                    else
+                    {
+                        bonesPosition[boneId] = std::move(Assimp::ConvertToGLM(translation));
+                        bonesRotation[boneId] = std::move(Assimp::ConvertToGLM(rotation));
+                        bonesScale[boneId] = std::move(Assimp::ConvertToGLM(scale));
+                    }
                 }
-                else
-                {
-                    translateVec[node] = std::move(translation);
-                    rotateVec[node] = std::move(rotation);
-                    scaleVec[node] = std::move(scale);
-                }
+                
+
 
             }
         }
 
-        // 生成父节点坐标系下自身的变换矩阵
-        {
-            aiMatrix4x4 translateMat, rotateMat, scaleMat, transformation;
-            aiNode* node = nullptr;
-            for (auto itor=translateVec.begin(); itor!=translateVec.end(); ++itor)
-            {
-                node = itor->first;
-                aiVector3D& translation = itor->second;
-                aiQuaternion& rotation = rotateVec[node];
-                aiVector3D& scale = scaleVec[node];
-                
-                // 计算单个骨骼自身坐标系下的变换矩阵
-                aiMatrix4x4::Translation(translation, translateMat);
-                aiMatrix4x4 rotateMat(rotation.GetMatrix());
-                aiMatrix4x4::Scaling(scale, scaleMat);
-                transformation = translateMat * rotateMat * scaleMat;
-                
-                nodeTrans.insert(make_pair(node, transformation));
-            }
-        }
+//        // 生成父节点坐标系下自身的变换矩阵
+//        {
+//            aiMatrix4x4 translateMat, rotateMat, scaleMat, transformation;
+//            aiNode* node = nullptr;
+//            for (auto itor=translateVec.begin(); itor!=translateVec.end(); ++itor)
+//            {
+//                node = itor->first;
+//                aiVector3D& translation = itor->second;
+//                aiQuaternion& rotation = rotateVec[node];
+//                aiVector3D& scale = scaleVec[node];
+//
+//                // 计算单个骨骼自身坐标系下的变换矩阵
+//                aiMatrix4x4::Translation(translation, translateMat);
+//                aiMatrix4x4 rotateMat(rotation.GetMatrix());
+//                aiMatrix4x4::Scaling(scale, scaleMat);
+//                transformation = translateMat * rotateMat * scaleMat;
+//
+//                nodeTrans.insert(make_pair(node, transformation));
+//            }
+//        }
         
-        // 从根节点遍历下去，得到每个节点相对于根节点的变换矩阵
-        aiMatrix4x4 identity;
-        traverseNodeToComputeBonesTransform(m_oRootNode, identity, nodeTrans, bonesMatrix);
     }
 
     void Model::traverseNodeToComputeBonesTransform(aiNode* node, const aiMatrix4x4 parentMatrix, std::unordered_map<aiNode*, aiMatrix4x4>& nodeTrans, std::vector<glm::mat4>& bonesMatrix)

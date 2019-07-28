@@ -1,33 +1,44 @@
-// 骨骼信息 boneInfo: 0.当前骨骼id  1.父节点骨骼id（-1表示没有父节点）
-layout (location=0) in ivec2 boneInfo;
+layout (location=0) in int boneId;
 out vec4 result_position;
 out vec4 result_rotation;
 out vec4 result_scale;
 
 
-// 最大关键帧帧数
-const int MAX_KEY_FRAME_COUNT = 200;
 // identity matrix
 const mat4 mat4_identity = mat4(1, 0, 0, 0,
                                 0, 1, 0, 0,
                                 0, 0, 1, 0,
                                 0, 0, 0, 1);
 
-// 以下为该模型所有动画共用数据(该类数据只要设置一次即可)：
-// 骨骼数据（0.当前骨骼id  1.父节点骨骼）
-uniform ivec2 bonesInfo[MAX_BONES];
+// 模型通用：只需要设置一次
+uniform int bone_count;
+// 骨骼变换关键帧信息 （注意！！这里的信息，不是按骨骼id来排序！！！！！！！！！！！！！！！！！！！！！！！）前bone_count内存储了骨骼节点的原始变换信息
+uniform samplerBuffer position_keys; //0~2:position 3:time  GL_RGBA32F
+uniform samplerBuffer rotation_keys; // quaternion  GL_RGBA32F
+uniform samplerBuffer rotation_times; // 关键帧时间 长度和rotation_keys相同  GL_R32F
+uniform samplerBuffer scale_keys; //0~2:scale 3:time    GL_RGBA32F
 
-// 非共用数据(切换动画需要重新设置)：
-// 骨骼变换关键帧信息 （注意！！这里的信息，一定要按骨骼id来排序！！！！！！！！！！！！！！！！！！！！！！！）
-uniform samplerBuffer position_keys; //0~2:position 3:time
-uniform samplerBuffer rotation_keys; // quaternion
-uniform float rotation_times[MAX_KEY_FRAME_COUNT]; // 关键帧时间 长度和rotation_keys相同
-uniform samplerBuffer scale_keys; //0~2:scale 3:time
+// 同一个动画共用数据(切换动画需要重新设置)：
+/*
+samplerBuffer结构是像下面这样(假设是position_keys):
+             - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    boneId  |   5  |   5  |   2   |   3   |   3   |   3   |   1  |   ...
+    keyFrame|   0   |    1  |   0   |   0   |   1   |   2   |   0   |   ...
+            - - - - - - -- - - - - - - - - - - - -- - - - - - - - - - -- - -
+contains_bones结构如下:
+    {-1, 3, 1, 2, -1, 0, ...}
+trans_bone_keyframe_count结构如下:
+    {(2,..), (1,..), (3,..), (1,..)}
+ */
 // 上面的骨骼变换信息包含哪些骨骼 (id：boneId ; value: -1.不包含，即该骨骼节点没有发生变换 1~MAX_BONES.在所有发生变换的骨骼信息里排第几个(用来定位采样关键帧))
 uniform int contains_bones[MAX_BONES];  // 例如：[-1, 0, -1, -1, 1] 表示该动画只有boneId为1，4的骨骼发生了变换，采样位置为0，1。
 // 每个发生变换的骨骼有多少关键帧 (用上面contains_bones的value定位，0.position关键帧数量 1.rotation关键帧数量 2.scale关键帧数量)
 uniform ivec3 trans_bone_keyframe_count[MAX_BONES];
-// 动画数据(0:第几帧(小数), 1:)
+// 关键帧偏移信息 (0:position, 1:rotation, 2:scale)
+uniform ivec3 keys_offset;
+
+// 每帧需要重新设置
+// 动画数据(0:第几帧(小数), )
 uniform vec4 animation_info;
 // 是否进行线性插值(0:不使用插值，直接用前一帧的数据 1:插值)
 uniform int interpolate = 1;
@@ -35,21 +46,19 @@ uniform int interpolate = 1;
 
 
 // 函数声明(跟c一样，glsl的函数声明需要放在最前面，才不会因为定义的先后顺序影响使用)
-int convertSamplerStartUV(int boneId, int trans_type);
-void samplerKeyPairs(int boneId, float time, out vec4 leftFrame, out vec4 rightFrame, int trans_type, samplerBuffer buffer);
-void samplerKeyPairs(int boneId, float time, out vec4 leftFrame, out vec4 rightFrame, out float leftTime, out float rightTime);
-void computeBoneMatrix(int boneId, out vec4 position_out, out vec4 rotation_out, out vec4 scale_out);
-void getLocalBoneMatrix(int boneId, out vec4 position_out, out vec4 rotation_out, out vec4 scale_out);
+int convertSamplerStartUV(int trans_type);
+void samplerKeyPairs_pos(float time, out vec4 leftFrame, out vec4 rightFrame);
+void samplerKeyPairs_rot(float time, out vec4 leftFrame, out vec4 rightFrame, out float leftTime, out float rightTime);
+void samplerKeyPairs_scal(float time, out vec4 leftFrame, out vec4 rightFrame);
+void computeBoneMatrix(out vec4 position_out, out vec4 rotation_out, out vec4 scale_out);
+void getLocalBoneMatrix(out vec4 position_out, out vec4 rotation_out, out vec4 scale_out);
 
 
 
 void main() 
 {
     // test
-    getLocalBoneMatrix(boneInfo[0], result_position, result_rotation, result_scale);
-//    result_position = vec4(boneInfo[0], boneInfo[1], 0, 0);
-//    result_rotation = vec4(0, 0, 0, 0);
-//    result_scale = vec4(0, 0, 0, 0);
+    getLocalBoneMatrix(result_position, result_rotation, result_scale);
 }
 
 // 插值
@@ -59,38 +68,39 @@ vec4 lerp(vec4 a, vec4 b, float percent)
 }
 
 // 计算采样起始位置  trans_type: 0.position 1.rotation 2.scale
-int convertSamplerStartUV(int boneId, int trans_type)
+int convertSamplerStartUV(int trans_type)
 {
-    int uv = 0;
+    int uv = keys_offset[trans_type];
     int index = 0;
+    int bufferIndex = contains_bones[boneId];
     // 计算当前骨骼id之前的骨骼变换数据量的大小
-    for (int i=0; i<boneId; ++i)
+    for (int i=0; i<bone_count; ++i)
     {
         index = contains_bones[i];
-        if (index != -1)
+        if (index!=-1 && index<bufferIndex)
         {
-            uv = uv + trans_bone_keyframe_count[trans_type][trans_type];
+            uv = uv + trans_bone_keyframe_count[index][trans_type];
         }
     }
     return uv;
 }
 
 // 采样数据
-void samplerKeyPairs(int boneId, float time, out vec4 leftFrame, out vec4 rightFrame, int trans_type, samplerBuffer buffer)
+void samplerKeyPairs_pos(float time, out vec4 leftFrame, out vec4 rightFrame)
 {
-    int startUV = convertSamplerStartUV(boneId, trans_type);
+    int startUV = convertSamplerStartUV(0);
     int index = contains_bones[boneId];
-    int count = trans_bone_keyframe_count[index][trans_type];
+    int count = trans_bone_keyframe_count[index][0];
     
     // 只有一个关键帧
     if (count == 1)
     {
-        leftFrame = rightFrame = texelFetch(buffer, startUV);
+        leftFrame = rightFrame = texelFetch(position_keys, startUV);
         return;
     }
     
     // 时间超过最后一个关键帧时间，则停止在最后一个关键帧
-    vec4 keyValue = texelFetch(buffer, startUV+count-1);
+    vec4 keyValue = texelFetch(position_keys, startUV+count-1);
     if (keyValue[3] < time)
     {
         leftFrame = rightFrame = keyValue;
@@ -100,18 +110,18 @@ void samplerKeyPairs(int boneId, float time, out vec4 leftFrame, out vec4 rightF
     // 检测关键帧位置
     for (int i=0; i<count; ++i)
     {
-        keyValue = texelFetch(buffer, startUV+i);
+        keyValue = texelFetch(position_keys, startUV+i);
         if(keyValue[3] >= time)
         {
-            leftFrame = texelFetch(buffer, startUV+i-1);
+            leftFrame = texelFetch(position_keys, startUV+i-1);
             rightFrame = keyValue;
             break;
         }
     }
 }
-void samplerKeyPairs(int boneId, float time, out vec4 leftFrame, out vec4 rightFrame, out float leftTime, out float rightTime)
+void samplerKeyPairs_rot(float time, out vec4 leftFrame, out vec4 rightFrame, out float leftTime, out float rightTime)
 {
-    int startUV = convertSamplerStartUV(boneId, 0);
+    int startUV = convertSamplerStartUV(0);
     int index = contains_bones[boneId];
     int count = trans_bone_keyframe_count[index][1];
     
@@ -119,17 +129,17 @@ void samplerKeyPairs(int boneId, float time, out vec4 leftFrame, out vec4 rightF
     if (count == 1)
     {
         leftFrame = rightFrame = texelFetch(rotation_keys, startUV);
-        leftTime = rightTime = rotation_times[startUV];
+        leftTime = rightTime = texelFetch(rotation_times, startUV)[0];
         return;
     }
     
     // 时间超过最后一个关键帧时间，则停止在最后一个关键帧
     vec4 keyValue = texelFetch(rotation_keys, startUV+count-1);
-    float keyTime = rotation_times[startUV+count-1];
+    float keyTime = texelFetch(rotation_times, startUV+count-1)[0];
     if (keyTime < time)
     {
         leftFrame = rightFrame = keyValue;
-        leftTime = rightTime = rotation_times[startUV+count-1];
+        leftTime = rightTime = texelFetch(rotation_times, startUV+count-1)[0];
         return;
     }
     
@@ -137,20 +147,53 @@ void samplerKeyPairs(int boneId, float time, out vec4 leftFrame, out vec4 rightF
     for (int i=0; i<count; ++i)
     {
         keyValue = texelFetch(rotation_keys, startUV+i);
-        keyTime = rotation_times[startUV+i];
+        keyTime = texelFetch(rotation_times, startUV+i)[0];
         if(keyTime >= time)
         {
             leftFrame = texelFetch(rotation_keys, startUV+i-1);
-            leftTime = rotation_times[startUV+i-1];
+            leftTime = texelFetch(rotation_times, startUV+i-1)[0];
             rightFrame = keyValue;
-            rightTime = rotation_times[startUV+i];
+            rightTime = texelFetch(rotation_times ,startUV+i)[0];
+            break;
+        }
+    }
+}
+void samplerKeyPairs_scal(float time, out vec4 leftFrame, out vec4 rightFrame)
+{
+    int startUV = convertSamplerStartUV(2);
+    int index = contains_bones[boneId];
+    int count = trans_bone_keyframe_count[index][2];
+    
+    // 只有一个关键帧
+    if (count == 1)
+    {
+        leftFrame = rightFrame = texelFetch(scale_keys, startUV);
+        return;
+    }
+    
+    // 时间超过最后一个关键帧时间，则停止在最后一个关键帧
+    vec4 keyValue = texelFetch(scale_keys, startUV+count-1);
+    if (keyValue[3] < time)
+    {
+        leftFrame = rightFrame = keyValue;
+        return;
+    }
+    
+    // 检测关键帧位置
+    for (int i=0; i<count; ++i)
+    {
+        keyValue = texelFetch(scale_keys, startUV+i);
+        if(keyValue[3] >= time)
+        {
+            leftFrame = texelFetch(scale_keys, startUV+i-1);
+            rightFrame = keyValue;
             break;
         }
     }
 }
 
 // 计算骨骼矩阵(这个方法默认boneId的骨骼发生了变换)
-void computeBoneMatrix(int boneId, out vec4 position_out, out vec4 rotation_out, out vec4 scale_out)
+void computeBoneMatrix(out vec4 position_out, out vec4 rotation_out, out vec4 scale_out)
 {
     float time = animation_info[0];
     
@@ -159,11 +202,11 @@ void computeBoneMatrix(int boneId, out vec4 position_out, out vec4 rotation_out,
     float leftTime, rightTime;
     
     // position
-    samplerKeyPairs(boneId, time, leftFrame[0], rightFrame[0], 0, position_keys);
+    samplerKeyPairs_pos(time, leftFrame[0], rightFrame[0]);
     // rotation
-    samplerKeyPairs(boneId, time, leftFrame[1], rightFrame[1], leftTime, rightTime);
+    samplerKeyPairs_rot(time, leftFrame[1], rightFrame[1], leftTime, rightTime);
     // scale
-    samplerKeyPairs(boneId, time, leftFrame[2], rightFrame[2], 2, scale_keys);
+    samplerKeyPairs_scal(time, leftFrame[2], rightFrame[2]);
     
     
     vec4 position, rotation, scale;
@@ -199,29 +242,29 @@ void computeBoneMatrix(int boneId, out vec4 position_out, out vec4 rotation_out,
         scale = lerp(leftFrame[2], rightFrame[2], percent);
     }
    
-    
-    // test
     position_out = position;
     rotation_out = rotation;
     scale_out = scale;
 }
 
 // 根据骨骼id得到骨骼自身的变换矩阵
-void getLocalBoneMatrix(int boneId, out vec4 position_out, out vec4 rotation_out, out vec4 scale_out)
+void getLocalBoneMatrix(out vec4 position_out, out vec4 rotation_out, out vec4 scale_out)
 {
     if (contains_bones[boneId] != -1)
     {
-        computeBoneMatrix(boneId, position_out, rotation_out, scale_out);
-        
-        position_out = vec4(1, 2, 3, 4);
-        rotation_out = vec4(0, 0, 0, 0);
-        scale_out = vec4(1, 1, 1, 0);
+        computeBoneMatrix(position_out, rotation_out, scale_out);
+//
+//        int startUV = convertSamplerStartUV(0);
+//        int index = contains_bones[boneId];
+//        int count = trans_bone_keyframe_count[index][0];
+//        scale_out = vec4(startUV, animation_info[0], count, 0);
     }
     else
     {
-        // wrong!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 应该传入node->mTransformation(应该是bindpose)
-        position_out = vec4(0, 0, 0, 0);
-        rotation_out = vec4(0, 0, 0, 0);
-        scale_out = vec4(2, 2, 2, 0);
+        // 应该传入node->mTransformation(应该是bindpose，骨骼的原始变换信息)
+        position_out = texelFetch(position_keys, boneId);
+        rotation_out = texelFetch(rotation_keys, boneId);
+        scale_out = texelFetch(scale_keys, boneId);
+        scale_out.w = -1111;
     }
 }

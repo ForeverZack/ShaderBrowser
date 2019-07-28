@@ -1,6 +1,7 @@
 #include "Animator.h"
 #include "GL/Model.h"
 #include <chrono>
+#include "Browser/Components/Feedback/AnimatorFeedback.h"
 
 namespace browser
 {
@@ -47,6 +48,8 @@ namespace browser
         , m_fBlendTimer(0)
         , m_fBlendDuration(0)
         , m_bApplyRootMotion(false)
+        , m_bDirty(true)
+        , m_oFeedback(nullptr)
 	{
 		// 组件所属系统
 		m_eBelongSystem = SystemType::Animation;
@@ -65,6 +68,8 @@ namespace browser
 	Animator::~Animator()
 	{
 		BROWSER_LOG("~Animator");
+        
+        m_oFeedback->release();
 	}
     
     void Animator::onInspectorGUI(InspectorPanel* inspector)
@@ -233,21 +238,52 @@ namespace browser
 		}
 	}
     
+    void Animator::setBoneInfo(unsigned int boneNum)
+    {
+        m_vAllBones.resize(boneNum);
+    }
+    
+    void Animator::addBone(unsigned int boneId, Transform* boneNode)
+    {
+        m_vAllBones[boneId] = boneNode;
+    }
+    
+    const std::vector<glm::mat4>& Animator::getBonesMatrix()
+    {
+        if (m_bDirty && m_bIsPlaying)
+        {
+            m_bDirty = false;
+            Transform* bone;
+            for (int i=0; i<m_vAllBones.size(); ++i)
+            {
+                bone = m_vAllBones[i];
+                m_vBonesMatrix[i] = bone->getBoneMatrix();
+            }
+        }
+        
+        return m_vBonesMatrix;
+    }
+    
     void Animator::updateAnimation(float deltaTime)
     {
         if(m_bIsPlaying)
         {
-            if(!m_oCurAnimation.animation)
+            if (!m_oCurAnimation.animation)
             {
                 return;
             }
+            if (!m_oFeedback)
+            {
+                m_oFeedback = AnimatorFeedback::create(m_oSrcModel);
+                m_oFeedback->retain();
+            }
             
             // 重置
-            m_mTransformations.clear();
             m_vBonesMatrix.clear();
             m_mBonesPosition.clear();
             m_mBonesRotation.clear();
             m_mBonesScale.clear();
+            m_bDirty = true;
             m_vBonesMatrix.resize(m_oSrcModel->getBoneNum());
  
             // 计算时间
@@ -286,26 +322,40 @@ namespace browser
                 }
             }
             
-            //auto timeRec = std::chrono::steady_clock::now();
+//            auto timeRec = std::chrono::steady_clock::now();
+            
+            // feeback
+            {
+                m_oFeedback->setCurrentAnimationData(m_oCurAnimation.animation);
+            }
             // 计算骨骼变换矩阵
             if(m_oBefAnimation.animation)
             {
                 // 混合
                 float blendWeight = m_fBlendTimer / m_fBlendDuration;
-                m_oSrcModel->blendBonesTransform(m_oBefAnimation.animation, m_oBefAnimation.elapsed, m_oBefAnimation.interpolate, m_oCurAnimation.animation, m_oCurAnimation.elapsed, m_oCurAnimation.interpolate, blendWeight, m_mTransformations, m_vBonesMatrix);
+                m_oSrcModel->blendBonesTransform(m_oBefAnimation.animation, m_oBefAnimation.elapsed, m_oBefAnimation.interpolate, m_oCurAnimation.animation, m_oCurAnimation.elapsed, m_oCurAnimation.interpolate, blendWeight, m_mBonesPosition, m_mBonesRotation, m_mBonesScale, m_bApplyRootMotion);
             }
             else
             {
                 // 只有一个动画在播放
-                m_oSrcModel->computeBonesTransform(m_oCurAnimation.animation, m_oCurAnimation.elapsed, m_mTransformations, m_vBonesMatrix, m_mBonesPosition, m_mBonesRotation, m_mBonesScale, m_oCurAnimation.interpolate, m_bApplyRootMotion);
+//                m_oSrcModel->computeBonesTransform(m_oCurAnimation.animation, m_oCurAnimation.elapsed, m_mBonesPosition, m_mBonesRotation, m_mBonesScale, m_oCurAnimation.interpolate, m_bApplyRootMotion);
+                
+                m_oFeedback->play(m_oCurAnimation.animation->mTicksPerSecond * m_oCurAnimation.elapsed, m_mBonesPosition, m_mBonesRotation, m_mBonesScale);
             }
             
-            //float deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - timeRec).count() / 1000.0f;
-            //timeRec = std::chrono::steady_clock::now();
-            //BROWSER_LOG("========computeBonesTransform==========="+ std::to_string(deltaTime) + "ms");
+//            float deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - timeRec).count() / 1000.0f;
+//            timeRec = std::chrono::steady_clock::now();
+//            BROWSER_LOG("========computeBonesTransform==========="+ std::to_string(deltaTime) + "ms");
             
             // 更新骨骼的Transform
-            dispatchEventToChildren(ComponentEvent::Animator_UpdateBonesTransform, new AnimatorUpdateBonesTransformMessage(m_oSrcModel->getBonesIdMapPointer(), &m_mBonesPosition, &m_mBonesRotation, &m_mBonesScale));
+            {
+                dispatchEventToChildren(ComponentEvent::Animator_UpdateBonesTransform, new AnimatorUpdateBonesTransformMessage(m_oSrcModel->getBonesIdMapPointer(), &m_mBonesPosition, &m_mBonesRotation, &m_mBonesScale));
+            }
+
+            
+            
+//            deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - timeRec).count() / 1000.0f;
+//            BROWSER_LOG("========deliver bone transform===========" + std::to_string(deltaTime) + "ms");
             
             // cpu计算顶点位置
             if(!m_bUseGPU)
@@ -370,8 +420,8 @@ namespace browser
                 }
             }
             
-            //deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - timeRec).count() / 1000.0f;
-            //BROWSER_LOG("========cpu compute position===========" + std::to_string(deltaTime) + "ms");
+//            deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - timeRec).count() / 1000.0f;
+//            BROWSER_LOG("========cpu compute position===========" + std::to_string(deltaTime) + "ms");
             
         }
     }

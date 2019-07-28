@@ -249,6 +249,9 @@
     <ClCompile Include="src\Browser\System\FeedbackSystem.cpp">
       <Filter>src\Browser\System</Filter>
     </ClCompile>
+    <ClCompile Include="src\Browser\Components\Feedback\AnimatorFeedback.cpp">
+      <Filter>src\Browser\Components\Feedback</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\GL\GLProgram.h">
@@ -424,6 +427,9 @@
     </ClInclude>
     <ClInclude Include="src\Browser\System\FeedbackSystem.h">
       <Filter>src\Browser\System</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Browser\Components\Feedback\AnimatorFeedback.h">
+      <Filter>src\Browser\Components\Feedback</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

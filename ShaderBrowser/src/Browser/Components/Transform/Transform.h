@@ -127,6 +127,14 @@ namespace browser
         // dirty标记
         REGISTER_PROPERTY_GET(bool, m_bTransDirty, TransDirty)
         REGISTER_PROPERTY_GET(bool, m_bCurFrameDirty, CurFrameDirty)
+        REGISTER_PROPERTY_GET_SET(int, m_iBoneId, BoneId)
+        REGISTER_PROPERTY_CONSTREF_GET(glm::mat4, m_oBoneMatrix, BoneMatrix)
+        REGISTER_PROPERTY_CONSTREF_GET_SET(glm::mat4, m_oBindposeMatrix, BindposeMatrix)
+        REGISTER_PROPERTY_GET_SET(Transform*, m_oBoneRoot, BoneRoot)
+        REGISTER_PROPERTY_CONSTREF_GET(glm::mat4, m_oBoneRootSpaceMatrix, BoneRootSpaceMatrix)
+        void setSrcModelTransformation(const glm::vec3& pos, const glm::quat& rot, const glm::vec3& scale);
+
+        
         
         // 获取\设置全局坐标系下的属性(并不建议过多使用，因为每次使用都会遍历父级节点，更新他们的model矩阵)
         // 获取世界坐标系下的位置
@@ -206,6 +214,21 @@ namespace browser
         Transform* m_oParent;
         // 子节点列表
         std::vector<Transform*> m_vChildren;
+        // 该节点是否是骨骼
+        int m_iBoneId;
+        // 骨骼矩阵
+        glm::mat4 m_oBoneMatrix;
+        // bindpose矩阵
+        glm::mat4 m_oBindposeMatrix;
+        // 骨骼根节点（这里指的是模型的跟节点，所有骨骼的跟节点，这个节点不一定是骨骼）
+        Transform* m_oBoneRoot;
+        // 骨骼跟节点空间矩阵 (将子节点转换到骨骼跟节点空间，其实就是骨骼跟节点model矩阵的逆。这样boneMatrix就等于这个矩阵乘上子节点的model矩阵)
+        glm::mat4 m_oBoneRootSpaceMatrix;
+        // 模型原始节点姿态
+        bool m_bHasSrcModelInfo;
+        glm::vec3 m_oSrcModelPos;
+        glm::quat m_oSrcModelQuat;
+        glm::vec3 m_oSrcModelScale;
         
         // 名字
         std::string m_sName;

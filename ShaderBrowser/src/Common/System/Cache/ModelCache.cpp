@@ -89,8 +89,8 @@ namespace common
                 model->autorelease();
                 model->retain();
                 
-                // 为model的所有mesh设置VAO
-                model->setupMeshesVAO();
+                // 在gpu上设置生成模型相关的数据
+                model->setupGpuData();
                 
                 // 添加纹理加载回调,表示整个模型+纹理都加载完毕
                 model->setSuccessCallback([=](Model* responseModel)

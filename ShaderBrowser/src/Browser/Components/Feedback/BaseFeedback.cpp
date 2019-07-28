@@ -1,5 +1,7 @@
 #include "BaseFeedback.h"
 #include <glad/glad.h>
+#include "Browser/System/RenderSystem.h"
+#include <chrono>
 
 using namespace customGL;
 
@@ -8,10 +10,11 @@ namespace browser
 	BaseFeedback::BaseFeedback()
         : BaseComponent("BaseFeedback")
         , m_oFeedback(nullptr)
-        , m_uVAO(0)
         , m_bGenVAO(false)
         , m_uOutTexNum(0)
         , m_uFeedbackBufCount(0)
+        , m_uCurFrameIdx(0)
+        , m_uCurFrameTag(0)
 	{
         // 组件所属系统
         m_eBelongSystem = SystemType::TransformFeedback;
@@ -23,17 +26,21 @@ namespace browser
 
 	BaseFeedback::~BaseFeedback()
 	{
-        if (m_uVAO != 0)
+        if (m_uVAOs[0] != 0)
         {
-            glDeleteVertexArrays(1, &m_uVAO);
+            glDeleteVertexArrays(EXCHANGE_BUFFERS_COUNT, m_uVAOs);
+            
+            for (int i=0; i<EXCHANGE_BUFFERS_COUNT; ++i)
+            {
+                glDeleteBuffers(m_mVertexAttribDeclarations.size(), m_vMainVBOs[i]);
+                glDeleteBuffers(m_mFeedbackBufDeclarations.size(), m_vOutVBOs[i]);
+                if (m_uOutTexNum > 0)
+                {
+                    glDeleteTextures(m_uOutTexNum, m_vOutTexs[i]);
+                }
+            }
         }
         
-        glDeleteBuffers(m_mVertexAttribDeclarations.size(), m_vMainVBOs);
-        glDeleteBuffers(m_mFeedbackBufDeclarations.size(), m_vOutVBOs);
-        if (m_uOutTexNum > 0)
-        {
-            glDeleteTextures(m_uOutTexNum, m_vOutTexs);
-        }
         
         // 释放feedback对象
         m_oFeedback->release();
@@ -128,82 +135,86 @@ namespace browser
         glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, m_oFeedback->getFeed());
         
         // vao
-        glGenVertexArrays(1, &m_uVAO);
+        glGenVertexArrays(EXCHANGE_BUFFERS_COUNT, m_uVAOs);
         
-        glBindVertexArray(m_uVAO);
-        // input vbos
-        int idx = 0;
+        for (int i=0; i<EXCHANGE_BUFFERS_COUNT; ++i)
         {
-            VertexAttribDeclaration* declaration;
-            glGenBuffers(m_mVertexAttribDeclarations.size(), m_vMainVBOs);
-            for (auto itor=m_mVertexAttribDeclarations.begin(); itor!=m_mVertexAttribDeclarations.end(); ++itor)
+            glBindVertexArray(m_uVAOs[i]);
+            // input vbos
+            int idx = 0;
             {
-                declaration = itor->second;
-                // data
-                glBindBuffer(GL_ARRAY_BUFFER, m_vMainVBOs[idx]);
-                glBufferData(GL_ARRAY_BUFFER, declaration->data_size, declaration->data, GL_STATIC_DRAW);
-                // attr
-                glEnableVertexAttribArray(declaration->index);
-                switch(declaration->data_type)
+                VertexAttribDeclaration* declaration;
+                glGenBuffers(m_mVertexAttribDeclarations.size(), m_vMainVBOs[i]);
+                for (auto itor=m_mVertexAttribDeclarations.begin(); itor!=m_mVertexAttribDeclarations.end(); ++itor)
                 {
-                    case VertexDataType::Int:
+                    declaration = itor->second;
+                    // data
+                    glBindBuffer(GL_ARRAY_BUFFER, m_vMainVBOs[i][idx]);
+                    glBufferData(GL_ARRAY_BUFFER, declaration->data_size, declaration->data, GL_STATIC_DRAW);
+                    // attr
+                    glEnableVertexAttribArray(declaration->index);
+                    switch(declaration->data_type)
+                    {
+                        case VertexDataType::Int:
                         {
                             glVertexAttribIPointer(declaration->index, declaration->size, declaration->type, declaration->stride, declaration->pointer);
                         }
-                        break;
-                    
-                    default:
+                            break;
+                            
+                        default:
                         {
                             glVertexAttribPointer(declaration->index, declaration->size, declaration->type, declaration->normalized, declaration->stride, declaration->pointer);
                         }
-                        break;
-                    
+                            break;
+                            
+                    }
+                    ++idx;
                 }
-                ++idx;
             }
-        }
-        
-        
-        // output vbos
-        idx = 0;
-        {
-            int texIdx = 0;
-            FeedbackBufferDeclaration* declaration;
-            glGenBuffers(m_mFeedbackBufDeclarations.size(), m_vOutVBOs);
-            glGenTextures(m_uOutTexNum, m_vOutTexs);
-            for (auto itor=m_mFeedbackBufDeclarations.begin(); itor!=m_mFeedbackBufDeclarations.end(); ++itor)
+            
+            
+            // output vbos
+            idx = 0;
             {
-                declaration = itor->second;
-                declaration->vbo = m_vOutVBOs[idx];
-                
-                switch(declaration->type)
+                int texIdx = 0;
+                FeedbackBufferDeclaration* declaration;
+                glGenBuffers(m_mFeedbackBufDeclarations.size(), m_vOutVBOs[i]);
+                glGenTextures(m_uOutTexNum, m_vOutTexs[i]);
+                for (auto itor=m_mFeedbackBufDeclarations.begin(); itor!=m_mFeedbackBufDeclarations.end(); ++itor)
                 {
-                    case FeedbackBufferType::ArrayBuffer:
+                    declaration = itor->second;
+                    declaration->vbos[i] = m_vOutVBOs[i][idx];
+                    
+                    switch(declaration->type)
+                    {
+                        case FeedbackBufferType::ArrayBuffer:
                         {
                             // data
-                            glBindBuffer(GL_ARRAY_BUFFER, declaration->vbo);
+                            glBindBuffer(GL_ARRAY_BUFFER, declaration->vbos[i]);
                             glBufferData(GL_ARRAY_BUFFER, declaration->size, nullptr, GL_DYNAMIC_COPY);
                         }
-                        break;
-                        
-                    case FeedbackBufferType::TextureBuffer:
+                            break;
+                            
+                        case FeedbackBufferType::TextureBuffer:
                         {
                             // tbo
-                            glBindBuffer(GL_TEXTURE_BUFFER, declaration->vbo);
+                            glBindBuffer(GL_TEXTURE_BUFFER, declaration->vbos[i]);
                             glBufferData(GL_TEXTURE_BUFFER, declaration->size, nullptr, GL_DYNAMIC_COPY);
-                            glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, declaration->bindIdx, declaration->vbo);
-                            glBindTexture(GL_TEXTURE_BUFFER,m_vOutTexs[texIdx]);
+                            glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, declaration->bindIdx, declaration->vbos[i]);
+                            glBindTexture(GL_TEXTURE_BUFFER,m_vOutTexs[i][texIdx]);
                             // 将缓存区关联到纹理对象上tbo
-                            glTexBuffer(GL_TEXTURE_BUFFER, declaration->internalFormat, declaration->vbo);
+                            glTexBuffer(GL_TEXTURE_BUFFER, declaration->internalFormat, declaration->vbos[i]);
                             ++texIdx;
                         }
-                        break;
+                            break;
+                    }
+                    // 绑定到Transform Feedback缓存点
+                    glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, declaration->bindIdx, declaration->vbos[i]);
+                    
+                    ++idx;
                 }
-                // 绑定到Transform Feedback缓存点
-                glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, declaration->bindIdx, declaration->vbo);
-                
-                ++idx;
             }
+
         }
         glBindVertexArray(0);
         glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, 0);
@@ -211,10 +222,23 @@ namespace browser
     
     void BaseFeedback::flushAsPoints(int length)
     {
+        auto timeRec = std::chrono::steady_clock::now();
+        float deltaTime;
+        
         // 绑定transform feedback
         glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, m_oFeedback->getFeed());
         // 绑定vao
-        glBindVertexArray(m_uVAO);
+        glBindVertexArray(m_uVAOs[getCurFrameTag()]);
+        // 绑定到Transform Feedback缓存点 (由于要交换缓冲，所以每次更新Transform_Feedback_Buffer时，必须要重新将vbo绑定到对应的绑定点上)
+        for (auto itor=m_mFeedbackBufDeclarations.begin(); itor!=m_mFeedbackBufDeclarations.end(); ++itor)
+        {
+            FeedbackBufferDeclaration* declaration = itor->second;
+            glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, declaration->bindIdx, declaration->vbos[getCurFrameTag()]);
+        }
+        
+//        deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - timeRec).count() / 1000.0f;
+//        timeRec = std::chrono::steady_clock::now();
+//        BROWSER_LOG("========bind buffer=====00======"+ std::to_string(deltaTime) + "ms");
         
         // 如果有tbo存在的话，需要重新设置纹理单元
         for (auto itor = m_mUniforms.begin(); itor != m_mUniforms.end(); ++itor)
@@ -226,6 +250,10 @@ namespace browser
             }
         }
         
+//        deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - timeRec).count() / 1000.0f;
+//        timeRec = std::chrono::steady_clock::now();
+//        BROWSER_LOG("========set tbo=====01======"+ std::to_string(deltaTime) + "ms");
+        
         m_oFeedback->useProgram();
         // 更新属性
         for (auto itor = m_mUniforms.begin(); itor != m_mUniforms.end(); ++itor)
@@ -233,21 +261,31 @@ namespace browser
             itor->second.updateGLProgramUniformValue(m_oFeedback, itor->first);
         }
         
+//        deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - timeRec).count() / 1000.0f;
+//        timeRec = std::chrono::steady_clock::now();
+//        BROWSER_LOG("========update value=====02======"+ std::to_string(deltaTime) + "ms");
+        
         // Perform feedback transform
         glEnable(GL_RASTERIZER_DISCARD);// 禁用光栅器
         
         glBeginTransformFeedback(GL_POINTS);
         glDrawArrays(GL_POINTS, 0, length);
+//        glDrawTransformFeedback(GL_POINTS, m_oFeedback->getFeed());
         glEndTransformFeedback();
         
         glDisable(GL_RASTERIZER_DISCARD);// 开启光栅器
         
         // flush
+        // 一般，使用glFlush的目的是确保在调用之后，CPU没有OpenGL相关的事情需要做-命令会送到硬件执行。调用glFinish的目的是确保当返回之后，没有相关工作留下需要继续做。
         glFlush();
         
         // 解绑
         glBindVertexArray(0);
         glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, 0);
+        
+//        deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - timeRec).count() / 1000.0f;
+//        timeRec = std::chrono::steady_clock::now();
+//        BROWSER_LOG("========draw=====03======"+ std::to_string(deltaTime) + "ms========bone count====" + std::to_string(length) + "=====frameIndex====" + std::to_string(RenderSystem::getInstance()->getFrameIndex()));
     }
     
     void BaseFeedback::getOutputDataFromVBOs(GLuint bindIdx, float* output, int size)
@@ -258,14 +296,14 @@ namespace browser
         {
             case FeedbackBufferType::ArrayBuffer:
                 {
-                    glBindBuffer(GL_ARRAY_BUFFER, declaration->vbo);
+                    glBindBuffer(GL_ARRAY_BUFFER, declaration->vbos[getCurFrameTag()]);
                     glGetBufferSubData(GL_ARRAY_BUFFER, 0, size, output);
                 }
                 break;
                 
             case FeedbackBufferType::TextureBuffer:
                 {
-                    glBindBuffer(GL_TEXTURE_BUFFER, declaration->vbo);
+                    glBindBuffer(GL_TEXTURE_BUFFER, declaration->vbos[getCurFrameTag()]);
                     glGetBufferSubData(GL_TEXTURE_BUFFER, 0, size, output);
                 }
                 break;
@@ -294,6 +332,17 @@ namespace browser
         }
         
         return -1;
+    }
+    
+    unsigned int BaseFeedback::getCurFrameTag()
+    {
+        if (m_uCurFrameIdx != RenderSystem::getInstance()->getFrameIndex())
+        {
+            m_uCurFrameIdx = RenderSystem::getInstance()->getFrameIndex();
+            m_uCurFrameTag = m_uCurFrameIdx % EXCHANGE_BUFFERS_COUNT;    // 0 or 1
+        }
+        
+        return m_uCurFrameTag;
     }
     
     void BaseFeedback::setUniformInt(const std::string& uniformName, int value)

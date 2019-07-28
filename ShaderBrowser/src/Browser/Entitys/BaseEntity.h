@@ -48,8 +48,9 @@ namespace browser
 		void removeChild(BaseEntity* entity);
 		// 设置位置
 		void setPosition(float x, float y, float z);
-		// 设置欧拉角
+		// 设置旋转
 		void setEulerAngle(float x, float y, float z);
+        void setQuaternion(float x, float y, float z, float w);
 		// 设置缩放
 		void setScale(float x, float y, float z);
 		// 设置名称
@@ -71,6 +72,7 @@ namespace browser
 		// 获取骨骼数组
 		void useBonesMatrix(Material* material);
         
+        
 		REGISTER_PROPERTY_GET(MeshFilter*, m_oMeshFilterComponent, MeshFilter);
 		REGISTER_PROPERTY_GET(Transform*, m_oTransformComponent, Transform);
         REGISTER_PROPERTY_GET(BaseBoundBox*, m_oBoundBox, BoundBox);
@@ -80,9 +82,11 @@ namespace browser
         REGISTER_PROPERTY_GET_SET(bool, m_bIsBoundBoxVisible, IsBoundBoxVisible)
         REGISTER_PROPERTY_CONSTREF_GET(std::vector<BaseComponent*>, m_vComponents, Components)
 		REGISTER_PROPERTY_GET_SET(Model*, m_oModel, Model)
-		REGISTER_PROPERTY_GET_SET(BaseEntity*, m_oModelRootEntity, ModelRootEntity)
-		REGISTER_PROPERTY_GET_SET(BaseRender*, m_oRenderer, Renderer)
-
+		REGISTER_PROPERTY_GET(BaseEntity*, m_oModelRootEntity, ModelRootEntity)
+        void setModelRootEntity(BaseEntity* root);
+        REGISTER_PROPERTY_GET_SET(BaseRender*, m_oRenderer, Renderer)
+        void setBoneInfo(int boneId, const glm::mat4& bindpose); // 设置Transform的骨骼信息
+        
 	private:
 		// 添加\移除组件时，标记或者去标记特殊的组件
 		void markSpecialComponent(BaseComponent* component, bool bEmpty = false);

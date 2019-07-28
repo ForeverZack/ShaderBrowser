@@ -287,13 +287,13 @@ void testVal()
     // 渲染模型2    fighter => aabb Min:-20, 0, -13  Max:20, 80, 15
     modelEntity = m_oModel2->createNewEntity("fighter");
     modelEntity->setScale(0.2f, 0.2f, 0.2f);
-    modelEntity->setEulerAngle(0, 90, 0);
+    modelEntity->setEulerAngle(90, 90, 0);
 //    modelEntity->getTransform()->setQuaternion(0, -0.707106709, 0, 0.707106829);
     modelEntity->setPosition(1, 0, -2);
     scene->addChild(modelEntity);
     modelEntity->playAnimation("Take 001", true);
 //    modelEntity->changeAllMeshesMaterial(GLProgram::DEFAULT_SKELETON_GLPROGRAM_NAME);
-    browser::MeshFilter* fighterMeshFilter = static_cast<SkinnedMeshRenderer*>(modelEntity->getTransform()->getChildren()[0]->getChildren()[0]->getBelongEntity()->getRenderer())->getMeshFilter();
+    browser::MeshFilter* fighterMeshFilter = static_cast<SkinnedMeshRenderer*>(modelEntity->getTransform()->getChildren()[0]->getBelongEntity()->getRenderer())->getMeshFilter();
 //    MeshFilter* fighterMeshFilter = static_cast<SkinnedMeshRenderer*>(modelEntity->getTransform()->getChildren()[0]->getBelongEntity()->getRenderer())->getMeshFilter();
     fighterMeshFilter->getMeshes()[0]->setTexture(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_TEXUTRE0], TextureCache::getInstance()->getTexture("models/Fighter/Fighter.png"));
 
@@ -304,7 +304,7 @@ void testVal()
 
     // 渲染模型3
     modelEntity = m_oModelLamp->createNewEntity("LampBob");
-    modelEntity->setEulerAngle(0, 90, 0);
+    modelEntity->setEulerAngle(-90, 90, 0);
     modelEntity->setPosition(10, 0, 5);
     scene->addChild(modelEntity);
     modelEntity->playAnimation(Animator::DEFAULT_ANIMATION_NAME+"0", true);
@@ -477,17 +477,25 @@ GLFWwindow* init()
 	// glfw: initialize and configure
 	// ------------------------------
 	glfwInit();
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    #ifdef __APPLE__
+        // macOS
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    #else
+        // win32
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);  // 如果将opengl设置为330，则windows上无法使用Transform Feedback，所以这里将其设置为4
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    #endif
 
-#ifdef __APPLE__
+
+//#ifdef __APPLE__
 	// macOS
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // uncomment this statement to fix compilation on OS X
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);    // mac下只能用GLFW_OPENGL_CORE_PROFILE核心模式，不然程序会报错
-#else
+//#else
     // win32
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);    // 这里如果用GLFW_OPENGL_CORE_PROFILE核心模式，则获取不到extensions
-#endif
+//    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);    // 这里如果用GLFW_OPENGL_CORE_PROFILE核心模式，则获取不到extensions
+//#endif
 
 
     // glfw window creation
@@ -559,6 +567,18 @@ void destory()
 
 }
 
+auto timePoint = std::chrono::steady_clock::now();
+void recTime(const std::string& log)
+{
+    return;
+    
+    auto now = std::chrono::steady_clock::now();
+    float deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(now - timePoint).count() / 1000.0f;
+    timePoint = now;
+//    std::cout<<log<<deltaTime;
+    BROWSER_LOG(log + std::to_string(deltaTime) + "ms");
+}
+
 void mainLoop(GLFWwindow *window)
 {
     // 计算deltaTime
@@ -584,13 +604,20 @@ void mainLoop(GLFWwindow *window)
     ECSManager::getInstance()->beforeUpdateSystem(SystemType::Transform, deltaTime); // 在所有系统刷新前刷新transform
     
 	// 2.render
+    recTime("====start=====");
     ECSManager::getInstance()->updateSystem(SystemType::Animation, deltaTime);   // 更新动画系统
+    recTime("====SystemType::Animation=====");
 	ECSManager::getInstance()->updateSystem(SystemType::Transform, deltaTime);  // 更新transform
-	ECSManager::getInstance()->updateSystem(SystemType::Camera, deltaTime);  // 更新camera
+	recTime("====SystemType::Transform=====");
+    ECSManager::getInstance()->updateSystem(SystemType::Camera, deltaTime);  // 更新camera
+    recTime("====SystemType::Camera=====");
     ECSManager::getInstance()->updateSystem(SystemType::TransformFeedback, deltaTime);  // 更新TransformFeedback
+    recTime("====SystemType::TransformFeedback=====");
     ECSManager::getInstance()->updateSystem(SystemType::BoundBox, deltaTime);   // 更新BoundBox
-	ECSManager::getInstance()->updateSystem(SystemType::RenderSystem, deltaTime);   // 更新渲染系统
-    //BROWSER_LOG(deltaTime);
+	recTime("====SystemType::BoundBox=====");
+    ECSManager::getInstance()->updateSystem(SystemType::RenderSystem, deltaTime);   // 更新渲染系统
+    recTime("=====SystemType::RenderSystem=======");
+//    BROWSER_LOG(deltaTime);
 
 
 	// 更新调试信息
@@ -633,19 +660,19 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 
 BaseFeedback* _feedback = nullptr;
 int _feedbackData[] = {0, 1, 2, 3, 4};
-glm::vec4 _feedbackInput[] = {
-    glm::vec4(101, 102, 100, 100),
-    glm::vec4(201, 102, 100, 100),
-    glm::vec4(301, 102, 100, 100),
-    glm::vec4(401, 102, 100, 100),
-    glm::vec4(501, 102, 100, 100),
+//glm::vec4 _feedbackInput[] = {
+//    glm::vec4(101, 102, 100, 100),
+//    glm::vec4(201, 102, 100, 100),
+//    glm::vec4(301, 102, 100, 100),
+//    glm::vec4(401, 102, 100, 100),
+//    glm::vec4(501, 102, 100, 100),
+//};
+float _feedbackInput[] = {
+    1001, 2002, 3003, 4004, 5005
 };
 
-glm::ivec2 _feedbackData2[] = {
-    glm::ivec2(0, -1),
-    glm::ivec2(1, 0),
-    glm::ivec2(2, 1),
-    glm::ivec2(3, 1)
+int _feedbackData2[] = {
+    0, 1, 2, 3
 };
 glm::vec4 _feedbackPosition[] = {
     // 骨骼1
@@ -743,7 +770,7 @@ void processInput(GLFWwindow *window)
 //                glBufferData(GL_TEXTURE_BUFFER, sizeof(_feedbackInput), _feedbackInput, GL_STATIC_DRAW);
 //                glBindTexture(GL_TEXTURE_BUFFER, tex);
 //                // 将缓存区关联到纹理对象上tbo
-//                glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA32F, vbo);
+//                glTexBuffer(GL_TEXTURE_BUFFER, GL_R32F, vbo);
 //                _feedback->setUniformSamplerBuffer("testInput", tex);
 //            }
 //            _feedback->flushAsPoints(5);
@@ -762,16 +789,16 @@ void processInput(GLFWwindow *window)
                 _feedback->initFeedback(vert_full_path.c_str(), varyings, 3, GL_SEPARATE_ATTRIBS);
                 _feedback->retain();
 
-                _feedback->addVertexAttribute(0, 2, GL_INT, GL_FALSE, 0, (void*)0, _feedbackData2, sizeof(_feedbackData2), VertexDataType::Int);
+                _feedback->addVertexAttribute(0, 1, GL_INT, GL_FALSE, 0, (void*)0, _feedbackData2, sizeof(_feedbackData2), VertexDataType::Int);
                 _feedback->addFeedbackBuffer(sizeof(glm::vec4)*4, varyings[0], FeedbackBufferType::TextureBuffer); //boneMatrix1
                 _feedback->addFeedbackBuffer(sizeof(glm::vec4)*4, varyings[1], FeedbackBufferType::TextureBuffer); //boneMatrix2
                 _feedback->addFeedbackBuffer(sizeof(glm::vec4)*4, varyings[2], FeedbackBufferType::TextureBuffer); //boneMatrix3
                 _feedback->setupVAOandVBOs();
 
                 // tbo
-                GLuint vbos[3], texs[3];
-                glGenTextures(3, texs);
-                glGenBuffers(3, vbos);
+                GLuint vbos[4], texs[4];
+                glGenTextures(4, texs);
+                glGenBuffers(4, vbos);
                 // position
                 glBindBuffer(GL_TEXTURE_BUFFER, vbos[0]);
                 glBufferData(GL_TEXTURE_BUFFER, sizeof(_feedbackPosition), _feedbackPosition, GL_STATIC_DRAW);
@@ -784,7 +811,13 @@ void processInput(GLFWwindow *window)
                 glBindTexture(GL_TEXTURE_BUFFER, texs[1]);
                 glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA32F, vbos[1]);
                 _feedback->setUniformSamplerBuffer("rotation_keys", texs[1]);
-                _feedback->setUniformFloatV("rotation_times", 1, _feedbackRotationTime);
+//                _feedback->setUniformFloatV("rotation_times", 1, _feedbackRotationTime);
+                // rotation_times
+                glBindBuffer(GL_TEXTURE_BUFFER, vbos[3]);
+                glBufferData(GL_TEXTURE_BUFFER, sizeof(_feedbackRotation), _feedbackRotationTime, GL_STATIC_DRAW);
+                glBindTexture(GL_TEXTURE_BUFFER, texs[3]);
+                glTexBuffer(GL_TEXTURE_BUFFER, GL_R32F, vbos[3]);
+                _feedback->setUniformSamplerBuffer("rotation_times", texs[3]);
                 //scale
                 glBindBuffer(GL_TEXTURE_BUFFER, vbos[2]);
                 glBufferData(GL_TEXTURE_BUFFER, sizeof(_feedbackScale), _feedbackScale, GL_STATIC_DRAW);
@@ -797,6 +830,8 @@ void processInput(GLFWwindow *window)
                 _feedback->setUniformIVec3V("trans_bone_keyframe_count", 1, glm::value_ptr(trans_bone_keyframe_count[0]));
                 // animation_info
                 _feedback->setUniformV4f("animation_info", animation_info);
+                // bone_count
+                _feedback->setUniformInt("bone_count", 4);
             }
             _feedback->flushAsPoints(4);
 

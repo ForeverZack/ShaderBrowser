@@ -111,6 +111,12 @@ namespace browser
 		m_oTransformComponent->setEulerAngle(x, y, z);
 	}
 
+    void BaseEntity::setQuaternion(float x, float y, float z, float w)
+    {
+        BROWSER_ASSERT(m_oTransformComponent, "Cannot find Transform component on parent entity in function BaseEntity::setQuaternion");
+        m_oTransformComponent->setQuaternion(x, y, z, w);
+    }
+    
 	void BaseEntity::setScale(float x, float y, float z)
 	{
 		BROWSER_ASSERT(m_oTransformComponent, "Cannot find Transform component on parent entity in function BaseEntity::setScale");
@@ -122,7 +128,19 @@ namespace browser
 		BROWSER_ASSERT(m_oTransformComponent, "Cannot find Transform component on parent entity in function BaseEntity::setName");
 		m_oTransformComponent->setName(name);
 	}
-
+    
+    void BaseEntity::setModelRootEntity(BaseEntity* root)
+    {
+        m_oModelRootEntity = root;
+        m_oTransformComponent->setBoneRoot(root->getTransform());
+    }
+    
+    void BaseEntity::setBoneInfo(int boneId, const glm::mat4& bindpose)
+    {
+        m_oTransformComponent->setBoneId(boneId);
+        m_oTransformComponent->setBindposeMatrix(bindpose);
+    }
+    
 	bool BaseEntity::isRenderable()
 	{
         // 是否需要被渲染
@@ -183,7 +201,7 @@ namespace browser
 			return;
 		}
 		char uniformName[50];
-		const std::vector<glm::mat4>& bonesMatrix = m_oModelRootEntity->m_oAnimator->getBonesMatrix();
+        const std::vector<glm::mat4>& bonesMatrix = m_oModelRootEntity->m_oAnimator->getBonesMatrix();
 		for (unsigned int i=0; i<bonesMatrix.size(); ++i)
 		{
 			sprintf(uniformName, GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_BONES_MATRIX], i);

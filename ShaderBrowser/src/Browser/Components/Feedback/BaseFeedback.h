@@ -87,6 +87,8 @@ namespace browser
     protected:
         // 根据varying名称，获取Feedback绑定id
         int getFeedbackBufferBindIdx(const char* varying);
+        // 根据当前帧获取使用第几个缓冲
+        unsigned int getCurFrameTag();
         
 	protected:
         // 
@@ -103,17 +105,21 @@ namespace browser
         // uniform数据
         std::unordered_map<std::string, UniformValue> m_mUniforms;
         
+        
+        // 双缓冲使用
+        unsigned long m_uCurFrameIdx;
+        unsigned int m_uCurFrameTag;
         // vao
-        unsigned int m_uVAO;
+        unsigned int m_uVAOs[EXCHANGE_BUFFERS_COUNT];
         // 是否生成vao
         bool m_bGenVAO;
         //input
-        unsigned int m_vMainVBOs[MAX_SUPPORT_VBO_NUM]; //vbo
+        unsigned int m_vMainVBOs[EXCHANGE_BUFFERS_COUNT][MAX_SUPPORT_VBO_NUM]; //vbo
         
         // output
         // vbo (输出vbo，如果需要分开输出，可以在子类中自行添加)
-        unsigned int m_vOutVBOs[MAX_SUPPORT_VBO_NUM]; //vbo
-        unsigned int m_vOutTexs[MAX_SUPPORT_VBO_NUM]; //texId
+        unsigned int m_vOutVBOs[EXCHANGE_BUFFERS_COUNT][MAX_SUPPORT_VBO_NUM]; //vbo
+        unsigned int m_vOutTexs[EXCHANGE_BUFFERS_COUNT][MAX_SUPPORT_VBO_NUM]; //texId
         unsigned int m_uOutTexNum;
     };
 }

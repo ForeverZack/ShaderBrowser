@@ -23,6 +23,15 @@ namespace browser
         , m_sName("Nonamed Entity")
         , m_oGlobalEulerAngle(GLM_VEC3_ZERO)
         , m_oGlobalQuaternion(GLM_QUAT_UNIT)
+        , m_iBoneId(-1)
+        , m_oBoneMatrix(GLM_MAT4_UNIT)
+        , m_oBindposeMatrix(GLM_MAT4_UNIT)
+        , m_oBoneRoot(nullptr)
+        , m_oBoneRootSpaceMatrix(GLM_MAT4_UNIT)
+        , m_bHasSrcModelInfo(false)
+        , m_oSrcModelPos(GLM_VEC3_ZERO)
+        , m_oSrcModelQuat(GLM_QUAT_UNIT)
+        , m_oSrcModelScale(GLM_VEC3_ONE)
 	{
         // 组件所属系统
         m_eBelongSystem = SystemType::Transform;
@@ -401,6 +410,18 @@ namespace browser
         setGlobalQuaternion(quaternion.x, quaternion.y, quaternion.z, quaternion.w);
     }
     
+    void Transform::setSrcModelTransformation(const glm::vec3& pos, const glm::quat& rot, const glm::vec3& scale)
+    {
+        m_bHasSrcModelInfo = true;
+        m_oSrcModelPos = pos;
+        m_oSrcModelQuat = rot;
+        m_oSrcModelScale = scale;
+        
+        setPosition(pos.x, pos.y, pos.z);
+        setQuaternion(rot.x, rot.y, rot.z, rot.w);
+        setScale(scale.x, scale.y, scale.z);
+    }
+    
 	std::tuple<glm::mat4, bool> Transform::getParentTransformModelMatrix()
     {
         //只要父级节点中，有一个dirty，则他下面的子级节点全都需要重新计算model
@@ -491,28 +512,46 @@ namespace browser
                     auto bonesPosition = convert_msg->getBonesPosition();
                     auto bonesRotation = convert_msg->getBonesRotation();
                     auto bonesScale = convert_msg->getBonesScale();
-                    
-                    auto itor = bonesIdMap->find(m_sName);
-                    if(itor != bonesIdMap->end())
+
+                    // 变换信息里只记录了部分发生变换的骨骼
+                    if (m_iBoneId!=-1 && bonesPosition->find(m_iBoneId)!=bonesPosition->end())
                     {
-                        unsigned int boneId = itor->second;
-                        
-                        if(bonesPosition->find(boneId) != bonesPosition->end())
-                        {
-                            const glm::vec3& position = (*bonesPosition)[boneId];
-                            const glm::quat& quaternion = (*bonesRotation)[boneId];
-                            const glm::vec3& scale = (*bonesScale)[boneId];
-                            setScale(scale.x, scale.y, scale.z);
-                            setQuaternion(quaternion);
-                            setPosition(position);
-                        }
-                        else
-                        {
-                            setScale(1, 1, 1);
-                            setEulerAngle(0, 0, 0);
-                            setPosition(0, 0, 0);
-                        }
+                        const glm::vec3& position = (*bonesPosition)[m_iBoneId];
+                        const glm::quat& quaternion = (*bonesRotation)[m_iBoneId];
+                        const glm::vec3& scale = (*bonesScale)[m_iBoneId];
+                        setQuaternion(quaternion);
+                        setPosition(position);
+                        setScale(scale);
                     }
+                    else if(m_bHasSrcModelInfo && this!=m_oBoneRoot)
+                    {
+                        setPosition(m_oSrcModelPos);
+                        setQuaternion(m_oSrcModelQuat);
+                        setScale(m_oSrcModelScale);
+                    }
+                    
+//                    auto itor = bonesIdMap->find(m_sName);
+//                    if(itor != bonesIdMap->end())
+//                    {
+//                        unsigned int boneId = itor->second;
+//
+//                        if(bonesPosition->find(boneId) != bonesPosition->end())
+//                        {
+//                            const glm::vec3& position = (*bonesPosition)[boneId];
+//                            const glm::quat& quaternion = (*bonesRotation)[boneId];
+//                            const glm::vec3& scale = (*bonesScale)[boneId];
+//                            setScale(scale.x, scale.y, scale.z);
+//                            setQuaternion(quaternion);
+//                            setPosition(position);
+//                        }
+//                        else
+//                        {
+//                            setScale(1, 1, 1);
+//                            setEulerAngle(0, 0, 0);
+//                            setPosition(0, 0, 0);
+//                        }
+//                    }
+                    
                 }
                 break;
                 
@@ -567,7 +606,20 @@ namespace browser
         if (dirty)
         {
 			updateSelfModelMatrix(parentMMatrix);
+            
         }
+
+        // 自身就是骨骼根节点
+        if (m_oBoneRoot == this)
+        {
+            m_oBoneRootSpaceMatrix = glm::inverse(m_oModelMatrix);
+        }
+        // 自身是骨骼，要计算骨骼矩阵
+        if (m_iBoneId != -1)
+        {
+            m_oBoneMatrix = m_oBoneRoot->m_oBoneRootSpaceMatrix * m_oModelMatrix * m_oBindposeMatrix;
+        }
+
         
         // 计算子节点的model
         Transform* child = nullptr;

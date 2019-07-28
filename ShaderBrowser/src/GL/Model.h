@@ -3,6 +3,7 @@
 #include <string>
 #include <unordered_map>
 #include <tuple>
+#include <memory>
 #include <glad/glad.h>
 #include "Common/Tools/Utils.h"
 #include "Browser/Components/Mesh/Mesh.h"
@@ -59,6 +60,68 @@ namespace customGL
 		}
     };
     
+    // 模型动画需要向gpu传递的数据
+    class ModelGpuAnimationData
+    {
+    public:
+        // 动画在shader中的缓存枚举
+        enum ModelGpuAnimBufferType {
+            PositionKeys = 0,
+            RotationKeys,
+            RotationTimes,
+            ScaleKeys,
+            
+            Max_Buffer_Count,
+        };
+        
+    public:
+        ModelGpuAnimationData(int boneNum);
+        ~ModelGpuAnimationData();
+        
+
+        // 计算缓存大小
+        void calculateBufferSize(const std::vector<std::tuple<aiAnimation*, std::string>>& animations, const std::unordered_map<std::string, unsigned int>& bonesIdMap, int& pos_keys_size, int& rot_keys_size, int& scal_keys_size);
+        // 在gpu中创建数据缓存
+        void generateDataBuffer(const std::vector<std::tuple<aiAnimation*, std::string>>& animations, const std::unordered_map<std::string, unsigned int>& bonesIdMap, const std::vector<glm::vec4>& bonesInitPos, const std::vector<glm::vec4>& bonesInitRot, const std::vector<glm::vec4>& bonesInitScal);
+        
+//         // 生成数据
+//        void generateData(aiAnimation* animation, int boneNum, const std::unordered_map<std::string, unsigned int>& bonesIdMap);
+//         // 在gpu中创建数据缓存
+//        void generateDataBuffer(const std::unordered_map<std::string, unsigned int>& bonesIdMap);
+        // 获取SamplerBuffer
+        GLuint getSamplerBuffer(ModelGpuAnimBufferType type);
+        
+        const std::vector<int>& getContainsBones(aiAnimation* animation);
+        const std::vector<glm::ivec3>& getTransBoneKeyframeCount(aiAnimation* animation);
+        const glm::ivec3& getKeysOffset(aiAnimation* animation);
+        REGISTER_PROPERTY_GET(std::vector<glm::vec4>, position_keys, PositionKeys)
+        
+//        REGISTER_PROPERTY_CONSTREF_GET(std::vector<int>, contains_bones, ContainsBones)
+//        REGISTER_PROPERTY_CONSTREF_GET(std::vector<glm::ivec3>, trans_bone_keyframe_count, TransBoneKeyframeCount)
+    
+    protected:
+        // 原始数据
+        int src_boneNum;
+        // 关键帧列表  (0～src_bone内保存着骨骼的原始变换信息)
+        std::vector<glm::vec4> position_keys;
+        std::vector<glm::vec4> rotation_keys;
+        std::vector<float> rotation_times;
+        std::vector<glm::vec4> scale_keys;
+        // 上面的骨骼变换信息包含哪些骨骼 (id：boneId ; value: -1.不包含，即该骨骼节点没有发生变换 1~MAX_BONES.在所有发生变换的骨骼信息里排第几个(用来定位采样关键帧))
+//        std::vector<int> contains_bones;    // 例如：[-1, 0, -1, -1, 1] 表示该动画只有boneId为1，4的骨骼发生了变换，采样位置为0，1。
+        std::unordered_map<aiAnimation*, std::vector<int>> contains_bones_vec;
+        // 每个发生变换的骨骼有多少关键帧 (用上面contains_bones的value定位，0.position关键帧数量 1.rotation关键帧数量 2.scale关键帧数量)
+//        std::vector<glm::ivec3> trans_bone_keyframe_count;
+        std::unordered_map<aiAnimation*, std::vector<glm::ivec3>> trans_bone_keyframe_count_vec;
+        // 关键帧偏移量
+        std::unordered_map<aiAnimation*, glm::ivec3> keys_offsets;
+        
+        // gpu相关
+        GLuint vbos[ModelGpuAnimBufferType::Max_Buffer_Count];
+        GLuint texs[ModelGpuAnimBufferType::Max_Buffer_Count];
+        
+    };
+    
     class Model : public Reference
 	{
 	public:
@@ -78,17 +141,22 @@ namespace customGL
     public:
 		// 生成一个新的entity
 		BaseEntity* createNewEntity(const std::string& name);
-        // 设置vao
-        void setupMeshesVAO();
+        // 处理gpu相关数据（必须在含有opengl的主线程进行）
+        void setupGpuData();
         // 加载纹理
         void loadTextures(const std::string& directory);
 		// 计算模型动画
 		// interpolateAnimation：是否插值动画（false使用前一帧, true在两帧间插值）
         // applyRootMotion: 是否允许根节点移动（参考unity）
-        void computeBonesTransform(aiAnimation* animation, float elapsedTime, std::unordered_map<aiNode*, aiMatrix4x4>& nodeTrans, std::vector<glm::mat4>& bonesMatrix, std::unordered_map<unsigned int, glm::vec3>& bonesPosition, std::unordered_map<unsigned int, glm::quat>& bonesRotation, std::unordered_map<unsigned int, glm::vec3>& bonesScale, bool interpolateAnimation = true, bool applyRootMotion = false);
-		void traverseNodeToComputeBonesTransform(aiNode* node, const aiMatrix4x4 parentMatrix, std::unordered_map<aiNode*, aiMatrix4x4>& nodeTrans, std::vector<glm::mat4>& bonesMatrix);
+        void computeBonesTransform(aiAnimation* animation, float elapsedTime, std::unordered_map<unsigned int, glm::vec3>& bonesPosition, std::unordered_map<unsigned int, glm::quat>& bonesRotation, std::unordered_map<unsigned int, glm::vec3>& bonesScale, bool interpolateAnimation = true, bool applyRootMotion = false);
         // 混合模型动画
-        void blendBonesTransform(aiAnimation* befAnimation, float befElapsed, bool befInterpolate, aiAnimation* animation, float elapsedTime, bool interpolate, float blendWeight, std::unordered_map<aiNode*, aiMatrix4x4>& nodeTrans, std::vector<glm::mat4>& bonesMatrix, bool applyRootMotion = false);
+        void blendBonesTransform(aiAnimation* befAnimation, float befElapsed, bool befInterpolate, aiAnimation* animation, float elapsedTime, bool interpolate, float blendWeight, std::unordered_map<unsigned int, glm::vec3>& bonesPosition, std::unordered_map<unsigned int, glm::quat>& bonesRotation, std::unordered_map<unsigned int, glm::vec3>& bonesScale, bool applyRootMotion = false);
+		void traverseNodeToComputeBonesTransform(aiNode* node, const aiMatrix4x4 parentMatrix, std::unordered_map<aiNode*, aiMatrix4x4>& nodeTrans, std::vector<glm::mat4>& bonesMatrix);
+        GLuint getGpuAnimSamplerBuffer(ModelGpuAnimationData::ModelGpuAnimBufferType type);
+        const std::vector<int>& getContainsBones(aiAnimation* animation);
+        const std::vector<glm::ivec3>& getTransBonesKeyframeCount(aiAnimation* animation);
+        const glm::ivec3& getKeysOffset(aiAnimation* animation);
+
         
         // 绑定网格模型到单个骨骼
         bool bindMeshOnSingleBone(browser::Mesh* mesh, const std::string& boneName, const glm::mat4& transformation = GLM_MAT4_UNIT);
@@ -103,6 +171,8 @@ namespace customGL
         void traverseNode(aiNode* node, const aiScene*& scene);
         // 找到模型骨骼根节点
         void findModelRootBondNode(aiNode* node);
+        // 记录骨骼节点的变换
+        void recordBonesInitialTransform();
         // 生成游戏内部使用的网格(aiMesh->Mesh)
         browser::Mesh* generateMesh(aiMesh* aiMesh, const aiScene*& scene, unsigned int& boneOffset);
         // 读取纹理数据
@@ -111,7 +181,7 @@ namespace customGL
         void calculateTransformMatrix(aiNode* node, aiNode* endNode, aiMatrix4x4& transformation);
 
 		// 递归遍历模型，生成Entity
-		BaseEntity* traverseNodeAndCreateEntity(aiNode* node, BaseEntity* parent, BaseEntity* root);
+		BaseEntity* traverseNodeAndCreateEntity(aiNode* node, BaseEntity* parent = nullptr, BaseEntity* root = nullptr, Animator* animator = nullptr);
         // 获取共享材质
         Material* getSharedMaterial(Mesh* mesh, const std::string& materialName, const std::string& defaultProgramName);
         
@@ -122,6 +192,7 @@ namespace customGL
         REGISTER_PROPERTY_GET_SET(std::function<void(Model*)>, m_oSuccessCallback, SuccessCallback)
         REGISTER_PROPERTY_GET(unsigned int, m_uBoneNum, BoneNum)
         REGISTER_PROPERTY_CONSTREF_GET(std::vector<browser::Mesh*>, m_vMeshes, Meshes)
+        REGISTER_PROPERTY_GET(std::shared_ptr<ModelGpuAnimationData>, m_oGpuAnimData, GpuAnimData)
         std::unordered_map<std::string, unsigned int>* getBonesIdMapPointer()
         {
             return &m_mBonesIdMap;
@@ -182,6 +253,8 @@ namespace customGL
 		std::vector<std::tuple<aiAnimation*, std::string>> m_vAnimations;
         std::vector<std::string> m_vAnimationNames;
         unsigned int m_uUnnamedAnimCount;
+        // 模型动画数据
+        std::shared_ptr<ModelGpuAnimationData> m_oGpuAnimData;
         // 纹理队列
         std::vector<Texture2D*> m_vTextures;
         // 纹理数据(中转)
@@ -202,6 +275,11 @@ namespace customGL
 		std::vector<aiBone*> m_vBones;
 		// 当前已记录的骨骼数量
 		unsigned int m_uRecBoneOffset;
+        // 骨骼节点初始变换
+        std::vector<glm::vec4> m_vBonesInitPosition;
+        std::vector<glm::vec4> m_vBonesInitRotation;
+        std::vector<glm::vec4> m_vBonesInitScale;
+        
 		// 
 		// 辅助数据：（用来显示骨骼）
 		// 骨骼顶点数据 

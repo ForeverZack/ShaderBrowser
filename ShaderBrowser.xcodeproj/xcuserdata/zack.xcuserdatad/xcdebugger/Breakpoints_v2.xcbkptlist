@@ -9,77 +9,13 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "ShaderBrowser/src/Browser/Components/Feedback/BaseFeedback.cpp"
-            timestampString = "584715044.691547"
+            filePath = "ShaderBrowser/src/Browser/Components/Feedback/AnimatorFeedback.cpp"
+            timestampString = "585825084.469883"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "222"
-            endingLineNumber = "222"
-            landmarkName = "BaseFeedback::flushAsPoints(int length)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ShaderBrowser/src/Browser/Components/Feedback/BaseFeedback.cpp"
-            timestampString = "584715044.691596"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "225"
-            endingLineNumber = "225"
-            landmarkName = "BaseFeedback::flushAsPoints(int length)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ShaderBrowser/src/Browser/Components/Feedback/BaseFeedback.cpp"
-            timestampString = "584715044.691631"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "273"
-            endingLineNumber = "273"
-            landmarkName = "BaseFeedback::getOutputDataFromVBOs(GLuint bindIdx, float* output, int size)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ShaderBrowser/src/Browser/Components/Feedback/BaseFeedback.cpp"
-            timestampString = "584715044.691661"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "202"
-            endingLineNumber = "202"
-            landmarkName = "BaseFeedback::setupVAOandVBOs()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ShaderBrowser/src/Browser/Components/Feedback/BaseFeedback.cpp"
-            timestampString = "584715044.691691"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "174"
-            endingLineNumber = "174"
-            landmarkName = "BaseFeedback::setupVAOandVBOs()"
+            startingLineNumber = "242"
+            endingLineNumber = "242"
+            landmarkName = "AnimatorFeedback::play(float sampleUnscaled, std::unordered_map&lt;unsigned int, glm::vec3&gt;&amp; bonesPosition, std::unordered_map&lt;unsigned int, glm::quat&gt;&amp; bonesRotation, std::unordered_map&lt;unsigned int, glm::vec3&gt;&amp; bonesScale)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -90,12 +26,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ShaderBrowser/src/GL/Model.cpp"
-            timestampString = "584715044.691722"
+            timestampString = "585825084.469934"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "767"
-            endingLineNumber = "767"
-            landmarkName = "Model::traverseNodeToComputeBonesTransform(aiNode* node, const aiMatrix4x4 parentMatrix, std::unordered_map&lt;aiNode*, aiMatrix4x4&gt;&amp; nodeTrans, std::vector&lt;glm::mat4&gt;&amp; bonesMatrix)"
+            startingLineNumber = "249"
+            endingLineNumber = "249"
+            landmarkName = "ModelGpuAnimationData::generateDataBuffer(const std::vector&lt;std::tuple&lt;aiAnimation*, std::string&gt;&gt;&amp; animations, const std::unordered_map&lt;std::string, unsigned int&gt;&amp; bonesIdMap, const std::vector&lt;glm::vec4&gt;&amp; bonesInitPos, const std::vector&lt;glm::vec4&gt;&amp; bonesInitRot, const std::vector&lt;glm::vec4&gt;&amp; bonesInitScal)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

@@ -10,6 +10,7 @@
 #include <glm/ext/quaternion_trigonometric.hpp>
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/quaternion.hpp>
+#include <assimp/scene.h>
 
 using namespace std;
 using namespace customGL;
@@ -27,7 +28,14 @@ namespace common
     // 注册只读方法(返回 const &)   注意:对unordered_map这类需要两个或者更多模板参数的类型无法使用，因为宏会识别到其中的逗号
 	#define REGISTER_PROPERTY_CONSTREF_GET(varType, varName, funName)\
 	public: virtual const varType& get##funName(void)	{return varName;}
-	// 注册返回引用方法(返回 &)   注意:对unordered_map这类需要两个或者更多模板参数的类型无法使用，因为宏会识别到其中的逗号
+    // 注册只写方法(const &)
+    #define REGISTER_PROPERTY_CONSTREF_SET(varType, varName, funName)\
+    public: virtual void set##funName(const varType& var) {varName = var;}
+    // 注册读写方法(const &)
+    #define REGISTER_PROPERTY_CONSTREF_GET_SET(varType, varName, funName)\
+    public: virtual const varType& get##funName(void)    {return varName;}\
+    public: virtual void set##funName(const varType& var) {varName = var;}
+    // 注册返回引用方法(返回 &)   注意:对unordered_map这类需要两个或者更多模板参数的类型无法使用，因为宏会识别到其中的逗号
 	#define REGISTER_PROPERTY_REF_GET(varType, varName, funName)\
 	public: virtual varType& get##funName(void)	{return varName;}
 
@@ -48,6 +56,8 @@ namespace common
     #define BROWSER_LOG_VEC2(vec2) std::cout<<vec2[0]<<", "<<vec2[1]<<endl;
     // 打印vec3
     #define BROWSER_LOG_VEC3(vec3) std::cout<<vec3[0]<<", "<<vec3[1]<<", "<<vec3[2]<<endl;
+    // 打印vec4
+    #define BROWSER_LOG_VEC4(vec3) std::cout<<vec3[0]<<", "<<vec3[1]<<", "<<vec3[2]<<", "<<vec3[3]<<endl;
     // 打印quaternion
     #define BROWSER_LOG_QUATERNION(quat) std::cout<<quat.x<<", "<<quat.y<<", "<<quat.z<<", "<<quat.w<<endl;
     
@@ -89,8 +99,11 @@ namespace common
         
         // 拆解矩阵 （从矩阵中，获取位移、旋转和缩放）
         static void parseMatrix(const glm::mat4& matrix, glm::vec3& position, glm::quat& rotation, glm::vec3& scale);
+        static void parseMatrix(const aiMatrix4x4& matrix, glm::vec4& position, glm::vec4& rotation, glm::vec4& scale);
+        static void parseMatrix(const aiMatrix4x4& matrix, glm::vec3& position, glm::quat& rotation, glm::vec3& scale);
         // 矩阵转四元素 (glm::toquat可能会得到两个不一样的结果(刚好对称，应该是三角函数处理的问题)，所以这里自己写方法代替了)
         static glm::quat convertMatrix2Quat(const glm::mat4& matrix);
+        static glm::vec4 convertMatrix2Vec4(const glm::mat4& matrix);
 	};
 }
 

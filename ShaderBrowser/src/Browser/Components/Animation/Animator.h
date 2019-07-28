@@ -16,6 +16,8 @@ using namespace customGL;
 
 namespace browser
 {
+    class AnimatorFeedback;
+    
     // 播放动画数据结构
     class AnimationPlayData
     {
@@ -67,6 +69,13 @@ namespace browser
         
         // 刷新动画
         void updateAnimation(float deltaTime);
+        
+        
+        // 骨骼信息
+        // 设置骨骼数量
+        void setBoneInfo(unsigned int boneNum);
+        // 添加骨骼
+        void addBone(unsigned int boneId, Transform* boneNode);
 
         
 	protected:
@@ -77,19 +86,22 @@ namespace browser
         virtual void onInspectorGUI(InspectorPanel* inspector);
 
         
-		REGISTER_PROPERTY_CONSTREF_GET(std::vector<glm::mat4>, m_vBonesMatrix, BonesMatrix)
 		REGISTER_PROPERTY_GET(bool, m_bIsPlaying, IsPlaying)
 		REGISTER_PROPERTY_GET_SET(bool, m_bUseGPU, UseGPU)
         const std::unordered_map<Mesh*, glm::vec4*>& getVertices()
         {
             return m_mVertices;
         }
+        // 获取骨骼矩阵列表
+        const std::vector<glm::mat4>& getBonesMatrix();
         
 	protected:
         // 源模型文件
         Model* m_oSrcModel;
         // 是否初始化
         bool m_bHasInit;
+        // feedback
+        AnimatorFeedback* m_oFeedback;
         
         // 顶点数组
         std::unordered_map<Mesh*, glm::vec4*> m_mVertices;
@@ -115,10 +127,12 @@ namespace browser
         // 是否允许根节点的运动
         bool m_bApplyRootMotion;
         
-        // 动画中的aiNode的变换矩阵
-        std::unordered_map<aiNode*, aiMatrix4x4> m_mTransformations;
+        // 记录所有骨骼
+        std::vector<Transform*> m_vAllBones;
         // 骨骼变换矩阵
         std::vector<glm::mat4> m_vBonesMatrix;
+        // 是否需要重新获取骨骼矩阵
+        bool m_bDirty;
         // TODO: 骨骼节点的变换后的位置,需要传给transform
         std::unordered_map<unsigned int, glm::vec3> m_mBonesPosition;
         std::unordered_map<unsigned int, glm::quat> m_mBonesRotation;
