@@ -353,6 +353,19 @@ namespace customGL {
         m_eType = UniformValueType::UniformValueType_SamplerBuffer;
         _value.samplerBuffer.textureId = textureId;
     }
+
+	void UniformValue::setImageBuffer(GLuint textureId, GLenum access, GLenum format)
+	{
+		common::BROWSER_ASSERT(m_eType == UniformValueType::UniformValueType_Undefined
+			|| m_eType == UniformValueType::UniformValueType_ImageBuffer,
+			"UniformValueType has already defined, you cannot change it again in function UniformValue::setImageBuffer");
+
+		m_bDirty = true;
+		m_eType = UniformValueType::UniformValueType_ImageBuffer;
+		_value.imageBuffer.textureId = textureId;
+		_value.imageBuffer.access = access;
+		_value.imageBuffer.format = format;
+	}
     
     const glm::mat4& UniformValue::getMat4()
     {
@@ -504,6 +517,11 @@ namespace customGL {
                 // matrix3x4v
                 glProgram->setUniformWithMat3x4V(uniformName.c_str(), _value.mat3x4v.count, _value.mat3x4v.pointer);
                 break;
+
+			case UniformValueType_ImageBuffer:
+				// imageBuffer
+				glProgram->setUniformWithImageBuffer(uniformName.c_str(), _value.imageBuffer.textureId, _value.imageBuffer.access, _value.imageBuffer.format);
+				break;
                 
             default:
                 break;

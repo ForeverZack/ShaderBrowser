@@ -35,5 +35,37 @@
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ShaderBrowser/src/Browser/Components/ComputeProgram/AnimatorComputeProgram.cpp"
+            timestampString = "587110465.467737"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "98"
+            endingLineNumber = "98"
+            landmarkName = "AnimatorComputeProgram::play(float sampleUnscaled, std::unordered_map&lt;unsigned int, glm::vec3&gt;&amp; bonesPosition, std::unordered_map&lt;unsigned int, glm::quat&gt;&amp; bonesRotation, std::unordered_map&lt;unsigned int, glm::vec3&gt;&amp; bonesScale)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ShaderBrowser/src/GL/GLStateCache.cpp"
+            timestampString = "587125424.770605"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "52"
+            endingLineNumber = "52"
+            landmarkName = "GLStateCache::bindImageBuffer(GLuint textureUnit, GLuint textureId, GLenum access, GLenum format)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
    </Breakpoints>
 </Bucket>

@@ -2,6 +2,7 @@
 #include "GL/Model.h"
 #include <chrono>
 #include "Browser/Components/Feedback/AnimatorFeedback.h"
+#include "Browser/Components/ComputeProgram/AnimatorComputeProgram.h"
 
 namespace browser
 {
@@ -50,6 +51,7 @@ namespace browser
         , m_bApplyRootMotion(false)
         , m_bDirty(true)
         , m_oFeedback(nullptr)
+		, m_oComputeProgram(nullptr)
 	{
 		// 组件所属系统
 		m_eBelongSystem = SystemType::Animation;
@@ -70,6 +72,7 @@ namespace browser
 		BROWSER_LOG("~Animator");
         
         m_oFeedback->release();
+		m_oComputeProgram->release();
 	}
     
     void Animator::onInspectorGUI(InspectorPanel* inspector)
@@ -277,7 +280,12 @@ namespace browser
                 m_oFeedback = AnimatorFeedback::create(m_oSrcModel);
                 m_oFeedback->retain();
             }
-            
+			if (!m_oComputeProgram)
+			{
+				m_oComputeProgram = AnimatorComputeProgram::create(m_oSrcModel);
+				m_oComputeProgram->retain();
+			}
+
             // 重置
             m_vBonesMatrix.clear();
             m_mBonesPosition.clear();
@@ -328,6 +336,10 @@ namespace browser
             {
                 m_oFeedback->setCurrentAnimationData(m_oCurAnimation.animation);
             }
+			// compute program
+			{
+				m_oComputeProgram->setCurrentAnimationData(m_oCurAnimation.animation);
+			}
             // 计算骨骼变换矩阵
             if(m_oBefAnimation.animation)
             {
@@ -338,9 +350,14 @@ namespace browser
             else
             {
                 // 只有一个动画在播放
-//                m_oSrcModel->computeBonesTransform(m_oCurAnimation.animation, m_oCurAnimation.elapsed, m_mBonesPosition, m_mBonesRotation, m_mBonesScale, m_oCurAnimation.interpolate, m_bApplyRootMotion);
+				// 方法一：在cpu计算
+                //m_oSrcModel->computeBonesTransform(m_oCurAnimation.animation, m_oCurAnimation.elapsed, m_mBonesPosition, m_mBonesRotation, m_mBonesScale, m_oCurAnimation.interpolate, m_bApplyRootMotion);
                 
-                m_oFeedback->play(m_oCurAnimation.animation->mTicksPerSecond * m_oCurAnimation.elapsed, m_mBonesPosition, m_mBonesRotation, m_mBonesScale);
+				// 方法二：tranform feedback
+				m_oFeedback->play(m_oCurAnimation.animation->mTicksPerSecond * m_oCurAnimation.elapsed, m_mBonesPosition, m_mBonesRotation, m_mBonesScale);
+				
+				// 方法三：compute program
+                //m_oComputeProgram->play(m_oCurAnimation.animation->mTicksPerSecond * m_oCurAnimation.elapsed, m_mBonesPosition, m_mBonesRotation, m_mBonesScale);
             }
             
 //            float deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - timeRec).count() / 1000.0f;

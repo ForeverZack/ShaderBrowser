@@ -87,14 +87,16 @@ namespace customGL
         Int,
     };
     // Transform Feedback缓存类型枚举
-    enum FeedbackBufferType
+    enum BufferType
     {
         // vbo
         ArrayBuffer = 0,
         // tbo
         TextureBuffer,
+		// storage buffer	(unifor块和着色器存储缓存的最大区别在于，着色器存储缓存可以在着色器中读写)	eg: layout (std430, binding = 0) buffer BufferObject { int mode; vec4 points[]; };
+		// glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, buf);
+		StorageBuffer,
     };
-    
     
     // 单个顶点数据结构
     class VertexData
@@ -199,7 +201,7 @@ namespace customGL
     {
     public:
         FeedbackBufferDeclaration()
-        : type(FeedbackBufferType::ArrayBuffer)
+        : type(BufferType::ArrayBuffer)
         , varying("")
         , bindIdx(0)
         , size(0)
@@ -210,6 +212,9 @@ namespace customGL
                 vbos[i] = 0;
             }
         }
+        ~FeedbackBufferDeclaration()
+        {
+        }
     public:
         // 必须填写的属性
         // 名称
@@ -219,12 +224,40 @@ namespace customGL
         // 数据大小
         GLuint size;
         // 缓存类型
-        FeedbackBufferType type;
+		BufferType type;
         // 纹理缓存格式 internalformat
         GLenum internalFormat;
         
         // 对应vbo
         GLuint vbos[EXCHANGE_BUFFERS_COUNT];
+    };
+    // Compute Program输入/输出buffer属性
+    class ComputeBufferDeclaration
+    {
+    public:
+        ComputeBufferDeclaration()
+			: type(BufferType::TextureBuffer)
+			, name("")
+			, size(0)
+			, format(GL_RGBA32F)
+			, access(GL_READ_ONLY)
+		{
+        }
+        ~ComputeBufferDeclaration()
+        {
+        }
+    public:
+		// 缓存类型
+		BufferType type;
+		// 名称
+		std::string name;
+        // 数据大小
+        GLuint size;
+        // tbo存储格式
+        GLenum format;
+		// 读写权限 GL_READ_WRITE、GL_READ_ONLY、GL_WRITE_ONLY
+        GLenum access;
+        
     };
 
 	// 纹理数据
@@ -317,6 +350,9 @@ namespace customGL
             UniformValueType_Mat3V,
             // matrix3x4v
             UniformValueType_Mat3x4V,
+
+			// imageBuffer
+			UniformValueType_ImageBuffer,
         };
     public:
         // 构造函数
@@ -353,6 +389,8 @@ namespace customGL
         void setMat4x3V(int count, const float* value);
         void setMat3V(int count, const float* value);
         void setMat3x4V(int count, const float* value);
+
+		void setImageBuffer(GLuint textureId, GLenum access, GLenum format);
         
         
         const glm::mat4& getMat4();
@@ -399,6 +437,11 @@ namespace customGL
                 const float* pointer;
                 GLsizei count;
             } floatv,v2fv,v3fv,v4fv,mat4v,mat4x3v,mat3v,mat3x4v;
+			struct {
+				GLuint textureId;
+				GLenum access;
+				GLenum format;
+			} imageBuffer;
             
             U() { memset(this, 0, sizeof(*this)); }
             ~U() {}

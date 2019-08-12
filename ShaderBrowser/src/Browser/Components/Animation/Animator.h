@@ -17,6 +17,7 @@ using namespace customGL;
 namespace browser
 {
     class AnimatorFeedback;
+	class AnimatorComputeProgram;
     
     // 播放动画数据结构
     class AnimationPlayData
@@ -102,6 +103,8 @@ namespace browser
         bool m_bHasInit;
         // feedback
         AnimatorFeedback* m_oFeedback;
+		// compute program
+		AnimatorComputeProgram* m_oComputeProgram;
         
         // 顶点数组
         std::unordered_map<Mesh*, glm::vec4*> m_mVertices;

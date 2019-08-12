@@ -42,6 +42,15 @@ namespace customGL
             glBindTexture(GL_TEXTURE_BUFFER, textureId);
         }
     }
+
+	void GLStateCache::bindImageBuffer(GLuint textureUnit, GLuint textureId, GLenum access, GLenum format)
+	{
+		if (m_vTexIds[textureUnit] != textureId)
+		{
+            //void (*aaa)(GLuint, GLuint, GLint, GLboolean, GLint, GLenum, GLenum) = glBindImageTexture;	// mac上不支持opengl4.3，所以根本没有glBindImageTexture
+            glBindImageTexture(textureUnit, textureId, 0, GL_FALSE, 0, access, format);
+		}
+	}
     
     void GLStateCache::openDepthTest(GLenum depthFunc/* = GL_LESS*/, GLenum depthMask/* = GL_TRUE*/)
     {

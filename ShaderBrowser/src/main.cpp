@@ -8,6 +8,7 @@
 #include <iostream>
 #include "GL/GLProgram.h"
 #include "Browser/Components/Feedback/BaseFeedback.h"
+#include "Browser/Components/ComputeProgram/BaseComputeProgram.h"
 #include "Browser/Components/Transform/Transform.h"
 #include "Browser/Components/Camera/Camera.h"
 #include "Browser/Components/Mesh/MeshFilter.h"
@@ -20,7 +21,6 @@
 #include "Browser/System/RenderSystem.h"
 #include "Browser/System/TransformSystem.h"
 #include "Browser/System/MeshSystem.h"
-#include "Browser/System/FeedbackSystem.h"
 #include "Browser/System/LightSystem.h"
 #include "Browser/System/AnimationSystem.h"
 #include "Common/Tools/FileUtils.h"
@@ -488,14 +488,14 @@ GLFWwindow* init()
     #endif
 
 
-//#ifdef __APPLE__
+#ifdef __APPLE__
 	// macOS
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // uncomment this statement to fix compilation on OS X
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);    // mac下只能用GLFW_OPENGL_CORE_PROFILE核心模式，不然程序会报错
-//#else
-    // win32
-//    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);    // 这里如果用GLFW_OPENGL_CORE_PROFILE核心模式，则获取不到extensions
-//#endif
+#else
+     //win32
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);    // 这里如果用GLFW_OPENGL_CORE_PROFILE核心模式，则获取不到extensions
+#endif
 
 
     // glfw window creation
@@ -545,7 +545,6 @@ GLFWwindow* init()
     ECSManager::getInstance()->registerSystem(browser::BoundBoxSystem::getInstance()); // 包围盒
     ECSManager::getInstance()->registerSystem(browser::LightSystem::getInstance()); // 灯光系统
     ECSManager::getInstance()->registerSystem(browser::AnimationSystem::getInstance()); // 动画系统
-    ECSManager::getInstance()->registerSystem(browser::FeedbackSystem::getInstance());  // Tranform Feedback
 	// 初始化系统
 	ECSManager::getInstance()->initSystem(SystemType::RenderSystem);    // 渲染系统
     ECSManager::getInstance()->initSystem(SystemType::Transform);    // Transform
@@ -554,7 +553,6 @@ GLFWwindow* init()
     ECSManager::getInstance()->initSystem(SystemType::BoundBox);    // 包围盒
     ECSManager::getInstance()->initSystem(SystemType::Light);   // Light
     ECSManager::getInstance()->initSystem(SystemType::Animation);   // Animation
-    ECSManager::getInstance()->initSystem(SystemType::TransformFeedback);   // Transform Feedback
     // 加载缓存
     GLProgramCache::getInstance()->init();  // 着色器缓存
 
@@ -611,8 +609,6 @@ void mainLoop(GLFWwindow *window)
 	recTime("====SystemType::Transform=====");
     ECSManager::getInstance()->updateSystem(SystemType::Camera, deltaTime);  // 更新camera
     recTime("====SystemType::Camera=====");
-    ECSManager::getInstance()->updateSystem(SystemType::TransformFeedback, deltaTime);  // 更新TransformFeedback
-    recTime("====SystemType::TransformFeedback=====");
     ECSManager::getInstance()->updateSystem(SystemType::BoundBox, deltaTime);   // 更新BoundBox
 	recTime("====SystemType::BoundBox=====");
     ECSManager::getInstance()->updateSystem(SystemType::RenderSystem, deltaTime);   // 更新渲染系统
@@ -657,6 +653,10 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 	//	//popup_menu();
 	//}
 }
+
+
+BaseComputeProgram* _computeProgram = nullptr;
+
 
 BaseFeedback* _feedback = nullptr;
 int _feedbackData[] = {0, 1, 2, 3, 4};
@@ -790,9 +790,9 @@ void processInput(GLFWwindow *window)
                 _feedback->retain();
 
                 _feedback->addVertexAttribute(0, 1, GL_INT, GL_FALSE, 0, (void*)0, _feedbackData2, sizeof(_feedbackData2), VertexDataType::Int);
-                _feedback->addFeedbackBuffer(sizeof(glm::vec4)*4, varyings[0], FeedbackBufferType::TextureBuffer); //boneMatrix1
-                _feedback->addFeedbackBuffer(sizeof(glm::vec4)*4, varyings[1], FeedbackBufferType::TextureBuffer); //boneMatrix2
-                _feedback->addFeedbackBuffer(sizeof(glm::vec4)*4, varyings[2], FeedbackBufferType::TextureBuffer); //boneMatrix3
+                _feedback->addFeedbackBuffer(sizeof(glm::vec4)*4, varyings[0], BufferType::TextureBuffer); //boneMatrix1
+                _feedback->addFeedbackBuffer(sizeof(glm::vec4)*4, varyings[1], BufferType::TextureBuffer); //boneMatrix2
+                _feedback->addFeedbackBuffer(sizeof(glm::vec4)*4, varyings[2], BufferType::TextureBuffer); //boneMatrix3
                 _feedback->setupVAOandVBOs();
 
                 // tbo
@@ -847,6 +847,25 @@ void processInput(GLFWwindow *window)
             printf("result_scale === (%f, %f, %f, %f), (%f, %f ,%f, %f), (%f, %f ,%f, %f), (%f, %f ,%f, %f)\n", output[0], output[1], output[2], output[3], output[4], output[5], output[6], output[7], output[8], output[9], output[10], output[11], output[12], output[13], output[14], output[15]);
             
         }
+		else if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS)
+		{
+			if (!_computeProgram)
+			{
+				_computeProgram = new BaseComputeProgram();
+				_computeProgram->retain();
+
+				const std::string vert_full_path = FileUtils::getInstance()->getAbsolutePathForFilename("shaders/default/anim_compute_prog_test.comp");
+				_computeProgram->initComputeProgram(vert_full_path.c_str(), 5);
+				_computeProgram->addComputeBuffer("buffers", sizeof(float) * 4 * 5, GL_READ_WRITE, BufferType::TextureBuffer, GL_RGBA32F);
+				_computeProgram->setupVBOs();
+			}
+			_computeProgram->executeComputeProgram();
+			GLfloat output[20];
+			_computeProgram->getOutputDataFromVBOs(0, output, sizeof(output));
+			printf("result === (%f, %f, %f, %f), (%f, %f ,%f, %f), (%f, %f ,%f, %f), (%f, %f ,%f, %f), (%f, %f ,%f, %f)\n", output[0], output[1], output[2], output[3], output[4], output[5], output[6], output[7], output[8], output[9]
+					, output[10], output[11], output[12], output[13], output[14], output[15], output[16], output[17], output[18], output[19]);
+
+		}
 	}
 	
 

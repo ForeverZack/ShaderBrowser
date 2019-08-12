@@ -26,7 +26,6 @@ namespace browser
         // 设置当前正在播放的动画
         void setCurrentAnimationData(aiAnimation* animation);
         // 播放
-        void play(float sampleUnscaled);
         void play(float sampleUnscaled, std::unordered_map<unsigned int, glm::vec3>& bonesPosition, std::unordered_map<unsigned int, glm::quat>& bonesRotation, std::unordered_map<unsigned int, glm::vec3>& bonesScale);
         
 	protected:

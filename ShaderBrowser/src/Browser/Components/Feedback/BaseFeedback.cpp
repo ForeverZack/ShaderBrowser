@@ -8,18 +8,16 @@ using namespace customGL;
 namespace browser
 {
 	BaseFeedback::BaseFeedback()
-        : BaseComponent("BaseFeedback")
-        , m_oFeedback(nullptr)
+        : m_oFeedback(nullptr)
         , m_bGenVAO(false)
         , m_uOutTexNum(0)
         , m_uFeedbackBufCount(0)
         , m_uCurFrameIdx(0)
         , m_uCurFrameTag(0)
 	{
-        // 组件所属系统
-        m_eBelongSystem = SystemType::TransformFeedback;
-        
-        // clear
+		this->autorelease();
+
+		// clear
         m_vVaryings.clear();
         m_mUniforms.clear();
 	}
@@ -96,7 +94,7 @@ namespace browser
         m_mVertexAttribDeclarations.emplace(location, declaration);
     }
     
-    void BaseFeedback::addFeedbackBuffer(GLuint size, const string& name, FeedbackBufferType type/* = FeedbackBufferType::ArrayBuffer*/, GLenum internalFormat /*= GL_RGBA32F*/)
+    void BaseFeedback::addFeedbackBuffer(GLuint size, const string& name, BufferType type/* = BufferType::ArrayBuffer*/, GLenum internalFormat /*= GL_RGBA32F*/)
     {
         BROWSER_ASSERT(!m_bGenVAO, "Feedback has already generate vao and vbos, its member m_mFeedbackBufDeclarations cannot be changed in function BaseFeedback::addFeedbackBuffer.");
      
@@ -108,7 +106,7 @@ namespace browser
         m_mFeedbackBufDeclarations.emplace(bindIdx, declaration);
         
         // 记录tbo数量
-        if (type == FeedbackBufferType::TextureBuffer)
+        if (type == BufferType::TextureBuffer)
         {
             ++m_uOutTexNum;
         }
@@ -187,7 +185,7 @@ namespace browser
                     
                     switch(declaration->type)
                     {
-                        case FeedbackBufferType::ArrayBuffer:
+                        case BufferType::ArrayBuffer:
                         {
                             // data
                             glBindBuffer(GL_ARRAY_BUFFER, declaration->vbos[i]);
@@ -195,7 +193,7 @@ namespace browser
                         }
                             break;
                             
-                        case FeedbackBufferType::TextureBuffer:
+                        case BufferType::TextureBuffer:
                         {
                             // tbo
                             glBindBuffer(GL_TEXTURE_BUFFER, declaration->vbos[i]);
@@ -246,7 +244,7 @@ namespace browser
             const UniformValue& uniform = itor->second;
             if (uniform.getUniformValueType() == UniformValue::UniformValueType::UniformValueType_SamplerBuffer)
             {
-                setUniformSamplerBuffer(itor->first, uniform._value.tex2D.textureId);
+                setUniformSamplerBuffer(itor->first, uniform._value.samplerBuffer.textureId);
             }
         }
         
@@ -294,14 +292,14 @@ namespace browser
         FeedbackBufferDeclaration* declaration = m_mFeedbackBufDeclarations[bindIdx];
         switch(declaration->type)
         {
-            case FeedbackBufferType::ArrayBuffer:
+            case BufferType::ArrayBuffer:
                 {
                     glBindBuffer(GL_ARRAY_BUFFER, declaration->vbos[getCurFrameTag()]);
                     glGetBufferSubData(GL_ARRAY_BUFFER, 0, size, output);
                 }
                 break;
                 
-            case FeedbackBufferType::TextureBuffer:
+            case BufferType::TextureBuffer:
                 {
                     glBindBuffer(GL_TEXTURE_BUFFER, declaration->vbos[getCurFrameTag()]);
                     glGetBufferSubData(GL_TEXTURE_BUFFER, 0, size, output);

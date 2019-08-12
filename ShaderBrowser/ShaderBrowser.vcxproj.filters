@@ -79,6 +79,9 @@
     <Filter Include="src\Browser\Components\Feedback">
       <UniqueIdentifier>{b4e24185-de44-4dbf-beaf-1fb1cac5c4f3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Browser\Components\ComputePrgram">
+      <UniqueIdentifier>{6a1f2088-f497-4f4b-8c97-b5aea459ed23}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -251,6 +254,15 @@
     </ClCompile>
     <ClCompile Include="src\Browser\Components\Feedback\AnimatorFeedback.cpp">
       <Filter>src\Browser\Components\Feedback</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GL\GLComputeProgram.cpp">
+      <Filter>src\GL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Browser\Components\ComputeProgram\BaseComputeProgram.cpp">
+      <Filter>src\Browser\Components\ComputePrgram</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Browser\Components\ComputeProgram\AnimatorComputeProgram.cpp">
+      <Filter>src\Browser\Components\ComputePrgram</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -430,6 +442,15 @@
     </ClInclude>
     <ClInclude Include="src\Browser\Components\Feedback\AnimatorFeedback.h">
       <Filter>src\Browser\Components\Feedback</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GL\GLComputeProgram.h">
+      <Filter>src\GL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Browser\Components\ComputeProgram\BaseComputeProgram.h">
+      <Filter>src\Browser\Components\ComputePrgram</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Browser\Components\ComputeProgram\AnimatorComputeProgram.h">
+      <Filter>src\Browser\Components\ComputePrgram</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

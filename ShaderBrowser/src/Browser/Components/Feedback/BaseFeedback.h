@@ -7,7 +7,7 @@
 #include "GL/GLDefine.h"
 #include "GL/GLFeedback.h"
 #include "Common/Tools/Utils.h"
-#include "Browser/Components/BaseComponent.h"
+#include "Common/Components/Reference.h"
 
 using namespace common;
 using namespace customGL;
@@ -29,7 +29,7 @@ namespace browser
     // 最大支持VBO数量
 #define MAX_SUPPORT_VBO_NUM 10
     
-	class BaseFeedback : public BaseComponent
+	class BaseFeedback : public common::Reference
 	{
 	public:
 		BaseFeedback();
@@ -70,7 +70,7 @@ namespace browser
         void setUniformMat3V(const std::string& uniformName, int count, const float* value);
         void setUniformMat3x4V(const std::string& uniformName, int count, const float* value);
         // output
-        void addFeedbackBuffer(GLuint size, const string& name, FeedbackBufferType type = FeedbackBufferType::ArrayBuffer, GLenum internalFormat = GL_RGBA32F);
+        void addFeedbackBuffer(GLuint size, const string& name, BufferType type = BufferType::ArrayBuffer, GLenum internalFormat = GL_RGBA32F);
         void clearFeedbackBuffers();
         // setup 设置vao和vbos
         void setupVAOandVBOs();

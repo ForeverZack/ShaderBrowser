@@ -25,7 +25,9 @@
 		148C358F227AFC62008CB8B1 /* SkinnedRenderCommand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 148C358E227AFC62008CB8B1 /* SkinnedRenderCommand.cpp */; };
 		14941422221EF7B200A735DA /* libassimp.4.1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 14FF768421C4B6D80008462D /* libassimp.4.1.0.dylib */; };
 		149C01FF21F4AF910011DAE2 /* GLProgramCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 149C01FE21F4AF910011DAE2 /* GLProgramCache.cpp */; };
+		14A08F5D22FE9787009D7D71 /* AnimatorComputeProgram.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14A08F5B22FE9787009D7D71 /* AnimatorComputeProgram.cpp */; };
 		14B1AA832258AD99000AB04E /* SkinnedMeshRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B1AA822258AD99000AB04E /* SkinnedMeshRenderer.cpp */; };
+		14B3F7F022F7CE2F008C0AE6 /* BaseComputeProgram.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B3F7EF22F7CE2F008C0AE6 /* BaseComputeProgram.cpp */; };
 		14B45A21220C227400FE5777 /* BaseBoundBox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B45A1F220C227400FE5777 /* BaseBoundBox.cpp */; };
 		14B45A24220C25AD00FE5777 /* AABBBoundBox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B45A23220C25AD00FE5777 /* AABBBoundBox.cpp */; };
 		14B45A27220C269800FE5777 /* BoundBoxSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B45A25220C269800FE5777 /* BoundBoxSystem.cpp */; };
@@ -71,6 +73,7 @@
 		14EB118922201A8B00D3C29D /* BaseGUIPanel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14EB118822201A8B00D3C29D /* BaseGUIPanel.cpp */; };
 		14EB118C22202A0100D3C29D /* InspectorPanel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14EB118A22202A0100D3C29D /* InspectorPanel.cpp */; };
 		14F240B922D2E54B008A67F4 /* AnimatorFeedback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14F240B822D2E54B008A67F4 /* AnimatorFeedback.cpp */; };
+		14FCCDB122F53049006ECEA0 /* GLComputeProgram.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14FCCDAF22F53049006ECEA0 /* GLComputeProgram.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -122,8 +125,12 @@
 		149C01FD21F4AA320011DAE2 /* GLProgramCache.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GLProgramCache.h; sourceTree = "<group>"; };
 		149C01FE21F4AF910011DAE2 /* GLProgramCache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GLProgramCache.cpp; sourceTree = "<group>"; };
 		149F476022D0C103001C4294 /* BaseFeedback.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BaseFeedback.h; sourceTree = "<group>"; };
+		14A08F5B22FE9787009D7D71 /* AnimatorComputeProgram.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AnimatorComputeProgram.cpp; sourceTree = "<group>"; };
+		14A08F5C22FE9787009D7D71 /* AnimatorComputeProgram.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnimatorComputeProgram.h; sourceTree = "<group>"; };
 		14B1AA812258AD99000AB04E /* SkinnedMeshRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkinnedMeshRenderer.h; sourceTree = "<group>"; };
 		14B1AA822258AD99000AB04E /* SkinnedMeshRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SkinnedMeshRenderer.cpp; sourceTree = "<group>"; };
+		14B3F7ED22F7CD9F008C0AE6 /* BaseComputeProgram.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BaseComputeProgram.h; sourceTree = "<group>"; };
+		14B3F7EF22F7CE2F008C0AE6 /* BaseComputeProgram.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BaseComputeProgram.cpp; sourceTree = "<group>"; };
 		14B45A1F220C227400FE5777 /* BaseBoundBox.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BaseBoundBox.cpp; sourceTree = "<group>"; };
 		14B45A20220C227400FE5777 /* BaseBoundBox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseBoundBox.h; sourceTree = "<group>"; };
 		14B45A22220C25AD00FE5777 /* AABBBoundBox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AABBBoundBox.h; sourceTree = "<group>"; };
@@ -213,6 +220,8 @@
 		14EB118B22202A0100D3C29D /* InspectorPanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InspectorPanel.h; sourceTree = "<group>"; };
 		14F240B722D2E54B008A67F4 /* AnimatorFeedback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnimatorFeedback.h; sourceTree = "<group>"; };
 		14F240B822D2E54B008A67F4 /* AnimatorFeedback.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AnimatorFeedback.cpp; sourceTree = "<group>"; };
+		14FCCDAF22F53049006ECEA0 /* GLComputeProgram.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GLComputeProgram.cpp; sourceTree = "<group>"; };
+		14FCCDB022F53049006ECEA0 /* GLComputeProgram.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLComputeProgram.h; sourceTree = "<group>"; };
 		14FF768421C4B6D80008462D /* libassimp.4.1.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libassimp.4.1.0.dylib; path = ShaderBrowser/src/Plugins/assimp/lib/mac/libassimp.4.1.0.dylib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -340,6 +349,18 @@
 			);
 			path = Feedback;
 			sourceTree = "<group>";
+		};
+		14B3F7EC22F7CD9F008C0AE6 /* ComputeProgram */ = {
+			isa = PBXGroup;
+			children = (
+				14A08F5B22FE9787009D7D71 /* AnimatorComputeProgram.cpp */,
+				14A08F5C22FE9787009D7D71 /* AnimatorComputeProgram.h */,
+				14B3F7ED22F7CD9F008C0AE6 /* BaseComputeProgram.h */,
+				14B3F7EF22F7CE2F008C0AE6 /* BaseComputeProgram.cpp */,
+			);
+			name = ComputeProgram;
+			path = ShaderBrowser/src/Browser/Components/ComputeProgram;
+			sourceTree = SOURCE_ROOT;
 		};
 		14B45A1B220C21C100FE5777 /* BoundBox */ = {
 			isa = PBXGroup;
@@ -487,6 +508,7 @@
 				1415B6D6222A4FB100C7E37B /* Animation */,
 				14B45A1B220C21C100FE5777 /* BoundBox */,
 				14BE47A02201EE0500EFE57C /* Camera */,
+				14B3F7EC22F7CD9F008C0AE6 /* ComputeProgram */,
 				1405E8A021F432FF00FBDD71 /* Event */,
 				149F475E22D0C103001C4294 /* Feedback */,
 				1469977C220F14B600F4C802 /* Light */,
@@ -566,6 +588,8 @@
 		14B9067321BABC8F00554B0B /* GL */ = {
 			isa = PBXGroup;
 			children = (
+				14FCCDAF22F53049006ECEA0 /* GLComputeProgram.cpp */,
+				14FCCDB022F53049006ECEA0 /* GLComputeProgram.h */,
 				1415B6D5222A2FD100C7E37B /* Assimp.h */,
 				1415B6D4222A2FD100C7E37B /* Rescale.h */,
 				14B9067821BABC8F00554B0B /* GLDefine.h */,
@@ -728,7 +752,9 @@
 				14B9067D21BABC8F00554B0B /* glad.c in Sources */,
 				148C358F227AFC62008CB8B1 /* SkinnedRenderCommand.cpp in Sources */,
 				149C01FF21F4AF910011DAE2 /* GLProgramCache.cpp in Sources */,
+				14A08F5D22FE9787009D7D71 /* AnimatorComputeProgram.cpp in Sources */,
 				14EB118922201A8B00D3C29D /* BaseGUIPanel.cpp in Sources */,
+				14B3F7F022F7CE2F008C0AE6 /* BaseComputeProgram.cpp in Sources */,
 				14B45A24220C25AD00FE5777 /* AABBBoundBox.cpp in Sources */,
 				14D46D22220096D900E21D4C /* TextureCache.cpp in Sources */,
 				14B9068121BABC8F00554B0B /* BaseEntity.cpp in Sources */,
@@ -740,6 +766,7 @@
 				147BBAF9222277EF00B3079B /* HierarchyPanel.cpp in Sources */,
 				14BE47A62201EE6600EFE57C /* CameraSystem.cpp in Sources */,
 				1452D79521E99742001AD1CA /* MeshSystem.cpp in Sources */,
+				14FCCDB122F53049006ECEA0 /* GLComputeProgram.cpp in Sources */,
 				14EB118C22202A0100D3C29D /* InspectorPanel.cpp in Sources */,
 				14E1431A22084724001A2EB1 /* ModelCache.cpp in Sources */,
 				14B9068D21BABC8F00554B0B /* main.cpp in Sources */,

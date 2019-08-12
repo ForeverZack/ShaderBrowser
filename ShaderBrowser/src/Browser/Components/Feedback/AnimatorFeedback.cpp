@@ -66,9 +66,9 @@ namespace browser
             boneIds[i] = i;
         }
         addVertexAttribute(0, 1, GL_INT, GL_FALSE, 0, (void*)0, &boneIds[0], sizeof(int)*m_iBoneCount, VertexDataType::Int);
-        addFeedbackBuffer(sizeof(glm::vec4)*m_iBoneCount, VARYINGS[0], FeedbackBufferType::TextureBuffer); // position
-        addFeedbackBuffer(sizeof(glm::vec4)*m_iBoneCount, VARYINGS[1], FeedbackBufferType::TextureBuffer); // rotation
-        addFeedbackBuffer(sizeof(glm::vec4)*m_iBoneCount, VARYINGS[2], FeedbackBufferType::TextureBuffer); // scale
+        addFeedbackBuffer(sizeof(glm::vec4)*m_iBoneCount, VARYINGS[0], BufferType::TextureBuffer); // position
+        addFeedbackBuffer(sizeof(glm::vec4)*m_iBoneCount, VARYINGS[1], BufferType::TextureBuffer); // rotation
+        addFeedbackBuffer(sizeof(glm::vec4)*m_iBoneCount, VARYINGS[2], BufferType::TextureBuffer); // scale
         setupVAOandVBOs();
         
         // 设置骨骼数量
@@ -109,14 +109,6 @@ namespace browser
         // keys_offset
         const glm::ivec3& keys_offset = m_oSrcModel->getKeysOffset(animation);
         setUniformIVec3("keys_offset", keys_offset);
-    }
-  
-    void AnimatorFeedback::play(float sampleUnscaled)
-    {
-        m_oAnimationInfo[0] = sampleUnscaled;
-        setUniformV4f("animation_info", m_oAnimationInfo);
-        
-        flushAsPoints(m_iBoneCount);
     }
     
     void AnimatorFeedback::play(float sampleUnscaled, std::unordered_map<unsigned int, glm::vec3>& bonesPosition, std::unordered_map<unsigned int, glm::quat>& bonesRotation, std::unordered_map<unsigned int, glm::vec3>& bonesScale)

@@ -80,7 +80,7 @@ namespace common
         return declaration;
     }
 
-    FeedbackBufferDeclaration* Utils::createFeedbackBufferDeclaration(GLuint bindIdx, GLuint size, const string& name, FeedbackBufferType type/* = FeedbackBufferType::ArrayBuffer*/, GLenum internalFormat /*= GL_RGBA32F*/)
+    FeedbackBufferDeclaration* Utils::createFeedbackBufferDeclaration(GLuint bindIdx, GLuint size, const string& name, BufferType type/* = BufferType::ArrayBuffer*/, GLenum internalFormat /*= GL_RGBA32F*/)
     {
         FeedbackBufferDeclaration* declaration = new FeedbackBufferDeclaration();
         declaration->varying = name;
@@ -91,6 +91,18 @@ namespace common
         
         return declaration;
     }
+
+	ComputeBufferDeclaration* Utils::createComputeBufferDeclaration(const string& name, GLuint size, GLenum access/* = GL_READ_ONLY*/, BufferType type/* = BufferType::TextureBuffer*/, GLenum format/* = GL_RGBA32F*/)
+	{
+		ComputeBufferDeclaration* declaration = new ComputeBufferDeclaration();
+		declaration->name = name;
+		declaration->size = size;
+		declaration->access = access;
+		declaration->type = type;
+		declaration->format = format;
+
+		return declaration;
+	}
     
     void Utils::parseMatrix(const glm::mat4& matrix, glm::vec3& position, glm::quat& rotation, glm::vec3& scale)
     {

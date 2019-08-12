@@ -5,7 +5,7 @@ namespace browser
 	FeedbackSystem::FeedbackSystem()
 	{
 		m_iPriority = 0;
-		m_eSystemType = common::SystemType::TransformFeedback;
+		//m_eSystemType = common::SystemType::TransformFeedback;
 		m_bComponentMutex = true;
 	}
     

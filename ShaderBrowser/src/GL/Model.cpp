@@ -1158,7 +1158,10 @@ namespace customGL
 		}
 
 		// 当前节点是否含有骨骼
-        /* 之前从来没有注意过mOffsetMatrix，其实mOffsetMatrix很重要，是用来将网格中骨骼空间的顶点转换到模型空间中(也就是bindpose，模型在建模时的姿势)，我们这里计算的骨骼矩阵实际上是对模型空间的顶点进行变换的(顶点被绑定到骨骼上时，顶点是从模型空间直接放到了骨骼空间中（原点从模型空间的原点，变成了骨骼），所以这个时候必须要用mOffsetMatrix(记录了bindpose状态骨骼到模型空间的变换)来将顶点从骨骼空间变换回模型空间)
+        /* 
+			之前从来没有注意过mOffsetMatrix，其实mOffsetMatrix很重要。模型的顶点绑定到骨骼节点上时，父节点由模型的原点变为骨骼节点，所以需要mOffsetMatrix(即unity中的bindpose)来将顶点从模型空间->骨骼空间。
+			再乘上骨骼节点在播放动画时发生的变换（是相对于骨骼的父节点的，类似于模型空间转换到世界空间，这里是将骨骼自身的变换和它父节点的变换相乘，得到该骨骼从骨骼空间变换到模型空间的矩阵），从而将原始的
+			模型顶点变换到动画中它应该在的位置
          */
 		auto boneItor = m_mBonesIdMap.find(std::string(node->mName.C_Str()));
 		if (boneItor != m_mBonesIdMap.end())

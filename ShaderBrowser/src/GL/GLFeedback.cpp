@@ -90,7 +90,7 @@ namespace customGL
 			delete[] log;
 
 //#endif /* DEBUG */
-            common::BROWSER_ASSERT(linked, "shader program linked error in function GLProgram::initProgram");
+            common::BROWSER_ASSERT(linked, "shader program linked error in function GLFeedback::initFeedback");
 
 			return false;
 		}

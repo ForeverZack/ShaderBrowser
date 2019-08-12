@@ -82,11 +82,15 @@ namespace customGL
 		: m_uProgram(0)
 		, m_uVertShader(0)
 		, m_uFragShader(0)
+        , m_uCompShader(0)
 		, m_uTextureUnitIndex(0)
         , m_sVertexSource(nullptr)
         , m_sFragSource(nullptr)
+        , m_sCompSource(nullptr)
         , m_sAddtionVertCode("")
         , m_sAddtionFragCode("")
+        , m_sAddtionCompCode("")
+        , m_sCompLocalGroupDefCode("")
 	{
         for (int i=0; i<MAX_ACTIVE_TEXTURE; ++i)
         {
@@ -109,6 +113,10 @@ namespace customGL
 		{
 			glDeleteShader(m_uFragShader);
 		}
+        if (m_uCompShader)
+        {
+            glDeleteShader(m_uCompShader);
+        }
         if (m_sVertexSource)
         {
             delete[] m_sVertexSource;
@@ -117,14 +125,14 @@ namespace customGL
         {
             delete[] m_sFragSource;
         }
-		m_uVertShader = m_uFragShader = 0;
+		m_uVertShader = m_uFragShader = m_uCompShader = 0;
 
 		glDeleteProgram(m_uProgram);
 	}
     
     GLProgram* GLProgram::clone()
     {
-        BROWSER_ASSERT(m_sVertexSource && m_sFragSource, "No shader source code in GLProgram obeject, you cannot use GLProgram::clone function.");
+        BROWSER_ASSERT(m_sVertexSource || m_sFragSource || m_sCompSource, "No shader source code in GLProgram obeject, you cannot use GLProgram::clone function.");
         
         GLProgram* program = new GLProgram();
         if (!program->cloneProgram(this))
@@ -316,29 +324,53 @@ namespace customGL
         shader = glCreateShader(type);
         
         // 2.绑定shader源码
-        const char* additionCode = "";
+		std::string additionCode = "";
         switch(type)
         {
             case GL_VERTEX_SHADER:
                 {
-                    additionCode = m_sAddtionVertCode.c_str();
+					// 顶点着色器
+                    additionCode = m_sAddtionVertCode;
+					const GLchar *sources[] =
+					{
+						"#version 330 core\n",    // 头
+						SHADER_UNIFORMS,    // 预定义uniform
+						additionCode.c_str(), //附加代码
+						shaderSource // 源码
+					};
+					glShaderSource(shader, sizeof(sources) / sizeof(*sources), sources, NULL);
                 }
                 break;
                 
             case GL_FRAGMENT_SHADER:
                 {
-                    additionCode = m_sAddtionFragCode.c_str();
+					// 片段着色器
+                    additionCode = m_sAddtionFragCode;
+					const GLchar *sources[] =
+					{
+						"#version 330 core\n",    // 头
+						SHADER_UNIFORMS,    // 预定义uniform
+						additionCode.c_str(), //附加代码
+						shaderSource // 源码
+					};
+					glShaderSource(shader, sizeof(sources) / sizeof(*sources), sources, NULL);
+                }
+                break;
+                
+            case GL_COMPUTE_SHADER:
+                {
+					// 计算着色器
+                    additionCode = m_sCompLocalGroupDefCode + m_sAddtionCompCode;
+					const GLchar *sources[] =
+					{
+						"#version 430 core\n",    // 头
+						additionCode.c_str(), //附加代码
+						shaderSource // 源码
+					};
+					glShaderSource(shader, sizeof(sources) / sizeof(*sources), sources, NULL);
                 }
                 break;
         }
-        const GLchar *sources[] =
-        {
-            "#version 330 core\n",    // 头
-            SHADER_UNIFORMS,    // 预定义uniform
-            additionCode, //附加代码
-            shaderSource // 源码
-        };
-        glShaderSource(shader, sizeof(sources) / sizeof(*sources), sources, NULL);
         
         // 3.编译shader
         glCompileShader(shader);
@@ -377,6 +409,11 @@ namespace customGL
             case GL_FRAGMENT_SHADER:
             {
                 return m_sFragSource;
+            }
+                
+            case GL_COMPUTE_SHADER:
+            {
+                return m_sCompSource;
             }
         }
         
@@ -599,7 +636,7 @@ namespace customGL
 			m_mTextureUnits[uniformName] = textureUnit;
 
 			// 注意！！！！ 还要通过使用glUniform1i设置每个采样器的方式告诉OpenGL每个着色器采样器属于哪个纹理单元。我们只需要设置一次即可
-			setUniformWithInt(uniformName.c_str(), textureUnit);
+			setUniformWithInt(uniformName, textureUnit);
 		}
         
         common::BROWSER_ASSERT(textureUnit<MAX_ACTIVE_TEXTURE, "texture unit value is too big, it is out off support range in function GLProgram::setUniformWithTex2d");
@@ -622,7 +659,7 @@ namespace customGL
             m_mTextureUnits[uniformName] = textureUnit;
             
             // 注意！！！！ 还要通过使用glUniform1i设置每个采样器的方式告诉OpenGL每个着色器采样器属于哪个纹理单元。我们只需要设置一次即可
-            setUniformWithInt(uniformName.c_str(), textureUnit);
+            setUniformWithInt(uniformName, textureUnit);
         }
         
         common::BROWSER_ASSERT(textureUnit<MAX_ACTIVE_TEXTURE, "texture unit value is too big, it is out off support range in function GLProgram::setUniformSamplerBuffer");
@@ -630,5 +667,28 @@ namespace customGL
         // 绑定纹理到opengl
         GLStateCache::getInstance()->bindSamplerBuffer(textureUnit, textureId);
     }
+
+	void GLProgram::setUniformWithImageBuffer(const std::string& uniformName, GLuint textureId, GLenum access, GLenum format)
+	{
+		// 自动生成纹理单元
+		GLuint textureUnit;
+		if (m_mTextureUnits.find(uniformName) != m_mTextureUnits.end())
+		{
+			textureUnit = m_mTextureUnits[uniformName];
+		}
+		else
+		{
+			textureUnit = m_uTextureUnitIndex++;
+			m_mTextureUnits[uniformName] = textureUnit;
+
+			// 注意！！！！ 还要通过使用glUniform1i设置每个采样器的方式告诉OpenGL每个着色器采样器属于哪个纹理单元。我们只需要设置一次即可
+			setUniformWithInt(uniformName, textureUnit);
+		}
+
+		common::BROWSER_ASSERT(textureUnit < MAX_ACTIVE_TEXTURE, "texture unit value is too big, it is out off support range in function GLProgram::setUniformWithImageBuffer");
+
+		// 绑定纹理到opengl
+		GLStateCache::getInstance()->bindImageBuffer(textureUnit, textureId, access, format);
+	}
     
 }

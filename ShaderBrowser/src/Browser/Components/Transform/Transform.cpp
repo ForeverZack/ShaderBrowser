@@ -249,14 +249,14 @@ namespace browser
     
     float Transform::formatDegree(float degrees)
     {
-        while(degrees<0.0f)
-        {
-            degrees+=360.0f;
-        }
-        while(degrees>=360.0f)
-        {
-            degrees-=360.0f;
-        }
+		while(degrees<0.0f)
+		{
+			degrees+=360.0f;
+		}
+		while(degrees>=360.0f)
+		{
+			degrees-=360.0f;
+		}
         if (degrees == -0.0f)
         {
             degrees = 0.0f;

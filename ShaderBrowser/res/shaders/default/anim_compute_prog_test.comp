@@ -1,0 +1,9 @@
+layout (rgba32f) uniform imageBuffer buffers;
+
+const float values[]= float[](100.0f, 200.0f, 300.0f, 400.0f, 500.0f);
+
+void main() 
+{
+	int index = int(gl_LocalInvocationIndex);
+	imageStore(buffers, index, vec4(values[index], 0, 0, gl_LocalInvocationIndex));
+}

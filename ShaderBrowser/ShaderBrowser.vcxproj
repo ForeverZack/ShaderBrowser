@@ -24,6 +24,8 @@
     <ClCompile Include="src\Browser\Components\BoundBox\AABBBoundBox.cpp" />
     <ClCompile Include="src\Browser\Components\BoundBox\BaseBoundBox.cpp" />
     <ClCompile Include="src\Browser\Components\Camera\Camera.cpp" />
+    <ClCompile Include="src\Browser\Components\ComputeProgram\AnimatorComputeProgram.cpp" />
+    <ClCompile Include="src\Browser\Components\ComputeProgram\BaseComputeProgram.cpp" />
     <ClCompile Include="src\Browser\Components\Event\ComponentEvent.cpp" />
     <ClCompile Include="src\Browser\Components\Feedback\AnimatorFeedback.cpp" />
     <ClCompile Include="src\Browser\Components\Feedback\BaseFeedback.cpp" />
@@ -64,6 +66,7 @@
     <ClCompile Include="src\Common\Tools\UI\HierarchyPanel.cpp" />
     <ClCompile Include="src\Common\Tools\UI\InspectorPanel.cpp" />
     <ClCompile Include="src\Common\Tools\Utils.cpp" />
+    <ClCompile Include="src\GL\GLComputeProgram.cpp" />
     <ClCompile Include="src\GL\GLDefine.cpp" />
     <ClCompile Include="src\GL\GLFeedback.cpp" />
     <ClCompile Include="src\GL\GLProgram.cpp" />
@@ -83,6 +86,8 @@
     <ClInclude Include="src\Browser\Components\BoundBox\AABBBoundBox.h" />
     <ClInclude Include="src\Browser\Components\BoundBox\BaseBoundBox.h" />
     <ClInclude Include="src\Browser\Components\Camera\Camera.h" />
+    <ClInclude Include="src\Browser\Components\ComputeProgram\AnimatorComputeProgram.h" />
+    <ClInclude Include="src\Browser\Components\ComputeProgram\BaseComputeProgram.h" />
     <ClInclude Include="src\Browser\Components\Event\ComponentEvent.h" />
     <ClInclude Include="src\Browser\Components\Feedback\AnimatorFeedback.h" />
     <ClInclude Include="src\Browser\Components\Feedback\BaseFeedback.h" />
@@ -129,6 +134,7 @@
     <ClInclude Include="src\Common\Tools\UI\InspectorPanel.h" />
     <ClInclude Include="src\Common\Tools\Utils.h" />
     <ClInclude Include="src\GL\Assimp.h" />
+    <ClInclude Include="src\GL\GLComputeProgram.h" />
     <ClInclude Include="src\GL\GLDefine.h" />
     <ClInclude Include="src\GL\GLFeedback.h" />
     <ClInclude Include="src\GL\GLProgram.h" />

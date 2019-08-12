@@ -126,7 +126,8 @@ namespace customGL
         void setUniformWithVec4V(const std::string& uniformName, int count, const GLfloat* fv);
         void setUniformWithIVec4V(const std::string& uniformName, int count, const int* iv);
         void setUniformWithTex2D(const std::string& uniformName, GLuint textureId);
-        void setUniformWithSamplerBuffer(const std::string& uniformName, GLuint textureId);
+		void setUniformWithSamplerBuffer(const std::string& uniformName, GLuint textureId);
+		void setUniformWithImageBuffer(const std::string& uniformName, GLuint textureId, GLenum access, GLenum format);
         
         void setUniformWithMat3V(const std::string& uniformName, int count, const float* fv);
         void setUniformWithMat3x4V(const std::string& uniformName, int count, const float* fv);
@@ -136,10 +137,11 @@ namespace customGL
         // 获取uniform的位置
         GLint getUniformLocation(const std::string& uniformName);
         
-        
         // property
         REGISTER_PROPERTY_GET_SET(std::string, m_sAddtionVertCode, AddtionVertCode)
         REGISTER_PROPERTY_GET_SET(std::string, m_sAddtionFragCode, AddtionFragCode)
+        REGISTER_PROPERTY_GET_SET(std::string, m_sAddtionCompCode, AddtionCompCode)
+        REGISTER_PROPERTY_GET_SET(std::string, m_sCompLocalGroupDefCode, CompLocalGroupDefCode)
 
 	protected:
 		// 初始化着色器程序
@@ -161,6 +163,8 @@ namespace customGL
 		GLuint m_uVertShader;
 		// 片段着色器
 		GLuint m_uFragShader;
+        // 计算着色器
+        GLuint m_uCompShader;
         // uniform位置  注意:char*不可以用来做key值，除非自己重写他的比较方法和hash方法。
         std::unordered_map<std::string, GLint> m_mUniformLocations;
         // textureId队列
@@ -174,12 +178,18 @@ namespace customGL
         std::string m_sAddtionVertCode;
         // 附加片段着色器代码（在预定义头和源码之间）
         std::string m_sAddtionFragCode;
+        // 计算着色器本地工作组定义
+        std::string m_sCompLocalGroupDefCode;
+        // 附加计算着色器代码 (在预定义头和源码之间)
+        std::string m_sAddtionCompCode;
 
         // 顶点着色器源码
         GLchar* m_sVertexSource;
         // 片段着色器源码
         GLchar* m_sFragSource;
-
+        // 计算着色器远吗
+        GLchar* m_sCompSource;
+        
 	};
 }
 

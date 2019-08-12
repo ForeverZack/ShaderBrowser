@@ -21,8 +21,7 @@ namespace common
         Light,
         // 动画
         Animation,
-		//Transform feedback
-		TransformFeedback,
+
 
 		// 自定义的系统
 		CustomSystem,
