@@ -11,6 +11,7 @@
 #include "Texture2D.h"
 #include "Common/System/Cache/TextureCache.h"
 #include "GL/GLProgram.h"
+#include "GL/Skeleton.h"
 #include "Browser/Entitys/BaseEntity.h"
 
 
@@ -174,7 +175,7 @@ namespace customGL
         // 记录骨骼节点的变换
         void recordBonesInitialTransform();
         // 生成游戏内部使用的网格(aiMesh->Mesh)
-        browser::Mesh* generateMesh(aiMesh* aiMesh, const aiScene*& scene, unsigned int& boneOffset);
+        browser::Mesh* generateMesh(aiMesh* aiMesh, const aiScene*& scene);
         // 读取纹理数据
         void readTextureData(browser::Mesh* mesh, aiMaterial* material, aiTextureType type, const char* uniformName = GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_TEXUTRE0]);
         // 计算到endNode空间下的变换矩阵，用来将模型空间下的网格坐标，转换到骨骼节点下。(应该只有含有骨骼的模型中，包含普通网格模型(没有绑定骨骼，只是单纯的放在骨骼节点下，需要用代码手动绑定)时才需要用到，因为这部分网格模型的顶点坐标是模型空间的，他们的原点是RootNode。如果自己单独创建了一个不相干的模型(有自己的原点)，则不需要这个空间变换)
@@ -195,7 +196,7 @@ namespace customGL
         REGISTER_PROPERTY_GET(std::shared_ptr<ModelGpuAnimationData>, m_oGpuAnimData, GpuAnimData)
         std::unordered_map<std::string, unsigned int>* getBonesIdMapPointer()
         {
-            return &m_mBonesIdMap;
+            return m_oSkeleton->getBonesIdMapPointer();
         }
         aiAnimation* getAnimation(int animIdx)
         {
@@ -265,20 +266,10 @@ namespace customGL
 
         // 是否有骨骼动画
         bool m_bHasSkeletonAnim;
+        // 骨架信息
+        Skeleton* m_oSkeleton;
 		// 骨骼数量
 		unsigned int m_uBoneNum;
-		// 骨骼颜色？？
-		std::vector<float> m_vBonesColor;
-		// 骨骼id列表
-		std::unordered_map<std::string, unsigned int> m_mBonesIdMap;
-		// 骨骼列表
-		std::vector<aiBone*> m_vBones;
-		// 当前已记录的骨骼数量
-		unsigned int m_uRecBoneOffset;
-        // 骨骼节点初始变换
-        std::vector<glm::vec4> m_vBonesInitPosition;
-        std::vector<glm::vec4> m_vBonesInitRotation;
-        std::vector<glm::vec4> m_vBonesInitScale;
         
 		// 
 		// 辅助数据：（用来显示骨骼）

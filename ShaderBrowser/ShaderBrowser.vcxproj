@@ -73,6 +73,7 @@
     <ClCompile Include="src\GL\GLStateCache.cpp" />
     <ClCompile Include="src\GL\Image.cpp" />
     <ClCompile Include="src\GL\Model.cpp" />
+    <ClCompile Include="src\GL\Skeleton.cpp" />
     <ClCompile Include="src\GL\Texture2D.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Plugins\glad\src\glad.c" />
@@ -142,6 +143,7 @@
     <ClInclude Include="src\GL\Image.h" />
     <ClInclude Include="src\GL\Model.h" />
     <ClInclude Include="src\GL\Rescale.h" />
+    <ClInclude Include="src\GL\Skeleton.h" />
     <ClInclude Include="src\GL\Texture2D.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

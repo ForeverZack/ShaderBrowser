@@ -264,6 +264,9 @@
     <ClCompile Include="src\Browser\Components\ComputeProgram\AnimatorComputeProgram.cpp">
       <Filter>src\Browser\Components\ComputePrgram</Filter>
     </ClCompile>
+    <ClCompile Include="src\GL\Skeleton.cpp">
+      <Filter>src\GL</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\GL\GLProgram.h">
@@ -451,6 +454,9 @@
     </ClInclude>
     <ClInclude Include="src\Browser\Components\ComputeProgram\AnimatorComputeProgram.h">
       <Filter>src\Browser\Components\ComputePrgram</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GL\Skeleton.h">
+      <Filter>src\GL</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

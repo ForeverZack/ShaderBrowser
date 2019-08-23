@@ -331,6 +331,7 @@ namespace customGL
         , m_oScene(nullptr)
         , m_bHasSkeletonAnim(false)
         , m_uUnnamedAnimCount(0)
+        , m_oSkeleton(nullptr)
 	{
         // 清理
 		m_vImporters.clear();
@@ -352,6 +353,10 @@ namespace customGL
         if (m_oMeshFilter)
         {
             m_oMeshFilter->release();
+        }
+        if (m_oSkeleton)
+        {
+            m_oSkeleton->release();
         }
         // 从cache中移除texture
         for(auto itor=m_vTextures.begin(); itor!=m_vTextures.end(); ++itor)
@@ -395,8 +400,8 @@ namespace customGL
 			// 初始化骨骼数据
 			{
 				m_uBoneNum = 0;
-				m_mBonesIdMap.clear();
-				m_vBones.clear();
+                m_oSkeleton = new Skeleton();
+                m_oSkeleton->retain();
 			}
 			// 加载模型网格数据
 			{
@@ -404,10 +409,9 @@ namespace customGL
 				m_oRootNode = scene->mRootNode;
 				m_vMeshes.resize(scene->mNumMeshes);
                 m_vAiMeshes.resize(scene->mNumMeshes);
-				m_uRecBoneOffset = 0;
 				traverseNode(scene->mRootNode, scene);
                 
-                m_uBoneNum = m_mBonesIdMap.size();
+                m_uBoneNum = m_oSkeleton->getBoneNum();
 			}
             // 将骨骼树节点下的mesh绑定到骨骼 (在这里检测是否已经有网格模型绑定在骨骼上了。如果有，并且该网格模型没有绑定任何的骨骼，则执行网格的骨骼绑定)
             {
@@ -415,7 +419,8 @@ namespace customGL
                 aiNode* meshNode = nullptr;
                 aiNode* parentNode = nullptr;
                 int index = 0;
-                std::unordered_map<std::string, unsigned int>::iterator boneItor;
+                std::unordered_map<std::string, unsigned int>::const_iterator boneItor;
+				unsigned int boneIdx;
                 for(auto itor=m_vAiMeshes.cbegin(); itor!=m_vAiMeshes.cend(); ++itor)
                 {
                     aiMesh = std::get<0>(*itor);
@@ -425,11 +430,8 @@ namespace customGL
                     
                     while(parentNode)
                     {
-                        boneItor = m_mBonesIdMap.find(parentNode->mName.C_Str());
-                        if(boneItor != m_mBonesIdMap.end())
+                        if(m_oSkeleton->isBone(parentNode->mName.C_Str(), boneIdx))
                         {
-                            unsigned int boneIdx = boneItor->second;
-                            
                             browser::Mesh* mesh = m_vMeshes[index];
                             glm::vec4* boneWeights = mesh->getBoneWeights();
                             if (mesh->getVertexCount()>0 && mesh->getMeshType()==Mesh::MeshType::CommonMesh && (!boneWeights || boneWeights[0][0]==0.0f))
@@ -543,12 +545,13 @@ namespace customGL
             glm::vec3 position, scale;
             glm::quat rotation;
             Utils::parseMatrix(node->mTransformation, position, rotation, scale);
-            auto itor = m_mBonesIdMap.find(node->mName.C_Str());
-            if (itor != m_mBonesIdMap.end())
+			aiBone* bone;
+			unsigned int boneId;
+			bool isBone = m_oSkeleton->isBone(node->mName.C_Str(), boneId, bone);
+            if (isBone)
             {
                 // 骨骼
-                int boneId = itor->second;
-                entity->setBoneInfo(boneId, Assimp::ConvertToGLM(m_vBones[boneId]->mOffsetMatrix));
+                entity->setBoneInfo(boneId, Assimp::ConvertToGLM(bone->mOffsetMatrix));
                 if (animator)
                 {
                     animator->addBone(boneId, entity->getTransform());
@@ -706,7 +709,7 @@ namespace customGL
             return;
         }
         
-        if(m_mBonesIdMap.find(node->mName.C_Str())!= m_mBonesIdMap.end())
+        if(m_oSkeleton->isBone(node->mName.C_Str()))
         {
             m_oRootBoneNode = node;
             return;
@@ -721,19 +724,24 @@ namespace customGL
     
     void Model::recordBonesInitialTransform()
     {
-        m_vBonesInitPosition.resize(m_uBoneNum);
-        m_vBonesInitRotation.resize(m_uBoneNum);
-        m_vBonesInitScale.resize(m_uBoneNum);
+        std::vector<glm::vec4>& bonesInitPosition = m_oSkeleton->getBonesInitPositionRef();
+        std::vector<glm::vec4>& bonesInitRotation = m_oSkeleton->getBonesInitRotationRef();
+        std::vector<glm::vec4>& bonesInitScale = m_oSkeleton->getBonesInitScaleRef();
+        
+        bonesInitPosition.resize(m_uBoneNum);
+        bonesInitRotation.resize(m_uBoneNum);
+        bonesInitScale.resize(m_uBoneNum);
         
         aiNode* boneNode = nullptr;
         int index;
-        for (auto itor=m_mBonesIdMap.begin(); itor!=m_mBonesIdMap.end(); ++itor)
+        const std::unordered_map<std::string, unsigned int>& bonesIdMap = m_oSkeleton->getBonesIdMap();
+        for (auto itor=bonesIdMap.begin(); itor!=bonesIdMap.end(); ++itor)
         {
             const std::string& boneName = itor->first;
             boneNode = m_oRootNode->FindNode(boneName.c_str());
             
             index = itor->second;
-            Utils::parseMatrix(boneNode->mTransformation, m_vBonesInitPosition[index], m_vBonesInitRotation[index], m_vBonesInitScale[index]);
+            Utils::parseMatrix(boneNode->mTransformation, bonesInitPosition[index], bonesInitRotation[index], bonesInitScale[index]);
         }
     }
     
@@ -744,7 +752,7 @@ namespace customGL
 		for (unsigned int i = 0; i < node->mNumMeshes; ++i)
 		{
 			aiMesh = scene->mMeshes[node->mMeshes[i]];
-			browser::Mesh* mesh = generateMesh(aiMesh, scene, m_uRecBoneOffset);
+			browser::Mesh* mesh = generateMesh(aiMesh, scene);
 			if (mesh)
 			{
 				m_vMeshes[node->mMeshes[i]] = mesh;
@@ -779,7 +787,7 @@ namespace customGL
         
     }
     
-    browser::Mesh* Model::generateMesh(aiMesh* aiMesh, const aiScene*& scene, unsigned int& boneOffset)
+    browser::Mesh* Model::generateMesh(aiMesh* aiMesh, const aiScene*& scene)
     {
         // 根据aiMesh的id获取aiMesh
         if (aiMesh)
@@ -833,24 +841,14 @@ namespace customGL
 			aiBone* bone = nullptr;
 			aiVertexWeight * vertexWeight = nullptr;
 			unsigned int boneIdx;
-            unsigned int currentBoneOffset = 0; // 当前骨骼id偏移，防止重复的骨骼
-            std::unordered_map<std::string, unsigned int>::iterator boneIdItor;
 			for (unsigned int i = 0; i < aiMesh->mNumBones; ++i)
 			{
 				bone = aiMesh->mBones[i];	// aiBone
-                boneIdItor = m_mBonesIdMap.find(bone->mName.C_Str());
-                if (boneIdItor != m_mBonesIdMap.end())
+                if (!m_oSkeleton->isBone(bone->mName.C_Str(), boneIdx))
                 {
-                    // 骨骼已存在
-                    boneIdx = boneIdItor->second;
-                }
-                else
-                {
-                    // 骨骼id要自己生成
-                    boneIdx = boneOffset + currentBoneOffset;
-                    ++currentBoneOffset;
-                    m_vBones.push_back(bone);
-                    m_mBonesIdMap[bone->mName.C_Str()] = boneIdx;
+                    // 骨骼尚未被记录
+                    boneIdx = m_oSkeleton->getBoneNum();
+                    m_oSkeleton->addBone(bone);
                 }
 				
 				for (unsigned int w = 0; w < bone->mNumWeights; ++w)
@@ -876,8 +874,6 @@ namespace customGL
 			}
             mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_BONE_IDS, 4, GL_UNSIGNED_INT, GL_FALSE, sizeof(glm::uvec4), nullptr);
             mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_BONE_WEIGHTS, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), nullptr);
-            // 增加骨骼id偏移
-            boneOffset += currentBoneOffset;
 
             
             // 处理材质(这里的材质指的是纹理)
@@ -920,7 +916,11 @@ namespace customGL
         // 处理动画数据
         if (m_oGpuAnimData != nullptr)
         {
-            m_oGpuAnimData->generateDataBuffer(m_vAnimations, m_mBonesIdMap, m_vBonesInitPosition, m_vBonesInitRotation, m_vBonesInitScale);
+            const std::unordered_map<std::string, unsigned int>& bonesIdMap = m_oSkeleton->getBonesIdMap();
+            std::vector<glm::vec4>& bonesInitPosition = m_oSkeleton->getBonesInitPositionRef();
+            std::vector<glm::vec4>& bonesInitRotation = m_oSkeleton->getBonesInitRotationRef();
+            std::vector<glm::vec4>& bonesInitScale = m_oSkeleton->getBonesInitScaleRef();
+            m_oGpuAnimData->generateDataBuffer(m_vAnimations, bonesIdMap, bonesInitPosition, bonesInitRotation, bonesInitScale);
         }
     }
     
@@ -975,7 +975,6 @@ namespace customGL
 		aiMatrix4x4 transformation, scaleMat, translateMat;
 		Rescale rescaler(0.0f, static_cast<float>(animation->mDuration), 0.0f, 1.0f);
 		const float sampleUnscaled = rescaler.Unscale(animSample);  // 采样帧数位置(例如，第2.52帧)
-        std::unordered_map<std::string, unsigned int>::iterator itor;
         unsigned int boneId;
         
 //        BROWSER_LOG(sampleUnscaled)
@@ -1001,10 +1000,8 @@ namespace customGL
 				// 缩放
 				auto scale = Assimp::InterpolationGet<aiVector3D>(sampleUnscaled, channel->mScalingKeys, channel->mNumScalingKeys, interpolateAnimation);
                 // 记录骨骼变换
-                itor = m_mBonesIdMap.find(channel->mNodeName.C_Str());
-                if(itor != m_mBonesIdMap.end())
+                if(m_oSkeleton->isBone(channel->mNodeName.C_Str(), boneId))
                 {
-                    boneId = itor->second;
                     bonesPosition[boneId] = std::move(Assimp::ConvertToGLM(translation));
                     bonesRotation[boneId] = std::move(Assimp::ConvertToGLM(rotation));
                     bonesScale[boneId] = std::move(Assimp::ConvertToGLM(scale));
@@ -1021,7 +1018,8 @@ namespace customGL
         std::unordered_map<aiNode*, aiVector3D> translateVec;
         std::unordered_map<aiNode*, aiQuaternion> rotateVec;
         std::unordered_map<aiNode*, aiVector3D> scaleVec;
-        std::unordered_map<std::string, unsigned int>::iterator itor;
+        //const std::unordered_map<std::string, unsigned int>& bonesIdMap = m_oSkeleton->getBonesIdMap();
+        //std::unordered_map<std::string, unsigned int>::const_iterator itor;
         unsigned int boneId;
         
         // 遍历记录beforeAnimation骨骼变换信息
@@ -1051,10 +1049,8 @@ namespace customGL
                 // 缩放
                 const auto scale = Assimp::InterpolationGet<aiVector3D>(sampleUnscaled, channel->mScalingKeys, channel->mNumScalingKeys, befInterpolate);
                 
-                itor = m_mBonesIdMap.find(channel->mNodeName.C_Str());
-                if(itor != m_mBonesIdMap.end())
+                if(m_oSkeleton->isBone(channel->mNodeName.C_Str(), boneId))
                 {
-                    boneId = itor->second;
                     bonesPosition[boneId] = std::move(Assimp::ConvertToGLM(translation));
                     bonesRotation[boneId] = std::move(Assimp::ConvertToGLM(rotation));
                     bonesScale[boneId] = std::move(Assimp::ConvertToGLM(scale));
@@ -1094,10 +1090,8 @@ namespace customGL
                 auto scale = Assimp::InterpolationGet<aiVector3D>(sampleUnscaled, channel->mScalingKeys, channel->mNumScalingKeys, interpolate);
                 
                 
-                itor = m_mBonesIdMap.find(channel->mNodeName.C_Str());
-                if(itor != m_mBonesIdMap.end())
-                {
-                    boneId = itor->second;
+				if (m_oSkeleton->isBone(channel->mNodeName.C_Str(), boneId))
+				{
                     if(bonesPosition.find(boneId) != bonesPosition.end())
                     {
                         // 如果前一个动画存在相同的骨骼有变化，则对他们进行插值
@@ -1163,10 +1157,11 @@ namespace customGL
 			再乘上骨骼节点在播放动画时发生的变换（是相对于骨骼的父节点的，类似于模型空间转换到世界空间，这里是将骨骼自身的变换和它父节点的变换相乘，得到该骨骼从骨骼空间变换到模型空间的矩阵），从而将原始的
 			模型顶点变换到动画中它应该在的位置
          */
-		auto boneItor = m_mBonesIdMap.find(std::string(node->mName.C_Str()));
-		if (boneItor != m_mBonesIdMap.end())
+		unsigned int boneId;
+		aiBone* bone;
+		if (m_oSkeleton->isBone(node->mName.C_Str(), boneId, bone))
 		{
-            bonesMatrix[boneItor->second] = std::move(Assimp::ConvertToGLM(nodeMatrix * m_vBones[boneItor->second]->mOffsetMatrix));
+            bonesMatrix[boneId] = std::move(Assimp::ConvertToGLM(nodeMatrix * bone->mOffsetMatrix));
 		}
 
 		// 遍历子节点
@@ -1178,13 +1173,13 @@ namespace customGL
     
     bool Model::bindMeshOnSingleBone(browser::Mesh* mesh, const std::string& boneName, const glm::mat4& transformation /*= GLM_MAT4_UNIT*/)
     {
-        std::unordered_map<std::string, unsigned int>::iterator itor = m_mBonesIdMap.find(boneName);
-        if(itor == m_mBonesIdMap.end())
+		unsigned int boneId;
+		if (!m_oSkeleton->isBone(boneName, boneId))
         {
             return false;
         }
         
-        return bindMeshOnSingleBone(mesh, itor->second);
+        return bindMeshOnSingleBone(mesh, boneId);
     }
     
     bool Model::bindMeshOnSingleBone(browser::Mesh* mesh, unsigned int boneIdx, const glm::mat4& transformation /*= GLM_MAT4_UNIT*/)

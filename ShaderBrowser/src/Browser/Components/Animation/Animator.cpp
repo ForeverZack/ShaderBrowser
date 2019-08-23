@@ -280,11 +280,11 @@ namespace browser
                 m_oFeedback = AnimatorFeedback::create(m_oSrcModel);
                 m_oFeedback->retain();
             }
-			if (!m_oComputeProgram)
-			{
-				m_oComputeProgram = AnimatorComputeProgram::create(m_oSrcModel);
-				m_oComputeProgram->retain();
-			}
+//            if (!m_oComputeProgram)
+//            {
+//                m_oComputeProgram = AnimatorComputeProgram::create(m_oSrcModel);
+//                m_oComputeProgram->retain();
+//            }
 
             // 重置
             m_vBonesMatrix.clear();
@@ -338,8 +338,11 @@ namespace browser
             }
 			// compute program
 			{
-				m_oComputeProgram->setCurrentAnimationData(m_oCurAnimation.animation);
-			}
+                if (m_oComputeProgram)
+                {
+                    m_oComputeProgram->setCurrentAnimationData(m_oCurAnimation.animation);
+                }
+            }
             // 计算骨骼变换矩阵
             if(m_oBefAnimation.animation)
             {
@@ -351,10 +354,10 @@ namespace browser
             {
                 // 只有一个动画在播放
 				// 方法一：在cpu计算
-                //m_oSrcModel->computeBonesTransform(m_oCurAnimation.animation, m_oCurAnimation.elapsed, m_mBonesPosition, m_mBonesRotation, m_mBonesScale, m_oCurAnimation.interpolate, m_bApplyRootMotion);
+                m_oSrcModel->computeBonesTransform(m_oCurAnimation.animation, m_oCurAnimation.elapsed, m_mBonesPosition, m_mBonesRotation, m_mBonesScale, m_oCurAnimation.interpolate, m_bApplyRootMotion);
                 
 				// 方法二：tranform feedback
-				m_oFeedback->play(m_oCurAnimation.animation->mTicksPerSecond * m_oCurAnimation.elapsed, m_mBonesPosition, m_mBonesRotation, m_mBonesScale);
+//                m_oFeedback->play(m_oCurAnimation.animation->mTicksPerSecond * m_oCurAnimation.elapsed, m_mBonesPosition, m_mBonesRotation, m_mBonesScale);
 				
 				// 方法三：compute program
                 //m_oComputeProgram->play(m_oCurAnimation.animation->mTicksPerSecond * m_oCurAnimation.elapsed, m_mBonesPosition, m_mBonesRotation, m_mBonesScale);
