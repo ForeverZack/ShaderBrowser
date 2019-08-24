@@ -31,6 +31,7 @@
 		14B45A21220C227400FE5777 /* BaseBoundBox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B45A1F220C227400FE5777 /* BaseBoundBox.cpp */; };
 		14B45A24220C25AD00FE5777 /* AABBBoundBox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B45A23220C25AD00FE5777 /* AABBBoundBox.cpp */; };
 		14B45A27220C269800FE5777 /* BoundBoxSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B45A25220C269800FE5777 /* BoundBoxSystem.cpp */; };
+		14B84BD82310D587000DEC36 /* Skeleton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B84BD72310D586000DEC36 /* Skeleton.cpp */; };
 		14B902F121BA9CCB00554B0B /* libglfw3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 14B902F021BA9CCB00554B0B /* libglfw3.a */; };
 		14B902F321BA9CD900554B0B /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14B902F221BA9CD900554B0B /* OpenGL.framework */; };
 		14B902F521BA9CE500554B0B /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14B902F421BA9CE500554B0B /* CoreVideo.framework */; };
@@ -137,6 +138,8 @@
 		14B45A23220C25AD00FE5777 /* AABBBoundBox.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AABBBoundBox.cpp; sourceTree = "<group>"; };
 		14B45A25220C269800FE5777 /* BoundBoxSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BoundBoxSystem.cpp; sourceTree = "<group>"; };
 		14B45A26220C269800FE5777 /* BoundBoxSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BoundBoxSystem.h; sourceTree = "<group>"; };
+		14B84BD62310D586000DEC36 /* Skeleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Skeleton.h; sourceTree = "<group>"; };
+		14B84BD72310D586000DEC36 /* Skeleton.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Skeleton.cpp; sourceTree = "<group>"; };
 		14B902F021BA9CCB00554B0B /* libglfw3.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libglfw3.a; path = ShaderBrowser/src/Plugins/GLFW/lib/mac/libglfw3.a; sourceTree = "<group>"; };
 		14B902F221BA9CD900554B0B /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		14B902F421BA9CE500554B0B /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
@@ -602,6 +605,8 @@
 				14E143152208115B001A2EB1 /* GLStateCache.cpp */,
 				14CDFD1722058FFD00A42823 /* Model.h */,
 				14CDFD1622058FFD00A42823 /* Model.cpp */,
+				14B84BD62310D586000DEC36 /* Skeleton.h */,
+				14B84BD72310D586000DEC36 /* Skeleton.cpp */,
 				14B9067421BABC8F00554B0B /* Texture2D.h */,
 				14B9067721BABC8F00554B0B /* Texture2D.cpp */,
 				14B9067921BABC8F00554B0B /* Image.h */,
@@ -767,6 +772,7 @@
 				14BE47A62201EE6600EFE57C /* CameraSystem.cpp in Sources */,
 				1452D79521E99742001AD1CA /* MeshSystem.cpp in Sources */,
 				14FCCDB122F53049006ECEA0 /* GLComputeProgram.cpp in Sources */,
+				14B84BD82310D587000DEC36 /* Skeleton.cpp in Sources */,
 				14EB118C22202A0100D3C29D /* InspectorPanel.cpp in Sources */,
 				14E1431A22084724001A2EB1 /* ModelCache.cpp in Sources */,
 				14B9068D21BABC8F00554B0B /* main.cpp in Sources */,
