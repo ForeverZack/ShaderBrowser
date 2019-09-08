@@ -12,6 +12,7 @@
 #include "Common/System/Cache/TextureCache.h"
 #include "GL/GLProgram.h"
 #include "GL/Skeleton.h"
+#include "GL/SkeletonAnimation.h"
 #include "Browser/Entitys/BaseEntity.h"
 
 
@@ -26,6 +27,7 @@ namespace customGL
     // assimp默认参数
 	#define DEFAULT_ASSIMP_FLAG  aiProcess_Triangulate | aiProcess_GenNormals | aiProcess_CalcTangentSpace | aiProcess_LimitBoneWeights
 	#define DEFAULT_ASSIMP_ANIMATION_FLAG  aiProcess_LimitBoneWeights
+ 
     
     // 模型纹理数据结构
     struct MeshTextureData
@@ -253,6 +255,7 @@ namespace customGL
 		// 模型动画队列
 		std::vector<std::tuple<aiAnimation*, std::string>> m_vAnimations;
         std::vector<std::string> m_vAnimationNames;
+        std::unordered_map<aiAnimation*, SkeletonAnimation*> m_mSkeletonAnimations;
         unsigned int m_uUnnamedAnimCount;
         // 模型动画数据
         std::shared_ptr<ModelGpuAnimationData> m_oGpuAnimData;

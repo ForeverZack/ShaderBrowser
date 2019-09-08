@@ -4,6 +4,7 @@ using namespace common;
 
 namespace customGL
 {
+    // 骨架类
     Skeleton::Skeleton()
     {
         this->autorelease();
