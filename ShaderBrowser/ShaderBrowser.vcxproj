@@ -66,6 +66,7 @@
     <ClCompile Include="src\Common\Tools\UI\HierarchyPanel.cpp" />
     <ClCompile Include="src\Common\Tools\UI\InspectorPanel.cpp" />
     <ClCompile Include="src\Common\Tools\Utils.cpp" />
+    <ClCompile Include="src\GL\AssimpConvert.cpp" />
     <ClCompile Include="src\GL\GLComputeProgram.cpp" />
     <ClCompile Include="src\GL\GLDefine.cpp" />
     <ClCompile Include="src\GL\GLFeedback.cpp" />
@@ -74,6 +75,7 @@
     <ClCompile Include="src\GL\Image.cpp" />
     <ClCompile Include="src\GL\Model.cpp" />
     <ClCompile Include="src\GL\Skeleton.cpp" />
+    <ClCompile Include="src\GL\SkeletonAnimation.cpp" />
     <ClCompile Include="src\GL\Texture2D.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Plugins\glad\src\glad.c" />
@@ -135,6 +137,7 @@
     <ClInclude Include="src\Common\Tools\UI\InspectorPanel.h" />
     <ClInclude Include="src\Common\Tools\Utils.h" />
     <ClInclude Include="src\GL\Assimp.h" />
+    <ClInclude Include="src\GL\AssimpConvert.h" />
     <ClInclude Include="src\GL\GLComputeProgram.h" />
     <ClInclude Include="src\GL\GLDefine.h" />
     <ClInclude Include="src\GL\GLFeedback.h" />
@@ -144,6 +147,7 @@
     <ClInclude Include="src\GL\Model.h" />
     <ClInclude Include="src\GL\Rescale.h" />
     <ClInclude Include="src\GL\Skeleton.h" />
+    <ClInclude Include="src\GL\SkeletonAnimation.h" />
     <ClInclude Include="src\GL\Texture2D.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

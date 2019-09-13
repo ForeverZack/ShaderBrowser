@@ -267,6 +267,12 @@
     <ClCompile Include="src\GL\Skeleton.cpp">
       <Filter>src\GL</Filter>
     </ClCompile>
+    <ClCompile Include="src\GL\SkeletonAnimation.cpp">
+      <Filter>src\GL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GL\AssimpConvert.cpp">
+      <Filter>src\GL</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\GL\GLProgram.h">
@@ -456,6 +462,12 @@
       <Filter>src\Browser\Components\ComputePrgram</Filter>
     </ClInclude>
     <ClInclude Include="src\GL\Skeleton.h">
+      <Filter>src\GL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GL\SkeletonAnimation.h">
+      <Filter>src\GL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GL\AssimpConvert.h">
       <Filter>src\GL</Filter>
     </ClInclude>
   </ItemGroup>
