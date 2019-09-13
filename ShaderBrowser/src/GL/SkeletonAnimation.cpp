@@ -40,8 +40,10 @@ namespace customGL
     
     void SkeletonAnimation::convertAnimation2Frames(unsigned int frameRate, aiNode* rootNode, Skeleton* skeleton)
     {
+        // 总帧数
         m_uFrameCount = m_pAniamtion->mDuration * frameRate;
-        m_uFramePerSec = m_uFrameCount;
+        // 帧率
+        m_uFramePerSec = frameRate;
 
         m_vFrames.reserve(m_uFrameCount);
         m_vFrames.clear();

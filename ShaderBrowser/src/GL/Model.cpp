@@ -989,7 +989,7 @@ namespace customGL
         BROWSER_ASSERT(itor!=m_mSkeletonAnimations.end(), "Cannot compute bones transform because there is no SkeletonAnimation data in Model, please check your program in function Model::computeBonesTransform");
         
         SkeletonAnimation* skeletonAnimation = itor->second;
-        skeletonAnimation->getBonesTransform(elapsedTime, bonesPosition, bonesRotation, bonesScale, interpolateAnimation);
+        skeletonAnimation->getBonesTransform(elapsedTime, bonesPosition, bonesRotation, bonesScale, false);
         
 //        // 将采样范围变换到 [0, 1]
 //        float animSample = static_cast<float>(animation->mTicksPerSecond / animation->mDuration) * elapsedTime;
