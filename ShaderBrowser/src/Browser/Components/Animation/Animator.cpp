@@ -359,7 +359,7 @@ namespace browser
 				// 方法二：tranform feedback
 //                m_oFeedback->play(m_oCurAnimation.animation->mTicksPerSecond * m_oCurAnimation.elapsed, m_mBonesPosition, m_mBonesRotation, m_mBonesScale);
 				
-				// 方法三：compute program
+				// 方法三：compute program （opengl 4.3以上才支持，mac不支持）
                 //m_oComputeProgram->play(m_oCurAnimation.animation->mTicksPerSecond * m_oCurAnimation.elapsed, m_mBonesPosition, m_mBonesRotation, m_mBonesScale);
             }
             
@@ -369,7 +369,29 @@ namespace browser
             
             // 更新骨骼的Transform
             {
-                dispatchEventToChildren(ComponentEvent::Animator_UpdateBonesTransform, new AnimatorUpdateBonesTransformMessage(m_oSrcModel->getBonesIdMapPointer(), &m_mBonesPosition, &m_mBonesRotation, &m_mBonesScale));
+                // 方法一：通过消息机制来更新骨骼Transform（效率低）
+//                dispatchEventToChildren(ComponentEvent::Animator_UpdateBonesTransform, new AnimatorUpdateBonesTransformMessage(m_oSrcModel->getBonesIdMapPointer(), &m_mBonesPosition, &m_mBonesRotation, &m_mBonesScale));
+                
+                // 方法二：在这里统一处理变换
+                unsigned int boneId;
+                Transform* bone = nullptr;
+                for (auto boneItor = m_vAllBones.begin(); boneItor != m_vAllBones.end(); ++boneItor)
+                {
+                    bone = *boneItor;
+                    boneId = (*boneItor)->getBoneId();
+                    if (m_mBonesPosition.find(boneId) != m_mBonesPosition.end())
+                    {
+                        // 发生变换的骨骼
+                        bone->setPosition(m_mBonesPosition[boneId]);
+                        bone->setQuaternion(m_mBonesRotation[boneId]);
+                        bone->setScale(m_mBonesScale[boneId]);
+                    }
+                    else
+                    {
+                        // 未发生变化的骨骼节点需要重置位置
+                        bone->resetSrcModelTransform();
+                    }
+                }
             }
 
             

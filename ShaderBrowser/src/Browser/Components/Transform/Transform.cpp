@@ -266,21 +266,12 @@ namespace browser
     
     void Transform::setQuaternion(float x, float y, float z, float w)
     {
+        if (m_oQuaternion.x==x && m_oQuaternion.y==y && m_oQuaternion.z==z && m_oQuaternion.w==w)
+        {
+            return;
+        }
         TRANS_SET_VEC4(m_oQuaternion, x, y, z, w);
-        TRANS_DIRTY(this, true);
-        
-        // 清除将要进行的旋转
-        m_vRotateDelayRotations.clear();
-        m_vRotateDelaySpaces.clear();
-
-        // 父节点model矩阵
-		const std::tuple<glm::mat4, bool>& parentTransInfo = getParentTransformModelMatrix();
-		const glm::mat4& parentMMatrix = std::get<0>(parentTransInfo);
-        // 计算模型坐标空间下的欧拉角
-        m_oEulerAngle = quaternion2EulerAngle(m_oQuaternion);   // 模型->惯性 四元数转欧拉角
-        // 计算惯性坐标空间下的四元数和欧拉角
-        m_oGlobalQuaternion = Utils::convertMatrix2Quat(parentMMatrix) * m_oQuaternion;
-        m_oGlobalEulerAngle = quaternion2EulerAngle(m_oGlobalQuaternion);
+        setEulerAngle(quaternion2EulerAngle(m_oQuaternion));
     }
     
     void Transform::setQuaternion(const glm::quat& quaternion)
@@ -288,8 +279,19 @@ namespace browser
         setQuaternion(quaternion.x, quaternion.y, quaternion.z, quaternion.w);
     }
     
+    const glm::quat& Transform::getQuaternion()
+    {
+        getTransformModelMatrix();
+        return m_oQuaternion;
+    }
+    
     void Transform::setEulerAngle(float x, float y, float z)
     {
+        if (m_oEulerAngle.x==x && m_oEulerAngle.y==y && m_oEulerAngle.z==z)
+        {
+            return;
+        }
+
         TRANS_SET_VEC3(m_oEulerAngle, x, y, z);
         TRANS_DIRTY(this, true);
         
@@ -310,6 +312,11 @@ namespace browser
     
     void Transform::setScale(float x, float y, float z)
     {
+        if (m_oScale.x==x && m_oScale.y==y && m_oScale.z==z)
+        {
+            return;
+        }
+        
         TRANS_SET_VEC3(m_oScale, x, y, z);
         TRANS_DIRTY(this, true);
     }
@@ -420,6 +427,16 @@ namespace browser
         setPosition(pos.x, pos.y, pos.z);
         setQuaternion(rot.x, rot.y, rot.z, rot.w);
         setScale(scale.x, scale.y, scale.z);
+    }
+    
+    void Transform::resetSrcModelTransform()
+    {
+        if (m_bHasSrcModelInfo && this != m_oBoneRoot)
+        {
+            setPosition(m_oSrcModelPos);
+            setQuaternion(m_oSrcModelQuat);
+            setScale(m_oSrcModelScale);
+        }
     }
     
 	std::tuple<glm::mat4, bool> Transform::getParentTransformModelMatrix()

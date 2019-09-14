@@ -46,6 +46,10 @@ namespace customGL
     class SkeletonAnimation : public Reference
     {
     public:
+        // 默认骨骼动画帧频
+        static const unsigned int DEFAULT_SKELETON_ANIMATION_FRAME_RATE;
+        
+    public:
         SkeletonAnimation(aiAnimation* animation);
         ~SkeletonAnimation();
         

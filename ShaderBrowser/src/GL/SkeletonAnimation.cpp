@@ -7,6 +7,9 @@ using namespace common;
 
 namespace customGL
 {
+    // 默认骨骼动画帧频
+    const unsigned int SkeletonAnimation::DEFAULT_SKELETON_ANIMATION_FRAME_RATE = 24;
+    
     // 骨骼动画序列帧数据
     SkeletonAnimationFrame::SkeletonAnimationFrame(int frame, float t)
         : frame_index(frame)

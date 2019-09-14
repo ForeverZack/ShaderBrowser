@@ -113,7 +113,8 @@ namespace browser
         // 四元数
         void setQuaternion(float x, float y, float z, float w);
         void setQuaternion(const glm::quat& quaternion);
-		REGISTER_PROPERTY_CONSTREF_GET(glm::quat, m_oQuaternion, Quaternion)
+        const glm::quat& getQuaternion();
+//        REGISTER_PROPERTY_CONSTREF_GET(glm::quat, m_oQuaternion, Quaternion)
 		// 获取model矩阵
 		REGISTER_PROPERTY_CONSTREF_GET(glm::mat4, m_oModelMatrix, ModelMatrix)
 		REGISTER_PROPERTY_CONSTREF_GET(glm::mat4, m_oNoScaleModelMatrix, NoScaleModelMatrix)
@@ -132,8 +133,10 @@ namespace browser
         REGISTER_PROPERTY_CONSTREF_GET_SET(glm::mat4, m_oBindposeMatrix, BindposeMatrix)
         REGISTER_PROPERTY_GET_SET(Transform*, m_oBoneRoot, BoneRoot)
         REGISTER_PROPERTY_CONSTREF_GET(glm::mat4, m_oBoneRootSpaceMatrix, BoneRootSpaceMatrix)
+        // 设置骨骼动画节点的原始变换
         void setSrcModelTransformation(const glm::vec3& pos, const glm::quat& rot, const glm::vec3& scale);
-
+        // 重置骨骼动画节点的原始变换
+        void resetSrcModelTransform();
         
         
         // 获取\设置全局坐标系下的属性(并不建议过多使用，因为每次使用都会遍历父级节点，更新他们的model矩阵)

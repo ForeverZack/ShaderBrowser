@@ -969,7 +969,7 @@ namespace customGL
 				m_vAnimations.push_back(std::make_tuple(animation, name));
                 m_vAnimationNames.push_back(name);
                 m_mSkeletonAnimations[animation] = new SkeletonAnimation(animation);
-                m_mSkeletonAnimations[animation]->convertAnimation2Frames(30, m_oRootNode, m_oSkeleton);
+                m_mSkeletonAnimations[animation]->convertAnimation2Frames(SkeletonAnimation::DEFAULT_SKELETON_ANIMATION_FRAME_RATE, m_oRootNode, m_oSkeleton);
                 m_mSkeletonAnimations[animation]->retain();
             }
             
@@ -989,7 +989,7 @@ namespace customGL
         BROWSER_ASSERT(itor!=m_mSkeletonAnimations.end(), "Cannot compute bones transform because there is no SkeletonAnimation data in Model, please check your program in function Model::computeBonesTransform");
         
         SkeletonAnimation* skeletonAnimation = itor->second;
-        skeletonAnimation->getBonesTransform(elapsedTime, bonesPosition, bonesRotation, bonesScale, false);
+        skeletonAnimation->getBonesTransform(elapsedTime, bonesPosition, bonesRotation, bonesScale, interpolateAnimation);
         
 //        // 将采样范围变换到 [0, 1]
 //        float animSample = static_cast<float>(animation->mTicksPerSecond / animation->mDuration) * elapsedTime;

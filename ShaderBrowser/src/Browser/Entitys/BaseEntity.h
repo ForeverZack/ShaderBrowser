@@ -64,8 +64,8 @@ namespace browser
 		// 修改所有网格模型shader
 		void changeAllMeshesMaterial(const std::string& programName);
         // 播放动画
-        void playAnimation(const std::string& animName, bool repeat = false, float speed = 1.0f, bool interpolate = true);
-        void playAnimation(int animIdx, bool repeat = false, float speed = 1.0f, bool interpolate = true);  
+        void playAnimation(const std::string& animName, bool repeat = false, float speed = 1.0f, bool interpolate = false);
+        void playAnimation(int animIdx, bool repeat = false, float speed = 1.0f, bool interpolate = false);  
 		void setAnimatorUseGPU(bool useGPU);
         // 获取顶点数组
         glm::vec4* getVertices(Mesh* mesh, bool& dirty);

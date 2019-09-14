@@ -26,7 +26,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ShaderBrowser/src/GL/Model.cpp"
-            timestampString = "590066912.67235"
+            timestampString = "590147985.171458"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "249"
@@ -74,11 +74,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ShaderBrowser/src/GL/SkeletonAnimation.cpp"
-            timestampString = "590066912.672413"
+            timestampString = "590147985.171537"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "44"
-            endingLineNumber = "44"
+            startingLineNumber = "47"
+            endingLineNumber = "47"
             landmarkName = "SkeletonAnimation::convertAnimation2Frames(unsigned int frameRate, aiNode* rootNode, Skeleton* skeleton)"
             landmarkType = "7">
          </BreakpointContent>
