@@ -217,7 +217,7 @@ namespace browser
 		}
 	}
     
-    void BaseEntity::playAnimation(const std::string& animName, bool repeat/* = false*/, float speed/* = 1.0f*/, bool interpolate/* = false*/)
+    void BaseEntity::playAnimation(const std::string& animName, bool repeat/* = false*/, float speed/* = 1.0f*/, bool interpolate/* = true*/)
     {
         // 只有模型的根节点可以播放动画，因为只有根节点可以拿到完整的模型数据
         BROWSER_ASSERT(m_oModelRootEntity, "Entity must set the model root entity, after that it can play animation!");

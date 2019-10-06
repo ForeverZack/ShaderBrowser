@@ -28,7 +28,7 @@ namespace browser
         
 	public:
 		BaseBoundBox();
-		~BaseBoundBox();
+		virtual ~BaseBoundBox();
 
 	public:
 		// 刷新

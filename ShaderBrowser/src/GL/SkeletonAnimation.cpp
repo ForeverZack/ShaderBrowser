@@ -2,6 +2,7 @@
 #include "GL/Skeleton.h"
 #include "GL/Assimp.h"
 #include "GL/AssimpConvert.h"
+#include "Rescale.h"
 
 using namespace common;
 
@@ -149,6 +150,51 @@ namespace customGL
         }
     }
     
+    void SkeletonAnimation::computeBonesTransform(aiNode* rootNode, Skeleton* skeleton, float elapsedTime, std::unordered_map<unsigned int, glm::vec3>& bonesPosition, std::unordered_map<unsigned int, glm::quat>& bonesRotation, std::unordered_map<unsigned int, glm::vec3>& bonesScale, bool interpolateAnimation/* = true*/)
+    {
+        // 将采样范围变换到 [0, 1]
+        aiAnimation* animation = m_pAniamtion;
+        float animSample = static_cast<float>(animation->mTicksPerSecond / animation->mDuration) * elapsedTime;
+        animSample = std::min(animSample, 1.0f);
+
+        aiMatrix4x4 transformation, scaleMat, translateMat;
+        Rescale rescaler(0.0f, static_cast<float>(animation->mDuration), 0.0f, 1.0f);
+        const float sampleUnscaled = rescaler.Unscale(animSample);  // 采样帧数位置(例如，第2.52帧)
+        unsigned int boneId;
+
+//        BROWSER_LOG(sampleUnscaled)
+        // 遍历骨骼变换信息，生成父节点坐标系下自身的变换矩阵
+        {
+            aiNodeAnim* channel = nullptr;
+            aiNode* node = nullptr;
+            // 遍历发生变换的骨骼节点的变换信息
+            for (unsigned int i = 0; i < animation->mNumChannels; ++i)
+            {
+                channel = animation->mChannels[i];
+                node = rootNode->FindNode(channel->mNodeName);
+
+                // 根据当前动画播放到第几帧，插值得到变换信息
+                // 位移
+                auto translation = Assimp::InterpolationGet<aiVector3D>(sampleUnscaled, channel->mPositionKeys, channel->mNumPositionKeys, interpolateAnimation);
+//                if (!applyRootMotion && node==m_oRootBoneNode)
+//                {
+//                    translation = aiVector3D(0, 0, 0);
+//                }
+                // 旋转
+                auto rotation = Assimp::InterpolationGet<aiQuaternion>(sampleUnscaled, channel->mRotationKeys, channel->mNumRotationKeys, interpolateAnimation);
+                // 缩放
+                auto scale = Assimp::InterpolationGet<aiVector3D>(sampleUnscaled, channel->mScalingKeys, channel->mNumScalingKeys, interpolateAnimation);
+                // 记录骨骼变换
+                if(skeleton->isBone(channel->mNodeName.C_Str(), boneId))
+                {
+                    bonesPosition[boneId] = std::move(Assimp::ConvertToGLM(translation));
+                    bonesRotation[boneId] = std::move(Assimp::ConvertToGLM(rotation));
+                    bonesScale[boneId] = std::move(Assimp::ConvertToGLM(scale));
+                }
+
+            }
+        }
+    }
     
 
     

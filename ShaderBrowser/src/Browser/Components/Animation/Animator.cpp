@@ -71,8 +71,8 @@ namespace browser
 	{
 		BROWSER_LOG("~Animator");
         
-        m_oFeedback->release();
-		m_oComputeProgram->release();
+//        m_oFeedback->release();
+//		m_oComputeProgram->release();
 	}
     
     void Animator::onInspectorGUI(InspectorPanel* inspector)
@@ -275,11 +275,11 @@ namespace browser
             {
                 return;
             }
-            if (!m_oFeedback)
-            {
-                m_oFeedback = AnimatorFeedback::create(m_oSrcModel);
-                m_oFeedback->retain();
-            }
+//            if (!m_oFeedback)
+//            {
+//                m_oFeedback = AnimatorFeedback::create(m_oSrcModel);
+//                m_oFeedback->retain();
+//            }
 //            if (!m_oComputeProgram)
 //            {
 //                m_oComputeProgram = AnimatorComputeProgram::create(m_oSrcModel);
@@ -334,14 +334,14 @@ namespace browser
             
             // feeback
             {
-                m_oFeedback->setCurrentAnimationData(m_oCurAnimation.animation);
+//                m_oFeedback->setCurrentAnimationData(m_oCurAnimation.animation);
             }
 			// compute program
 			{
-                if (m_oComputeProgram)
-                {
-                    m_oComputeProgram->setCurrentAnimationData(m_oCurAnimation.animation);
-                }
+//                if (m_oComputeProgram)
+//                {
+//                    m_oComputeProgram->setCurrentAnimationData(m_oCurAnimation.animation);
+//                }
             }
             // 计算骨骼变换矩阵
             if(m_oBefAnimation.animation)

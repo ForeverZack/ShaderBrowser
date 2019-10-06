@@ -36,7 +36,7 @@ namespace browser
         
 	public:
 		BaseRender();
-		~BaseRender();
+		virtual ~BaseRender();
 
 	public:
 		// init

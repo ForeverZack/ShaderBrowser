@@ -54,10 +54,15 @@ namespace customGL
         ~SkeletonAnimation();
         
     public:
+        // 方案一：在加载模型时将骨骼动画转为序列帧，帧数根据设置进行插值(windows下渲染耗时略有缩小，但加载过程太过耗时)
         // 将animation转为序列帧数据
         void convertAnimation2Frames(unsigned int frameRate, aiNode* rootNode, Skeleton* skeleton);
         // 获取骨骼数据
         void getBonesTransform(float elapsedTime, std::unordered_map<unsigned int, glm::vec3>& bonesPosition, std::unordered_map<unsigned int, glm::quat>& bonesRotation, std::unordered_map<unsigned int, glm::vec3>& bonesScale, bool interpolateAnimation = true);
+        
+        // 方案二：正常计算(采用多线程的方式)
+        // 获取骨骼数据
+        void computeBonesTransform(aiNode* rootNode, Skeleton* skeleton, float elapsedTime, std::unordered_map<unsigned int, glm::vec3>& bonesPosition, std::unordered_map<unsigned int, glm::quat>& bonesRotation, std::unordered_map<unsigned int, glm::vec3>& bonesScale, bool interpolateAnimation = true);
         
     protected:
         // 原始动画数据

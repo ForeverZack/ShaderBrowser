@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Bucket
+   uuid = "7F42633F-6213-426E-8D88-7BA04EB50D41"
    type = "1"
    version = "2.0">
    <Breakpoints>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
+            uuid = "D0BCB66D-83A9-4A4F-A64E-46F35E71CAB9"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
@@ -15,13 +17,14 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "242"
             endingLineNumber = "242"
-            landmarkName = "AnimatorFeedback::play(float sampleUnscaled, std::unordered_map&lt;unsigned int, glm::vec3&gt;&amp; bonesPosition, std::unordered_map&lt;unsigned int, glm::quat&gt;&amp; bonesRotation, std::unordered_map&lt;unsigned int, glm::vec3&gt;&amp; bonesScale)"
-            landmarkType = "7">
+            landmarkName = "unknown"
+            landmarkType = "0">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
+            uuid = "E50B3770-2FDF-46B4-892C-269F95D30C7A"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
@@ -31,13 +34,14 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "249"
             endingLineNumber = "249"
-            landmarkName = "ModelGpuAnimationData::generateDataBuffer(const std::vector&lt;std::tuple&lt;aiAnimation*, std::string&gt;&gt;&amp; animations, const std::unordered_map&lt;std::string, unsigned int&gt;&amp; bonesIdMap, const std::vector&lt;glm::vec4&gt;&amp; bonesInitPos, const std::vector&lt;glm::vec4&gt;&amp; bonesInitRot, const std::vector&lt;glm::vec4&gt;&amp; bonesInitScal)"
+            landmarkName = "ModelGpuAnimationData::generateDataBuffer(animations, bonesIdMap, bonesInitPos, bonesInitRot, bonesInitScal)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
+            uuid = "809D99BE-7539-45C0-84F6-1B747AF32FCB"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
@@ -54,6 +58,7 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
+            uuid = "469BBBD6-E5B3-4A6D-A39B-CDF4A22B6379"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
@@ -70,6 +75,7 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
+            uuid = "E1FC6F7D-6458-4E3B-9102-6A75D8759AFB"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
@@ -79,8 +85,25 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "47"
             endingLineNumber = "47"
-            landmarkName = "SkeletonAnimation::convertAnimation2Frames(unsigned int frameRate, aiNode* rootNode, Skeleton* skeleton)"
+            landmarkName = "SkeletonAnimation::convertAnimation2Frames(frameRate, rootNode, skeleton)"
             landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "23C7E450-9267-436D-AE8C-8CB996F1AFAB"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ShaderBrowser/src/main.cpp"
+            timestampString = "590727286.336488"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "465"
+            endingLineNumber = "465"
+            landmarkName = "main()"
+            landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

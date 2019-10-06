@@ -63,7 +63,8 @@ namespace common
 			if (!m_oThread)
 			{
 				m_oThread = new std::thread(&BaseAsyncLoader<DataType, CallbackFunc, ExtraCreateDataType>::loadResource, this);
-			}
+                m_oThread->detach();
+            }
 
 			// 检测资源是否正在被加载（防止重复加载，造成内存泄漏）
 			{

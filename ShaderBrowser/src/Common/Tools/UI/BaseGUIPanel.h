@@ -146,7 +146,7 @@ namespace common
 	public:
 		BaseGUIPanel(const char* title, bool needUpdatePerFrame, float width, float height, bool showClose = true, float posX = 0.0f, float posY = 0.0f, float bgAlpha = 0.8f, ImGuiWindowFlags flags 
 					= ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoMove);
-		~BaseGUIPanel();
+		virtual ~BaseGUIPanel();
     
     public:
         // 添加折叠标签页

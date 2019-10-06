@@ -31,7 +31,7 @@ namespace browser
 	{
 	public:
 		BaseComputeProgram();
-		~BaseComputeProgram();
+		virtual ~BaseComputeProgram();
         
     public:
 

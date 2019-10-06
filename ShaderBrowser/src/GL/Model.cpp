@@ -969,7 +969,7 @@ namespace customGL
 				m_vAnimations.push_back(std::make_tuple(animation, name));
                 m_vAnimationNames.push_back(name);
                 m_mSkeletonAnimations[animation] = new SkeletonAnimation(animation);
-                m_mSkeletonAnimations[animation]->convertAnimation2Frames(SkeletonAnimation::DEFAULT_SKELETON_ANIMATION_FRAME_RATE, m_oRootNode, m_oSkeleton);
+//                m_mSkeletonAnimations[animation]->convertAnimation2Frames(SkeletonAnimation::DEFAULT_SKELETON_ANIMATION_FRAME_RATE, m_oRootNode, m_oSkeleton);
                 m_mSkeletonAnimations[animation]->retain();
             }
             
@@ -979,17 +979,12 @@ namespace customGL
 
 	void Model::computeBonesTransform(aiAnimation* animation, float elapsedTime, std::unordered_map<unsigned int, glm::vec3>& bonesPosition, std::unordered_map<unsigned int, glm::quat>& bonesRotation, std::unordered_map<unsigned int, glm::vec3>& bonesScale, bool interpolateAnimation /*= true*/, bool applyRootMotion /*= false*/)
 	{
-        // 将采样范围变换到 [0, 1]
-        float animSample = static_cast<float>(animation->mTicksPerSecond / animation->mDuration) * elapsedTime;
-        animSample = std::min(animSample, 1.0f);
-        Rescale rescaler(0.0f, static_cast<float>(animation->mDuration), 0.0f, 1.0f);
-        const float sampleUnscaled = rescaler.Unscale(animSample);  // 采样帧数位置(例如，第2.52帧)
-        
         auto itor = m_mSkeletonAnimations.find(animation);
         BROWSER_ASSERT(itor!=m_mSkeletonAnimations.end(), "Cannot compute bones transform because there is no SkeletonAnimation data in Model, please check your program in function Model::computeBonesTransform");
         
         SkeletonAnimation* skeletonAnimation = itor->second;
-        skeletonAnimation->getBonesTransform(elapsedTime, bonesPosition, bonesRotation, bonesScale, interpolateAnimation);
+//        skeletonAnimation->getBonesTransform(elapsedTime, bonesPosition, bonesRotation, bonesScale, interpolateAnimation);    // 播放序列帧
+        skeletonAnimation->computeBonesTransform(m_oRootNode, m_oSkeleton, elapsedTime, bonesPosition, bonesRotation, bonesScale, interpolateAnimation);    // 正常计算骨骼
         
 //        // 将采样范围变换到 [0, 1]
 //        float animSample = static_cast<float>(animation->mTicksPerSecond / animation->mDuration) * elapsedTime;

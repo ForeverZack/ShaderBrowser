@@ -8,6 +8,9 @@ namespace browser
 		m_iPriority = 0;
 		m_eSystemType = common::SystemType::Animation;
 		m_bComponentMutex = true;
+        
+        // 动画线程池
+        m_pAnimThreadPool = new BaseThreadPool(MAX_ANIMATION_THREAD_COUNT);
 	}
     
     void AnimationSystem::update(float deltaTime)
@@ -17,8 +20,13 @@ namespace browser
         {
             const std::list<BaseComponent*>& animators = itor->second;
             animator = dynamic_cast<Animator*>(*(animators.begin()));
-            animator->updateAnimation(deltaTime);
+            
+            m_pAnimThreadPool->addTask(std::bind(&Animator::updateAnimation, animator, deltaTime));
+//            animator->updateAnimation(deltaTime);
         }
+        
+        // 等待线程执行完成
+        while(m_pAnimThreadPool->getIsActive());
     }
 
 }

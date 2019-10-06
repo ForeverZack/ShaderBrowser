@@ -20,7 +20,7 @@ namespace browser
 	{
 	public:
 		BaseRenderCommand();
-		~BaseRenderCommand();
+		virtual ~BaseRenderCommand();
 
 	public:
         // 初始化渲染命令

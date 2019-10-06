@@ -33,7 +33,7 @@ namespace browser
 	{
 	public:
 		BaseFeedback();
-		~BaseFeedback();
+		virtual ~BaseFeedback();
         
 	public:
         

@@ -38,7 +38,7 @@ namespace browser
         
 	public:
 		BaseLight();
-		~BaseLight();
+		virtual ~BaseLight();
 
 	public:
 		

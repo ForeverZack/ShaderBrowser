@@ -23,7 +23,7 @@ namespace common
 			m_bSortDirty = false;
 			m_eSystemType = SystemType::CustomSystem;
 		}
-		~BaseSystem() {}
+		virtual ~BaseSystem() {}
 
 	public:
 		// 添加组件
