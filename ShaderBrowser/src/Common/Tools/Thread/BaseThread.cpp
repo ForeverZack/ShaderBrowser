@@ -14,13 +14,13 @@ namespace common
     {
         if (autoCreate)
         {
+			if (!sleepCondition)
+			{
+				m_pSleepCondition = std::bind(&BaseThread::defaultSleepCondition, this);
+			}
             m_pThread = new std::thread(&BaseThread::innerThreadFunc, this);
             //m_pThread->detach();    // detach之后线程变为"非joinable"
             m_uThreadId = m_pThread->get_id();
-            if (!sleepCondition)
-            {
-                m_pSleepCondition = std::bind(&BaseThread::defaultSleepCondition, this);
-            }
         }
 
     }
