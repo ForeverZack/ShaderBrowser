@@ -7,7 +7,7 @@ namespace common
 {    
 
 	TextureCache::TextureCache()
-		: BaseAsyncLoader<Image, std::function<void(Texture2D*)>>(Image::create)
+		: BaseAsyncLoader<Image, std::function<void(Texture2D*)>>(Image::create, MAX_TEXTURECACHE_THREAD_COUNT)
     {
     }
     

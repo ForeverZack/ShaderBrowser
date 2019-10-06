@@ -27,7 +27,7 @@ namespace customGL
     // assimp默认参数
 	#define DEFAULT_ASSIMP_FLAG  aiProcess_Triangulate | aiProcess_GenNormals | aiProcess_CalcTangentSpace | aiProcess_LimitBoneWeights
 	#define DEFAULT_ASSIMP_ANIMATION_FLAG  aiProcess_LimitBoneWeights
- 
+    
     
     // 模型纹理数据结构
     struct MeshTextureData

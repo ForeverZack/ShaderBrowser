@@ -10,7 +10,10 @@ namespace common
 {
 	class TextureCache : public BaseMapCache<std::string, Texture2D*, TextureCache>, public BaseAsyncLoader<Image, std::function<void(Texture2D*)>>
 	{
-	public:
+        // TextureCache异步加载最大允许线程数
+        #define MAX_TEXTURECACHE_THREAD_COUNT 5
+
+    public:
 		TextureCache();
 		~TextureCache();
         

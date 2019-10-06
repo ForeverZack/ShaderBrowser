@@ -6,7 +6,7 @@ namespace common
 {    
 
 	ModelCache::ModelCache()
-    : BaseAsyncLoader<Model, std::function<void(Model*)>, std::vector<std::string>>(Model::create)
+    : BaseAsyncLoader<Model, std::function<void(Model*)>, std::vector<std::string>>(Model::create, MAX_MODELCACHE_THREAD_COUNT)
     {
     }
     

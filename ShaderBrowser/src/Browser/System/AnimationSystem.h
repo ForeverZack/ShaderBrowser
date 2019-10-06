@@ -17,7 +17,7 @@ namespace browser
         
 	public:
 		AnimationSystem();
-		~AnimationSystem() {};
+		~AnimationSystem();
 
     public:
         // 每帧刷新

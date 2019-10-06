@@ -12,6 +12,9 @@ namespace common
 {
     class ModelCache : public BaseMapCache<std::string, Model*, ModelCache>, public BaseAsyncLoader<Model, std::function<void(Model*)>, std::vector<std::string>>
 	{
+        // ModelCache异步加载最大允许线程数
+        #define MAX_MODELCACHE_THREAD_COUNT 5
+            
 	public:
 		ModelCache();
 		~ModelCache();

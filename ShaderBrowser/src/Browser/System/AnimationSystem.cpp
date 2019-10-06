@@ -12,6 +12,11 @@ namespace browser
         // 动画线程池
         m_pAnimThreadPool = new BaseThreadPool(MAX_ANIMATION_THREAD_COUNT);
 	}
+
+    AnimationSystem::~AnimationSystem()
+    {
+        delete m_pAnimThreadPool;
+    }
     
     void AnimationSystem::update(float deltaTime)
     {

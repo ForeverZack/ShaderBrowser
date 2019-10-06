@@ -5,6 +5,7 @@
 #include <deque>
 #include <vector>
 #include <memory>
+#include "Common/Tools/Thread/BaseThreadPool.h"
 
 namespace common
 {
@@ -40,32 +41,30 @@ namespace common
 	template <typename DataType, typename CallbackFunc, typename ExtraCreateDataType = const char*>
 	class BaseAsyncLoader
 	{
+        // Loader默认允许最大线程数
+        #define DEFAULT_LOADER_MAX_THREAD_COUNT 2
 		typedef std::function<DataType*(const char*, shared_ptr<ExtraCreateDataType>)> CreateFunc;
 
 	public:
-		BaseAsyncLoader(CreateFunc createFunc)
-			: m_oThread(nullptr)
-			, m_CreateFunc(createFunc)
+		BaseAsyncLoader(CreateFunc createFunc, int maxThreadCount = DEFAULT_LOADER_MAX_THREAD_COUNT)
+			: m_CreateFunc(createFunc)
 			, m_oLoadingAsyncData(nullptr)
 		{
 			m_vResponses.clear();
 			m_vRequestQueue.clear();
 			m_vResponseQueue.clear();
+            
+            m_pThreadPool = new BaseThreadPool(maxThreadCount);
 		}
 		virtual ~BaseAsyncLoader()
 		{
+            delete m_pThreadPool;
 		}
 
 	public:
 		// 异步加载接口(注意！！这里使用绝对路径)
 		void loadResourceAsync(const std::string& fullpath, CallbackFunc callback, shared_ptr<ExtraCreateDataType> extra = nullptr)
 		{
-			if (!m_oThread)
-			{
-				m_oThread = new std::thread(&BaseAsyncLoader<DataType, CallbackFunc, ExtraCreateDataType>::loadResource, this);
-                m_oThread->detach();
-            }
-
 			// 检测资源是否正在被加载（防止重复加载，造成内存泄漏）
 			{
 				if (m_oLoadingAsyncData && m_oLoadingAsyncData->fullpath == fullpath)
@@ -83,10 +82,10 @@ namespace common
 				AsyncData<DataType, CallbackFunc, ExtraCreateDataType>* asyncData = new AsyncData<DataType, CallbackFunc, ExtraCreateDataType>(fullpath, callback, extra);
 				m_vRequestQueue.push_back(asyncData);
 				m_oRequestMutex.unlock();
-
-				// notify (唤醒线程)
-				m_oSleepCondition.notify_one();
 			}
+            
+            // 添加加载任务
+            m_pThreadPool->addTask(std::bind(&BaseAsyncLoader<DataType, CallbackFunc, ExtraCreateDataType>::loadResource, this));
 		}
 		// 获取加载返回队列
 		const std::vector<AsyncData<DataType, CallbackFunc, ExtraCreateDataType>*>& getResponseQueue()
@@ -107,11 +106,11 @@ namespace common
 		// 异步加载函数
 		void loadResource()
 		{
-			std::mutex signalMutex;
-			std::unique_lock<std::mutex> signal(signalMutex);
+//			std::mutex signalMutex;
+//			std::unique_lock<std::mutex> signal(signalMutex);
 			AsyncData<DataType, CallbackFunc, ExtraCreateDataType>* asyncData = nullptr;
-			while (true)
-			{
+//			while (true)
+//			{
 				m_oRequestMutex.lock();
 				if (m_vRequestQueue.empty())
 				{
@@ -128,8 +127,7 @@ namespace common
 				if (!asyncData)
 				{
 					// wait
-					m_oSleepCondition.wait(signal);
-					continue;
+                    return;
 				}
 
 				// 记录当前正在加载的资源指针
@@ -168,14 +166,12 @@ namespace common
 				m_oLoadingAsyncData = nullptr;
 				m_oLoadingDataMutex.unlock();
 
-			}
+//			}
 		}
 
 	protected:
-		// 异步加载线程
-		std::thread* m_oThread;
-		// 条件变量
-		std::condition_variable m_oSleepCondition;
+        // 线程池
+        BaseThreadPool* m_pThreadPool;
 		// 请求互斥量
 		std::mutex m_oRequestMutex;
 		// 返回互斥量
