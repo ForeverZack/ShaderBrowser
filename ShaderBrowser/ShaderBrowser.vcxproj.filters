@@ -82,6 +82,9 @@
     <Filter Include="src\Browser\Components\ComputePrgram">
       <UniqueIdentifier>{6a1f2088-f497-4f4b-8c97-b5aea459ed23}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Common\Tools\Thread">
+      <UniqueIdentifier>{dbac6c91-c49f-44f1-91da-d38dab21ce53}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -272,6 +275,12 @@
     </ClCompile>
     <ClCompile Include="src\GL\AssimpConvert.cpp">
       <Filter>src\GL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Common\Tools\Thread\BaseThreadPool.cpp">
+      <Filter>src\Common\Tools\Thread</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Common\Tools\Thread\BaseThread.cpp">
+      <Filter>src\Common\Tools\Thread</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -469,6 +478,12 @@
     </ClInclude>
     <ClInclude Include="src\GL\AssimpConvert.h">
       <Filter>src\GL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Common\Tools\Thread\BaseThread.h">
+      <Filter>src\Common\Tools\Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Common\Tools\Thread\BaseThreadPool.h">
+      <Filter>src\Common\Tools\Thread</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

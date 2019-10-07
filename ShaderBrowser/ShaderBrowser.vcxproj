@@ -60,6 +60,8 @@
     <ClCompile Include="src\Common\System\ECSManager.cpp" />
     <ClCompile Include="src\Common\Tools\BinaryFileUtils.cpp" />
     <ClCompile Include="src\Common\Tools\FileUtils.cpp" />
+    <ClCompile Include="src\Common\Tools\Thread\BaseThread.cpp" />
+    <ClCompile Include="src\Common\Tools\Thread\BaseThreadPool.cpp" />
     <ClCompile Include="src\Common\Tools\UI\BaseGUIPanel.cpp" />
     <ClCompile Include="src\Common\Tools\UI\GameStatusPanel.cpp" />
     <ClCompile Include="src\Common\Tools\UI\GUIFramework.cpp" />
@@ -130,6 +132,8 @@
     <ClInclude Include="src\Common\Tools\BaseSingleton.h" />
     <ClInclude Include="src\Common\Tools\BinaryFileUtils.h" />
     <ClInclude Include="src\Common\Tools\FileUtils.h" />
+    <ClInclude Include="src\Common\Tools\Thread\BaseThread.h" />
+    <ClInclude Include="src\Common\Tools\Thread\BaseThreadPool.h" />
     <ClInclude Include="src\Common\Tools\UI\BaseGUIPanel.h" />
     <ClInclude Include="src\Common\Tools\UI\GameStatusPanel.h" />
     <ClInclude Include="src\Common\Tools\UI\GUIFramework.h" />
