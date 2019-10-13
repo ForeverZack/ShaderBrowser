@@ -50,7 +50,8 @@ namespace browser
     
 	class Animator : public BaseComponent
 	{
-
+    public:
+        static Animator* create(unsigned int boneNum);
         
     public:
         // 默认动画名称前缀
@@ -71,10 +72,11 @@ namespace browser
         // 刷新动画
         void updateAnimation(float deltaTime);
         
+        // 使用骨骼矩阵
+        GLuint useBonesMatrix();
+        
         
         // 骨骼信息
-        // 设置骨骼数量
-        void setBoneInfo(unsigned int boneNum);
         // 添加骨骼
         void addBone(unsigned int boneId, Transform* boneNode);
 
@@ -85,6 +87,9 @@ namespace browser
         
         // 重载属性面板显示方法
         virtual void onInspectorGUI(InspectorPanel* inspector);
+        
+        // 设置骨骼数量
+        void setBoneInfo(unsigned int boneNum);
 
         
 		REGISTER_PROPERTY_GET(bool, m_bIsPlaying, IsPlaying)
@@ -105,6 +110,9 @@ namespace browser
         AnimatorFeedback* m_oFeedback;
 		// compute program
 		AnimatorComputeProgram* m_oComputeProgram;
+        // 骨骼矩阵tbo
+        GLuint m_uTexId;
+        GLuint m_uVBO;
         
         // 顶点数组
         std::unordered_map<Mesh*, glm::vec4*> m_mVertices;

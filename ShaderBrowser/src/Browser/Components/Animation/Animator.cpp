@@ -41,9 +41,19 @@ namespace browser
         return *this;
     }
     
+    
+    Animator* Animator::create(unsigned int boneNum)
+    {
+        Animator* animator = new Animator();
+        animator->setBoneInfo(boneNum);
+        return animator;
+    }
+    
 	Animator::Animator()
         : BaseComponent("Animator")
         , m_oSrcModel(nullptr)
+        , m_uTexId(0)
+        , m_uVBO(0)
         , m_bIsPlaying(false)
         , m_bUseGPU(true)
         , m_fBlendTimer(0)
@@ -52,7 +62,7 @@ namespace browser
         , m_bDirty(true)
         , m_oFeedback(nullptr)
 		, m_oComputeProgram(nullptr)
-	{
+    {
 		// 组件所属系统
 		m_eBelongSystem = SystemType::Animation;
         
@@ -71,6 +81,8 @@ namespace browser
 	{
 		BROWSER_LOG("~Animator");
         
+        glDeleteTextures(1, &m_uTexId);
+        glDeleteBuffers(1, &m_uVBO);
 //        m_oFeedback->release();
 //		m_oComputeProgram->release();
 	}
@@ -244,11 +256,51 @@ namespace browser
     void Animator::setBoneInfo(unsigned int boneNum)
     {
         m_vAllBones.resize(boneNum);
+        
+        glGenTextures(1, &m_uTexId);
+        glGenBuffers(1, &m_uVBO);
+        
+        glBindBuffer(GL_TEXTURE_BUFFER, m_uVBO);
+        glBufferData(GL_TEXTURE_BUFFER, sizeof(float)*4*boneNum, nullptr, GL_DYNAMIC_DRAW);
+        glBindTexture(GL_TEXTURE_BUFFER, m_uTexId);
+        glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA32F, m_uVBO);
+        glBindTexture(GL_TEXTURE_BUFFER, 0);
+        glBindBuffer(GL_TEXTURE_BUFFER, 0);
     }
     
     void Animator::addBone(unsigned int boneId, Transform* boneNode)
     {
         m_vAllBones[boneId] = boneNode;
+    }
+    
+    GLuint Animator::useBonesMatrix()
+    {
+        if (m_bDirty && m_bIsPlaying)
+        {
+            m_bDirty = false;
+            Transform* bone;
+            for (int i=0; i<m_vAllBones.size(); ++i)
+            {
+                bone = m_vAllBones[i];
+                m_vBonesMatrix[i] = bone->getBoneMatrix();
+            }
+            
+            // 更新骨骼矩阵
+            glBindBuffer(GL_TEXTURE_BUFFER, m_uVBO);
+//            void *buf = glMapBuffer(GL_TEXTURE_BUFFER, GL_WRITE_ONLY);
+//            memcpy(buf, &m_vBonesMatrix[0], 4*m_vAllBones.size());
+//            void* xxxx;
+//            xxxx = &m_vBonesMatrix[0];
+//            float* aaa = (float*)xxxx;
+//            std::cout<<"===bone matrix=="<<(float)(aaa[0])<<","<<(float)aaa[1]<<","<<(float)aaa[2]<<","<<(float)aaa[3]<<endl;
+//            BROWSER_LOG_MAT4(m_vBonesMatrix[0]);
+            
+            glBufferData(GL_TEXTURE_BUFFER, sizeof(glm::mat4)*m_vAllBones.size(), &m_vBonesMatrix[0], GL_DYNAMIC_DRAW);
+            glUnmapBuffer(GL_ARRAY_BUFFER);
+            glBindBuffer(GL_TEXTURE_BUFFER, 0);
+        }
+
+        return m_uTexId;
     }
     
     const std::vector<glm::mat4>& Animator::getBonesMatrix()

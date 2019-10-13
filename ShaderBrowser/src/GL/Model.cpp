@@ -520,8 +520,7 @@ namespace customGL
         BaseEntity* entity;
         if(m_bHasSkeletonAnim)
         {
-            Animator* animator = new Animator();
-            animator->setBoneInfo(m_uBoneNum);
+            Animator* animator = Animator::create(m_uBoneNum);
             entity = traverseNodeAndCreateEntity(m_oRootNode, nullptr, nullptr, animator);
             entity->setModel(this);
             entity->addComponent(animator);

@@ -40,6 +40,7 @@ namespace customGL
 		"uniform mat4 CGL_PROJECTION_MATRIX;\n"
 		"uniform vec4 CGL_ALBEDO_COLOR = vec4(1.0f, 1.0f, 1.0f, 1.0f);\n"
 		"uniform DirectionalLight CGL_DIRECTIONAL_LIGHT;\n"
+        "uniform samplerBuffer CGL_BONES_MATRICES;\n"
 		"uniform mat3x4 CGL_BONES_MATRIX[MAX_BONES];\n"
         "uniform mat4 CGL_DYNAMIC_BATCH_MODEL_MATRIX[MAX_DYNAMIC_BATCH_COUNT];\n";
     // uniform变量名称
@@ -52,6 +53,7 @@ namespace customGL
 		"CGL_PROJECTION_MATRIX",
 		"CGL_ALBEDO_COLOR",
 		"CGL_DIRECTIONAL_LIGHT",
+        "CGL_BONES_MATRICES",
 		"CGL_BONES_MATRIX[%d]",
         "CGL_DYNAMIC_BATCH_MODEL_MATRIX[%d]"
 	};
