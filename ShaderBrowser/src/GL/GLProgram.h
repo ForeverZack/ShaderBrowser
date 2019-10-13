@@ -69,7 +69,6 @@ namespace customGL
             UNIFORM_CGL_DIRECTIONAL_LIGHT,
 
 			// 骨骼矩阵
-            UNIFORM_CGL_BONES_MATRICES,
             UNIFORM_CGL_BONES_MATRIX,
             // 动态合批用的model矩阵
             UNIFORM_CGL_DYNAMIC_BATCH_MODEL_MATRIX,

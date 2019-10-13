@@ -3,7 +3,7 @@ layout (location=1) in vec4 a_color;
 layout (location=2) in vec2 a_coord;
 layout (location=3) in vec3 a_normal;
 layout (location=4) in vec3 a_tangent;
-layout (location=5) in ivec4 a_boneIds;
+layout (location=5) in ivec4 a_boneIds; 
 layout (location=6) in vec4 a_boneWeights;
 
 out V2FData
@@ -29,20 +29,15 @@ void main()
 //        skinning += boneMatrix * a_boneWeights[i];
         
         int boneId = a_boneIds[i];
-        vec4 col0 = texelFetch(CGL_BONES_MATRICES, boneId*4+0);
-        vec4 col1 = texelFetch(CGL_BONES_MATRICES, boneId*4+1);
-        vec4 col2 = texelFetch(CGL_BONES_MATRICES, boneId*4+2);
-        vec4 col3 = texelFetch(CGL_BONES_MATRICES, boneId*4+3);
-//        mat4 boneMatrix = mat4(
-//            col0.x, col1.x, col2.x, col3.x,
-//            col0.y, col1.y, col2.y, col3.y,
-//            col0.z, col1.z, col2.z, col3.z,
-//            col0.w, col1.w, col2.w, col3.w);
+        vec4 col0 = texelFetch(CGL_BONES_MATRIX, boneId*4+0);   // boneMatrix第1列
+        vec4 col1 = texelFetch(CGL_BONES_MATRIX, boneId*4+1);   // boneMatrix第2列
+        vec4 col2 = texelFetch(CGL_BONES_MATRIX, boneId*4+2);   // boneMatrix第3列
+        vec4 col3 = texelFetch(CGL_BONES_MATRIX, boneId*4+3);   // boneMatrix第4列
         mat4 boneMatrix = mat4(
             col0.x, col0.y, col0.z, col0.w,
             col1.x, col1.y, col1.z, col1.w,
             col2.x, col2.y, col2.z, col2.w,
-            col3.x, col3.y, col3.z, col3.w);
+            col3.x, col3.y, col3.z, col3.w); // 注意：opengl中的矩阵是列主序的，传入的数据会先填充满一列，在填充下一列。也就是说这里虽然传入数据格式是这样，但实际使用时，矩阵是(col0, col1, col2, col3)。
         skinning += boneMatrix * a_boneWeights[i];
 	}
 

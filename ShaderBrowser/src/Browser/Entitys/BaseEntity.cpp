@@ -200,25 +200,10 @@ namespace browser
 		{
 			return;
 		}
-//        // 方案一：按uniform mat3x4 bones[]传递
-//		char uniformName[50];
-//        const std::vector<glm::mat4>& bonesMatrix = m_oModelRootEntity->m_oAnimator->getBonesMatrix();
-//		for (unsigned int i=0; i<bonesMatrix.size(); ++i)
-//		{
-//			sprintf(uniformName, GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_BONES_MATRIX], i);
-//            const glm::mat4& boneMatrix = bonesMatrix[i];
-////            BROWSER_LOG_MAT4(bonesMatrix[i]);
-//
-//            // 方式1:
-//            material->setUniformMat3x4(uniformName, glm::mat3x4(boneMatrix[0][0], boneMatrix[1][0], boneMatrix[2][0], boneMatrix[3][0],
-//                                                            boneMatrix[0][1], boneMatrix[1][1], boneMatrix[2][1], boneMatrix[3][1],
-//                                                            boneMatrix[0][2], boneMatrix[1][2], boneMatrix[2][2], boneMatrix[3][2]));
-//            // 方式2:
-////            pass->setUniformMat3x4(uniformName, static_cast<glm::mat3x4>(glm::transpose(boneMatrix)));
-//		}
         
+        // 将骨骼矩阵存入tbo，并传给材质
         GLuint texId = m_oModelRootEntity->m_oAnimator->useBonesMatrix();
-        material->setUniformSamplerBuffer(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_BONES_MATRICES], texId);
+        material->setUniformSamplerBuffer(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_BONES_MATRIX], texId);
     }
     
     void BaseEntity::playAnimation(const std::string& animName, bool repeat/* = false*/, float speed/* = 1.0f*/, bool interpolate/* = true*/)

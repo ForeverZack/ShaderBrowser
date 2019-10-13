@@ -40,8 +40,7 @@ namespace customGL
 		"uniform mat4 CGL_PROJECTION_MATRIX;\n"
 		"uniform vec4 CGL_ALBEDO_COLOR = vec4(1.0f, 1.0f, 1.0f, 1.0f);\n"
 		"uniform DirectionalLight CGL_DIRECTIONAL_LIGHT;\n"
-        "uniform samplerBuffer CGL_BONES_MATRICES;\n"
-		"uniform mat3x4 CGL_BONES_MATRIX[MAX_BONES];\n"
+		"uniform samplerBuffer CGL_BONES_MATRIX;\n"
         "uniform mat4 CGL_DYNAMIC_BATCH_MODEL_MATRIX[MAX_DYNAMIC_BATCH_COUNT];\n";
     // uniform变量名称
 	const char* GLProgram::SHADER_UNIFORMS_ARRAY[] =
@@ -53,8 +52,7 @@ namespace customGL
 		"CGL_PROJECTION_MATRIX",
 		"CGL_ALBEDO_COLOR",
 		"CGL_DIRECTIONAL_LIGHT",
-        "CGL_BONES_MATRICES",
-		"CGL_BONES_MATRIX[%d]",
+        "CGL_BONES_MATRIX",
         "CGL_DYNAMIC_BATCH_MODEL_MATRIX[%d]"
 	};
 
@@ -429,26 +427,10 @@ namespace customGL
 
 	void GLProgram::updatePreDefinedUniformsLocation()
 	{
-		char tmpUniform[50];
 		GLint location = -1;
 		for (int i = 0; i < UNIFORM_MAX_COUNT; ++i)
 		{
             std::string uniformName(SHADER_UNIFORMS_ARRAY[i]);
-
-			if (i == UNIFORM_CGL_BONES_MATRIX)
-			{
-				for (int j = 0; j < MAX_BONES_COUNT; ++j)
-				{
-					sprintf(tmpUniform, SHADER_UNIFORMS_ARRAY[i], j);
-					location = glGetUniformLocation(m_uProgram, tmpUniform);
-					if (location == -1)
-					{
-						break;
-					}
-					m_mUniformLocations.emplace(tmpUniform, location);
-				}
-			}
-			else
 			{
 				location = glGetUniformLocation(m_uProgram, uniformName.c_str());
 				m_mUniformLocations.emplace(uniformName, location);

@@ -261,7 +261,6 @@ namespace browser
         glGenBuffers(1, &m_uVBO);
         
         glBindBuffer(GL_TEXTURE_BUFFER, m_uVBO);
-        glBufferData(GL_TEXTURE_BUFFER, sizeof(float)*4*boneNum, nullptr, GL_DYNAMIC_DRAW);
         glBindTexture(GL_TEXTURE_BUFFER, m_uTexId);
         glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA32F, m_uVBO);
         glBindTexture(GL_TEXTURE_BUFFER, 0);
@@ -287,15 +286,7 @@ namespace browser
             
             // 更新骨骼矩阵
             glBindBuffer(GL_TEXTURE_BUFFER, m_uVBO);
-//            void *buf = glMapBuffer(GL_TEXTURE_BUFFER, GL_WRITE_ONLY);
-//            memcpy(buf, &m_vBonesMatrix[0], 4*m_vAllBones.size());
-//            void* xxxx;
-//            xxxx = &m_vBonesMatrix[0];
-//            float* aaa = (float*)xxxx;
-//            std::cout<<"===bone matrix=="<<(float)(aaa[0])<<","<<(float)aaa[1]<<","<<(float)aaa[2]<<","<<(float)aaa[3]<<endl;
-//            BROWSER_LOG_MAT4(m_vBonesMatrix[0]);
-            
-            glBufferData(GL_TEXTURE_BUFFER, sizeof(glm::mat4)*m_vAllBones.size(), &m_vBonesMatrix[0], GL_DYNAMIC_DRAW);
+            glBufferData(GL_TEXTURE_BUFFER, sizeof(glm::mat4)*m_vAllBones.size(), &m_vBonesMatrix[0], GL_DYNAMIC_DRAW); // m_vBonesMatrix(glm::mat4)会按照列主序的顺序传入，即第一列第二列第三列
             glUnmapBuffer(GL_ARRAY_BUFFER);
             glBindBuffer(GL_TEXTURE_BUFFER, 0);
         }
