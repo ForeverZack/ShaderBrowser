@@ -5,10 +5,14 @@ namespace browser
 {
 	TransformSystem::TransformSystem()
         : m_oScene(nullptr)
+        , m_bIsUpdateFinish(false)
 	{
 		m_iPriority = 0;
 		m_eSystemType = common::SystemType::Transform;
 		m_bComponentMutex = true;
+        
+        // 线程池
+        m_pThreadPool = new BaseThreadPool(1);
 	}
 
 	void TransformSystem::init()
@@ -36,18 +40,26 @@ namespace browser
             const std::list<BaseComponent*>& transList = itor->second;
             static_cast<Transform*>(*(transList.begin()))->beforeUpdate(deltaTime);
         }
+        // begin
+        m_bIsUpdateFinish = false;
     }
 
 	void TransformSystem::update(float deltaTime)
 	{
-		if (m_oScene)
-        {
-			Transform* scene_transform = m_oScene->getTransform();
-            // 从scene节点开始遍历，更新每个节点的transform
-			scene_transform->visit(customGL::GLM_MAT4_UNIT, false);
-        }
+        m_pThreadPool->addTask(std::bind(&TransformSystem::updateScene, this));
 	}
 
+    void TransformSystem::updateScene()
+    {
+        if (m_oScene)
+        {
+            Transform* scene_transform = m_oScene->getTransform();
+            // 从scene节点开始遍历，更新每个节点的transform
+            scene_transform->visit(customGL::GLM_MAT4_UNIT, false);
+        }
+        // finish
+        m_bIsUpdateFinish = true;
+    }
 
 
 

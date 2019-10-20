@@ -1,6 +1,8 @@
 #include "Animator.h"
 #include "GL/Model.h"
 #include <chrono>
+#include "Common/System/ECSManager.h"
+#include "Browser/System/TransformSystem.h"
 #include "Browser/Components/Feedback/AnimatorFeedback.h"
 #include "Browser/Components/ComputeProgram/AnimatorComputeProgram.h"
 
@@ -394,6 +396,10 @@ namespace browser
 //            timeRec = std::chrono::steady_clock::now();
 //            BROWSER_LOG("========computeBonesTransform==========="+ std::to_string(deltaTime) + "ms");
             
+            // 等TransformSystem更新完再计算，以免发生冲突
+            TransformSystem* system = static_cast<TransformSystem*>(ECSManager::getInstance()->getSystem(SystemType::Transform));
+            while(!system->getIsUpdateFinish());
+            
             // 更新骨骼的Transform
             {
                 // 方法一：通过消息机制来更新骨骼Transform（效率低）
@@ -419,6 +425,7 @@ namespace browser
                         bone->resetSrcModelTransform();
                     }
                 }
+                
 
                 // 更新计算Tranform
                 if (m_vAllBones.size() > 0)

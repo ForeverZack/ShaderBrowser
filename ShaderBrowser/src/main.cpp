@@ -607,6 +607,10 @@ void mainLoop(GLFWwindow *window)
     recTime("====SystemType::Transform=====");
     ECSManager::getInstance()->updateSystem(SystemType::Animation, deltaTime);   // 更新动画系统
     recTime("====SystemType::Animation=====");
+    
+    // 等TransformSystem更新完再计算，以免发生冲突
+    TransformSystem* system = static_cast<TransformSystem*>(ECSManager::getInstance()->getSystem(SystemType::Transform));
+    while(!system->getIsUpdateFinish());    // Transform系统必须更新完
 
     ECSManager::getInstance()->updateSystem(SystemType::Camera, deltaTime);  // 更新camera
     recTime("====SystemType::Camera=====");
