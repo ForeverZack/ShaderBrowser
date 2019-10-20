@@ -67,6 +67,12 @@ namespace common
 			system->update(deltaTime);
 		}
 	}
+    
+    bool ECSManager::isSystemFinish(SystemType type)
+    {
+        BaseSystem* system = getSystem(type);
+        return system->getIsFinish();
+    }
 
 	bool ECSManager::addComponentToSystem(BaseEntity* entity, BaseComponent* component)
 	{

@@ -5,7 +5,6 @@ namespace browser
 {
 	TransformSystem::TransformSystem()
         : m_oScene(nullptr)
-        , m_bIsUpdateFinish(false)
 	{
 		m_iPriority = 0;
 		m_eSystemType = common::SystemType::Transform;
@@ -41,7 +40,7 @@ namespace browser
             static_cast<Transform*>(*(transList.begin()))->beforeUpdate(deltaTime);
         }
         // begin
-        m_bIsUpdateFinish = false;
+        m_bIsFinish = false;
     }
 
 	void TransformSystem::update(float deltaTime)
@@ -58,7 +57,7 @@ namespace browser
             scene_transform->visit(customGL::GLM_MAT4_UNIT, false);
         }
         // finish
-        m_bIsUpdateFinish = true;
+        m_bIsFinish = true;
     }
 
 

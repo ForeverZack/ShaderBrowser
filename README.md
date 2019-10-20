@@ -21,8 +21,9 @@
 等等<br>
 
 ## 2019.10.20 <br>
-将TranformSystem的update放到最前面，骨骼动画造成的节点的变换由AnimationSystem来算（多线程），性能上有一定提升
-，880m大概能跑60帧了。恢复了applyRootMotion，后面还需要做混合。另外改了一下结构，所有的AddComponent事件必须
+将TranformSystem的update放到最前面，骨骼动画造成的节点的变换由AnimationSystem来算（多线程），并将TransformSystem
+的计算放入一个线程当中（需要注意骨骼Transform和场景静态Transform的依赖关系，即计算的先后顺序，有依赖关系的需要等其
+计算完才可以使用）。恢复了applyRootMotion，后面还需要做混合。另外改了一下结构，所有的AddComponent事件必须
 要有component自身，才能不限制组件的添加顺序。用多线程去处理BoundBox（不等待它全部执行完成，只需要分一
 些线程去跑即可，不会很精确，会有一定的延时但应该够用），方便后面做视锥体剔除和遮挡剔除。<br>
 

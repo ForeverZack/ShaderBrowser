@@ -71,13 +71,15 @@ namespace browser
         
         // 刷新动画
         void updateAnimation(float deltaTime);
+        // 刷新骨骼节点的Transform
+        void updateBonesTranform();
         
         // 使用骨骼矩阵
         GLuint useBonesMatrix();
         
         
         // 骨骼信息
-        // 添加骨骼（骨骼节点是按照模型的节点顺序遍历生成的，所以第1个骨骼节点，就是该模型的骨骼跟节点）
+        // 添加骨骼（骨骼节点是按照模型的节点顺序遍历生成的，所以第1个骨骼节点，就是该模型的骨骼跟节点(注意！！！：第1个骨骼节点并不一定是骨骼根节点，还是要单独传入才正确)）
         void addBone(unsigned int boneId, Transform* boneNode);
 
         
@@ -96,6 +98,7 @@ namespace browser
 		REGISTER_PROPERTY_GET_SET(bool, m_bUseGPU, UseGPU)
         REGISTER_PROPERTY_GET(bool, m_bDirty, Dirty)
         REGISTER_PROPERTY_CONSTREF_GET(std::vector<glm::mat4>, m_vBonesMatrix, BonesMatrix)
+        REGISTER_PROPERTY_GET_SET(Transform*, m_oRootBone, RootBone)
         const std::unordered_map<Mesh*, glm::vec4*>& getVertices()
         {
             return m_mVertices;
@@ -137,9 +140,13 @@ namespace browser
         bool m_bUseGPU;
         // 是否允许根节点的运动
         bool m_bApplyRootMotion;
+        // 骨骼变换是否计算完成（计算完才可以开始下一步的Transform计算）
+        bool m_bComputeBonesFinish;
         
         // 记录所有骨骼
         std::vector<Transform*> m_vAllBones;
+        // 骨骼根节点
+        Transform* m_oRootBone;
         // 骨骼变换矩阵
         std::vector<glm::mat4> m_vBonesMatrix;
         // 是否需要重新获取骨骼矩阵

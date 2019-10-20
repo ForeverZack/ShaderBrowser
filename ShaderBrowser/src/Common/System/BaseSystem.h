@@ -22,7 +22,8 @@ namespace common
 			m_bComponentMutex = false;
 			m_bSortDirty = false;
 			m_eSystemType = SystemType::CustomSystem;
-		}
+            m_bIsFinish = true;
+        }
 		virtual ~BaseSystem() {}
 
 	public:
@@ -93,6 +94,7 @@ namespace common
 		REGISTER_PROPERTY_GET_SET(int, m_iPriority, Priority)
 		REGISTER_PROPERTY_GET_SET(bool, m_bComponentMutex, ComponentMutex)
 		REGISTER_PROPERTY_GET(SystemType, m_eSystemType, SystemType)
+        REGISTER_PROPERTY_GET(bool, m_bIsFinish, IsFinish)
         const std::unordered_map<BaseEntity*, std::list<BaseComponent*>>& getComponentsList() const
         {
             return m_mComponentsList;
@@ -110,6 +112,8 @@ namespace common
 		int m_iPriority;
 		// 系统类型
 		SystemType m_eSystemType;
+        // 是否执行完成
+        bool m_bIsFinish;
 
 	};
 }

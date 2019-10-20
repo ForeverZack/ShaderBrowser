@@ -563,6 +563,10 @@ namespace customGL
                 if (animator)
                 {
                     animator->addBone(boneId, entity->getTransform());
+                    if (node == m_oRootBoneNode)
+                    {
+                        animator->setRootBone(entity->getTransform());
+                    }
                 }
 //                entity->setPosition(position.x, position.y, position.z);
 //                entity->setQuaternion(rotation.x, rotation.y, rotation.z, rotation.w);
