@@ -500,7 +500,6 @@ namespace browser
             if(render->getRendererType() == BaseRender::RendererType::Skinned)
             {
                 skinRenderer = static_cast<SkinnedMeshRenderer*>(render);
-                skinRenderer->updateRenderer(deltaTime);
             }
             
             // 遍历mesh

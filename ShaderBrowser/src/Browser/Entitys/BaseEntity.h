@@ -9,6 +9,7 @@
 #include "Browser/Components/BoundBox/BaseBoundBox.h"
 #include "Browser/Components/Animation/Animator.h"
 #include "Browser/Components/Render/BaseRender.h"
+#include "Browser/Components/Camera/Camera.h"
 
 namespace customGL
 {
@@ -123,6 +124,8 @@ namespace browser
         BaseBoundBox* m_oBoundBox;
         // 动画播放器
         Animator* m_oAnimator;
+        // 相机
+        Camera* m_oCamera;
 		
 		// 原始模型文件
 		Model* m_oModel;

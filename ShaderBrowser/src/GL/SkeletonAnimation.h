@@ -62,7 +62,7 @@ namespace customGL
         
         // 方案二：正常计算(采用多线程的方式)
         // 获取骨骼数据
-        void computeBonesTransform(aiNode* rootNode, Skeleton* skeleton, float elapsedTime, std::unordered_map<unsigned int, glm::vec3>& bonesPosition, std::unordered_map<unsigned int, glm::quat>& bonesRotation, std::unordered_map<unsigned int, glm::vec3>& bonesScale, bool interpolateAnimation = true);
+        void computeBonesTransform(aiNode* rootNode, Skeleton* skeleton, float elapsedTime, std::unordered_map<unsigned int, glm::vec3>& bonesPosition, std::unordered_map<unsigned int, glm::quat>& bonesRotation, std::unordered_map<unsigned int, glm::vec3>& bonesScale, bool interpolateAnimation = true, bool applyRootMotion = false);
         
     protected:
         // 原始动画数据

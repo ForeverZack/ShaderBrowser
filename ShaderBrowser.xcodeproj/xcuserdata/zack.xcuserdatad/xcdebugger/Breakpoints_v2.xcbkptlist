@@ -138,5 +138,180 @@
             landmarkType = "0">
          </BreakpointContent>
       </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "BDB84B89-6EB1-477B-BE57-957976C3DB64"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ShaderBrowser/src/Browser/Entitys/BaseEntity.cpp"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "397"
+            endingLineNumber = "397"
+            landmarkName = "BaseEntity::markSpecialComponent(component, bEmpty)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "E6BA47F4-985E-4C58-AD1B-03BFB39264B5"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ShaderBrowser/src/main.cpp"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "288"
+            endingLineNumber = "288"
+            landmarkName = "testVal()"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "61F442B5-80F5-4986-89D6-608DAAD36493"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ShaderBrowser/src/Browser/Components/BoundBox/AABBBoundBox.cpp"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "39"
+            endingLineNumber = "39"
+            landmarkName = "AABBBoundBox::updateBoundBox(deltaTime)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "5BD25A9C-317A-4924-BB17-99A64B73060B"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ShaderBrowser/src/Browser/Components/BoundBox/AABBBoundBox.cpp"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "290"
+            endingLineNumber = "290"
+            landmarkName = "AABBBoundBox::calculateAABBBoundBox()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "E250A19B-5E42-4FB1-A3DB-E68A6FEBA6FB"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ShaderBrowser/src/Browser/Components/BoundBox/AABBBoundBox.cpp"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "40"
+            endingLineNumber = "40"
+            landmarkName = "AABBBoundBox::updateBoundBox(deltaTime)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "2ADF00DA-D3A6-48E5-9D9A-C76D365EBABB"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ShaderBrowser/src/Browser/Components/Render/SkinnedMeshRenderer.cpp"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "84"
+            endingLineNumber = "84"
+            landmarkName = "SkinnedMeshRenderer::handleEvent(event, msg)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "33025707-6643-4854-B4CB-CF5934E513A2"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ShaderBrowser/src/Browser/Components/BoundBox/BaseBoundBox.h"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "57"
+            endingLineNumber = "57"
+            landmarkName = "getMeshFilterFromMsg(msg)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "33025707-6643-4854-B4CB-CF5934E513A2 - 3721cc1f66be9caf"
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "void browser::BaseBoundBox::getMeshFilterFromMsg&lt;browser::BoundBoxAddComponentMessage&gt;(browser::BaseComponentMessage*)"
+                  moduleName = "ShaderBrowser"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/zack/OpenGL/ShaderBrowser/ShaderBrowser/src/Browser/Components/BoundBox/BaseBoundBox.h"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "57"
+                  endingLineNumber = "57"
+                  offsetFromSymbolStart = "50">
+               </Location>
+               <Location
+                  uuid = "33025707-6643-4854-B4CB-CF5934E513A2 - c49c3a05fc8ff0b8"
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "void browser::BaseBoundBox::getMeshFilterFromMsg&lt;browser::MeshFilterAddComponentMessage&gt;(browser::BaseComponentMessage*)"
+                  moduleName = "ShaderBrowser"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/zack/OpenGL/ShaderBrowser/ShaderBrowser/src/Browser/Components/BoundBox/BaseBoundBox.h"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "57"
+                  endingLineNumber = "57"
+                  offsetFromSymbolStart = "50">
+               </Location>
+               <Location
+                  uuid = "33025707-6643-4854-B4CB-CF5934E513A2 - 4bc991b7753fbb62"
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "void browser::BaseBoundBox::getMeshFilterFromMsg&lt;browser::MeshFilterAddMeshMessage&gt;(browser::BaseComponentMessage*)"
+                  moduleName = "ShaderBrowser"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/zack/OpenGL/ShaderBrowser/ShaderBrowser/src/Browser/Components/BoundBox/BaseBoundBox.h"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "57"
+                  endingLineNumber = "57"
+                  offsetFromSymbolStart = "50">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "8578B818-7997-4D7B-AC49-0BC7DE9E4E94"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ShaderBrowser/src/Browser/Components/BoundBox/BaseBoundBox.cpp"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "59"
+            endingLineNumber = "59"
+            landmarkName = "BaseBoundBox::handleEvent(event, msg)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
    </Breakpoints>
 </Bucket>

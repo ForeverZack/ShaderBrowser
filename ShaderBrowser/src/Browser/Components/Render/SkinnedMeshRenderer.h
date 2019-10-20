@@ -34,9 +34,6 @@ namespace browser
         // 检测可见性
         bool checkVisibility(Camera* camera, bool reCalculate = false);
         
-        // 更新
-        void updateRenderer(float deltaTime);
-        
         
         const std::vector<Mesh*>& getMeshes()
         {

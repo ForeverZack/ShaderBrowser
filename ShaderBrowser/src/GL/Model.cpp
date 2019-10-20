@@ -497,6 +497,7 @@ namespace customGL
         
         // 搜寻骨骼根节点
         findModelRootBondNode(m_oRootNode);
+        m_oSkeleton->setRootBoneNode(m_oRootBoneNode);
 
         // 加载创建纹理
         if (m_oSuccessCallback)
@@ -983,7 +984,7 @@ namespace customGL
         
         SkeletonAnimation* skeletonAnimation = itor->second;
 //        skeletonAnimation->getBonesTransform(elapsedTime, bonesPosition, bonesRotation, bonesScale, interpolateAnimation);    // 播放序列帧
-        skeletonAnimation->computeBonesTransform(m_oRootNode, m_oSkeleton, elapsedTime, bonesPosition, bonesRotation, bonesScale, interpolateAnimation);    // 正常计算骨骼
+        skeletonAnimation->computeBonesTransform(m_oRootNode, m_oSkeleton, elapsedTime, bonesPosition, bonesRotation, bonesScale, interpolateAnimation, applyRootMotion);    // 正常计算骨骼
         
 //        // 将采样范围变换到 [0, 1]
 //        float animSample = static_cast<float>(animation->mTicksPerSecond / animation->mDuration) * elapsedTime;

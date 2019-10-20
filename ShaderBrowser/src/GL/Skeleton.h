@@ -67,11 +67,13 @@ namespace customGL
         REGISTER_PROPERTY_CONSTREF_GET(std::vector<glm::vec4>, m_vBonesInitPosition, BonesInitPosition)
         REGISTER_PROPERTY_CONSTREF_GET(std::vector<glm::vec4>, m_vBonesInitRotation, BonesInitRotation)
         REGISTER_PROPERTY_CONSTREF_GET(std::vector<glm::vec4>, m_vBonesInitScale, BonesInitScale)
-        
+        REGISTER_PROPERTY_GET_SET(aiNode*, m_pRootBoneNode, RootBoneNode)
         
     private:
         // 骨骼列表
         std::vector<aiBone*> m_vBones;
+        // 骨骼根节点
+        aiNode* m_pRootBoneNode;
 		// 骨骼id列表
 		std::unordered_map<std::string, unsigned int> m_mBonesIdMap;
         // 骨骼节点初始变换 (bindpose)

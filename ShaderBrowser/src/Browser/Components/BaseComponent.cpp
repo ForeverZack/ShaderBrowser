@@ -5,7 +5,6 @@ namespace browser
 {
 	BaseComponent::BaseComponent()
         : m_oTransform(nullptr)
-        , m_oMeshFilter(nullptr)
         , m_eBelongSystem(SystemType::CustomSystem)
 		, m_oBelongEntity(nullptr)
         , m_sComponentName("Unnamed Component")
@@ -15,7 +14,6 @@ namespace browser
     
     BaseComponent::BaseComponent(const std::string& name)
         : m_oTransform(nullptr)
-        , m_oMeshFilter(nullptr)
         , m_eBelongSystem(SystemType::CustomSystem)
         , m_oBelongEntity(nullptr)
         , m_sComponentName(name)

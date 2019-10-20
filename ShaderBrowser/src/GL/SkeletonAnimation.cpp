@@ -150,7 +150,7 @@ namespace customGL
         }
     }
     
-    void SkeletonAnimation::computeBonesTransform(aiNode* rootNode, Skeleton* skeleton, float elapsedTime, std::unordered_map<unsigned int, glm::vec3>& bonesPosition, std::unordered_map<unsigned int, glm::quat>& bonesRotation, std::unordered_map<unsigned int, glm::vec3>& bonesScale, bool interpolateAnimation/* = true*/)
+    void SkeletonAnimation::computeBonesTransform(aiNode* rootNode, Skeleton* skeleton, float elapsedTime, std::unordered_map<unsigned int, glm::vec3>& bonesPosition, std::unordered_map<unsigned int, glm::quat>& bonesRotation, std::unordered_map<unsigned int, glm::vec3>& bonesScale, bool interpolateAnimation/* = true*/, bool applyRootMotion /*= false*/)
     {
         // 将采样范围变换到 [0, 1]
         aiAnimation* animation = m_pAniamtion;
@@ -176,10 +176,10 @@ namespace customGL
                 // 根据当前动画播放到第几帧，插值得到变换信息
                 // 位移
                 auto translation = Assimp::InterpolationGet<aiVector3D>(sampleUnscaled, channel->mPositionKeys, channel->mNumPositionKeys, interpolateAnimation);
-//                if (!applyRootMotion && node==m_oRootBoneNode)
-//                {
-//                    translation = aiVector3D(0, 0, 0);
-//                }
+                if (!applyRootMotion && node==skeleton->getRootBoneNode())
+                {
+                    translation = aiVector3D(0, 0, 0);
+                }
                 // 旋转
                 auto rotation = Assimp::InterpolationGet<aiQuaternion>(sampleUnscaled, channel->mRotationKeys, channel->mNumRotationKeys, interpolateAnimation);
                 // 缩放

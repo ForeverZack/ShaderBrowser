@@ -6,6 +6,7 @@ namespace customGL
 {
     // 骨架类
     Skeleton::Skeleton()
+        : m_pRootBoneNode(nullptr)
     {
         this->autorelease();
         

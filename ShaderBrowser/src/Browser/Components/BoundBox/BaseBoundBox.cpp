@@ -5,6 +5,8 @@ namespace browser
 	BaseBoundBox::BaseBoundBox()
         : BaseComponent("Bound Box")
         , m_bRecVisibility(true)
+        , m_oMeshFilter(nullptr)
+        , m_oAnimator(nullptr)
 	{
 		// 组件所属系统
 		m_eBelongSystem = SystemType::BoundBox;
@@ -27,6 +29,7 @@ namespace browser
 //                BROWSER_LOG("BoundBox_AddComponent Message received");
 				getTransformFromMsg<BoundBoxAddComponentMessage>(msg);
                 getMeshFilterFromMsg<BoundBoxAddComponentMessage>(msg);
+                getAnimatorFromMsg<BoundBoxAddComponentMessage>(msg);
 			}
 			break;
 
@@ -51,6 +54,13 @@ namespace browser
             }
             break;
                 
+        case ComponentEvent::Animator_ParentAddComponent:
+            {
+                getAnimatorFromMsg<AnimatorAddComponentMessage>(msg);
+            }
+            break;
+                
+        
 		}
 	}
 

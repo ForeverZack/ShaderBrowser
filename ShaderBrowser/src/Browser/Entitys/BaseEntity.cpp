@@ -48,6 +48,7 @@ namespace browser
         , m_bIsAxisVisible(false)
         , m_bIsBoundBoxVisible(false)
         , m_oAnimator(nullptr)
+        , m_oCamera(nullptr)
         , m_oModel(nullptr)
         , m_oModelRootEntity(nullptr)
 	{
@@ -375,24 +376,33 @@ namespace browser
 		case SystemType::RenderSystem:
 			// 渲染组件
 			MARK_SPECIAL_COMPONENT(m_oRenderer, component, bEmpty);
-            deliverComponentMessage(ComponentEvent::Render_AddComponent, new RenderAddComponentMessage(this));
+            deliverComponentMessage(ComponentEvent::Render_AddComponent, new RenderAddComponentMessage(m_oRenderer, this));
 			break;
 
 		case SystemType::Camera:
 			// 相机
-			deliverComponentMessage(ComponentEvent::Camera_AddComponent, new CameraAddComponentMessage(m_oTransformComponent));
+			MARK_SPECIAL_COMPONENT(m_oCamera, component, bEmpty);
+            deliverComponentMessage(ComponentEvent::Camera_AddComponent, new CameraAddComponentMessage(m_oCamera, m_oTransformComponent));
 			break;
                 
         case SystemType::BoundBox:
-            // 包围盒
-            MARK_SPECIAL_COMPONENT(m_oBoundBox, component, bEmpty);
-            deliverComponentMessage(ComponentEvent::BoundBox_AddComponent, new BoundBoxAddComponentMessage(m_oTransformComponent, m_oMeshFilterComponent));
+            {
+                // 包围盒
+                MARK_SPECIAL_COMPONENT(m_oBoundBox, component, bEmpty);
+                Animator* rootAnimator = nullptr;
+                if (m_oModelRootEntity && m_oModelRootEntity->getAnimator())
+                {
+                    rootAnimator = m_oModelRootEntity->getAnimator();
+                }
+                deliverComponentMessage(ComponentEvent::BoundBox_AddComponent, new BoundBoxAddComponentMessage(m_oBoundBox, m_oTransformComponent, m_oMeshFilterComponent, rootAnimator));
+            }
             break;
                 
         case SystemType::Animation:
-            // 包围盒
+            // 动画
             MARK_SPECIAL_COMPONENT(m_oAnimator, component, bEmpty);
-            deliverComponentMessage(ComponentEvent::Animator_AddComponent, new AnimatorAddComponentMessage(m_oModel));
+            deliverComponentMessage(ComponentEvent::Animator_AddComponent, new AnimatorAddComponentMessage(m_oAnimator, m_oModel));
+            deliverComponentMessageToChildren(ComponentEvent::Animator_ParentAddComponent, new AnimatorAddComponentMessage(m_oAnimator, m_oModel));
             break;
 
 		}
