@@ -401,117 +401,128 @@ namespace browser
     
     void Animator::updateBonesTranform()
     {
-        // 必须先等待骨骼变换计算完，才可以计算骨骼节点的Transform
-        while(!m_bComputeBonesFinish);
-            
-        // 更新骨骼的Transform
-        {
-            // 方法一：通过消息机制来更新骨骼Transform（效率低）
-//                dispatchEventToChildren(ComponentEvent::Animator_UpdateBonesTransform, new AnimatorUpdateBonesTransformMessage(m_oSrcModel->getBonesIdMapPointer(), &m_mBonesPosition, &m_mBonesRotation, &m_mBonesScale));
-            
-            // 方法二：在这里统一处理变换
-            unsigned int boneId;
-            Transform* bone = nullptr;
-            for (auto boneItor = m_vAllBones.begin(); boneItor != m_vAllBones.end(); ++boneItor)
-            {
-                bone = *boneItor;
-                boneId = (*boneItor)->getBoneId();
-                if (m_mBonesPosition.find(boneId) != m_mBonesPosition.end())
-                {
-                    // 发生变换的骨骼
-                    bone->setPosition(m_mBonesPosition[boneId]);
-                    bone->setQuaternion(m_mBonesRotation[boneId]);
-                    bone->setScale(m_mBonesScale[boneId]);
-                }
-                else
-                {
-                    // 未发生变化的骨骼节点需要重置位置
-                    bone->resetSrcModelTransform();
-                }
-            }
-            
+		if (m_bIsPlaying)
+		{
+			if (!m_oCurAnimation.animation)
+			{
+				return;
+			}
 
-            // 更新计算Tranform
-            if (m_oRootBone)
-            {
-                // 从骨骼根节点开始遍历
-                m_oRootBone->getParent()->visitSync(m_oRootBone->getParent()->getModelMatrix(), false);
-            }
-            // 获取骨骼矩阵
-            for (int i=0; i<m_vAllBones.size(); ++i)
-            {
-                bone = m_vAllBones[i];
-                m_vBonesMatrix[i] = bone->getBoneMatrix();
-            }
-        }
+			// 必须先等待骨骼变换计算完，才可以计算骨骼节点的Transform
+			while (m_bComputeBonesFinish == false);
 
-        
-        
-//            deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - timeRec).count() / 1000.0f;
-//            BROWSER_LOG("========deliver bone transform===========" + std::to_string(deltaTime) + "ms");
-        
-        // cpu计算顶点位置
-        if(!m_bUseGPU)
-        {
-            // 复制原始顶点信息
-            const std::vector<Mesh*>& meshes = m_oSrcModel->getMeshes();
-            for(auto itor=meshes.begin(); itor!=meshes.end(); ++itor)
-            {
-                glm::vec4* vertices = (*itor)->getVertices22();
-                glm::uvec4* boneIndices = (*itor)->getBoneIndices();
-                glm::vec4* boneWeights = (*itor)->getBoneWeights();
-                glm::vec3* normals = (*itor)->getNormals();
-                glm::vec3* tangents = (*itor)->getTangents();
-                
-                glm::vec4* dst_vertices = m_mVertices[(*itor)];
-                glm::uvec4* dst_boneIndices = m_mBoneIndices[(*itor)];
-                glm::vec4* dst_boneWeights = m_mBoneWeights[(*itor)];
-                glm::vec3* dst_normals = m_mNormals[(*itor)];
-                glm::vec3* dst_tangents = m_mTangents[(*itor)];
-                for(int i=0; i<(*itor)->getVertexCount(); ++i)
-                {
-                    dst_vertices[i] = vertices[i];
-                    dst_boneIndices[i] = boneIndices[i];
-                    dst_boneWeights[i] = boneWeights[i];
-                    dst_normals[i] = normals[i];
-                    dst_tangents[i] = tangents[i];
-                }
-                
-            }
-            // 根据骨骼矩阵，计算新的顶点位置、法线和切线
-            glm::mat4 skinning;
-            for(auto itor=m_mVertices.begin(); itor!=m_mVertices.end(); ++itor)
-            {
-                glm::vec4* vertices = itor->second;
-                glm::uvec4* boneIndices = m_mBoneIndices[itor->first];
-                glm::vec4* boneWeights = m_mBoneWeights[itor->first];
-                glm::vec3* normals = m_mNormals[itor->first];
-                glm::vec3* tangents = m_mTangents[itor->first];
-                for(int i=0; i<itor->first->getVertexCount(); ++i)
-                {
-                    glm::uvec4& vertexBoneIndices = boneIndices[i];
-                    glm::vec4& vertexBoneWeights = boneWeights[i];
-                    
-                    // 计算蒙皮矩阵（顶点的骨骼变换矩阵，每个顶点最多被4个骨骼控制）
-                    skinning = m_vBonesMatrix[vertexBoneIndices[0]] * vertexBoneWeights[0]
-                    + m_vBonesMatrix[vertexBoneIndices[1]] * vertexBoneWeights[1]
-                    + m_vBonesMatrix[vertexBoneIndices[2]] * vertexBoneWeights[2]
-                    + m_vBonesMatrix[vertexBoneIndices[3]] * vertexBoneWeights[3];
-                    
-                    
-                    //BROWSER_LOG_MAT4(skinning);
-                    // 计算变换后的顶点位置、法线等信息
-                    if (skinning != GLM_MAT4_ZERO)
-                    {
-                        vertices[i] = skinning * vertices[i];
-                        normals[i] = skinning * glm::vec4(normals[i], 0.0f);
-                        tangents[i] = skinning * glm::vec4(tangents[i], 0.0f);
-                    }
-                    
-                }
-            }
-        }
-                    
+			// 更新骨骼的Transform
+			{
+				// 方法一：通过消息机制来更新骨骼Transform（效率低）
+	//                dispatchEventToChildren(ComponentEvent::Animator_UpdateBonesTransform, new AnimatorUpdateBonesTransformMessage(m_oSrcModel->getBonesIdMapPointer(), &m_mBonesPosition, &m_mBonesRotation, &m_mBonesScale));
+
+				// 方法二：在这里统一处理变换
+				unsigned int boneId;
+				Transform* bone = nullptr;
+				for (auto boneItor = m_vAllBones.begin(); boneItor != m_vAllBones.end(); ++boneItor)
+				{
+					bone = *boneItor;
+					boneId = (*boneItor)->getBoneId();
+					if (m_mBonesPosition.find(boneId) != m_mBonesPosition.end())
+					{
+						// 发生变换的骨骼
+						bone->setPosition(m_mBonesPosition[boneId]);
+						bone->setQuaternion(m_mBonesRotation[boneId]);
+						bone->setScale(m_mBonesScale[boneId]);
+					}
+					else
+					{
+						// 未发生变化的骨骼节点需要重置位置
+						bone->resetSrcModelTransform();
+					}
+				}
+
+
+				// 更新计算Tranform
+				if (m_oRootBone)
+				{
+					// 从骨骼根节点开始遍历
+					m_oRootBone->getParent()->visitSync(m_oRootBone->getParent()->getModelMatrix(), false);
+				}
+				// 获取骨骼矩阵
+				for (int i = 0; i < m_vAllBones.size(); ++i)
+				{
+					bone = m_vAllBones[i];
+					m_vBonesMatrix[i] = bone->getBoneMatrix();
+				}
+			}
+
+
+
+			//            deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - timeRec).count() / 1000.0f;
+			//            BROWSER_LOG("========deliver bone transform===========" + std::to_string(deltaTime) + "ms");
+
+					// cpu计算顶点位置
+			if (!m_bUseGPU)
+			{
+				// 复制原始顶点信息
+				const std::vector<Mesh*>& meshes = m_oSrcModel->getMeshes();
+				for (auto itor = meshes.begin(); itor != meshes.end(); ++itor)
+				{
+					glm::vec4* vertices = (*itor)->getVertices22();
+					glm::uvec4* boneIndices = (*itor)->getBoneIndices();
+					glm::vec4* boneWeights = (*itor)->getBoneWeights();
+					glm::vec3* normals = (*itor)->getNormals();
+					glm::vec3* tangents = (*itor)->getTangents();
+
+					glm::vec4* dst_vertices = m_mVertices[(*itor)];
+					glm::uvec4* dst_boneIndices = m_mBoneIndices[(*itor)];
+					glm::vec4* dst_boneWeights = m_mBoneWeights[(*itor)];
+					glm::vec3* dst_normals = m_mNormals[(*itor)];
+					glm::vec3* dst_tangents = m_mTangents[(*itor)];
+					for (int i = 0; i < (*itor)->getVertexCount(); ++i)
+					{
+						dst_vertices[i] = vertices[i];
+						dst_boneIndices[i] = boneIndices[i];
+						dst_boneWeights[i] = boneWeights[i];
+						dst_normals[i] = normals[i];
+						dst_tangents[i] = tangents[i];
+					}
+
+				}
+				// 根据骨骼矩阵，计算新的顶点位置、法线和切线
+				glm::mat4 skinning;
+				for (auto itor = m_mVertices.begin(); itor != m_mVertices.end(); ++itor)
+				{
+					glm::vec4* vertices = itor->second;
+					glm::uvec4* boneIndices = m_mBoneIndices[itor->first];
+					glm::vec4* boneWeights = m_mBoneWeights[itor->first];
+					glm::vec3* normals = m_mNormals[itor->first];
+					glm::vec3* tangents = m_mTangents[itor->first];
+					for (int i = 0; i < itor->first->getVertexCount(); ++i)
+					{
+						glm::uvec4& vertexBoneIndices = boneIndices[i];
+						glm::vec4& vertexBoneWeights = boneWeights[i];
+
+						// 计算蒙皮矩阵（顶点的骨骼变换矩阵，每个顶点最多被4个骨骼控制）
+						skinning = m_vBonesMatrix[vertexBoneIndices[0]] * vertexBoneWeights[0]
+							+ m_vBonesMatrix[vertexBoneIndices[1]] * vertexBoneWeights[1]
+							+ m_vBonesMatrix[vertexBoneIndices[2]] * vertexBoneWeights[2]
+							+ m_vBonesMatrix[vertexBoneIndices[3]] * vertexBoneWeights[3];
+
+
+						//BROWSER_LOG_MAT4(skinning);
+						// 计算变换后的顶点位置、法线等信息
+						if (skinning != GLM_MAT4_ZERO)
+						{
+							vertices[i] = skinning * vertices[i];
+							normals[i] = skinning * glm::vec4(normals[i], 0.0f);
+							tangents[i] = skinning * glm::vec4(tangents[i], 0.0f);
+						}
+
+					}
+				}
+			}
+
+			// 骨骼Transform计算完成
+			m_bComputeBonesFinish = false;
+		}
+
     }
 
 	

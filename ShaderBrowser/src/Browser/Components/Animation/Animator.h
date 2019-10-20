@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include "Browser/Components/BaseComponent.h"
 #include "Common/Tools/Utils.h"
+#include "Common/Tools/Thread/BaseThread.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -141,7 +142,7 @@ namespace browser
         // 是否允许根节点的运动
         bool m_bApplyRootMotion;
         // 骨骼变换是否计算完成（计算完才可以开始下一步的Transform计算）
-        bool m_bComputeBonesFinish;
+		MutexVariable<bool> m_bComputeBonesFinish;
         
         // 记录所有骨骼
         std::vector<Transform*> m_vAllBones;
