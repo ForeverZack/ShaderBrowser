@@ -277,12 +277,12 @@ namespace browser
         if (m_bDirty && m_bIsPlaying)
         {
             m_bDirty = false;
-            Transform* bone;
-            for (int i=0; i<m_vAllBones.size(); ++i)
-            {
-                bone = m_vAllBones[i];
-                m_vBonesMatrix[i] = bone->getBoneMatrix();
-            }
+//            Transform* bone;
+//            for (int i=0; i<m_vAllBones.size(); ++i)
+//            {
+//                bone = m_vAllBones[i];
+//                m_vBonesMatrix[i] = bone->getBoneMatrix();
+//            }
             
             // 更新骨骼矩阵
             glBindBuffer(GL_TEXTURE_BUFFER, m_uVBO);
@@ -292,22 +292,6 @@ namespace browser
         }
 
         return m_uTexId;
-    }
-    
-    const std::vector<glm::mat4>& Animator::getBonesMatrix()
-    {
-        if (m_bDirty && m_bIsPlaying)
-        {
-            m_bDirty = false;
-            Transform* bone;
-            for (int i=0; i<m_vAllBones.size(); ++i)
-            {
-                bone = m_vAllBones[i];
-                m_vBonesMatrix[i] = bone->getBoneMatrix();
-            }
-        }
-        
-        return m_vBonesMatrix;
     }
     
     void Animator::updateAnimation(float deltaTime)
@@ -442,6 +426,12 @@ namespace browser
                     // （骨骼节点是按照模型的节点顺序遍历生成的，所以第1个骨骼节点，就是该模型的骨骼跟节点）
                     m_vAllBones[0]->getParent()->visitSync(m_vAllBones[0]->getParent()->getModelMatrix(), false);
                 }
+                // 获取骨骼矩阵
+                for (int i=0; i<m_vAllBones.size(); ++i)
+                {
+                    bone = m_vAllBones[i];
+                    m_vBonesMatrix[i] = bone->getBoneMatrix();
+                }
             }
 
             
@@ -479,7 +469,6 @@ namespace browser
                 }
                 // 根据骨骼矩阵，计算新的顶点位置、法线和切线
                 glm::mat4 skinning;
-                bool hasSkinning;
                 for(auto itor=m_mVertices.begin(); itor!=m_mVertices.end(); ++itor)
                 {
                     glm::vec4* vertices = itor->second;

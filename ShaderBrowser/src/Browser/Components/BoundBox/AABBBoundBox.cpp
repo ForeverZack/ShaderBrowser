@@ -1,11 +1,14 @@
 #include "AABBBoundBox.h"
 #include "GL/GLDefine.h"
 #include "Browser/Components/Mesh/MeshFilter.h"
+#include "Browser/Components/Animation/Animator.h"
 
 namespace browser
 {
 	AABBBoundBox::AABBBoundBox()
         : m_oInUseMeshFilter(nullptr)
+        , m_oMinVertex(GLM_VEC3_ZERO)
+        , m_oMaxVertex(GLM_VEC3_ZERO)
 	{
         m_sComponentName = "AABB BoundBox";
         // 给显示包围盒顶点数组预留空间
@@ -32,6 +35,11 @@ namespace browser
                                           m_oMaxVertex = value;
                                       }, false);
         
+        // 是否根据动画器改变包围盒
+        inspector->addPropertyCheckbox("Dynamic (Animator)", m_bDynamic, [=](bool isEnable)
+                                       {
+                                          m_bDynamic = isEnable;
+                                       }, false);
     }
 
 	void AABBBoundBox::updateBoundBox(float deltaTime)
@@ -39,7 +47,7 @@ namespace browser
         if (m_oTransform && m_oMeshFilter)
         {
             // 当前使用的MeshFilter和本entity的MeshFilter组件不符,则重新生成AABB包围盒
-            if (m_oMeshFilter && m_oMeshFilter!=m_oInUseMeshFilter)
+            if (m_oMeshFilter && (m_oMeshFilter!=m_oInUseMeshFilter || (m_bDynamic && m_oAnimator && m_oAnimator->getDirty())))
             {
                 m_oInUseMeshFilter = m_oMeshFilter;
                 // 重新计算包围盒
@@ -289,13 +297,38 @@ namespace browser
     {
         bool hasInit = false;
         
+        if (m_oAnimator)
+        {
+            m_vBonesMatrix = m_oAnimator->getBonesMatrix();
+        }
+        Mesh* mesh = nullptr;
+        glm::vec4 position;
+        glm::mat4 skinning;
         const std::vector<Mesh*>& meshes = m_oInUseMeshFilter->getMeshes();
         for(auto itor=meshes.begin(); itor!=meshes.end(); ++itor)
         {
-            glm::vec4* vertices = (*itor)->getVertices22();
-            for (int i=0; i<(*itor)->getVertexCount(); ++i)
+            mesh = *itor;
+            glm::vec4* vertices = mesh->getVertices22();
+            glm::uvec4* bonesIndices = mesh->getBoneIndices();
+            glm::vec4* bonesWeights = mesh->getBoneWeights();
+            for (int i=0; i<mesh->getVertexCount(); ++i)
             {
-                const glm::vec3& position = vertices[i];
+                position = vertices[i];
+                
+                // 如果包含骨骼动画，则要对顶点位置进行变换
+                if (m_bDynamic && mesh->getMeshType()==Mesh::MeshType::MeshWithBone)
+                {
+                    const glm::uvec4& boneIndices = bonesIndices[i];
+                    const glm::vec4& boneWeights = bonesWeights[i];
+                    if (m_vBonesMatrix.size() > 0)
+                    {
+                        skinning = m_vBonesMatrix[boneIndices[0]] * boneWeights[0]
+                        + m_vBonesMatrix[boneIndices[1]] * boneWeights[1]
+                        + m_vBonesMatrix[boneIndices[2]] * boneWeights[2]
+                        + m_vBonesMatrix[boneIndices[3]] * boneWeights[3];
+                        position = skinning * position;
+                    }
+                }
                 
                 // 初始化
                 if(!hasInit)

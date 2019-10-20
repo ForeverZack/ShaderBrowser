@@ -7,6 +7,7 @@ namespace browser
         , m_bRecVisibility(true)
         , m_oMeshFilter(nullptr)
         , m_oAnimator(nullptr)
+        , m_bDynamic(true)
 	{
 		// 组件所属系统
 		m_eBelongSystem = SystemType::BoundBox;

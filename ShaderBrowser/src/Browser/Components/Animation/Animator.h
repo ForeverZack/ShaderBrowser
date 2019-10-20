@@ -94,13 +94,13 @@ namespace browser
         
 		REGISTER_PROPERTY_GET(bool, m_bIsPlaying, IsPlaying)
 		REGISTER_PROPERTY_GET_SET(bool, m_bUseGPU, UseGPU)
+        REGISTER_PROPERTY_GET(bool, m_bDirty, Dirty)
+        REGISTER_PROPERTY_CONSTREF_GET(std::vector<glm::mat4>, m_vBonesMatrix, BonesMatrix)
         const std::unordered_map<Mesh*, glm::vec4*>& getVertices()
         {
             return m_mVertices;
         }
-        // 获取骨骼矩阵列表
-        const std::vector<glm::mat4>& getBonesMatrix();
-        
+                
 	protected:
         // 源模型文件
         Model* m_oSrcModel;

@@ -24,6 +24,7 @@ namespace browser
         void update(float deltaTime);
         
 	private:
+        // 线程池
         BaseThreadPool* m_pAnimThreadPool;
 	};
 }

@@ -79,6 +79,10 @@ namespace browser
         MeshFilter* m_oMeshFilter;
         // Animator组件（来自entityRoot）
         Animator* m_oAnimator;
+        // 骨骼矩阵
+        std::vector<glm::mat4> m_vBonesMatrix;
+        // 是否根据骨骼动画的变换重新生成包围盒
+        bool m_bDynamic;
         
         // 包围盒绘制数组
         std::vector<glm::vec3> m_vDisplayVertices;
