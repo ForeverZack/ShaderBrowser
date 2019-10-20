@@ -603,10 +603,11 @@ void mainLoop(GLFWwindow *window)
     
 	// 2.render
     recTime("====start=====");
+    ECSManager::getInstance()->updateSystem(SystemType::Transform, deltaTime);  // 更新transform
+    recTime("====SystemType::Transform=====");
     ECSManager::getInstance()->updateSystem(SystemType::Animation, deltaTime);   // 更新动画系统
     recTime("====SystemType::Animation=====");
-	ECSManager::getInstance()->updateSystem(SystemType::Transform, deltaTime);  // 更新transform
-	recTime("====SystemType::Transform=====");
+
     ECSManager::getInstance()->updateSystem(SystemType::Camera, deltaTime);  // 更新camera
     recTime("====SystemType::Camera=====");
     ECSManager::getInstance()->updateSystem(SystemType::BoundBox, deltaTime);   // 更新BoundBox

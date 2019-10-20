@@ -39,6 +39,7 @@ namespace browser
         // init
         m_vRotateDelayRotations.clear();
         m_vRotateDelaySpaces.clear();
+        m_pVisitMutex = make_shared<std::mutex>();
 	}
 
 	Transform::~Transform()
@@ -623,7 +624,6 @@ namespace browser
         if (dirty)
         {
 			updateSelfModelMatrix(parentMMatrix);
-            
         }
 
         // 自身就是骨骼根节点
@@ -648,6 +648,13 @@ namespace browser
         
         // 自身脏标记重置
         TRANS_DIRTY(this, false);
+    }
+    
+    void Transform::visitSync(const glm::mat4& parentMMatrix, bool bDirty)
+    {
+        std::unique_lock<std::mutex> lock(*m_pVisitMutex);
+        // 遍历
+        visit(parentMMatrix, bDirty);
     }
 
 

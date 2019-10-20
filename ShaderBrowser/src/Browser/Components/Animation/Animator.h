@@ -77,7 +77,7 @@ namespace browser
         
         
         // 骨骼信息
-        // 添加骨骼
+        // 添加骨骼（骨骼节点是按照模型的节点顺序遍历生成的，所以第1个骨骼节点，就是该模型的骨骼跟节点）
         void addBone(unsigned int boneId, Transform* boneNode);
 
         

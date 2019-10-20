@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+#include <mutex>
 #include <vector>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -73,6 +75,7 @@ namespace browser
         
         // 遍历节点
         void visit(const glm::mat4& parentMMatrix, bool bDirty);
+        void visitSync(const glm::mat4& parentMMatrix, bool bDirty);
         
         // 旋转
         void Rotate(const glm::vec3& rotation, customGL::Space sp = customGL::Space::Self);
@@ -212,6 +215,8 @@ namespace browser
         std::vector<glm::vec3> m_vRotateDelayRotations;
         // 延迟旋转坐标空间队列
         std::vector<customGL::Space> m_vRotateDelaySpaces;
+        // 多线程计算自身Transform时，需要上锁
+        std::shared_ptr<std::mutex> m_pVisitMutex;
         
         // 父节点
         Transform* m_oParent;

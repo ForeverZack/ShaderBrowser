@@ -435,6 +435,13 @@ namespace browser
                         bone->resetSrcModelTransform();
                     }
                 }
+
+                // 更新计算Tranform
+                if (m_vAllBones.size() > 0)
+                {
+                    // （骨骼节点是按照模型的节点顺序遍历生成的，所以第1个骨骼节点，就是该模型的骨骼跟节点）
+                    m_vAllBones[0]->getParent()->visitSync(m_vAllBones[0]->getParent()->getModelMatrix(), false);
+                }
             }
 
             
