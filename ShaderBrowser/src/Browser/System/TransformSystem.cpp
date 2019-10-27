@@ -11,7 +11,7 @@ namespace browser
 		m_bComponentMutex = true;
         
         // 线程池
-        m_pThreadPool = new BaseThreadPool(1);
+		m_pThread = new BaseThread();
 	}
 
 	void TransformSystem::init()
@@ -45,7 +45,7 @@ namespace browser
 
 	void TransformSystem::update(float deltaTime)
 	{
-        m_pThreadPool->addTask(std::bind(&TransformSystem::updateScene, this));
+		m_pThread->addTask(std::bind(&TransformSystem::updateScene, this));
 	}
 
     void TransformSystem::updateScene()
