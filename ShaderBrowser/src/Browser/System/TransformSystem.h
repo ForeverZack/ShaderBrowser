@@ -5,7 +5,7 @@
 #include "Common/System/BaseSystem.h"
 #include "Browser/Components/Transform/Transform.h"
 #include "Common/Tools/BaseSingleton.h"
-#include "Common/Tools/Thread/BaseThreadPool.h"
+#include "Common/Tools/Thread/BaseThread.h"
 
 using namespace common;
 
@@ -40,6 +40,6 @@ namespace browser
 		// 场景根节点
         BaseEntity* m_oScene;
         // 线程
-        BaseThreadPool* m_pThreadPool;
+        BaseThread* m_pThread;
 	};
 }
