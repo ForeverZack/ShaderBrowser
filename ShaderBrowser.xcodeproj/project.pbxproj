@@ -12,6 +12,7 @@
 		141098ED22D0C5F800C9F982 /* FeedbackSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 141098EC22D0C5F800C9F982 /* FeedbackSystem.cpp */; };
 		141098F022D0CE4900C9F982 /* GLFeedback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 141098EF22D0CE4900C9F982 /* GLFeedback.cpp */; };
 		141098F222D0E28700C9F982 /* BaseFeedback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 141098F122D0E28700C9F982 /* BaseFeedback.cpp */; };
+		14155EDC2376771E00688EEF /* RenderCore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14155EDB2376771E00688EEF /* RenderCore.cpp */; };
 		1415B6D9222A4FB100C7E37B /* Animator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1415B6D7222A4FB100C7E37B /* Animator.cpp */; };
 		1415B6DC222A5B2A00C7E37B /* AnimationSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1415B6DB222A5B2A00C7E37B /* AnimationSystem.cpp */; };
 		1428BDEA2349D711000D13E2 /* BaseThreadPool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1428BDE82349D711000D13E2 /* BaseThreadPool.cpp */; };
@@ -103,6 +104,8 @@
 		141098EE22D0CE4900C9F982 /* GLFeedback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLFeedback.h; sourceTree = "<group>"; };
 		141098EF22D0CE4900C9F982 /* GLFeedback.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GLFeedback.cpp; sourceTree = "<group>"; };
 		141098F122D0E28700C9F982 /* BaseFeedback.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BaseFeedback.cpp; sourceTree = "<group>"; };
+		14155ED9237675E200688EEF /* RenderCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RenderCore.h; sourceTree = "<group>"; };
+		14155EDB2376771E00688EEF /* RenderCore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RenderCore.cpp; sourceTree = "<group>"; };
 		1415B6D4222A2FD100C7E37B /* Rescale.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Rescale.h; sourceTree = "<group>"; };
 		1415B6D5222A2FD100C7E37B /* Assimp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Assimp.h; sourceTree = "<group>"; };
 		1415B6D7222A4FB100C7E37B /* Animator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Animator.cpp; sourceTree = "<group>"; };
@@ -267,6 +270,15 @@
 			path = Event;
 			sourceTree = "<group>";
 		};
+		14155ED7237675E200688EEF /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				14155ED9237675E200688EEF /* RenderCore.h */,
+				14155EDB2376771E00688EEF /* RenderCore.cpp */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
 		1415B6D6222A4FB100C7E37B /* Animation */ = {
 			isa = PBXGroup;
 			children = (
@@ -422,6 +434,7 @@
 				14B9066521BABC8F00554B0B /* Common */,
 				14B9067321BABC8F00554B0B /* GL */,
 				14B904C721BABC8E00554B0B /* Plugins */,
+				14155ED7237675E200688EEF /* Core */,
 				14B9067B21BABC8F00554B0B /* main.cpp */,
 			);
 			path = src;
@@ -784,6 +797,7 @@
 				1469977F220F14B600F4C802 /* BaseLight.cpp in Sources */,
 				14B9067D21BABC8F00554B0B /* glad.c in Sources */,
 				148C358F227AFC62008CB8B1 /* SkinnedRenderCommand.cpp in Sources */,
+				14155EDC2376771E00688EEF /* RenderCore.cpp in Sources */,
 				149C01FF21F4AF910011DAE2 /* GLProgramCache.cpp in Sources */,
 				14A08F5D22FE9787009D7D71 /* AnimatorComputeProgram.cpp in Sources */,
 				14EB118922201A8B00D3C29D /* BaseGUIPanel.cpp in Sources */,
