@@ -85,6 +85,9 @@
     <Filter Include="src\Common\Tools\Thread">
       <UniqueIdentifier>{dbac6c91-c49f-44f1-91da-d38dab21ce53}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Core">
+      <UniqueIdentifier>{2c2bcd93-c6d4-42e3-8aa4-88c356a1e70c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -281,6 +284,9 @@
     </ClCompile>
     <ClCompile Include="src\Common\Tools\Thread\BaseThread.cpp">
       <Filter>src\Common\Tools\Thread</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\RenderCore.cpp">
+      <Filter>src\Core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -484,6 +490,9 @@
     </ClInclude>
     <ClInclude Include="src\Common\Tools\Thread\BaseThreadPool.h">
       <Filter>src\Common\Tools\Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\RenderCore.h">
+      <Filter>src\Core</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -419,11 +419,6 @@ void init()
     GLProgramCache::getInstance()->init();  // 着色器缓存
 }
 
-void destory()
-{
-
-}
-
 auto timePoint = std::chrono::steady_clock::now();
 void recTime(const std::string& log)
 {

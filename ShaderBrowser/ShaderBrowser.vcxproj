@@ -68,6 +68,7 @@
     <ClCompile Include="src\Common\Tools\UI\HierarchyPanel.cpp" />
     <ClCompile Include="src\Common\Tools\UI\InspectorPanel.cpp" />
     <ClCompile Include="src\Common\Tools\Utils.cpp" />
+    <ClCompile Include="src\Core\RenderCore.cpp" />
     <ClCompile Include="src\GL\AssimpConvert.cpp" />
     <ClCompile Include="src\GL\GLComputeProgram.cpp" />
     <ClCompile Include="src\GL\GLDefine.cpp" />
@@ -140,6 +141,7 @@
     <ClInclude Include="src\Common\Tools\UI\HierarchyPanel.h" />
     <ClInclude Include="src\Common\Tools\UI\InspectorPanel.h" />
     <ClInclude Include="src\Common\Tools\Utils.h" />
+    <ClInclude Include="src\Core\RenderCore.h" />
     <ClInclude Include="src\GL\Assimp.h" />
     <ClInclude Include="src\GL\AssimpConvert.h" />
     <ClInclude Include="src\GL\GLComputeProgram.h" />
