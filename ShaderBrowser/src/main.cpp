@@ -1,16 +1,12 @@
 // svn测试
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <imgui.h>
-#include <imgui_impl_glfw_gl3.h>
 
 
 #include <iostream>
-
+#include "Core/Application.h"
 #include "Core/RenderCore.h"
 #include "GL/GLProgram.h"
-#include "Browser/Components/Feedback/BaseFeedback.h"
-#include "Browser/Components/ComputeProgram/BaseComputeProgram.h"
 #include "Browser/Components/Transform/Transform.h"
 #include "Browser/Components/Camera/Camera.h"
 #include "Browser/Components/Mesh/MeshFilter.h"
@@ -20,16 +16,10 @@
 #include "Browser/Components/Render/Material.h"
 #include "Browser/Components/Render/Pass.h"
 #include "Browser/Components/BoundBox/AABBBoundBox.h"
-#include "Browser/System/RenderSystem.h"
 #include "Browser/System/TransformSystem.h"
-#include "Browser/System/MeshSystem.h"
-#include "Browser/System/LightSystem.h"
-#include "Browser/System/AnimationSystem.h"
 #include "Common/Tools/FileUtils.h"
 #include "Common/Tools/BinaryFileUtils.h"
 #include "Browser/System/CameraSystem.h"
-#include "Browser/System/BoundBoxSystem.h"
-#include "Common/System/AutoReleasePool.h"
 #include "GL/Texture2D.h"
 #include "Common/System/ECSManager.h"
 #include "Common/System/Cache/GLProgramCache.h"
@@ -38,18 +28,6 @@
 #include "Common/Tools/UI/GUIFramework.h"
 #include "Common/Tools/UI/InspectorPanel.h"
 #include "Common/Tools/UI/GameStatusPanel.h"
-#include "GL/GLStateCache.h"
-#ifdef __APPLE__
-// macOS
-#include <unistd.h>
-#include <OpenGL/CGLCurrent.h>
-#include <OpenGL/OpenGL.h>
-#else
-// win32
-#include <windows.h>
-#include <wingdi.h>
-#pragma warning(disable:4996)
-#endif
 
 
 using namespace customGL;
@@ -64,31 +42,19 @@ using namespace core;
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
-#include <chrono>
 #include <unordered_map>
 
 #include "GL/Model.h"
 
 // 函数需要先声明一下，否则在定义之前调用会编译出错
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void window_size_callback(GLFWwindow* window, int width, int height);
-void processInput(GLFWwindow *window);
-void mouse_callback(GLFWwindow* window, double xpos, double ypos);
-void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 void mainLoop();
-void init();
 void testVal();
-
-
 
 // 加载进度
 int _curLoadedNum = 0;
 int _totalLoadNum = 8;
 
-// 渲染核心(TODO线程)
-RenderCore* renderCore = nullptr;
-// 上一次更新的时间戳
-std::chrono::steady_clock::time_point _lastUpdate;
+
 
 
 //test
@@ -339,18 +305,10 @@ void testVal()
     
 }
 
-
-
-
-
-
 int main()
 {
-    renderCore = new RenderCore();
-    renderCore->createWindow();
-    
-    init();
-    
+	Application* app = new Application();
+
     TextureCache::getInstance()->addTexturesAsync({ "texture/awesomeface.png", "texture/HelloWorld.png", "models/Fighter/Fighter.png" }, [&](Texture2D* texture) {
             ++_curLoadedNum;
             common::GUIFramework::getInstance()->getGameStatusPanel()->setLoadPercent(_curLoadedNum/(float)_totalLoadNum);
@@ -376,118 +334,13 @@ int main()
                             testVal();
                         }
                  });
-    
-    while (!renderCore->shouldCloseWindow())
-	{
-		mainLoop();
-	}
-    
-    renderCore->destoryWindow();
-    
-    delete renderCore;
+
+	// run
+	app->run();
+
     
     return 0;
 }
 
-void init()
-{
-	// 添加搜索路径
-	FileUtils::getInstance()->addSearchPath(".");
-	FileUtils::getInstance()->addSearchPath("res");
 
-    // test flatbuffer
-//    BinaryFileUtils::getInstance()->serialize();
-//    BinaryFileUtils::getInstance()->deserialize();
-
-	// 注册基本系统
-	ECSManager::getInstance()->registerSystem(browser::RenderSystem::getInstance());	// 渲染系统
-    ECSManager::getInstance()->registerSystem(browser::TransformSystem::getInstance()); // Transform
-    ECSManager::getInstance()->registerSystem(browser::MeshSystem::getInstance()); // Mesh
-	ECSManager::getInstance()->registerSystem(browser::CameraSystem::getInstance());	// Camera
-    ECSManager::getInstance()->registerSystem(browser::BoundBoxSystem::getInstance()); // 包围盒
-    ECSManager::getInstance()->registerSystem(browser::LightSystem::getInstance()); // 灯光系统
-    ECSManager::getInstance()->registerSystem(browser::AnimationSystem::getInstance()); // 动画系统
-	// 初始化系统
-	ECSManager::getInstance()->initSystem(SystemType::RenderSystem);    // 渲染系统
-    ECSManager::getInstance()->initSystem(SystemType::Transform);    // Transform
-	ECSManager::getInstance()->initSystem(SystemType::MeshFilter);    // Mesh
-	ECSManager::getInstance()->initSystem(SystemType::Camera);    // Camera
-    ECSManager::getInstance()->initSystem(SystemType::BoundBox);    // 包围盒
-    ECSManager::getInstance()->initSystem(SystemType::Light);   // Light
-    ECSManager::getInstance()->initSystem(SystemType::Animation);   // Animation
-    // 加载缓存
-    GLProgramCache::getInstance()->init();  // 着色器缓存
-}
-
-auto timePoint = std::chrono::steady_clock::now();
-void recTime(const std::string& log)
-{
-    return;
-    
-    auto now = std::chrono::steady_clock::now();
-    float deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(now - timePoint).count() / 1000.0f;
-    timePoint = now;
-//    std::cout<<log<<deltaTime;
-    BROWSER_LOG(log + std::to_string(deltaTime) + "ms");
-}
-
-void mainLoop()
-{
-    // 计算deltaTime
-    auto now = std::chrono::steady_clock::now();
-    float deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(now - _lastUpdate).count() / 1000000.0f;
-    deltaTime = deltaTime<0 ? 0 : deltaTime;
-    _lastUpdate = now;
-
-
-    
-    
-	// temp
-	TextureCache::getInstance()->update(deltaTime);
-    ModelCache::getInstance()->update(deltaTime);
-
-	// 重置GL状态（这里主要是为了防止插件如imgui绑定纹理，造成缓存失效）
-	GLStateCache::getInstance()->update(deltaTime);
-
-    
-    // beforeUpdate
-    ECSManager::getInstance()->beforeUpdateSystem(SystemType::Transform, deltaTime); // 在所有系统刷新前刷新transform
-    
-	// 2.render
-    recTime("====start=====");
-    ECSManager::getInstance()->updateSystem(SystemType::Transform, deltaTime);  // 更新transform
-    recTime("====SystemType::Transform=====");
-    ECSManager::getInstance()->updateSystem(SystemType::Animation, deltaTime);   // 更新动画系统
-    recTime("====SystemType::Animation=====");
-    
-    while(!ECSManager::getInstance()->isSystemFinish(SystemType::Transform));    // Transform系统必须更新完
-
-    ECSManager::getInstance()->updateSystem(SystemType::Camera, deltaTime);  // 更新camera
-    recTime("====SystemType::Camera=====");
-    ECSManager::getInstance()->updateSystem(SystemType::BoundBox, deltaTime);   // 更新BoundBox
-	recTime("====SystemType::BoundBox=====");
-//    ECSManager::getInstance()->updateSystem(SystemType::RenderSystem, deltaTime);   // 更新渲染系统
-    renderCore->renderLoop(deltaTime);
-    recTime("=====SystemType::RenderSystem=======");
-//    BROWSER_LOG(deltaTime);
-
-
-    
-
-
-	
-
-	// auto release
-	AutoReleasePool::getInstance()->update();
-    
-	// 锁帧
-//    float fps = ;
-//    if (deltaTime < 1.0f/60.0f)
-//    {
-//        sleep((1.0f/60.0f - deltaTime));
-////        deltaTime = 1.0f/60.0f;
-//        fps = 60;
-//    }
-
-}
 

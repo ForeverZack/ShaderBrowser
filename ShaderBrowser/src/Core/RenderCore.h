@@ -18,16 +18,19 @@
 #endif
 
 #include "Common/Tools/Utils.h"
+#include "Common/Tools/BaseSingleton.h"
+
 using namespace customGL;
 using namespace common;
 
 namespace core
 {
-    // settings
+    // 屏幕宽高
     #define SCR_WIDTH 1280
     #define SCR_HEIGHT 720
     
-    class RenderCore
+	// 渲染核心线程
+    class RenderCore : public BaseSingleton<RenderCore>
     {
     public:
         RenderCore();
@@ -38,13 +41,15 @@ namespace core
         void createWindow();
         // 销毁窗口
         void destoryWindow();
+		// 初始化
+		void initRender();
         // 循环
         void renderLoop(float deltaTime);
         // 是否关闭窗口
         bool shouldCloseWindow();
         
     private:
-        GLFWwindow* init();
+        GLFWwindow* initWindow();
         static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
         static void window_size_callback(GLFWwindow* window, int width, int height);
         static void processInput(GLFWwindow *window);

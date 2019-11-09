@@ -3,6 +3,11 @@
 #include "Common/Tools/UI/GUIFramework.h"
 #include "Common/Tools/UI/InspectorPanel.h"
 #include "Common/Tools/UI/GameStatusPanel.h"
+#include "Common/System/Cache/TextureCache.h"
+#include "Common/System/Cache/ModelCache.h"
+#include "Common/System/Cache/GLProgramCache.h"
+#include "Browser/System/RenderSystem.h"
+#include "GL/GLStateCache.h"
 
 namespace core
 {
@@ -68,7 +73,7 @@ namespace core
     
     void RenderCore::createWindow()
     {
-        m_pWindow = init();
+        m_pWindow = initWindow();
 
         // 关闭垂直同步
     #ifdef _WIN32
@@ -101,7 +106,6 @@ namespace core
 
     }
     
-    
     bool RenderCore::shouldCloseWindow()
     {
         return glfwWindowShouldClose(m_pWindow);
@@ -113,11 +117,30 @@ namespace core
         ImGui_ImplGlfwGL3_Shutdown();
         glfwTerminate();
     }
+
+	void RenderCore::initRender()
+	{
+		// 注册渲染系统
+		ECSManager::getInstance()->registerSystem(browser::RenderSystem::getInstance());	// 渲染系统
+																							// 初始化渲染系统
+		ECSManager::getInstance()->initSystem(SystemType::RenderSystem);
+		// 加载缓存
+		GLProgramCache::getInstance()->init();  // 着色器缓存
+
+												// 初始化调试GUI框架
+		common::GUIFramework::getInstance()->init(SCR_WIDTH, SCR_HEIGHT);
+	}
     
     void RenderCore::renderLoop(float deltaTime)
     {
+		//// temp
+		//TextureCache::getInstance()->update(deltaTime);
+		//ModelCache::getInstance()->update(deltaTime);
+
+		// 重置GL状态（这里主要是为了防止插件如imgui绑定纹理，造成缓存失效）
+		GLStateCache::getInstance()->update(deltaTime);
+
         // 1.input
-        glfwPollEvents();
         processInput(m_pWindow);
         
         // 更新渲染系统 TODO：实际上这里只应该执行渲染命令队列里的数据，而非生成渲染命令
@@ -129,12 +152,19 @@ namespace core
         common::GUIFramework::getInstance()->update(deltaTime);
         // ImGui rendering
         ImGui::Render();
-        
+
+
+
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         glfwSwapBuffers(m_pWindow);
+		glfwPollEvents();
+
+		// temp
+		TextureCache::getInstance()->update(deltaTime);
+		ModelCache::getInstance()->update(deltaTime);
     }
     
-    GLFWwindow* RenderCore::init()
+    GLFWwindow* RenderCore::initWindow()
     {
         // glfw: initialize and configure
         // ------------------------------
@@ -186,10 +216,6 @@ namespace core
             std::cout << "Failed to initialize GLAD" << std::endl;
             return nullptr;
         }
-
-
-        // 初始化调试GUI框架
-        common::GUIFramework::getInstance()->init(SCR_WIDTH, SCR_HEIGHT);
 
         return window;
     }
