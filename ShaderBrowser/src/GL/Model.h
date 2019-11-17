@@ -52,7 +52,7 @@ namespace customGL
         {
         }
 
-		MeshTextureData(const MeshTextureData&& data)
+		MeshTextureData(const MeshTextureData&& data) noexcept
 			: mesh(data.mesh)
 			, filename(data.filename)
 			, type(data.type)

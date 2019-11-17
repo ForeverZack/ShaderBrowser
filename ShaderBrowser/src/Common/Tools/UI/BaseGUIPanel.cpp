@@ -45,7 +45,7 @@ namespace common
         value = data.value;
     }
     
-    ShowGUIData::ShowGUIData(const ShowGUIData&& data)
+    ShowGUIData::ShowGUIData(const ShowGUIData&& data) noexcept
     {
         m_eType = data.m_eType;
         value = data.value;

@@ -51,7 +51,7 @@ namespace common
         ShowGUIData();
         ShowGUIData(bool readOnly, bool expand = true);
         ShowGUIData(const ShowGUIData& data);
-        ShowGUIData(const ShowGUIData&& data);
+        ShowGUIData(const ShowGUIData&& data) noexcept;
         ~ShowGUIData();
         
     public:

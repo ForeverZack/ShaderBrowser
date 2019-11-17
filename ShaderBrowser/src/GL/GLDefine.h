@@ -272,7 +272,7 @@ namespace customGL
             texture = data.texture;
             uniformName = data.uniformName;
         }
-		TextureData(const TextureData&& data)
+		TextureData(const TextureData&& data) noexcept
 		{
 			texture = data.texture;
 			uniformName = data.uniformName;
@@ -358,7 +358,7 @@ namespace customGL
         // 构造函数
         UniformValue();
         // 移动构造函数
-        UniformValue(const UniformValue&& uniformVal);
+        UniformValue(const UniformValue&& uniformVal) noexcept;
         // 析构函数
         ~UniformValue();
         // 设置数值

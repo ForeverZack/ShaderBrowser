@@ -44,7 +44,7 @@ namespace customGL {
         
     }
     
-    UniformValue::UniformValue(const UniformValue&& uniformVal)
+    UniformValue::UniformValue(const UniformValue&& uniformVal) noexcept
     {
         m_eType = uniformVal.m_eType;
         _value = uniformVal._value;
