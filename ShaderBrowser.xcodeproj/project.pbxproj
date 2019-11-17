@@ -17,6 +17,8 @@
 		1415B6DC222A5B2A00C7E37B /* AnimationSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1415B6DB222A5B2A00C7E37B /* AnimationSystem.cpp */; };
 		1428BDEA2349D711000D13E2 /* BaseThreadPool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1428BDE82349D711000D13E2 /* BaseThreadPool.cpp */; };
 		1428BDEB2349D711000D13E2 /* BaseThread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1428BDE92349D711000D13E2 /* BaseThread.cpp */; };
+		143995D7238158B700323A90 /* Application.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 143995D3238158B700323A90 /* Application.cpp */; };
+		143995D8238158B700323A90 /* LogicCore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 143995D4238158B700323A90 /* LogicCore.cpp */; };
 		1452D79521E99742001AD1CA /* MeshSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1452D79421E99742001AD1CA /* MeshSystem.cpp */; };
 		1469977F220F14B600F4C802 /* BaseLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1469977E220F14B600F4C802 /* BaseLight.cpp */; };
 		147BBAF9222277EF00B3079B /* HierarchyPanel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 147BBAF8222277EE00B3079B /* HierarchyPanel.cpp */; };
@@ -117,6 +119,10 @@
 		1428BDE72349D711000D13E2 /* BaseThreadPool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseThreadPool.h; sourceTree = "<group>"; };
 		1428BDE82349D711000D13E2 /* BaseThreadPool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BaseThreadPool.cpp; sourceTree = "<group>"; };
 		1428BDE92349D711000D13E2 /* BaseThread.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BaseThread.cpp; sourceTree = "<group>"; };
+		143995D3238158B700323A90 /* Application.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Application.cpp; sourceTree = "<group>"; };
+		143995D4238158B700323A90 /* LogicCore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LogicCore.cpp; sourceTree = "<group>"; };
+		143995D5238158B700323A90 /* Application.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Application.h; sourceTree = "<group>"; };
+		143995D6238158B700323A90 /* LogicCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LogicCore.h; sourceTree = "<group>"; };
 		1452D79321E99703001AD1CA /* MeshSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MeshSystem.h; sourceTree = "<group>"; };
 		1452D79421E99742001AD1CA /* MeshSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MeshSystem.cpp; sourceTree = "<group>"; };
 		1469977D220F14B600F4C802 /* BaseLight.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseLight.h; sourceTree = "<group>"; };
@@ -273,6 +279,10 @@
 		14155ED7237675E200688EEF /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				143995D3238158B700323A90 /* Application.cpp */,
+				143995D5238158B700323A90 /* Application.h */,
+				143995D4238158B700323A90 /* LogicCore.cpp */,
+				143995D6238158B700323A90 /* LogicCore.h */,
 				14155ED9237675E200688EEF /* RenderCore.h */,
 				14155EDB2376771E00688EEF /* RenderCore.cpp */,
 			);
@@ -764,9 +774,11 @@
 				14E349D221C647AA00EB5785 /* Pass.cpp in Sources */,
 				14EB11822220184D00D3C29D /* imgui_impl_glfw_gl3.cpp in Sources */,
 				141098ED22D0C5F800C9F982 /* FeedbackSystem.cpp in Sources */,
+				143995D7238158B700323A90 /* Application.cpp in Sources */,
 				14E723E621E8C31E002A8A89 /* MeshFilter.cpp in Sources */,
 				14B9068521BABC8F00554B0B /* BaseComponent.cpp in Sources */,
 				14B9068A21BABC8F00554B0B /* Image.cpp in Sources */,
+				143995D8238158B700323A90 /* LogicCore.cpp in Sources */,
 				1486090422C8EC8000DD1B96 /* BinaryFileUtils.cpp in Sources */,
 				14E143172208115B001A2EB1 /* GLStateCache.cpp in Sources */,
 				141098F222D0E28700C9F982 /* BaseFeedback.cpp in Sources */,
