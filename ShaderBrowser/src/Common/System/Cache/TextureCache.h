@@ -2,7 +2,7 @@
 
 #include "BaseCache.h"
 #include "BaseAsyncLoader.h"
-#include "GL/Texture2D.h"
+#include "GL/GPUResource/Texture/Texture2D.h"
 
 using namespace customGL;
 

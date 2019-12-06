@@ -99,6 +99,11 @@ namespace common
                 m_vQueue.pop();
             }
         }
+        void operateQueue(std::function<void(std::queue<T>&)> callback)
+        {
+            std::unique_lock<std::mutex> lock(m_oMutex);
+            callback(m_vQueue);
+        }
         
     private:
         // 队列

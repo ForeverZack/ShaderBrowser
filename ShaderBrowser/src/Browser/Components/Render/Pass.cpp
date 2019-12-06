@@ -1,5 +1,5 @@
 #include "Pass.h"
-#include "GL/Texture2D.h"
+#include "GL/GPUResource/Texture/Texture2D.h"
 #include "GL/GLDefine.h"
 
 namespace browser

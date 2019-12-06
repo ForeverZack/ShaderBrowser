@@ -3,7 +3,7 @@
 
 #include <glad/glad.h>
 #include <string>
-#include "Image.h"
+#include "GL/GPUResource/Texture/Image.h"
 #include "Common/Components/Reference.h"
 #include "Common/Tools/Utils.h"
 #include "GL/GPUResource/BaseGPUResource.h"

@@ -1,7 +1,7 @@
 #include "Material.h"
 #include "Common/Tools/Utils.h"
 #include "Common/System/Cache/GLProgramCache.h"
-#include "GL/Texture2D.h"
+#include "GL/GPUResource/Texture/Texture2D.h"
 
 namespace browser
 {

@@ -20,7 +20,7 @@
 #include "Common/Tools/FileUtils.h"
 #include "Common/Tools/BinaryFileUtils.h"
 #include "Browser/System/CameraSystem.h"
-#include "GL/Texture2D.h"
+#include "GL/GPUResource/Texture/Texture2D.h"
 #include "Common/System/ECSManager.h"
 #include "Common/System/Cache/GLProgramCache.h"
 #include "Common/System/Cache/TextureCache.h"

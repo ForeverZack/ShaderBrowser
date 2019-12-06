@@ -8,7 +8,7 @@
 #include "Common/Tools/Utils.h"
 #include "Browser/Components/Mesh/Mesh.h"
 #include "Browser/Components/Mesh/MeshFilter.h"
-#include "Texture2D.h"
+#include "GL/GPUResource/Texture/Texture2D.h"
 #include "Common/System/Cache/TextureCache.h"
 #include "GL/GLProgram.h"
 #include "GL/Skeleton.h"

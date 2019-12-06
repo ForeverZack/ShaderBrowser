@@ -54,10 +54,13 @@
 		14B9068721BABC8F00554B0B /* AutoReleasePool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B9066B21BABC8F00554B0B /* AutoReleasePool.cpp */; };
 		14B9068821BABC8F00554B0B /* ECSManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B9066C21BABC8F00554B0B /* ECSManager.cpp */; };
 		14B9068921BABC8F00554B0B /* Reference.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B9067021BABC8F00554B0B /* Reference.cpp */; };
-		14B9068A21BABC8F00554B0B /* Image.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B9067521BABC8F00554B0B /* Image.cpp */; };
 		14B9068B21BABC8F00554B0B /* GLProgram.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B9067621BABC8F00554B0B /* GLProgram.cpp */; };
-		14B9068C21BABC8F00554B0B /* Texture2D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B9067721BABC8F00554B0B /* Texture2D.cpp */; };
 		14B9068D21BABC8F00554B0B /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B9067B21BABC8F00554B0B /* main.cpp */; };
+		14B9A034239A85A100B9F169 /* BaseGPUResource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B9A033239A85A100B9F169 /* BaseGPUResource.cpp */; };
+		14B9A039239A86F100B9F169 /* BaseGPUOperateCommand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B9A038239A86F100B9F169 /* BaseGPUOperateCommand.cpp */; };
+		14B9A03D239A8B3400B9F169 /* GPUOperateTexture2DCommand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B9A03C239A8B3400B9F169 /* GPUOperateTexture2DCommand.cpp */; };
+		14B9A046239AAC2D00B9F169 /* Image.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B9A044239AAC2D00B9F169 /* Image.cpp */; };
+		14B9A047239AAC2D00B9F169 /* Texture2D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B9A045239AAC2D00B9F169 /* Texture2D.cpp */; };
 		14BE47A32201EE0500EFE57C /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14BE47A12201EE0500EFE57C /* Camera.cpp */; };
 		14BE47A62201EE6600EFE57C /* CameraSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14BE47A42201EE6600EFE57C /* CameraSystem.cpp */; };
 		14C1CCFF21FF517000470798 /* FileUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14C1CCFE21FF517000470798 /* FileUtils.cpp */; };
@@ -189,14 +192,20 @@
 		14B9067021BABC8F00554B0B /* Reference.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Reference.cpp; sourceTree = "<group>"; };
 		14B9067121BABC8F00554B0B /* Reference.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reference.h; sourceTree = "<group>"; };
 		14B9067221BABC8F00554B0B /* CommonDefine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommonDefine.h; sourceTree = "<group>"; };
-		14B9067421BABC8F00554B0B /* Texture2D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Texture2D.h; sourceTree = "<group>"; };
-		14B9067521BABC8F00554B0B /* Image.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Image.cpp; sourceTree = "<group>"; };
 		14B9067621BABC8F00554B0B /* GLProgram.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GLProgram.cpp; sourceTree = "<group>"; };
-		14B9067721BABC8F00554B0B /* Texture2D.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Texture2D.cpp; sourceTree = "<group>"; };
 		14B9067821BABC8F00554B0B /* GLDefine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLDefine.h; sourceTree = "<group>"; };
-		14B9067921BABC8F00554B0B /* Image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Image.h; sourceTree = "<group>"; };
 		14B9067A21BABC8F00554B0B /* GLProgram.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLProgram.h; sourceTree = "<group>"; };
 		14B9067B21BABC8F00554B0B /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = main.cpp; sourceTree = "<group>"; };
+		14B9A032239A857200B9F169 /* BaseGPUResource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BaseGPUResource.h; sourceTree = "<group>"; };
+		14B9A033239A85A100B9F169 /* BaseGPUResource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BaseGPUResource.cpp; sourceTree = "<group>"; };
+		14B9A036239A86E200B9F169 /* BaseGPUOperateCommand.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BaseGPUOperateCommand.h; sourceTree = "<group>"; };
+		14B9A038239A86F100B9F169 /* BaseGPUOperateCommand.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BaseGPUOperateCommand.cpp; sourceTree = "<group>"; };
+		14B9A03B239A8ADF00B9F169 /* GPUOperateTexture2DCommand.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GPUOperateTexture2DCommand.h; sourceTree = "<group>"; };
+		14B9A03C239A8B3400B9F169 /* GPUOperateTexture2DCommand.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GPUOperateTexture2DCommand.cpp; sourceTree = "<group>"; };
+		14B9A040239AABB400B9F169 /* Texture2D.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Texture2D.h; sourceTree = "<group>"; };
+		14B9A043239AABB400B9F169 /* Image.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Image.h; sourceTree = "<group>"; };
+		14B9A044239AAC2D00B9F169 /* Image.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Image.cpp; sourceTree = "<group>"; };
+		14B9A045239AAC2D00B9F169 /* Texture2D.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Texture2D.cpp; sourceTree = "<group>"; };
 		14BE47A12201EE0500EFE57C /* Camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Camera.cpp; sourceTree = "<group>"; };
 		14BE47A22201EE0500EFE57C /* Camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Camera.h; sourceTree = "<group>"; };
 		14BE47A42201EE6600EFE57C /* CameraSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CameraSystem.cpp; sourceTree = "<group>"; };
@@ -638,6 +647,8 @@
 		14B9067321BABC8F00554B0B /* GL */ = {
 			isa = PBXGroup;
 			children = (
+				14B9A035239A86E200B9F169 /* GPUOperateCommand */,
+				14B9A030239A857200B9F169 /* GPUResource */,
 				14FCCDAF22F53049006ECEA0 /* GLComputeProgram.cpp */,
 				14FCCDB022F53049006ECEA0 /* GLComputeProgram.h */,
 				1415B6D5222A2FD100C7E37B /* Assimp.h */,
@@ -658,12 +669,40 @@
 				14B84BD72310D586000DEC36 /* Skeleton.cpp */,
 				14B6AA0F2324DF2500B2A01B /* SkeletonAnimation.h */,
 				14B6AA102324E00700B2A01B /* SkeletonAnimation.cpp */,
-				14B9067421BABC8F00554B0B /* Texture2D.h */,
-				14B9067721BABC8F00554B0B /* Texture2D.cpp */,
-				14B9067921BABC8F00554B0B /* Image.h */,
-				14B9067521BABC8F00554B0B /* Image.cpp */,
 			);
 			path = GL;
+			sourceTree = "<group>";
+		};
+		14B9A030239A857200B9F169 /* GPUResource */ = {
+			isa = PBXGroup;
+			children = (
+				14B9A03F239AABB400B9F169 /* Texture */,
+				14B9A033239A85A100B9F169 /* BaseGPUResource.cpp */,
+				14B9A032239A857200B9F169 /* BaseGPUResource.h */,
+			);
+			path = GPUResource;
+			sourceTree = "<group>";
+		};
+		14B9A035239A86E200B9F169 /* GPUOperateCommand */ = {
+			isa = PBXGroup;
+			children = (
+				14B9A036239A86E200B9F169 /* BaseGPUOperateCommand.h */,
+				14B9A038239A86F100B9F169 /* BaseGPUOperateCommand.cpp */,
+				14B9A03B239A8ADF00B9F169 /* GPUOperateTexture2DCommand.h */,
+				14B9A03C239A8B3400B9F169 /* GPUOperateTexture2DCommand.cpp */,
+			);
+			path = GPUOperateCommand;
+			sourceTree = "<group>";
+		};
+		14B9A03F239AABB400B9F169 /* Texture */ = {
+			isa = PBXGroup;
+			children = (
+				14B9A040239AABB400B9F169 /* Texture2D.h */,
+				14B9A045239AAC2D00B9F169 /* Texture2D.cpp */,
+				14B9A043239AABB400B9F169 /* Image.h */,
+				14B9A044239AAC2D00B9F169 /* Image.cpp */,
+			);
+			path = Texture;
 			sourceTree = "<group>";
 		};
 		14BE47A02201EE0500EFE57C /* Camera */ = {
@@ -777,20 +816,20 @@
 				143995D7238158B700323A90 /* Application.cpp in Sources */,
 				14E723E621E8C31E002A8A89 /* MeshFilter.cpp in Sources */,
 				14B9068521BABC8F00554B0B /* BaseComponent.cpp in Sources */,
-				14B9068A21BABC8F00554B0B /* Image.cpp in Sources */,
 				143995D8238158B700323A90 /* LogicCore.cpp in Sources */,
 				1486090422C8EC8000DD1B96 /* BinaryFileUtils.cpp in Sources */,
 				14E143172208115B001A2EB1 /* GLStateCache.cpp in Sources */,
+				14B9A039239A86F100B9F169 /* BaseGPUOperateCommand.cpp in Sources */,
 				141098F222D0E28700C9F982 /* BaseFeedback.cpp in Sources */,
 				14B9068221BABC8F00554B0B /* RenderSystem.cpp in Sources */,
 				141098F022D0CE4900C9F982 /* GLFeedback.cpp in Sources */,
 				14B9068B21BABC8F00554B0B /* GLProgram.cpp in Sources */,
 				14C29E902210345600A514BE /* SpotLight.cpp in Sources */,
-				14B9068C21BABC8F00554B0B /* Texture2D.cpp in Sources */,
 				1405E8A321F432FF00FBDD71 /* ComponentEvent.cpp in Sources */,
 				148177B921D8CB5E0037E11D /* TransformSystem.cpp in Sources */,
 				14C23F35226C64DC00AFE69B /* MaterialCache.cpp in Sources */,
 				14C29E8A220FDF0300A514BE /* DirectionalLight.cpp in Sources */,
+				14B9A034239A85A100B9F169 /* BaseGPUResource.cpp in Sources */,
 				14B45A27220C269800FE5777 /* BoundBoxSystem.cpp in Sources */,
 				14B9068721BABC8F00554B0B /* AutoReleasePool.cpp in Sources */,
 				14B1AA832258AD99000AB04E /* SkinnedMeshRenderer.cpp in Sources */,
@@ -808,6 +847,7 @@
 				14EB11832220184D00D3C29D /* imgui_draw.cpp in Sources */,
 				1469977F220F14B600F4C802 /* BaseLight.cpp in Sources */,
 				14B9067D21BABC8F00554B0B /* glad.c in Sources */,
+				14B9A046239AAC2D00B9F169 /* Image.cpp in Sources */,
 				148C358F227AFC62008CB8B1 /* SkinnedRenderCommand.cpp in Sources */,
 				14155EDC2376771E00688EEF /* RenderCore.cpp in Sources */,
 				149C01FF21F4AF910011DAE2 /* GLProgramCache.cpp in Sources */,
@@ -825,7 +865,9 @@
 				14CDFD1822058FFE00A42823 /* Model.cpp in Sources */,
 				1428BDEB2349D711000D13E2 /* BaseThread.cpp in Sources */,
 				147BBAF9222277EF00B3079B /* HierarchyPanel.cpp in Sources */,
+				14B9A03D239A8B3400B9F169 /* GPUOperateTexture2DCommand.cpp in Sources */,
 				14B8C7FB232532960052B571 /* AssimpConvert.cpp in Sources */,
+				14B9A047239AAC2D00B9F169 /* Texture2D.cpp in Sources */,
 				14BE47A62201EE6600EFE57C /* CameraSystem.cpp in Sources */,
 				1452D79521E99742001AD1CA /* MeshSystem.cpp in Sources */,
 				14FCCDB122F53049006ECEA0 /* GLComputeProgram.cpp in Sources */,
