@@ -9,7 +9,7 @@ namespace customGL
 		Texture2D* texture = new Texture2D();
         if (texture->initWithFile(fileName))
         {
-            texture->autorelease();
+			texture->createGPUResource();
             return texture;
         }
 
@@ -21,7 +21,7 @@ namespace customGL
 		Texture2D* texture = new Texture2D();
 		if (texture->initWithImage(image))
 		{
-			texture->autorelease();
+			texture->createGPUResource();
 			return texture;
 		}
 
@@ -48,10 +48,26 @@ namespace customGL
 		if (m_uTextureId)
 		{
 			glDeleteTextures(1, &m_uTextureId);
+			deleteGPUResource();
         }
         // 从cache中移除
         TextureCache::getInstance()->removeFromCache(this);
     }
+
+	void Texture2D::createGPUResource()
+	{
+		BROWSER_LOG("createGPUResource");
+	}
+
+	void Texture2D::updateGPUResource()
+	{
+		BROWSER_LOG("updateGPUResource");
+	}
+
+	void Texture2D::deleteGPUResource()
+	{
+		BROWSER_LOG("deleteGPUResource");
+	}
 
 	bool Texture2D::initWithImage(Image* image)
 	{

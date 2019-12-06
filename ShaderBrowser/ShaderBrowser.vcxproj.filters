@@ -88,6 +88,9 @@
     <Filter Include="src\Core">
       <UniqueIdentifier>{2c2bcd93-c6d4-42e3-8aa4-88c356a1e70c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\GL\GPUResource">
+      <UniqueIdentifier>{ff3cf808-f5c8-4852-9752-9682b054af51}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -293,6 +296,9 @@
     </ClCompile>
     <ClCompile Include="src\Core\Application.cpp">
       <Filter>src\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GL\GPUResource\BaseGPUResource.cpp">
+      <Filter>src\GL\GPUResource</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -505,6 +511,12 @@
     </ClInclude>
     <ClInclude Include="src\Core\LogicCore.h">
       <Filter>src\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GL\GPUResource\BaseGPUResource.h">
+      <Filter>src\GL\GPUResource</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Common\System\Cache\BaseLoader.h">
+      <Filter>src\Common\System\Cache</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

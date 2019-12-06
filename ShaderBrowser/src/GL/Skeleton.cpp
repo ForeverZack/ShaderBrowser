@@ -70,6 +70,8 @@ namespace customGL
 
 	bool Skeleton::isBone(const char* boneName, unsigned int& boneId)
 	{
+		auto size = m_mBonesIdMap.size();
+
 		auto itor = m_mBonesIdMap.find(boneName);
 		if (itor != m_mBonesIdMap.end())
 		{

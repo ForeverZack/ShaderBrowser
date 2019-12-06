@@ -3,6 +3,8 @@
 #include <thread>
 #include <mutex>
 #include <deque>
+#include <string>
+#include <unordered_map>
 #include <vector>
 #include <memory>
 #include "Common/Tools/Thread/BaseThreadPool.h"
@@ -48,11 +50,11 @@ namespace common
 	public:
 		BaseAsyncLoader(CreateFunc createFunc, int maxThreadCount = DEFAULT_LOADER_MAX_THREAD_COUNT)
 			: m_CreateFunc(createFunc)
-			, m_oLoadingAsyncData(nullptr)
 		{
 			m_vResponses.clear();
 			m_vRequestQueue.clear();
 			m_vResponseQueue.clear();
+			m_mLoadingAsyncDatas.clear();
             
             m_pThreadPool = new BaseThreadPool(maxThreadCount);
 		}
@@ -65,15 +67,14 @@ namespace common
 		// 异步加载接口(注意！！这里使用绝对路径)
 		void loadResourceAsync(const std::string& fullpath, CallbackFunc callback, shared_ptr<ExtraCreateDataType> extra = nullptr)
 		{
+			std::unique_lock<std::mutex> lock(m_oLoadingDataMutex);
+
 			// 检测资源是否正在被加载（防止重复加载，造成内存泄漏）
+			auto itor = m_mLoadingAsyncDatas.find(fullpath);
+			if (itor != m_mLoadingAsyncDatas.end())
 			{
-				if (m_oLoadingAsyncData && m_oLoadingAsyncData->fullpath == fullpath)
-				{
-					m_oLoadingDataMutex.lock();
-					m_oLoadingAsyncData->callbacks.push_back(callback);
-					m_oLoadingDataMutex.unlock();
-					return;
-				}
+				itor->second->callbacks.push_back(callback);
+				return;
 			}
 
 			// 如果没有，则正常加载该资源
@@ -82,6 +83,9 @@ namespace common
 				AsyncData<DataType, CallbackFunc, ExtraCreateDataType>* asyncData = new AsyncData<DataType, CallbackFunc, ExtraCreateDataType>(fullpath, callback, extra);
 				m_vRequestQueue.push_back(asyncData);
 				m_oRequestMutex.unlock();
+
+				// 插入正在加载的列表
+				m_mLoadingAsyncDatas.emplace(fullpath, asyncData);
 			}
             
             // 添加加载任务
@@ -130,12 +134,6 @@ namespace common
                     return;
 				}
 
-				// 记录当前正在加载的资源指针
-				{
-					m_oLoadingDataMutex.lock();
-					m_oLoadingAsyncData = asyncData;
-					m_oLoadingDataMutex.unlock();
-				}
 
 				// 加载数据
 				{
@@ -148,10 +146,8 @@ namespace common
 					{
 						result = m_CreateFunc(asyncData->fullpath.c_str(), nullptr);
 					}
-					m_oLoadingDataMutex.lock();
 					asyncData->data = result;
 					asyncData->loadSuccess = true;
-					m_oLoadingDataMutex.unlock();
 				}
 
 				// 返回加载结果
@@ -161,9 +157,9 @@ namespace common
 					m_oResponseMutex.unlock();
 				}
 
-				// 置空当前正在加载的资源指针
+				// 从正在加载的资源列表中删除
 				m_oLoadingDataMutex.lock();
-				m_oLoadingAsyncData = nullptr;
+				m_mLoadingAsyncDatas.erase(asyncData->fullpath);
 				m_oLoadingDataMutex.unlock();
 
 //			}
@@ -184,7 +180,7 @@ namespace common
 		// 当前正在加载的互斥量
 		std::mutex m_oLoadingDataMutex;
 		// 当前正在加载对象 (因为针对每种不同的加载器，当前只会开启一个线程去加载，每次只加载一个资源对象，所以这里暂时不需要用队列去保存加载资源的指针)
-		AsyncData<DataType, CallbackFunc, ExtraCreateDataType>* m_oLoadingAsyncData;
+		std::unordered_map<std::string, AsyncData<DataType, CallbackFunc, ExtraCreateDataType>*> m_mLoadingAsyncDatas;
 
 		// 加载返回队列（供主线程访问加载的数据结果）
 		std::vector<AsyncData<DataType, CallbackFunc, ExtraCreateDataType>*> m_vResponses;
