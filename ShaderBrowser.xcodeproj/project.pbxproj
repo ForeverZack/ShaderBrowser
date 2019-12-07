@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1405E89F21F426F400FBDD71 /* Mesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1405E89D21F426F400FBDD71 /* Mesh.cpp */; };
 		1405E8A321F432FF00FBDD71 /* ComponentEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1405E8A221F432FF00FBDD71 /* ComponentEvent.cpp */; };
 		141098ED22D0C5F800C9F982 /* FeedbackSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 141098EC22D0C5F800C9F982 /* FeedbackSystem.cpp */; };
 		141098F022D0CE4900C9F982 /* GLFeedback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 141098EF22D0CE4900C9F982 /* GLFeedback.cpp */; };
@@ -24,6 +23,7 @@
 		14232A58239BCF240023C85C /* Model.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14232A57239BCF240023C85C /* Model.cpp */; };
 		14232A5A239BCFC70023C85C /* SkeletonAnimation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14232A59239BCFC70023C85C /* SkeletonAnimation.cpp */; };
 		14232A5C239BCFE80023C85C /* Skeleton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14232A5B239BCFE80023C85C /* Skeleton.cpp */; };
+		14232A5F239BEA320023C85C /* Mesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14232A5E239BEA310023C85C /* Mesh.cpp */; };
 		1428BDEA2349D711000D13E2 /* BaseThreadPool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1428BDE82349D711000D13E2 /* BaseThreadPool.cpp */; };
 		1428BDEB2349D711000D13E2 /* BaseThread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1428BDE92349D711000D13E2 /* BaseThread.cpp */; };
 		143995D7238158B700323A90 /* Application.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 143995D3238158B700323A90 /* Application.cpp */; };
@@ -102,8 +102,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		1405E89D21F426F400FBDD71 /* Mesh.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Mesh.cpp; sourceTree = "<group>"; };
-		1405E89E21F426F400FBDD71 /* Mesh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Mesh.h; sourceTree = "<group>"; };
 		1405E8A121F432FF00FBDD71 /* ComponentEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ComponentEvent.h; sourceTree = "<group>"; };
 		1405E8A221F432FF00FBDD71 /* ComponentEvent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ComponentEvent.cpp; sourceTree = "<group>"; };
 		141098EB22D0C5F800C9F982 /* FeedbackSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeedbackSystem.h; sourceTree = "<group>"; };
@@ -136,6 +134,8 @@
 		14232A57239BCF240023C85C /* Model.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Model.cpp; sourceTree = "<group>"; };
 		14232A59239BCFC70023C85C /* SkeletonAnimation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SkeletonAnimation.cpp; sourceTree = "<group>"; };
 		14232A5B239BCFE80023C85C /* Skeleton.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Skeleton.cpp; sourceTree = "<group>"; };
+		14232A5D239BEA2B0023C85C /* Mesh.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Mesh.h; sourceTree = "<group>"; };
+		14232A5E239BEA310023C85C /* Mesh.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Mesh.cpp; sourceTree = "<group>"; };
 		14275C0A21B8A8580027A8BB /* ShaderBrowser */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ShaderBrowser; sourceTree = BUILT_PRODUCTS_DIR; };
 		1428BDE62349D711000D13E2 /* BaseThread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseThread.h; sourceTree = "<group>"; };
 		1428BDE72349D711000D13E2 /* BaseThreadPool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseThreadPool.h; sourceTree = "<group>"; };
@@ -338,6 +338,8 @@
 		14232A4E239BCBE50023C85C /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				14232A5D239BEA2B0023C85C /* Mesh.h */,
+				14232A5E239BEA310023C85C /* Mesh.cpp */,
 				14232A53239BCBE50023C85C /* Model.h */,
 				14232A57239BCF240023C85C /* Model.cpp */,
 				14232A52239BCBE50023C85C /* Skeleton.h */,
@@ -751,8 +753,6 @@
 		14E723E321E8C31E002A8A89 /* Mesh */ = {
 			isa = PBXGroup;
 			children = (
-				1405E89E21F426F400FBDD71 /* Mesh.h */,
-				1405E89D21F426F400FBDD71 /* Mesh.cpp */,
 				14E723E721E8C33B002A8A89 /* MeshFilter.h */,
 				14E723E421E8C31E002A8A89 /* MeshFilter.cpp */,
 			);
@@ -867,9 +867,9 @@
 				14B1AA832258AD99000AB04E /* SkinnedMeshRenderer.cpp in Sources */,
 				14EB1187222019C000D3C29D /* GUIFramework.cpp in Sources */,
 				14EB11852220185800D3C29D /* imgui.cpp in Sources */,
-				1405E89F21F426F400FBDD71 /* Mesh.cpp in Sources */,
 				14C29E8D220FFB9E00A514BE /* PointLight.cpp in Sources */,
 				14B9068421BABC8F00554B0B /* BaseRender.cpp in Sources */,
+				14232A5F239BEA320023C85C /* Mesh.cpp in Sources */,
 				148C358C227ADD16008CB8B1 /* BaseRenderCommand.cpp in Sources */,
 				14C1CCFF21FF517000470798 /* FileUtils.cpp in Sources */,
 				14B9068921BABC8F00554B0B /* Reference.cpp in Sources */,
