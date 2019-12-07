@@ -2,7 +2,7 @@
 #include "GL/GPUResource/Model/Skeleton.h"
 #include "GL/Assimp.h"
 #include "GL/AssimpConvert.h"
-#include "Rescale.h"
+#include "GL/Rescale.h"
 
 using namespace common;
 

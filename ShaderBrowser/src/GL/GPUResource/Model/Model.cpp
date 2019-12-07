@@ -3,7 +3,7 @@
 #include "Common/System/Cache/MaterialCache.h"
 #include "GL/Assimp.h"
 #include "GL/AssimpConvert.h"
-#include "Rescale.h"
+#include "GL/Rescale.h"
 #include "Browser/Components/Transform/Transform.h"
 #include "Browser/Components/Mesh/MeshFilter.h"
 #include "Browser/Components/BoundBox/AABBBoundBox.h"

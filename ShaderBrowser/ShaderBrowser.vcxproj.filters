@@ -91,28 +91,31 @@
     <Filter Include="src\GL\GPUResource">
       <UniqueIdentifier>{ff3cf808-f5c8-4852-9752-9682b054af51}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\GL\System">
+      <UniqueIdentifier>{28e0a7c2-e834-466a-a46d-feb9f0565284}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\GL\GPUOperateCommand">
+      <UniqueIdentifier>{e8e1d3be-2bb5-4c8f-a8ef-834eb7979087}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\GL\GPUResource\Texture">
+      <UniqueIdentifier>{cbcda010-3b54-40c4-863c-24324ea9d999}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\GL\GPUResource\Shader">
+      <UniqueIdentifier>{44f64740-112e-425e-baaf-d3a30d75bda1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\GL\GPUResource\Model">
+      <UniqueIdentifier>{60e84619-e659-483f-9c22-47fcb778b21b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
       <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\GL\GLProgram.cpp">
-      <Filter>src\GL</Filter>
     </ClCompile>
     <ClCompile Include="src\Browser\System\RenderSystem.cpp">
       <Filter>src\Browser\System</Filter>
     </ClCompile>
     <ClCompile Include="src\Browser\Components\Render\BaseRender.cpp">
       <Filter>src\Browser\Components\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="src\GL\Texture2D.cpp">
-      <Filter>src\GL</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Browser\Components\Render\Material.cpp">
-      <Filter>src\Browser\Components\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="src\GL\Image.cpp">
-      <Filter>src\GL</Filter>
     </ClCompile>
     <ClCompile Include="src\Common\Tools\Utils.cpp">
       <Filter>src\Common\Tools</Filter>
@@ -134,9 +137,6 @@
     </ClCompile>
     <ClCompile Include="src\Plugins\glad\src\glad.c">
       <Filter>src\Plugins\glad</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Browser\Components\Render\Pass.cpp">
-      <Filter>src\Browser\Components\Render</Filter>
     </ClCompile>
     <ClCompile Include="src\GL\GLDefine.cpp">
       <Filter>src\GL</Filter>
@@ -173,9 +173,6 @@
     </ClCompile>
     <ClCompile Include="src\Browser\System\CameraSystem.cpp">
       <Filter>src\Browser\System</Filter>
-    </ClCompile>
-    <ClCompile Include="src\GL\Model.cpp">
-      <Filter>src\GL</Filter>
     </ClCompile>
     <ClCompile Include="src\GL\GLStateCache.cpp">
       <Filter>src\GL</Filter>
@@ -273,12 +270,6 @@
     <ClCompile Include="src\Browser\Components\ComputeProgram\AnimatorComputeProgram.cpp">
       <Filter>src\Browser\Components\ComputePrgram</Filter>
     </ClCompile>
-    <ClCompile Include="src\GL\Skeleton.cpp">
-      <Filter>src\GL</Filter>
-    </ClCompile>
-    <ClCompile Include="src\GL\SkeletonAnimation.cpp">
-      <Filter>src\GL</Filter>
-    </ClCompile>
     <ClCompile Include="src\GL\AssimpConvert.cpp">
       <Filter>src\GL</Filter>
     </ClCompile>
@@ -300,11 +291,44 @@
     <ClCompile Include="src\GL\GPUResource\BaseGPUResource.cpp">
       <Filter>src\GL\GPUResource</Filter>
     </ClCompile>
+    <ClCompile Include="src\GL\System\GPUOperateSystem.cpp">
+      <Filter>src\GL\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GL\GPUOperateCommand\BaseGPUOperateCommand.cpp">
+      <Filter>src\GL\GPUOperateCommand</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GL\GPUOperateCommand\GPUOperateCommandPool.cpp">
+      <Filter>src\GL\GPUOperateCommand</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GL\GPUOperateCommand\GPUOperateTexture2DCommand.cpp">
+      <Filter>src\GL\GPUOperateCommand</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GL\GPUResource\Model\Model.cpp">
+      <Filter>src\GL\GPUResource\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GL\GPUResource\Model\Skeleton.cpp">
+      <Filter>src\GL\GPUResource\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GL\GPUResource\Model\SkeletonAnimation.cpp">
+      <Filter>src\GL\GPUResource\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GL\GPUResource\Shader\Material.cpp">
+      <Filter>src\GL\GPUResource\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GL\GPUResource\Shader\Pass.cpp">
+      <Filter>src\GL\GPUResource\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GL\GPUResource\Shader\GLProgram.cpp">
+      <Filter>src\GL\GPUResource\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GL\GPUResource\Texture\Texture2D.cpp">
+      <Filter>src\GL\GPUResource\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GL\GPUResource\Texture\Image.cpp">
+      <Filter>src\GL\GPUResource\Texture</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\GL\GLProgram.h">
-      <Filter>src\GL</Filter>
-    </ClInclude>
     <ClInclude Include="src\GL\GLDefine.h">
       <Filter>src\GL</Filter>
     </ClInclude>
@@ -313,15 +337,6 @@
     </ClInclude>
     <ClInclude Include="src\Browser\Components\Render\BaseRender.h">
       <Filter>src\Browser\Components\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="src\GL\Texture2D.h">
-      <Filter>src\GL</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Browser\Components\Render\Material.h">
-      <Filter>src\Browser\Components\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="src\GL\Image.h">
-      <Filter>src\GL</Filter>
     </ClInclude>
     <ClInclude Include="src\Common\Tools\Utils.h">
       <Filter>src\Common\Tools</Filter>
@@ -346,9 +361,6 @@
     </ClInclude>
     <ClInclude Include="src\Common\CommonDefine.h">
       <Filter>src\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Browser\Components\Render\Pass.h">
-      <Filter>src\Browser\Components\Render</Filter>
     </ClInclude>
     <ClInclude Include="src\Browser\Components\Transform\Transform.h">
       <Filter>src\Browser\Components\Transfrom</Filter>
@@ -391,9 +403,6 @@
     </ClInclude>
     <ClInclude Include="src\Browser\System\CameraSystem.h">
       <Filter>src\Browser\System</Filter>
-    </ClInclude>
-    <ClInclude Include="src\GL\Model.h">
-      <Filter>src\GL</Filter>
     </ClInclude>
     <ClInclude Include="src\GL\GLStateCache.h">
       <Filter>src\GL</Filter>
@@ -488,12 +497,6 @@
     <ClInclude Include="src\Browser\Components\ComputeProgram\AnimatorComputeProgram.h">
       <Filter>src\Browser\Components\ComputePrgram</Filter>
     </ClInclude>
-    <ClInclude Include="src\GL\Skeleton.h">
-      <Filter>src\GL</Filter>
-    </ClInclude>
-    <ClInclude Include="src\GL\SkeletonAnimation.h">
-      <Filter>src\GL</Filter>
-    </ClInclude>
     <ClInclude Include="src\GL\AssimpConvert.h">
       <Filter>src\GL</Filter>
     </ClInclude>
@@ -517,6 +520,42 @@
     </ClInclude>
     <ClInclude Include="src\Common\System\Cache\BaseLoader.h">
       <Filter>src\Common\System\Cache</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GL\System\GPUOperateSystem.h">
+      <Filter>src\GL\System</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GL\GPUOperateCommand\BaseGPUOperateCommand.h">
+      <Filter>src\GL\GPUOperateCommand</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GL\GPUOperateCommand\GPUOperateCommandPool.h">
+      <Filter>src\GL\GPUOperateCommand</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GL\GPUOperateCommand\GPUOperateTexture2DCommand.h">
+      <Filter>src\GL\GPUOperateCommand</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GL\GPUResource\Model\Model.h">
+      <Filter>src\GL\GPUResource\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GL\GPUResource\Model\Skeleton.h">
+      <Filter>src\GL\GPUResource\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GL\GPUResource\Model\SkeletonAnimation.h">
+      <Filter>src\GL\GPUResource\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GL\GPUResource\Shader\Material.h">
+      <Filter>src\GL\GPUResource\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GL\GPUResource\Shader\Pass.h">
+      <Filter>src\GL\GPUResource\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GL\GPUResource\Shader\GLProgram.h">
+      <Filter>src\GL\GPUResource\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GL\GPUResource\Texture\Texture2D.h">
+      <Filter>src\GL\GPUResource\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GL\GPUResource\Texture\Image.h">
+      <Filter>src\GL\GPUResource\Texture</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

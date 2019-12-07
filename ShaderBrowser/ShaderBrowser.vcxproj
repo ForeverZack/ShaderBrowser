@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -38,8 +38,6 @@
     <ClCompile Include="src\Browser\Components\Render\BaseRender.cpp" />
     <ClCompile Include="src\Browser\Components\Render\Commands\BaseRenderCommand.cpp" />
     <ClCompile Include="src\Browser\Components\Render\Commands\SkinnedRenderCommand.cpp" />
-    <ClCompile Include="src\Browser\Components\Render\Material.cpp" />
-    <ClCompile Include="src\Browser\Components\Render\Pass.cpp" />
     <ClCompile Include="src\Browser\Components\Render\SkinnedMeshRenderer.cpp" />
     <ClCompile Include="src\Browser\Components\Transform\Transform.cpp" />
     <ClCompile Include="src\Browser\Entitys\BaseEntity.cpp" />
@@ -75,14 +73,20 @@
     <ClCompile Include="src\GL\GLComputeProgram.cpp" />
     <ClCompile Include="src\GL\GLDefine.cpp" />
     <ClCompile Include="src\GL\GLFeedback.cpp" />
-    <ClCompile Include="src\GL\GLProgram.cpp" />
     <ClCompile Include="src\GL\GLStateCache.cpp" />
+    <ClCompile Include="src\GL\GPUOperateCommand\BaseGPUOperateCommand.cpp" />
+    <ClCompile Include="src\GL\GPUOperateCommand\GPUOperateCommandPool.cpp" />
+    <ClCompile Include="src\GL\GPUOperateCommand\GPUOperateTexture2DCommand.cpp" />
     <ClCompile Include="src\GL\GPUResource\BaseGPUResource.cpp" />
-    <ClCompile Include="src\GL\Image.cpp" />
-    <ClCompile Include="src\GL\Model.cpp" />
-    <ClCompile Include="src\GL\Skeleton.cpp" />
-    <ClCompile Include="src\GL\SkeletonAnimation.cpp" />
-    <ClCompile Include="src\GL\Texture2D.cpp" />
+    <ClCompile Include="src\GL\GPUResource\Model\Model.cpp" />
+    <ClCompile Include="src\GL\GPUResource\Model\Skeleton.cpp" />
+    <ClCompile Include="src\GL\GPUResource\Model\SkeletonAnimation.cpp" />
+    <ClCompile Include="src\GL\GPUResource\Shader\GLProgram.cpp" />
+    <ClCompile Include="src\GL\GPUResource\Shader\Material.cpp" />
+    <ClCompile Include="src\GL\GPUResource\Shader\Pass.cpp" />
+    <ClCompile Include="src\GL\GPUResource\Texture\Image.cpp" />
+    <ClCompile Include="src\GL\GPUResource\Texture\Texture2D.cpp" />
+    <ClCompile Include="src\GL\System\GPUOperateSystem.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Plugins\glad\src\glad.c" />
     <ClCompile Include="src\Plugins\imgui\imgui.cpp" />
@@ -109,8 +113,6 @@
     <ClInclude Include="src\Browser\Components\Render\BaseRender.h" />
     <ClInclude Include="src\Browser\Components\Render\Commands\BaseRenderCommand.h" />
     <ClInclude Include="src\Browser\Components\Render\Commands\SkinnedRenderCommand.h" />
-    <ClInclude Include="src\Browser\Components\Render\Material.h" />
-    <ClInclude Include="src\Browser\Components\Render\Pass.h" />
     <ClInclude Include="src\Browser\Components\Render\SkinnedMeshRenderer.h" />
     <ClInclude Include="src\Browser\Components\Transform\Transform.h" />
     <ClInclude Include="src\Browser\Entitys\BaseEntity.h" />
@@ -153,46 +155,52 @@
     <ClInclude Include="src\GL\GLComputeProgram.h" />
     <ClInclude Include="src\GL\GLDefine.h" />
     <ClInclude Include="src\GL\GLFeedback.h" />
-    <ClInclude Include="src\GL\GLProgram.h" />
     <ClInclude Include="src\GL\GLStateCache.h" />
+    <ClInclude Include="src\GL\GPUOperateCommand\BaseGPUOperateCommand.h" />
+    <ClInclude Include="src\GL\GPUOperateCommand\GPUOperateCommandPool.h" />
+    <ClInclude Include="src\GL\GPUOperateCommand\GPUOperateTexture2DCommand.h" />
     <ClInclude Include="src\GL\GPUResource\BaseGPUResource.h" />
-    <ClInclude Include="src\GL\Image.h" />
-    <ClInclude Include="src\GL\Model.h" />
+    <ClInclude Include="src\GL\GPUResource\Model\Model.h" />
+    <ClInclude Include="src\GL\GPUResource\Model\Skeleton.h" />
+    <ClInclude Include="src\GL\GPUResource\Model\SkeletonAnimation.h" />
+    <ClInclude Include="src\GL\GPUResource\Shader\GLProgram.h" />
+    <ClInclude Include="src\GL\GPUResource\Shader\Material.h" />
+    <ClInclude Include="src\GL\GPUResource\Shader\Pass.h" />
+    <ClInclude Include="src\GL\GPUResource\Texture\Image.h" />
+    <ClInclude Include="src\GL\GPUResource\Texture\Texture2D.h" />
     <ClInclude Include="src\GL\Rescale.h" />
-    <ClInclude Include="src\GL\Skeleton.h" />
-    <ClInclude Include="src\GL\SkeletonAnimation.h" />
-    <ClInclude Include="src\GL\Texture2D.h" />
+    <ClInclude Include="src\GL\System\GPUOperateSystem.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{E77D317D-60E5-4CB6-9ED6-61AE661DD35A}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>ShaderBrowser</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
