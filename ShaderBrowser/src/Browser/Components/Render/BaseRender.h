@@ -6,7 +6,7 @@
 #include "GL/GLDefine.h"
 #include "Common/Tools/Utils.h"
 #include "Browser/Components/BaseComponent.h"
-#include "Browser/Components/Mesh/Mesh.h"
+#include "GL/GPUResource/Model/Mesh.h"
 #include "GL/GPUResource/Shader/Material.h"
 
 using namespace std;

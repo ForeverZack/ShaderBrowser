@@ -5,6 +5,8 @@
 //#include "Browser/Components/Feedback/AnimatorFeedback.h"
 //#include "Browser/Components/ComputeProgram/AnimatorComputeProgram.h"
 
+using namespace customGL;
+
 namespace browser
 {
     // 默认动画名称前缀

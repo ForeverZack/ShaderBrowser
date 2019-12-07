@@ -6,7 +6,7 @@
 #include <memory>
 #include <glad/glad.h>
 #include "Common/Tools/Utils.h"
-#include "Browser/Components/Mesh/Mesh.h"
+#include "GL/GPUResource/Model/Mesh.h"
 #include "Browser/Components/Mesh/MeshFilter.h"
 #include "GL/GPUResource/Texture/Texture2D.h"
 #include "Common/System/Cache/TextureCache.h"
@@ -33,7 +33,7 @@ namespace customGL
     struct MeshTextureData
     {
         // 纹理所属mesh
-        browser::Mesh* mesh;
+        Mesh* mesh;
         // 纹理名称
         std::string filename;
         // 类型
@@ -43,7 +43,7 @@ namespace customGL
         // 是否找到该纹理
         bool bFound;
         
-        MeshTextureData(browser::Mesh* mesh, std::string name, aiTextureType type, std::string uniform, bool found=true)
+        MeshTextureData(Mesh* mesh, std::string name, aiTextureType type, std::string uniform, bool found=true)
             : mesh(mesh)
             , filename(name)
             , type(type)
@@ -162,8 +162,8 @@ namespace customGL
 
         
         // 绑定网格模型到单个骨骼
-        bool bindMeshOnSingleBone(browser::Mesh* mesh, const std::string& boneName, const glm::mat4& transformation = GLM_MAT4_UNIT);
-        bool bindMeshOnSingleBone(browser::Mesh* mesh, unsigned int boneIdx, const glm::mat4& transformation = GLM_MAT4_UNIT);
+        bool bindMeshOnSingleBone(Mesh* mesh, const std::string& boneName, const glm::mat4& transformation = GLM_MAT4_UNIT);
+        bool bindMeshOnSingleBone(Mesh* mesh, unsigned int boneIdx, const glm::mat4& transformation = GLM_MAT4_UNIT);
         
 	private:
         // 初始化
@@ -177,9 +177,9 @@ namespace customGL
         // 记录骨骼节点的变换
         void recordBonesInitialTransform();
         // 生成游戏内部使用的网格(aiMesh->Mesh)
-        browser::Mesh* generateMesh(aiMesh* aiMesh, const aiScene*& scene);
+        Mesh* generateMesh(aiMesh* aiMesh, const aiScene*& scene);
         // 读取纹理数据
-        void readTextureData(browser::Mesh* mesh, aiMaterial* material, aiTextureType type, const char* uniformName = GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_TEXUTRE0]);
+        void readTextureData(Mesh* mesh, aiMaterial* material, aiTextureType type, const char* uniformName = GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_TEXUTRE0]);
         // 计算到endNode空间下的变换矩阵，用来将模型空间下的网格坐标，转换到骨骼节点下。(应该只有含有骨骼的模型中，包含普通网格模型(没有绑定骨骼，只是单纯的放在骨骼节点下，需要用代码手动绑定)时才需要用到，因为这部分网格模型的顶点坐标是模型空间的，他们的原点是RootNode。如果自己单独创建了一个不相干的模型(有自己的原点)，则不需要这个空间变换)
         void calculateTransformMatrix(aiNode* node, aiNode* endNode, aiMatrix4x4& transformation);
 
@@ -194,7 +194,7 @@ namespace customGL
         REGISTER_PROPERTY_CONSTREF_GET(std::vector<std::string>, m_vAnimationNames, AnimationNames);
         REGISTER_PROPERTY_GET_SET(std::function<void(Model*)>, m_oSuccessCallback, SuccessCallback)
         REGISTER_PROPERTY_GET(unsigned int, m_uBoneNum, BoneNum)
-        REGISTER_PROPERTY_CONSTREF_GET(std::vector<browser::Mesh*>, m_vMeshes, Meshes)
+        REGISTER_PROPERTY_CONSTREF_GET(std::vector<Mesh*>, m_vMeshes, Meshes)
         REGISTER_PROPERTY_GET(std::shared_ptr<ModelGpuAnimationData>, m_oGpuAnimData, GpuAnimData)
         std::unordered_map<std::string, unsigned int>* getBonesIdMapPointer()
         {
@@ -250,7 +250,7 @@ namespace customGL
         std::function<void(Model*)> m_oSuccessCallback;
         
         // 网格模型队列
-        std::vector<browser::Mesh*> m_vMeshes;
+        std::vector<Mesh*> m_vMeshes;
         std::vector<std::tuple<aiMesh*, aiNode*>> m_vAiMeshes;
 		// 模型动画队列
 		std::vector<std::tuple<aiAnimation*, std::string>> m_vAnimations;
@@ -264,7 +264,7 @@ namespace customGL
         // 纹理数据(中转)
         std::vector<MeshTextureData> m_vMeshTextureData;
         // 共享材质
-        std::unordered_map<browser::Mesh*, std::vector<Material*>> m_mSharedMaterials;
+        std::unordered_map<Mesh*, std::vector<Material*>> m_mSharedMaterials;
 
 
         // 是否有骨骼动画

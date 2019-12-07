@@ -7,7 +7,7 @@
 #include "GL/GPUResource/Shader/Pass.h"
 #include "GL/GPUResource/Shader/GLProgram.h"
 #include "Common/Tools/Utils.h"
-#include "Browser/Components/Mesh/Mesh.h"
+#include "GL/GPUResource/Model/Mesh.h"
 #include "Browser/Components/Camera/Camera.h"
 #include "Browser/Components/Transform/Transform.h"
 #include "Common/CommonDefine.h"

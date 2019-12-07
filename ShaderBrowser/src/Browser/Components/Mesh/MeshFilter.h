@@ -4,7 +4,7 @@
 #include "Common/Tools/Utils.h"
 #include "GL/GLDefine.h"
 #include "Browser/Components/BaseComponent.h"
-#include "Mesh.h"
+#include "GL/GPUResource/Model/Mesh.h"
 
 using namespace common;
 using namespace customGL;

@@ -153,9 +153,6 @@
     <ClCompile Include="src\Browser\System\MeshSystem.cpp">
       <Filter>src\Browser\System</Filter>
     </ClCompile>
-    <ClCompile Include="src\Browser\Components\Mesh\Mesh.cpp">
-      <Filter>src\Browser\Components\Mesh</Filter>
-    </ClCompile>
     <ClCompile Include="src\Common\System\Cache\GLProgramCache.cpp">
       <Filter>src\Common\System\Cache</Filter>
     </ClCompile>
@@ -327,6 +324,9 @@
     <ClCompile Include="src\GL\GPUResource\Texture\Image.cpp">
       <Filter>src\GL\GPUResource\Texture</Filter>
     </ClCompile>
+    <ClCompile Include="src\GL\GPUResource\Model\Mesh.cpp">
+      <Filter>src\GL\GPUResource\Model</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\GL\GLDefine.h">
@@ -373,9 +373,6 @@
     </ClInclude>
     <ClInclude Include="src\Browser\System\MeshSystem.h">
       <Filter>src\Browser\System</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Browser\Components\Mesh\Mesh.h">
-      <Filter>src\Browser\Components\Mesh</Filter>
     </ClInclude>
     <ClInclude Include="src\Common\System\Cache\GLProgramCache.h">
       <Filter>src\Common\System\Cache</Filter>
@@ -556,6 +553,9 @@
     </ClInclude>
     <ClInclude Include="src\GL\GPUResource\Texture\Image.h">
       <Filter>src\GL\GPUResource\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GL\GPUResource\Model\Mesh.h">
+      <Filter>src\GL\GPUResource\Model</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

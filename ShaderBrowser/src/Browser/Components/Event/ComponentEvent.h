@@ -10,6 +10,7 @@ using namespace common;
 namespace customGL
 {
     class Model;
+	class Mesh;
 }
 
 namespace browser
@@ -22,7 +23,6 @@ namespace browser
     };
     
 	class BaseEntity;
-    class Mesh;
 	class BaseComponent;
 	class Transform;
     class MeshFilter;

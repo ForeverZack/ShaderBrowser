@@ -33,7 +33,6 @@
     <ClCompile Include="src\Browser\Components\Light\DirectionalLight.cpp" />
     <ClCompile Include="src\Browser\Components\Light\PointLight.cpp" />
     <ClCompile Include="src\Browser\Components\Light\SpotLight.cpp" />
-    <ClCompile Include="src\Browser\Components\Mesh\Mesh.cpp" />
     <ClCompile Include="src\Browser\Components\Mesh\MeshFilter.cpp" />
     <ClCompile Include="src\Browser\Components\Render\BaseRender.cpp" />
     <ClCompile Include="src\Browser\Components\Render\Commands\BaseRenderCommand.cpp" />
@@ -78,6 +77,7 @@
     <ClCompile Include="src\GL\GPUOperateCommand\GPUOperateCommandPool.cpp" />
     <ClCompile Include="src\GL\GPUOperateCommand\GPUOperateTexture2DCommand.cpp" />
     <ClCompile Include="src\GL\GPUResource\BaseGPUResource.cpp" />
+    <ClCompile Include="src\GL\GPUResource\Model\Mesh.cpp" />
     <ClCompile Include="src\GL\GPUResource\Model\Model.cpp" />
     <ClCompile Include="src\GL\GPUResource\Model\Skeleton.cpp" />
     <ClCompile Include="src\GL\GPUResource\Model\SkeletonAnimation.cpp" />
@@ -108,7 +108,6 @@
     <ClInclude Include="src\Browser\Components\Light\DirectionalLight.h" />
     <ClInclude Include="src\Browser\Components\Light\PointLight.h" />
     <ClInclude Include="src\Browser\Components\Light\SpotLight.h" />
-    <ClInclude Include="src\Browser\Components\Mesh\Mesh.h" />
     <ClInclude Include="src\Browser\Components\Mesh\MeshFilter.h" />
     <ClInclude Include="src\Browser\Components\Render\BaseRender.h" />
     <ClInclude Include="src\Browser\Components\Render\Commands\BaseRenderCommand.h" />
@@ -160,6 +159,7 @@
     <ClInclude Include="src\GL\GPUOperateCommand\GPUOperateCommandPool.h" />
     <ClInclude Include="src\GL\GPUOperateCommand\GPUOperateTexture2DCommand.h" />
     <ClInclude Include="src\GL\GPUResource\BaseGPUResource.h" />
+    <ClInclude Include="src\GL\GPUResource\Model\Mesh.h" />
     <ClInclude Include="src\GL\GPUResource\Model\Model.h" />
     <ClInclude Include="src\GL\GPUResource\Model\Skeleton.h" />
     <ClInclude Include="src\GL\GPUResource\Model\SkeletonAnimation.h" />

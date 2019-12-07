@@ -10,7 +10,7 @@
 #include "Browser/Components/Transform/Transform.h"
 #include "Browser/Components/Camera/Camera.h"
 #include "Browser/Components/Mesh/MeshFilter.h"
-#include "Browser/Components/Mesh/Mesh.h"
+#include "GL/GPUResource/Model/Mesh.h"
 #include "Browser/Components/Render/BaseRender.h"
 #include "Browser/Components/Render/SkinnedMeshRenderer.h"
 #include "GL/GPUResource/Shader/Material.h"
@@ -152,7 +152,7 @@ void testVal()
 
     // MeshFilter
     // (GLuint location, GLint size, GLenum type, GLboolean normalized, GLsizei stride, void* data)
-    browser::Mesh* mesh = Mesh::create(6);
+    Mesh* mesh = Mesh::create(6);
     mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_POSITION, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), vertices);
     mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_COLOR, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), colors);
     mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_TEX_COORD, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), coords);

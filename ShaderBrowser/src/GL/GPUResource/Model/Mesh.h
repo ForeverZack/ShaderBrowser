@@ -11,10 +11,9 @@
 
 #include <assimp/scene.h>
 
-using namespace common;
-using namespace customGL;
+using namespace browser;
 
-namespace browser
+namespace customGL
 {
     // mesh的顶点属性数量
 #define MESH_VERTEX_ATTR_COUNT 8

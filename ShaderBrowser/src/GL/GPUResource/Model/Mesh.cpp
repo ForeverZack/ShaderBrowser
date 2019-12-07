@@ -3,9 +3,9 @@
 #include "GL/GPUResource/Shader/Material.h"
 #include "Browser/System/RenderSystem.h"
 
-using namespace customGL;
+using namespace browser;
 
-namespace browser
+namespace customGL
 {
 	// 默认网格名称
 	const char* Mesh::DEFAULT_MESH_NAME = "Default";
@@ -78,62 +78,62 @@ namespace browser
         }
 
 		// 设置vao
-        RenderSystem::getInstance()->setupVAO(m_uVAO, m_uVBOs, m_mVertexAttribDeclarations);
+        browser::RenderSystem::getInstance()->setupVAO(m_uVAO, m_uVBOs, m_mVertexAttribDeclarations);
         
 		// 绑定数据
 		// 1.绑定对应的vao
 		glBindVertexArray(m_uVAO);
 
 		// 2.传递顶点数据
-		glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[RenderSystem::VertexBufferType::RenderSystem_ArrayBuffer_Position]);
+		glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[browser::RenderSystem::VertexBufferType::RenderSystem_ArrayBuffer_Position]);
         glBufferData(GL_ARRAY_BUFFER, getVertexCount() * sizeof(glm::vec4), &m_vVertices[0], GL_STATIC_DRAW);
 
 		// 3.传递索引数组
         if (m_uIndexCount > 0)
 		{
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_uVBOs[RenderSystem::VertexBufferType::RenderSystem_Indices_Buffer]);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_uVBOs[browser::RenderSystem::VertexBufferType::RenderSystem_Indices_Buffer]);
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLushort)*getIndexCount(), &m_vIndices[0], GL_STATIC_DRAW);
 		}
         
         // uv
         if (m_vTexcoords1)
         {
-            glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[RenderSystem::VertexBufferType::RenderSystem_ArrayBuffer_UV1]);
+            glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[browser::RenderSystem::VertexBufferType::RenderSystem_ArrayBuffer_UV1]);
             glBufferData(GL_ARRAY_BUFFER, getVertexCount() * sizeof(glm::vec2), &m_vTexcoords1[0], GL_STATIC_DRAW);
         }
         
         // colors
 //        if(m_vColors)
         {
-            glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[RenderSystem::VertexBufferType::RenderSystem_ArrayBuffer_Color]);
+            glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[browser::RenderSystem::VertexBufferType::RenderSystem_ArrayBuffer_Color]);
             glBufferData(GL_ARRAY_BUFFER, getVertexCount() * sizeof(glm::vec4), &m_vColors[0], GL_STATIC_DRAW);
         }
         
         // normal
         if (m_vNormals)
         {
-            glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[RenderSystem::VertexBufferType::RenderSystem_ArrayBuffer_Normal]);
+            glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[browser::RenderSystem::VertexBufferType::RenderSystem_ArrayBuffer_Normal]);
             glBufferData(GL_ARRAY_BUFFER, getVertexCount() * sizeof(glm::vec3), &m_vNormals[0], GL_STATIC_DRAW);
         }
         
         // tangents
         if (m_vTangents)
         {
-            glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[RenderSystem::VertexBufferType::RenderSystem_ArrayBuffer_Tangent]);
+            glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[browser::RenderSystem::VertexBufferType::RenderSystem_ArrayBuffer_Tangent]);
             glBufferData(GL_ARRAY_BUFFER, getVertexCount() * sizeof(glm::vec3), &m_vTangents[0], GL_STATIC_DRAW);
         }
                                                   
         // boneIndices
         if (m_vBoneIndices)
         {
-            glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[RenderSystem::VertexBufferType::RenderSystem_ArrayBuffer_BoneIndices]);
+            glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[browser::RenderSystem::VertexBufferType::RenderSystem_ArrayBuffer_BoneIndices]);
             glBufferData(GL_ARRAY_BUFFER, getVertexCount() * sizeof(glm::uvec4), &m_vBoneIndices[0], GL_STATIC_DRAW);
         }
         
         // boneWeights
         if (m_vBoneWeights)
         {
-            glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[RenderSystem::VertexBufferType::RenderSystem_ArrayBuffer_BoneWeights]);
+            glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[browser::RenderSystem::VertexBufferType::RenderSystem_ArrayBuffer_BoneWeights]);
             glBufferData(GL_ARRAY_BUFFER, getVertexCount() * sizeof(glm::vec4), &m_vBoneWeights[0], GL_STATIC_DRAW);
         }
 

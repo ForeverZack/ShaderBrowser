@@ -440,7 +440,7 @@ namespace customGL
                     {
                         if(m_oSkeleton->isBone(parentNode->mName.C_Str(), boneIdx))
                         {
-                            browser::Mesh* mesh = m_vMeshes[index];
+                            Mesh* mesh = m_vMeshes[index];
                             glm::vec4* boneWeights = mesh->getBoneWeights();
                             if (mesh->getVertexCount()>0 && mesh->getMeshType()==Mesh::MeshType::CommonMesh && (!boneWeights || boneWeights[0][0]==0.0f))
                             {
@@ -586,11 +586,11 @@ namespace customGL
             
 			for (unsigned int i = 0; i < node->mNumMeshes; ++i)
 			{
-				browser::Mesh* mesh = m_vMeshes[node->mMeshes[i]];
+				Mesh* mesh = m_vMeshes[node->mMeshes[i]];
 				if (mesh)
 				{
                     // 检测是否需要蒙皮
-                    if (mesh->getMeshType() == browser::Mesh::MeshType::MeshWithBone)
+                    if (mesh->getMeshType() == Mesh::MeshType::MeshWithBone)
                     {
                         skinned = true;
                     }
@@ -764,7 +764,7 @@ namespace customGL
 		for (unsigned int i = 0; i < node->mNumMeshes; ++i)
 		{
 			aiMesh = scene->mMeshes[node->mMeshes[i]];
-			browser::Mesh* mesh = generateMesh(aiMesh, scene);
+			Mesh* mesh = generateMesh(aiMesh, scene);
 			if (mesh)
 			{
 				m_vMeshes[node->mMeshes[i]] = mesh;
@@ -799,13 +799,13 @@ namespace customGL
         
     }
     
-    browser::Mesh* Model::generateMesh(aiMesh* aiMesh, const aiScene*& scene)
+    Mesh* Model::generateMesh(aiMesh* aiMesh, const aiScene*& scene)
     {
         // 根据aiMesh的id获取aiMesh
         if (aiMesh)
         {
             // 注意:如果纹理创建不成功(例如没有找到),应该有一张白色默认纹理来代替,以防程序出问题
-            browser::Mesh* mesh = browser::Mesh::create(aiMesh->mNumVertices, aiMesh->mName.C_Str(), aiMesh->HasBones() ? browser::Mesh::MeshType::MeshWithBone : browser::Mesh::MeshType::CommonMesh );
+            Mesh* mesh = Mesh::create(aiMesh->mNumVertices, aiMesh->mName.C_Str(), aiMesh->HasBones() ? Mesh::MeshType::MeshWithBone : Mesh::MeshType::CommonMesh );
             // 顶点位置
             mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_POSITION, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), aiMesh->mVertices);
             // 顶点颜色
@@ -937,7 +937,7 @@ namespace customGL
         }
     }
     
-    void Model::readTextureData(browser::Mesh* mesh, aiMaterial* material, aiTextureType type, const char* uniformName /*= GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_TEXUTRE0] */)
+    void Model::readTextureData(Mesh* mesh, aiMaterial* material, aiTextureType type, const char* uniformName /*= GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_TEXUTRE0] */)
     {
         int textureCount = material->GetTextureCount(type);
         
@@ -1194,7 +1194,7 @@ namespace customGL
 		}
 	}
     
-    bool Model::bindMeshOnSingleBone(browser::Mesh* mesh, const std::string& boneName, const glm::mat4& transformation /*= GLM_MAT4_UNIT*/)
+    bool Model::bindMeshOnSingleBone(Mesh* mesh, const std::string& boneName, const glm::mat4& transformation /*= GLM_MAT4_UNIT*/)
     {
 		unsigned int boneId;
 		if (!m_oSkeleton->isBone(boneName, boneId))
@@ -1205,7 +1205,7 @@ namespace customGL
         return bindMeshOnSingleBone(mesh, boneId);
     }
     
-    bool Model::bindMeshOnSingleBone(browser::Mesh* mesh, unsigned int boneIdx, const glm::mat4& transformation /*= GLM_MAT4_UNIT*/)
+    bool Model::bindMeshOnSingleBone(Mesh* mesh, unsigned int boneIdx, const glm::mat4& transformation /*= GLM_MAT4_UNIT*/)
     {
         if(boneIdx >= m_uBoneNum)
         {
@@ -1257,7 +1257,7 @@ namespace customGL
                          // 记录texture
                          m_vTextures.push_back(texture);
                      
-                         browser::Mesh* mesh = m_vMeshTextureData[i].mesh;
+                         Mesh* mesh = m_vMeshTextureData[i].mesh;
                          mesh->addTexture(m_vMeshTextureData[i].uniformName, texture);
                      }
                      

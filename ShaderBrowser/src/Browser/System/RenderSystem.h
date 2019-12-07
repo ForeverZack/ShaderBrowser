@@ -96,7 +96,7 @@ namespace browser
         unsigned int m_uNoRenderVertices;
         
         // 坐标轴模型
-        browser::Mesh* m_oAxisMesh;
+        Mesh* m_oAxisMesh;
         // 坐标轴缩放矩阵
         glm::mat4 m_oAxisScaleMatrix;
 	};
