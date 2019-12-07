@@ -15,6 +15,9 @@
 		14155EDC2376771E00688EEF /* RenderCore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14155EDB2376771E00688EEF /* RenderCore.cpp */; };
 		1415B6D9222A4FB100C7E37B /* Animator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1415B6D7222A4FB100C7E37B /* Animator.cpp */; };
 		1415B6DC222A5B2A00C7E37B /* AnimationSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1415B6DB222A5B2A00C7E37B /* AnimationSystem.cpp */; };
+		14232A3B239B57F40023C85C /* BaseGPUOperateCommand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14232A3A239B57F40023C85C /* BaseGPUOperateCommand.cpp */; };
+		14232A3D239B5AED0023C85C /* GPUOperateCommandPool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14232A3C239B5AED0023C85C /* GPUOperateCommandPool.cpp */; };
+		14232A42239B61AB0023C85C /* GPUOperateSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14232A41239B61AB0023C85C /* GPUOperateSystem.cpp */; };
 		1428BDEA2349D711000D13E2 /* BaseThreadPool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1428BDE82349D711000D13E2 /* BaseThreadPool.cpp */; };
 		1428BDEB2349D711000D13E2 /* BaseThread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1428BDE92349D711000D13E2 /* BaseThread.cpp */; };
 		143995D7238158B700323A90 /* Application.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 143995D3238158B700323A90 /* Application.cpp */; };
@@ -57,7 +60,6 @@
 		14B9068B21BABC8F00554B0B /* GLProgram.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B9067621BABC8F00554B0B /* GLProgram.cpp */; };
 		14B9068D21BABC8F00554B0B /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B9067B21BABC8F00554B0B /* main.cpp */; };
 		14B9A034239A85A100B9F169 /* BaseGPUResource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B9A033239A85A100B9F169 /* BaseGPUResource.cpp */; };
-		14B9A039239A86F100B9F169 /* BaseGPUOperateCommand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B9A038239A86F100B9F169 /* BaseGPUOperateCommand.cpp */; };
 		14B9A03D239A8B3400B9F169 /* GPUOperateTexture2DCommand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B9A03C239A8B3400B9F169 /* GPUOperateTexture2DCommand.cpp */; };
 		14B9A046239AAC2D00B9F169 /* Image.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B9A044239AAC2D00B9F169 /* Image.cpp */; };
 		14B9A047239AAC2D00B9F169 /* Texture2D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B9A045239AAC2D00B9F169 /* Texture2D.cpp */; };
@@ -117,6 +119,11 @@
 		1415B6D8222A4FB100C7E37B /* Animator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Animator.h; sourceTree = "<group>"; };
 		1415B6DA222A5B2900C7E37B /* AnimationSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnimationSystem.h; sourceTree = "<group>"; };
 		1415B6DB222A5B2A00C7E37B /* AnimationSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AnimationSystem.cpp; sourceTree = "<group>"; };
+		14232A39239B55270023C85C /* GPUOperateCommandPool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GPUOperateCommandPool.h; sourceTree = "<group>"; };
+		14232A3A239B57F40023C85C /* BaseGPUOperateCommand.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BaseGPUOperateCommand.cpp; sourceTree = "<group>"; };
+		14232A3C239B5AED0023C85C /* GPUOperateCommandPool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GPUOperateCommandPool.cpp; sourceTree = "<group>"; };
+		14232A3F239B61110023C85C /* GPUOperateSystem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GPUOperateSystem.h; sourceTree = "<group>"; };
+		14232A41239B61AB0023C85C /* GPUOperateSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GPUOperateSystem.cpp; sourceTree = "<group>"; };
 		14275C0A21B8A8580027A8BB /* ShaderBrowser */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ShaderBrowser; sourceTree = BUILT_PRODUCTS_DIR; };
 		1428BDE62349D711000D13E2 /* BaseThread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseThread.h; sourceTree = "<group>"; };
 		1428BDE72349D711000D13E2 /* BaseThreadPool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseThreadPool.h; sourceTree = "<group>"; };
@@ -199,7 +206,6 @@
 		14B9A032239A857200B9F169 /* BaseGPUResource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BaseGPUResource.h; sourceTree = "<group>"; };
 		14B9A033239A85A100B9F169 /* BaseGPUResource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BaseGPUResource.cpp; sourceTree = "<group>"; };
 		14B9A036239A86E200B9F169 /* BaseGPUOperateCommand.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BaseGPUOperateCommand.h; sourceTree = "<group>"; };
-		14B9A038239A86F100B9F169 /* BaseGPUOperateCommand.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BaseGPUOperateCommand.cpp; sourceTree = "<group>"; };
 		14B9A03B239A8ADF00B9F169 /* GPUOperateTexture2DCommand.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GPUOperateTexture2DCommand.h; sourceTree = "<group>"; };
 		14B9A03C239A8B3400B9F169 /* GPUOperateTexture2DCommand.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GPUOperateTexture2DCommand.cpp; sourceTree = "<group>"; };
 		14B9A040239AABB400B9F169 /* Texture2D.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Texture2D.h; sourceTree = "<group>"; };
@@ -305,6 +311,15 @@
 				1415B6D7222A4FB100C7E37B /* Animator.cpp */,
 			);
 			path = Animation;
+			sourceTree = "<group>";
+		};
+		14232A3E239B61110023C85C /* System */ = {
+			isa = PBXGroup;
+			children = (
+				14232A3F239B61110023C85C /* GPUOperateSystem.h */,
+				14232A41239B61AB0023C85C /* GPUOperateSystem.cpp */,
+			);
+			path = System;
 			sourceTree = "<group>";
 		};
 		14275C0121B8A8580027A8BB = {
@@ -649,6 +664,7 @@
 			children = (
 				14B9A035239A86E200B9F169 /* GPUOperateCommand */,
 				14B9A030239A857200B9F169 /* GPUResource */,
+				14232A3E239B61110023C85C /* System */,
 				14FCCDAF22F53049006ECEA0 /* GLComputeProgram.cpp */,
 				14FCCDB022F53049006ECEA0 /* GLComputeProgram.h */,
 				1415B6D5222A2FD100C7E37B /* Assimp.h */,
@@ -686,8 +702,10 @@
 		14B9A035239A86E200B9F169 /* GPUOperateCommand */ = {
 			isa = PBXGroup;
 			children = (
+				14232A39239B55270023C85C /* GPUOperateCommandPool.h */,
+				14232A3C239B5AED0023C85C /* GPUOperateCommandPool.cpp */,
+				14232A3A239B57F40023C85C /* BaseGPUOperateCommand.cpp */,
 				14B9A036239A86E200B9F169 /* BaseGPUOperateCommand.h */,
-				14B9A038239A86F100B9F169 /* BaseGPUOperateCommand.cpp */,
 				14B9A03B239A8ADF00B9F169 /* GPUOperateTexture2DCommand.h */,
 				14B9A03C239A8B3400B9F169 /* GPUOperateTexture2DCommand.cpp */,
 			);
@@ -819,7 +837,6 @@
 				143995D8238158B700323A90 /* LogicCore.cpp in Sources */,
 				1486090422C8EC8000DD1B96 /* BinaryFileUtils.cpp in Sources */,
 				14E143172208115B001A2EB1 /* GLStateCache.cpp in Sources */,
-				14B9A039239A86F100B9F169 /* BaseGPUOperateCommand.cpp in Sources */,
 				141098F222D0E28700C9F982 /* BaseFeedback.cpp in Sources */,
 				14B9068221BABC8F00554B0B /* RenderSystem.cpp in Sources */,
 				141098F022D0CE4900C9F982 /* GLFeedback.cpp in Sources */,
@@ -860,6 +877,7 @@
 				14C29E93221035A300A514BE /* LightSystem.cpp in Sources */,
 				14DC853B22242AFF0051B944 /* GameStatusPanel.cpp in Sources */,
 				1415B6D9222A4FB100C7E37B /* Animator.cpp in Sources */,
+				14232A3B239B57F40023C85C /* BaseGPUOperateCommand.cpp in Sources */,
 				1428BDEA2349D711000D13E2 /* BaseThreadPool.cpp in Sources */,
 				14BE47A32201EE0500EFE57C /* Camera.cpp in Sources */,
 				14CDFD1822058FFE00A42823 /* Model.cpp in Sources */,
@@ -879,6 +897,8 @@
 				14B45A21220C227400FE5777 /* BaseBoundBox.cpp in Sources */,
 				14E349D421C658CA00EB5785 /* GLDefine.cpp in Sources */,
 				14B9068821BABC8F00554B0B /* ECSManager.cpp in Sources */,
+				14232A42239B61AB0023C85C /* GPUOperateSystem.cpp in Sources */,
+				14232A3D239B5AED0023C85C /* GPUOperateCommandPool.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

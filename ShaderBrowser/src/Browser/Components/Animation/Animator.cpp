@@ -2,8 +2,8 @@
 #include "GL/Model.h"
 #include <chrono>
 #include "Common/System/ECSManager.h"
-#include "Browser/Components/Feedback/AnimatorFeedback.h"
-#include "Browser/Components/ComputeProgram/AnimatorComputeProgram.h"
+//#include "Browser/Components/Feedback/AnimatorFeedback.h"
+//#include "Browser/Components/ComputeProgram/AnimatorComputeProgram.h"
 
 namespace browser
 {
@@ -61,8 +61,8 @@ namespace browser
         , m_fBlendDuration(0)
         , m_bApplyRootMotion(false)
         , m_bDirty(true)
-        , m_oFeedback(nullptr)
-		, m_oComputeProgram(nullptr)
+//        , m_oFeedback(nullptr)
+//		, m_oComputeProgram(nullptr)
         , m_bComputeBonesFinish(false)
         , m_oRootBone(nullptr)
     {

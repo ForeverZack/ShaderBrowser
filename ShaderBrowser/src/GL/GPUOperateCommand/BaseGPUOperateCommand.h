@@ -1,5 +1,6 @@
 #pragma once
 
+#include "GL/GLDefine.h"
 #include "Common/Components/Reference.h"
 #include "Common/Tools/Utils.h"
 #include "Common/System/AutoReleasePool.h"
@@ -21,12 +22,16 @@ namespace customGL
     // GPU操作
     enum GPUOperateType
     {
-        // 刷新 (GPUResource状态为Loaded，且dirty为true)
+        // 刷新数据 (GPUResource状态为Loaded，且dirty为true)
         GOT_Update = 0,
         // 创建 (GPUResource状态为DataLoaded)
         GOT_Create,
         // 删除
         GOT_Delete,
+        
+        // 扩展
+        GOT_UpdateProperties_1,
+        GOT_UpdateProperties_2,
     };
     
     
@@ -43,20 +48,24 @@ namespace customGL
         // 执行 (渲染线程调用)
         virtual void execute() {};
         // 结束执行 (渲染线程调用)
-        virtual void finish() {};
+        virtual void finish();
         
     protected:
         // 公共方法。。。
 
-        
+        REGISTER_PROPERTY_GET_SET(GPUOperateCommandType, m_eCommandType, CommandType)
         REGISTER_PROPERTY_GET_SET(GPUOperateType, m_eOperateType, OperateType)
+        REGISTER_PROPERTY_GET(bool, m_bIsReady, IsReady)
         
 	protected:
         // 命令类型
         GPUOperateCommandType m_eCommandType;
         // 操作类型
         GPUOperateType m_eOperateType;
-	};
+        // 是否Ready
+        bool m_bIsReady;
+    };
+
 
 }
 

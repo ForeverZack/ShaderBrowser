@@ -332,7 +332,7 @@ namespace customGL {
         _value.ivec4v.pointer = value;
     }
     
-    void UniformValue::setTex2D(GLuint textureId)
+    void UniformValue::setTex2D(Texture2D* texture)
     {
         common::BROWSER_ASSERT(m_eType==UniformValueType::UniformValueType_Undefined
                                || m_eType==UniformValueType::UniformValueType_Sampler2D,
@@ -340,7 +340,7 @@ namespace customGL {
         
         m_bDirty = true;
         m_eType = UniformValueType::UniformValueType_Sampler2D;
-        _value.tex2D.textureId = textureId;
+        _value.tex2D.texture = texture;
     }
     
     void UniformValue::setSamplerBuffer(GLuint textureId)
@@ -439,7 +439,7 @@ namespace customGL {
                 
             case UniformValueType_Sampler2D:
                 // texture2D
-                glProgram->setUniformWithTex2D(uniformName.c_str(), _value.tex2D.textureId);
+                glProgram->setUniformWithTex2D(uniformName.c_str(), _value.tex2D.texture);
                 break;
                 
             case UniformValueType_SamplerBuffer:

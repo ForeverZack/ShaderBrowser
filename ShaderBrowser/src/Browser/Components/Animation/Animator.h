@@ -17,8 +17,8 @@ using namespace customGL;
 
 namespace browser
 {
-    class AnimatorFeedback;
-	class AnimatorComputeProgram;
+//    class AnimatorFeedback;
+//	class AnimatorComputeProgram;
     
     // 播放动画数据结构
     class AnimationPlayData
@@ -110,10 +110,10 @@ namespace browser
         Model* m_oSrcModel;
         // 是否初始化
         bool m_bHasInit;
-        // feedback
-        AnimatorFeedback* m_oFeedback;
-		// compute program
-		AnimatorComputeProgram* m_oComputeProgram;
+//        // feedback
+//        AnimatorFeedback* m_oFeedback;
+//		// compute program
+//		AnimatorComputeProgram* m_oComputeProgram;
         // 骨骼矩阵tbo
         GLuint m_uTexId;
         GLuint m_uVBO;

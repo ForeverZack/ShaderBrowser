@@ -46,6 +46,11 @@ namespace common
             std::unique_lock<std::mutex> lock(m_oMutex);
             return m_oVariable == val;
         }
+        bool operator!=(const T& val)
+        {
+            std::unique_lock<std::mutex> lock(m_oMutex);
+            return m_oVariable != val;
+        }
 		T getValue()
 		{
 			std::unique_lock<std::mutex> lock(m_oMutex);

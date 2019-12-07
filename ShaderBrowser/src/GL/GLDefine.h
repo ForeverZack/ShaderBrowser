@@ -372,7 +372,7 @@ namespace customGL
         void setVec2(const glm::vec2& value);
         void setVec3(const glm::vec3& value);
         void setVec4(const glm::vec4& value);
-        void setTex2D(GLuint textureId);
+        void setTex2D(Texture2D* texture);
         void setSamplerBuffer(GLuint textureId);
         
         void setIntV(int count, const int* value);
@@ -423,8 +423,8 @@ namespace customGL
             glm::mat4 mat4;
             glm::mat4x3 mat4x3;
             struct {
-                GLuint textureId;
-                //GLuint textureUnit;
+//                GLuint textureId;
+                Texture2D* texture;
             } tex2D;
             struct {
                 GLuint textureId;

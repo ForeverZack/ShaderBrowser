@@ -1,6 +1,7 @@
 #include "GLProgram.h"
 #include "Common/Tools/Utils.h"
 #include "GLStateCache.h"
+#include "GL/GPUResource/Texture/Texture2D.h"
 #include <glm/gtc/type_ptr.hpp>
 #ifdef  _WIN32
 	#pragma warning(disable:4996)
@@ -606,7 +607,7 @@ namespace customGL
         glUniform4iv(location, count, iv);
     }
     
-    void GLProgram::setUniformWithTex2D(const std::string& uniformName, GLuint textureId)
+    void GLProgram::setUniformWithTex2D(const std::string& uniformName, Texture2D* texture)
     {
 		// 自动生成纹理单元
 		GLuint textureUnit;
@@ -626,7 +627,7 @@ namespace customGL
         common::BROWSER_ASSERT(textureUnit<MAX_ACTIVE_TEXTURE, "texture unit value is too big, it is out off support range in function GLProgram::setUniformWithTex2d");
         
         // 绑定纹理到opengl
-        GLStateCache::getInstance()->bindTexture2DN(textureUnit, textureId);
+        GLStateCache::getInstance()->bindTexture2DN(textureUnit, texture->getTextureId());
     }
     
     void GLProgram::setUniformWithSamplerBuffer(const std::string& uniformName, GLuint textureId)

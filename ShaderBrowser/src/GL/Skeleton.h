@@ -81,7 +81,9 @@ namespace customGL
         std::vector<glm::vec4> m_vBonesInitRotation;
         std::vector<glm::vec4> m_vBonesInitScale;
         
-
+        // test
+        bool hasInit;
+        int sizeSK;
 	};
 }
 

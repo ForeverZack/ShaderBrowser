@@ -5,6 +5,7 @@ namespace customGL
 	BaseGPUResource::BaseGPUResource()
 		: m_eResouceState(GPUResourceState::GRS_UnLoad)
 		, m_eResourceType(GPUResourceType::GRT_Undefined)
+        , m_bDirty(false)
 	{
 		this->autorelease();
 	}

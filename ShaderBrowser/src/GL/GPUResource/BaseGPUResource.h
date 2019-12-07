@@ -1,6 +1,9 @@
 #pragma once
 
 #include "Common/Components/Reference.h"
+#include "Common/Tools/Thread/BaseThread.h"
+
+using namespace common;
 
 namespace customGL
 {
@@ -52,7 +55,7 @@ namespace customGL
 
 	protected:
 		// 资源加载状态
-		GPUResourceState m_eResouceState;
+		MutexVariable<GPUResourceState> m_eResouceState;
 		// 资源类型
 		GPUResourceType m_eResourceType;
 		// 数据脏标记

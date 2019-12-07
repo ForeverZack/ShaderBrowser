@@ -282,19 +282,19 @@ namespace browser
         }
     }
     
-    void BaseComputeProgram::setUniformTex2D(const std::string& uniformName, GLuint textureId)
+    void BaseComputeProgram::setUniformTex2D(const std::string& uniformName, Texture2D* texture)
     {
         auto itor = m_mUniforms.find(uniformName);
         if (itor == m_mUniforms.end())
         {
             UniformValue uniformValue;
-            uniformValue.setTex2D(textureId);
+            uniformValue.setTex2D(texture);
             m_mUniforms.emplace(uniformName, std::move(uniformValue));
         }
         else
         {
             UniformValue& uniformValue = itor->second;
-            uniformValue.setTex2D(textureId);
+            uniformValue.setTex2D(texture);
         }
     }
     

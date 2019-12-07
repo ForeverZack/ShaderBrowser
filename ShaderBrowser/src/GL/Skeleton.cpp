@@ -7,7 +7,10 @@ namespace customGL
     // 骨架类
     Skeleton::Skeleton()
         : m_pRootBoneNode(nullptr)
-    {
+        // test
+        , hasInit(false)
+        , sizeSK(0)
+   {
         this->autorelease();
         
         m_vBones.clear();
@@ -15,6 +18,9 @@ namespace customGL
         m_vBonesInitPosition.clear();
         m_vBonesInitRotation.clear();
         m_vBonesInitScale.clear();
+       
+       hasInit = true;
+       sizeSK = m_mBonesIdMap.size();
     }
     
     Skeleton::~Skeleton()

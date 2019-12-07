@@ -8,6 +8,7 @@
 #include "GL/GLFeedback.h"
 #include "Common/Tools/Utils.h"
 #include "Common/Components/Reference.h"
+#include "GL/GPUResource/Texture/Texture2D.h"
 
 using namespace common;
 using namespace customGL;
@@ -53,7 +54,7 @@ namespace browser
         void setUniformV2f(const std::string& uniformName, const glm::vec2& value);
         void setUniformV3f(const std::string& uniformName, const glm::vec3& value);
         void setUniformV4f(const std::string& uniformName, const glm::vec4& value);
-        void setUniformTex2D(const std::string& uniformName, GLuint textureId);
+        void setUniformTex2D(const std::string& uniformName, Texture2D* texture);
         void setUniformSamplerBuffer(const std::string& uniformName, GLuint textureId);
         void setUniformIntV(const std::string& uniformName, int count, const int* value);
         void setUniformIVec2(const std::string& uniformName, const glm::ivec2& value);

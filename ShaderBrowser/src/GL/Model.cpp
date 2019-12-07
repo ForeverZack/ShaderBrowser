@@ -856,12 +856,13 @@ namespace customGL
 			for (unsigned int i = 0; i < aiMesh->mNumBones; ++i)
 			{
 				bone = aiMesh->mBones[i];	// aiBone
-                if (!m_oSkeleton->isBone(bone->mName.C_Str(), boneIdx))
-                {
-                    // 骨骼尚未被记录
-                    boneIdx = m_oSkeleton->getBoneNum();
-                    m_oSkeleton->addBone(bone);
-                }
+//                if (!m_oSkeleton->isBone(bone->mName.C_Str(), boneIdx))
+//                {
+//                    // 骨骼尚未被记录
+//                    boneIdx = m_oSkeleton->getBoneNum();
+//
+//                }
+                boneIdx = m_oSkeleton->addBone(bone);
 				
 				for (unsigned int w = 0; w < bone->mNumWeights; ++w)
 				{

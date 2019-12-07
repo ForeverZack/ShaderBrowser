@@ -1,7 +1,6 @@
 #include "Material.h"
 #include "Common/Tools/Utils.h"
 #include "Common/System/Cache/GLProgramCache.h"
-#include "GL/GPUResource/Texture/Texture2D.h"
 
 namespace browser
 {
@@ -78,7 +77,7 @@ namespace browser
         for (auto itor = textureInfos.cbegin(); itor!=textureInfos.cend(); ++itor)
         {
             texture = itor->second.texture;
-            setUniformTex2D(itor->second.uniformName.c_str(), texture->getTextureId());
+            setUniformTex2D(itor->second.uniformName.c_str(), texture);
         }
         
         // 设置uniform（uniform需要每帧更新！！！！）
@@ -269,19 +268,19 @@ namespace browser
         }
     }
     
-    void Material::setUniformTex2D(const std::string& uniformName, GLuint textureId)
+    void Material::setUniformTex2D(const std::string& uniformName, Texture2D* texture)
     {
         auto itor = m_mUniforms.find(uniformName);
         if (itor == m_mUniforms.end())
         {
             UniformValue uniformValue;
-            uniformValue.setTex2D(textureId);
+            uniformValue.setTex2D(texture);
             m_mUniforms.emplace(uniformName, std::move(uniformValue));
         }
         else
         {
             UniformValue& uniformValue = itor->second;
-            uniformValue.setTex2D(textureId);
+            uniformValue.setTex2D(texture);
         }
     }
     

@@ -12,6 +12,8 @@ using namespace common;
 
 namespace customGL
 {
+    class GPUOperateTexture2DCommand;
+    
 	class Texture2D : public BaseGPUResource
 	{
 	public:
@@ -20,6 +22,7 @@ namespace customGL
 	public:
 		Texture2D();
 		~Texture2D();
+        friend class GPUOperateTexture2DCommand;
         
     public:
         // 设置纹理参数（环绕方式、过滤方式）
@@ -40,6 +43,8 @@ namespace customGL
 		virtual void updateGPUResource();
 		// 删除gpu资源
 		virtual void deleteGPUResource();
+        // 更新gpu资源属性
+        void updateGPUResourceProperties();
         
 	private:
 		bool initWithImage(Image* image);

@@ -10,6 +10,7 @@
 #include "Browser/Components/Mesh/Mesh.h"
 #include "Browser/Components/Camera/Camera.h"
 #include "Common/CommonDefine.h"
+#include "GL/GPUResource/Texture/Texture2D.h"
 
 using namespace std;
 using namespace customGL;
@@ -54,7 +55,7 @@ namespace browser
         void setUniformV2f(const std::string& uniformName, const glm::vec2& value);
         void setUniformV3f(const std::string& uniformName, const glm::vec3& value);
         void setUniformV4f(const std::string& uniformName, const glm::vec4& value);
-        void setUniformTex2D(const std::string& uniformName, GLuint textureId);
+        void setUniformTex2D(const std::string& uniformName, Texture2D* texture);
         void setUniformSamplerBuffer(const std::string& uniformName, GLuint textureId);
         void setUniformIntV(const std::string& uniformName, int count, const int* value);
         void setUniformIVec2(const std::string& uniformName, const glm::ivec2& value);
