@@ -2,7 +2,7 @@
 #include "GL/GPUResource/Texture/Texture2D.h"
 #include "GL/GLDefine.h"
 
-namespace browser
+namespace customGL
 {
 	Pass* Pass::createPass(GLProgram* program)
 	{

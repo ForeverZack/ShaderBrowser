@@ -1,5 +1,5 @@
 #include "MeshFilter.h"
-#include "GL/GLProgram.h"
+#include "GL/GPUResource/Shader/GLProgram.h"
 #include "Browser/System/RenderSystem.h"
 
 using namespace customGL;

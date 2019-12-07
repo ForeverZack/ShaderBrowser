@@ -10,9 +10,9 @@
 #include "Browser/Components/Mesh/MeshFilter.h"
 #include "GL/GPUResource/Texture/Texture2D.h"
 #include "Common/System/Cache/TextureCache.h"
-#include "GL/GLProgram.h"
-#include "GL/Skeleton.h"
-#include "GL/SkeletonAnimation.h"
+#include "GL/GPUResource/Shader/GLProgram.h"
+#include "GL/GPUResource/Model/Skeleton.h"
+#include "GL/GPUResource/Model/SkeletonAnimation.h"
 #include "Browser/Entitys/BaseEntity.h"
 
 

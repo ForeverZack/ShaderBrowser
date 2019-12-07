@@ -2,7 +2,7 @@
 #include "Common/Tools/Utils.h"
 #include "Common/System/Cache/GLProgramCache.h"
 
-namespace browser
+namespace customGL
 {
 	// 默认材质名称
 	const char* Material::DEFAULT_MATERIAL_NAME = "ShaderBrowser_DefaultMaterial";
@@ -65,7 +65,7 @@ namespace browser
         pass->setUniformsFromMaterial(&m_mUniforms);
     }
     
-	void Material::useMaterial(Mesh* mesh, Transform* transform, Camera* camera, int index/* = 0*/)
+	void Material::useMaterial(Mesh* mesh, browser::Transform* transform, browser::Camera* camera, int index/* = 0*/)
 	{
         common::BROWSER_ASSERT(m_vPass.size()>index && m_vPass[index], "cannot found pass in function Material::useMaterial");
         

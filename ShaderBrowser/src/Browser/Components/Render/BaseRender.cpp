@@ -1,5 +1,5 @@
 #include "BaseRender.h"
-#include "Pass.h"
+#include "GL/GPUResource/Shader/Pass.h"
 #include "Common/System/Cache/GLProgramCache.h"
 #include "Common/Tools/Utils.h"
 

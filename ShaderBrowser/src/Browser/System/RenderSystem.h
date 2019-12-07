@@ -7,7 +7,7 @@
 #include "Common/System/BaseSystem.h"
 #include "Browser/Components/Render/BaseRender.h"
 
-#include "GL/GLProgram.h"
+#include "GL/GPUResource/Shader/GLProgram.h"
 #include "Common/Tools/BaseSingleton.h"
 
 namespace browser

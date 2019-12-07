@@ -1,7 +1,7 @@
 #pragma once
 
 #include "BaseCache.h"
-#include "Browser/Components/Render/Material.h"
+#include "GL/GPUResource/Shader/Material.h"
 
 using namespace customGL;
 using namespace browser;
@@ -19,7 +19,7 @@ namespace common
         void init();
         // 添加
         void addSharedMaterial(Material* material, bool isDefault = false);
-        Material* addSharedMaterial(const std::string& materialName = browser::Material::DEFAULT_MATERIAL_NAME, bool isDefault = false);
+        Material* addSharedMaterial(const std::string& materialName = Material::DEFAULT_MATERIAL_NAME, bool isDefault = false);
         // 移除
         void removeSharedMaterial(Material* material);
         void removeSharedMaterial(unsigned int materialId);

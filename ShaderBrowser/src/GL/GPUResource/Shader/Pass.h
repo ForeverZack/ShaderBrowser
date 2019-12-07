@@ -4,7 +4,7 @@
 #include <glm/glm.hpp>
 #include <unordered_map>
 #include "GL/GLDefine.h"
-#include "GL/GLProgram.h"
+#include "GL/GPUResource/Shader/GLProgram.h"
 #include "Common/Tools/Utils.h"
 #include "Common/Components/Reference.h"
 #include "Browser/Components/Mesh/Mesh.h"
@@ -19,7 +19,7 @@ using namespace customGL;
 	注意：pass是可复用的对象，他的作用类似于cocos的glProgramState，用来保存uniform变量的值（两个pass可能会使用同一个glProgram，但其中的uniform可能不相同）
 */
 
-namespace browser
+namespace customGL
 {
     class Pass : public common::Reference
 	{

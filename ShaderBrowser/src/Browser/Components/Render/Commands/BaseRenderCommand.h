@@ -1,15 +1,15 @@
 #pragma once
 
-#include "Browser/Components/Render/Material.h"
+#include "GL/GPUResource/Shader/Material.h"
 #include "Browser/Components/Mesh/Mesh.h"
 #include "Browser/Components/Camera/Camera.h"
 #include "Browser/Components/Transform/Transform.h"
 #include "Browser/Components/Render/BaseRender.h"
 
+using namespace customGL;
 
 namespace browser
 {
-    class Material;
     class Mesh;
     class Transform;
     class Camera;

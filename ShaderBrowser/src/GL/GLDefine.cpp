@@ -1,5 +1,5 @@
 #include "GLDefine.h"
-#include "GLProgram.h"
+#include "GL/GPUResource/Shader/GLProgram.h"
 #include "Common/Tools/Utils.h"
 
 namespace customGL {

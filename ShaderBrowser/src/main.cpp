@@ -6,15 +6,15 @@
 #include <iostream>
 #include "Core/Application.h"
 #include "Core/RenderCore.h"
-#include "GL/GLProgram.h"
+#include "GL/GPUResource/Shader/GLProgram.h"
 #include "Browser/Components/Transform/Transform.h"
 #include "Browser/Components/Camera/Camera.h"
 #include "Browser/Components/Mesh/MeshFilter.h"
 #include "Browser/Components/Mesh/Mesh.h"
 #include "Browser/Components/Render/BaseRender.h"
 #include "Browser/Components/Render/SkinnedMeshRenderer.h"
-#include "Browser/Components/Render/Material.h"
-#include "Browser/Components/Render/Pass.h"
+#include "GL/GPUResource/Shader/Material.h"
+#include "GL/GPUResource/Shader/Pass.h"
 #include "Browser/Components/BoundBox/AABBBoundBox.h"
 #include "Browser/System/TransformSystem.h"
 #include "Common/Tools/FileUtils.h"
@@ -44,7 +44,7 @@ using namespace core;
 #include <assimp/postprocess.h>
 #include <unordered_map>
 
-#include "GL/Model.h"
+#include "GL/GPUResource/Model/Model.h"
 
 // 函数需要先声明一下，否则在定义之前调用会编译出错
 void mainLoop();

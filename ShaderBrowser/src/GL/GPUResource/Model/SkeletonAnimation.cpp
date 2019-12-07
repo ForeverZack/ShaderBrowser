@@ -1,5 +1,5 @@
 #include "SkeletonAnimation.h"
-#include "GL/Skeleton.h"
+#include "GL/GPUResource/Model/Skeleton.h"
 #include "GL/Assimp.h"
 #include "GL/AssimpConvert.h"
 #include "Rescale.h"

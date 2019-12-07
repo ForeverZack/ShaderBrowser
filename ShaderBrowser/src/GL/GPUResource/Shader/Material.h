@@ -4,18 +4,19 @@
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <vector>
-#include "Pass.h"
-#include "GL/GLProgram.h"
+#include "GL/GPUResource/Shader/Pass.h"
+#include "GL/GPUResource/Shader/GLProgram.h"
 #include "Common/Tools/Utils.h"
 #include "Browser/Components/Mesh/Mesh.h"
 #include "Browser/Components/Camera/Camera.h"
+#include "Browser/Components/Transform/Transform.h"
 #include "Common/CommonDefine.h"
 #include "GL/GPUResource/Texture/Texture2D.h"
 
 using namespace std;
-using namespace customGL;
+using namespace browser;
 
-namespace browser
+namespace customGL
 {
     
     class Material : public Reference
@@ -41,7 +42,7 @@ namespace browser
         void addPass(Pass* pass);
 		// 使用材质的第几个Pass
 		// TODO: 这里实际上应该根据pass的类型来决定，而不是根据index ( 这里的类型也跟渲染队列有关，比方说如果在进行阴影深度贴图的渲染，应该使用对应的简单的pass )
-		void useMaterial(Mesh* mesh, Transform* transform, Camera* camera, int index = 0);
+		void useMaterial(Mesh* mesh, browser::Transform* transform, browser::Camera* camera, int index = 0);
         
 
         // 添加\设置uniform
@@ -117,7 +118,7 @@ namespace browser
         // 是否已经初始化mesh的原始color
         bool m_bInitColorProperties;
         // 当前渲染用的相机
-        Camera* m_oCurCamera;
+        browser::Camera* m_oCurCamera;
         
         
         

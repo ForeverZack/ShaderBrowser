@@ -1,5 +1,5 @@
 #include "Animator.h"
-#include "GL/Model.h"
+#include "GL/GPUResource/Model/Model.h"
 #include <chrono>
 #include "Common/System/ECSManager.h"
 //#include "Browser/Components/Feedback/AnimatorFeedback.h"

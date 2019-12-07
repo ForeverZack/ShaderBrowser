@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GL/GLProgram.h"
+#include "GL/GPUResource/Shader/GLProgram.h"
 #include "Common/Tools/BaseSingleton.h"
 
 using namespace common;

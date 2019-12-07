@@ -1,6 +1,6 @@
 #include "Mesh.h"
-#include "GL/GLProgram.h"
-#include "Browser/Components/Render/Material.h"
+#include "GL/GPUResource/Shader/GLProgram.h"
+#include "GL/GPUResource/Shader/Material.h"
 #include "Browser/System/RenderSystem.h"
 
 using namespace customGL;

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "BaseComputeProgram.h"
-#include "GL/Model.h"
+#include "GL/GPUResource/Model/Model.h"
 
 using namespace common;
 using namespace customGL;

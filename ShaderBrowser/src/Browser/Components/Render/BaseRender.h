@@ -7,7 +7,7 @@
 #include "Common/Tools/Utils.h"
 #include "Browser/Components/BaseComponent.h"
 #include "Browser/Components/Mesh/Mesh.h"
-#include "Material.h"
+#include "GL/GPUResource/Shader/Material.h"
 
 using namespace std;
 using namespace customGL;
@@ -15,13 +15,12 @@ using namespace common;
 
 namespace browser
 {
-	class Material;
     class Pass;
 
 	class BaseRender : public BaseComponent
 	{
 	public:
-		static BaseRender* createBaseRender(const std::string& materialName = Material::DEFAULT_MATERIAL_NAME, const std::string& programeName = GLProgram::DEFAULT_GLPROGRAM_NAME);
+		static BaseRender* createBaseRender(const std::string& materialName = customGL::Material::DEFAULT_MATERIAL_NAME, const std::string& programeName = GLProgram::DEFAULT_GLPROGRAM_NAME);
         static BaseRender* createBaseRender(Material* material);
     
     public:
@@ -66,7 +65,7 @@ namespace browser
         void handleEvent(ComponentEvent event, BaseComponentMessage* msg);
         
 		// 创建材质(根据shader名字)
-		Material* createMaterial(const std::string& programName, const std::string& materialName = Material::DEFAULT_MATERIAL_NAME);
+		Material* createMaterial(const std::string& programName, const std::string& materialName = customGL::Material::DEFAULT_MATERIAL_NAME);
         
 	protected:
         // 材质map	std::string绑定Mesh的MaterialName

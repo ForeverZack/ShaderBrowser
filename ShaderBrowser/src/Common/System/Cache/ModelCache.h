@@ -2,7 +2,7 @@
 
 #include "BaseCache.h"
 #include "BaseAsyncLoader.h"
-#include "GL/Model.h"
+#include "GL/GPUResource/Model/Model.h"
 #include <vector>
 
 
