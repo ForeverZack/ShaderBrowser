@@ -42,7 +42,7 @@ namespace common
 	{
 		const std::string vert_full_path = FileUtils::getInstance()->getAbsolutePathForFilename(vertFilename);
 		const std::string frag_full_path = FileUtils::getInstance()->getAbsolutePathForFilename(fragFilename);
-		GLProgram* program = GLProgram::createAndSaveSource(vert_full_path.c_str(), frag_full_path.c_str());
+		GLProgram* program = GLProgram::create(vert_full_path.c_str(), frag_full_path.c_str());
 		BROWSER_ASSERT(program, "GLProgram is not invalid in function GLProgramCache::addGLProgram(std::string name, const std::string& vertFilename, const std::string& fragFilename)");
         program->retain();
 		if (add(name, program))

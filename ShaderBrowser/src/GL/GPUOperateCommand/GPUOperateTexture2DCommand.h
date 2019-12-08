@@ -34,15 +34,18 @@ namespace customGL
         void deleteTexture2D();
         
         REGISTER_PROPERTY_SET(Texture2D*, m_pTexture, Texture)
-        REGISTER_PROPERTY_SET(Image*, m_pImage, Image)
         REGISTER_PROPERTY_SET(GLenum, m_eWrapTypeS, WrapTypeS)
         REGISTER_PROPERTY_SET(GLenum, m_eWrapTypeT, WrapTypeT)
         REGISTER_PROPERTY_SET(GLenum, m_eFilterMin, FilterMin)
         REGISTER_PROPERTY_SET(GLenum, m_eFilterMag, FilterMag)
         void setTexParameters(GLenum wrapS, GLenum wrapT, GLenum filterMin, GLenum filterMag);
+        void setImage(Image* image);
         
 	protected:
+        // 纹理操作对象
         Texture2D* m_pTexture;
+        
+        // 纹理数据来源 (注意，这个数据必须是拷贝过来的！！)
         Image* m_pImage;
         
         // 纹理环绕方式

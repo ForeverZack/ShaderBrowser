@@ -39,13 +39,17 @@ namespace customGL
         , m_eFilterMag(GL_LINEAR)
 	{
         m_eResourceType = GPUResourceType::GRT_Texture2D;
-        m_eResouceState = GRS_UnLoad;
+//        m_eResouceState = GRS_UnLoad; // default
 	}
 
 	Texture2D::~Texture2D()
 	{
 		BROWSER_LOG("~Texture2D");
-
+        
+        if (m_oImage)
+        {
+            delete m_oImage;
+        }
         // 从显存中移除
         deleteGPUResource();
         // 从cache中移除
@@ -79,7 +83,6 @@ namespace customGL
         
         auto cmd = GPUOperateCommandPool::getInstance()->popCommand<GPUOperateTexture2DCommand>(GPUOperateCommandType::GOCT_Texture2D);
         cmd->setTexture(this);
-        cmd->setImage(m_oImage);
         cmd->ready(GPUOperateType::GOT_Delete);
         GPUOperateSystem::getInstance()->addCommand(cmd);
 	}

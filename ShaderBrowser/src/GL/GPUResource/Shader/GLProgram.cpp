@@ -2,6 +2,9 @@
 #include "Common/Tools/Utils.h"
 #include "GL/GLStateCache.h"
 #include "GL/GPUResource/Texture/Texture2D.h"
+#include "GL/GPUOperateCommand/GPUOperateCommandPool.h"
+#include "GL/GPUOperateCommand/GPUOperateGLProgramCommand.h"
+#include "GL/System/GPUOperateSystem.h"
 #include <glm/gtc/type_ptr.hpp>
 #ifdef  _WIN32
 	#pragma warning(disable:4996)
@@ -57,25 +60,10 @@ namespace customGL
         "CGL_DYNAMIC_BATCH_MODEL_MATRIX[%d]"
 	};
 
-	GLProgram* GLProgram::create(const char* vertSrc, const char* fragSrc)
-	{
-		GLProgram* program = new GLProgram();
-		if (!program->initProgram(vertSrc, fragSrc))
-		{
-			delete program;
-			return nullptr;
-		}
-		return program;
-	}
-    
-    GLProgram* GLProgram::createAndSaveSource(const char* vertSrc, const char* fragSrc)
+    GLProgram* GLProgram::create(const char* vertSrc, const char* fragSrc)
     {
         GLProgram* program = new GLProgram();
-        if (!program->initProgram(vertSrc, fragSrc, true))
-        {
-            delete program;
-            return nullptr;
-        }
+        program->initProgram(vertSrc, fragSrc);
         return program;
     }
 
@@ -93,6 +81,8 @@ namespace customGL
         , m_sAddtionCompCode("")
         , m_sCompLocalGroupDefCode("")
 	{
+        m_eResourceType = GPUResourceType::GRT_GLProgram;
+        
         for (int i=0; i<MAX_ACTIVE_TEXTURE; ++i)
         {
             /*
@@ -106,6 +96,9 @@ namespace customGL
 
 	GLProgram::~GLProgram()
 	{
+        deleteGPUResource();
+        
+        // TODO: GPU资源
 		if (m_uVertShader)
 		{
 			glDeleteShader(m_uVertShader);
@@ -167,66 +160,16 @@ namespace customGL
 		}
 	}
 
-	bool GLProgram::initProgram(const char* vertSrc, const char* fragSrc, bool saveSource /*= false*/)
+	void GLProgram::initProgram(const char* vertSrc, const char* fragSrc, bool saveSource /*= true*/)
 	{
 		if (!vertSrc || strlen(vertSrc) == 0 || !fragSrc || strlen(fragSrc) == 0)
 		{
-			return false;
+			return;
 		}
         
-		// 1.创建着色器程序
-		GLuint program = glCreateProgram();
-		m_uProgram = program;
-
-		// 2.创建shader
-		// 顶点着色器
-		if (!createShader(GL_VERTEX_SHADER, m_uVertShader, vertSrc, saveSource))
-		{
-			return false;
-		}
-		// 片段着色器
-		if (!createShader(GL_FRAGMENT_SHADER, m_uFragShader, fragSrc, saveSource))
-		{
-			return false;
-		}
-
-		// 3.着色器程序绑定shader
-		// 顶点shader
-		glAttachShader(m_uProgram, m_uVertShader);
-		// 片段shader
-		glAttachShader(m_uProgram, m_uFragShader);
-
-		// 绑定预定义的顶点属性
-		bindPredefinedVertexAttribs();
-
-		// 4.链接着色器程序
-		glLinkProgram(m_uProgram);
-
-		// 5.记录uniform变量位置
-		updatePreDefinedUniformsLocation();
-
-
-		// 检查着色器程序链接状态信息
-		GLint linked;
-		glGetProgramiv(m_uProgram, GL_LINK_STATUS, &linked);
-		if (!linked) 
-		{
-//#ifdef _DEBUG
-			GLsizei len;
-			glGetProgramiv(m_uProgram, GL_INFO_LOG_LENGTH, &len);
-
-			GLchar* log = new GLchar[len + 1];
-			glGetProgramInfoLog(m_uProgram, len, &len, log);
-			std::cerr << "Shader linking failed: " << log << std::endl;
-			delete[] log;
-
-//#endif /* DEBUG */
-            common::BROWSER_ASSERT(linked, "shader program linked error in function GLProgram::initProgram");
-
-			return false;
-		}
-
-		return true;
+        // 创建GPU资源
+        m_eResouceState = GRS_DataLoaded;
+        createGPUResource(vertSrc, fragSrc);
 	}
     
     bool GLProgram::cloneProgram(GLProgram* srcGLProgram)
@@ -419,6 +362,28 @@ namespace customGL
         }
         
         return m_sVertexSource;
+    }
+    
+    void GLProgram::createGPUResource(const char* vertPath, const char* fragPath)
+    {
+        BROWSER_ASSERT(m_eResouceState==GRS_DataLoaded, "GLProgram state must be GRS_DataLoaded, then it can be created on gpu");
+        
+        auto cmd = GPUOperateCommandPool::getInstance()->popCommand<GPUOperateGLProgramCommand>(GPUOperateCommandType::GOCT_GLProgram);
+        cmd->setGLProgram(this);
+        cmd->setVertShaderPath(vertPath);
+        cmd->setFragShaderPath(fragPath);
+        cmd->ready(GPUOperateType::GOT_Create);
+        GPUOperateSystem::getInstance()->addCommand(cmd);
+    }
+
+    void GLProgram::updateGPUResource()
+    {
+        BROWSER_LOG("GLProgram::updateGPUResource");
+    }
+    
+    void GLProgram::deleteGPUResource()
+    {
+        BROWSER_LOG("GLProgram::deleteGPUResource");
     }
 
 	void GLProgram::useProgram()

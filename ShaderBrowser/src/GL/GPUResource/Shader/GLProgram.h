@@ -6,7 +6,7 @@
 #include <vector>
 #include <unordered_map>
 #include <string>
-#include "Common/Components/Reference.h"
+#include "GL/GPUResource/BaseGPUResource.h"
 
 
 namespace customGL
@@ -17,8 +17,9 @@ namespace customGL
 	static const int MAX_BONES_COUNT = 100;
     
     class Texture2D;
+    class GPUOperateGLProgramCommand;
     
-    class GLProgram : public common::Reference
+    class GLProgram : public BaseGPUResource
 	{
 	public:
 		// 默认GLProgram名称(网格模型着色器)
@@ -94,11 +95,11 @@ namespace customGL
 
 	public:
 		static GLProgram* create(const char* vertSrc, const char* fragSrc);
-        static GLProgram* createAndSaveSource(const char* vertSrc, const char* fragSrc);
 
 	public:
 		GLProgram();
 		~GLProgram();
+        friend class GPUOperateGLProgramCommand;
 
         // 拷贝glProgram
         GLProgram* clone();
@@ -145,9 +146,17 @@ namespace customGL
         REGISTER_PROPERTY_GET_SET(std::string, m_sAddtionCompCode, AddtionCompCode)
         REGISTER_PROPERTY_GET_SET(std::string, m_sCompLocalGroupDefCode, CompLocalGroupDefCode)
 
+    protected:
+        // 创建gpu资源
+        void createGPUResource(const char* vertPath, const char* fragPath);
+        // 更新gpu资源
+        virtual void updateGPUResource();
+        // 删除gpu资源
+        virtual void deleteGPUResource();
+        
 	protected:
 		// 初始化着色器程序
-		bool initProgram(const char* vertSrc, const char* fragSrc, bool saveSource = false);
+		void initProgram(const char* vertSrc, const char* fragSrc, bool saveSource = true);
         bool cloneProgram(GLProgram* srcGLProgram);
 		// 创建着色器
 		bool createShader(GLenum type, GLuint& shader, const char* shaderSrc, bool saveSource);
@@ -189,7 +198,7 @@ namespace customGL
         GLchar* m_sVertexSource;
         // 片段着色器源码
         GLchar* m_sFragSource;
-        // 计算着色器远吗
+        // 计算着色器源码
         GLchar* m_sCompSource;
         
 	};

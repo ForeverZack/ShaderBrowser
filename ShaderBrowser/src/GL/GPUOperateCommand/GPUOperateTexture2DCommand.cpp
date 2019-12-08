@@ -18,7 +18,7 @@ namespace customGL
     
     void GPUOperateTexture2DCommand::ready(GPUOperateType operateType)
     {
-        BROWSER_ASSERT(m_pTexture, "BaseGPUOperateCommand does not have operate object, please check your program in function BaseGPUOperateCommand::ready");
+        BROWSER_ASSERT(m_pTexture, "GPUOperateTexture2DCommand does not have operate object, please check your program in function GPUOperateTexture2DCommand::ready");
         
         BaseGPUOperateCommand::ready(operateType);
         
@@ -73,6 +73,8 @@ namespace customGL
     
     void GPUOperateTexture2DCommand::createTexture2D()
     {
+        BROWSER_ASSERT(m_pImage, "GPUOperateTexture2DCommand does not have Image object, please check your program in function GPUOperateTexture2DCommand::createTexture2D");
+        
         // 1.创建纹理
         glGenTextures(1, &m_pTexture->m_uTextureId);
         // 2.绑定纹理
@@ -97,16 +99,22 @@ namespace customGL
         // 为当前绑定的纹理自动生成所有需要的多级渐远纹理
         glGenerateMipmap(GL_TEXTURE_2D);
 
-        // 释放image数据
-        m_pImage->deleteImage();
         // 资源加载完成
         m_pTexture->m_eResouceState = GRS_Loaded;
+        
+        delete m_pImage;
+        m_pImage = nullptr;
     }
     
     void GPUOperateTexture2DCommand::updateTexture2D()
     {
+        BROWSER_ASSERT(m_pImage, "GPUOperateTexture2DCommand does not have Image object, please check your program in function GPUOperateTexture2DCommand::updateTexture2D");
+        
         glBindTexture(GL_TEXTURE_2D, m_pTexture->m_uTextureId);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_pImage->getWidth(), m_pImage->getHeight(), 0, m_pImage->getType(), GL_UNSIGNED_BYTE, m_pImage->getData());
+        
+        delete m_pImage;
+        m_pImage = nullptr;
     }
     
     void GPUOperateTexture2DCommand::updateTexture2DProperties()
@@ -124,10 +132,11 @@ namespace customGL
         {
             glDeleteTextures(1, &m_pTexture->m_uTextureId);
         }
-        if (m_pImage)
-        {
-            delete m_pImage;
-        }
+    }
+    
+    void GPUOperateTexture2DCommand::setImage(Image* image)
+    {
+        m_pImage = new Image(*image);
     }
     
     void GPUOperateTexture2DCommand::setTexParameters(GLenum wrapS, GLenum wrapT, GLenum filterMin, GLenum filterMag)
