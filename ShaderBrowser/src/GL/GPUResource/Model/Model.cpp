@@ -583,10 +583,12 @@ namespace customGL
 			// 渲染组件
 			BaseRender* renderer = nullptr;
             BaseRender* skinnedRender = nullptr;
+			Material* sharedMaterial = nullptr;
             
 			for (unsigned int i = 0; i < node->mNumMeshes; ++i)
 			{
 				Mesh* mesh = m_vMeshes[node->mMeshes[i]];
+				sharedMaterial = nullptr;
 				if (mesh)
 				{
                     // 检测是否需要蒙皮
@@ -600,12 +602,14 @@ namespace customGL
                         if(!skinnedRender)
                         {
 //                            skinnedRender = SkinnedMeshRenderer::createSkinnedMeshRenderer();
-                            skinnedRender = SkinnedMeshRenderer::createSkinnedMeshRenderer(getSharedMaterial(mesh, mesh->getMaterialName(), GLProgram::DEFAULT_SKELETON_GLPROGRAM_NAME));
+							sharedMaterial = getSharedMaterial(mesh, mesh->getMaterialName(), GLProgram::DEFAULT_SKELETON_GLPROGRAM_NAME);
+                            skinnedRender = SkinnedMeshRenderer::createSkinnedMeshRenderer(sharedMaterial);
                             entity->addComponent(skinnedRender);
                         }
                         else
                         {
-                            skinnedRender->addMaterial(getSharedMaterial(mesh, mesh->getMaterialName(), GLProgram::DEFAULT_SKELETON_GLPROGRAM_NAME));
+							sharedMaterial = getSharedMaterial(mesh, mesh->getMaterialName(), GLProgram::DEFAULT_SKELETON_GLPROGRAM_NAME);
+                            skinnedRender->addMaterial(sharedMaterial);
                         }
                         static_cast<SkinnedMeshRenderer*>(skinnedRender)->addMesh(mesh);
                     }
@@ -620,15 +624,29 @@ namespace customGL
                         if (!renderer)
                         {
 //                            renderer = BaseRender::createBaseRender();
-                            renderer = BaseRender::createBaseRender(getSharedMaterial(mesh, mesh->getMaterialName(), GLProgram::DEFAULT_GLPROGRAM_NAME));
+							sharedMaterial = getSharedMaterial(mesh, mesh->getMaterialName(), GLProgram::DEFAULT_GLPROGRAM_NAME);
+                            renderer = BaseRender::createBaseRender(sharedMaterial);
                             entity->addComponent(renderer);
                         }
                         else
                         {
-                            renderer->addMaterial(getSharedMaterial(mesh, mesh->getMaterialName(), GLProgram::DEFAULT_GLPROGRAM_NAME));
+							sharedMaterial = getSharedMaterial(mesh, mesh->getMaterialName(), GLProgram::DEFAULT_GLPROGRAM_NAME);
+                            renderer->addMaterial(sharedMaterial);
                         }
                         meshFilter->addMesh(mesh);
                     }
+
+					if (sharedMaterial)
+					{
+						// 设置材质纹理
+						const std::unordered_map<std::string, TextureData>& textureInfos = mesh->getTextures();
+						Texture2D* texture;
+						for (auto itor = textureInfos.cbegin(); itor != textureInfos.cend(); ++itor)
+						{
+							texture = itor->second.texture;
+							sharedMaterial->setUniformTex2D(itor->second.uniformName.c_str(), texture);
+						}
+					}
 
 				}
 			}

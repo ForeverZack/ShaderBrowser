@@ -8,6 +8,8 @@ namespace customGL
     {
         m_eCommandType = GOCT_GLProgram;
         m_eOperateType = GOT_Update;
+
+		m_mUniforms.clear();
 	}
     
     GPUOperateGLProgramCommand::~GPUOperateGLProgramCommand()
@@ -46,7 +48,7 @@ namespace customGL
         case GPUOperateType::GOT_Delete:
             {
                 // 删除GLProgram
-                
+				deleteGLProgram();
             }
             break;
         }
@@ -114,11 +116,39 @@ namespace customGL
 
 //#endif /* DEBUG */
             common::BROWSER_ASSERT(linked, "shader program linked error in function GLProgram::initProgram");
-
-            return;
         }
         
+		m_pGLProgram->m_eResouceState = GRS_Loaded;
     }
+
+	void GPUOperateGLProgramCommand::deleteGLProgram()
+	{
+		if (m_pGLProgram->m_uVertShader > 0)
+		{
+			glDeleteShader(m_pGLProgram->m_uVertShader);
+		}
+		if (m_pGLProgram->m_uFragShader > 0)
+		{
+			glDeleteShader(m_pGLProgram->m_uFragShader);
+		}
+		if (m_pGLProgram->m_uCompShader > 0)
+		{
+			glDeleteShader(m_pGLProgram->m_uCompShader);
+		}
+		if (m_pGLProgram->m_sVertexSource)
+		{
+			delete[] m_pGLProgram->m_sVertexSource;
+		}
+		if (m_pGLProgram->m_sFragSource)
+		{
+			delete[] m_pGLProgram->m_sFragSource;
+		}
+
+		glDeleteProgram(m_pGLProgram->m_uProgram);
+
+		// 设置GPU删除标记
+		m_pGLProgram->setGPUDeleted(true);
+	}
 
 
 }

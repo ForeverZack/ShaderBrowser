@@ -68,17 +68,17 @@ namespace customGL
 	void Material::useMaterial(Mesh* mesh, browser::Transform* transform, browser::Camera* camera, int index/* = 0*/)
 	{
         common::BROWSER_ASSERT(m_vPass.size()>index && m_vPass[index], "cannot found pass in function Material::useMaterial");
-        
-        // 应用网格的纹理
+
+        // 应用网格的纹理		TODO:这里不应该仅仅是模型的纹理，应该是纹理类型的都要更新 (另外注意前面有一步骨骼矩阵纹理)
         /* （每次都执行这一步是因为，opengl的纹理单元是固定的，我们要去替换当前纹理单元对应的纹理。
           GLStateCache::bindTexture2DN中先调用glActiveTexture来激活纹理单元，再glBindTexture来绑定纹理到纹理单元中）*/
-        const std::unordered_map<std::string, TextureData>& textureInfos = mesh->getTextures();
-        Texture2D* texture;
-        for (auto itor = textureInfos.cbegin(); itor!=textureInfos.cend(); ++itor)
-        {
-            texture = itor->second.texture;
-            setUniformTex2D(itor->second.uniformName.c_str(), texture);
-        }
+		//const std::unordered_map<std::string, TextureData>& textureInfos = mesh->getTextures();
+		//Texture2D* texture;
+		//for (auto itor = textureInfos.cbegin(); itor != textureInfos.cend(); ++itor)
+		//{
+		//	texture = itor->second.texture;
+		//	setUniformTex2D(itor->second.uniformName.c_str(), texture);
+		//}
         
         // 设置uniform（uniform需要每帧更新！！！！）
         // 设置模型材质属性到pass （TODO: pass理论上可以修改它们的值，应该做判断，这里先覆盖）

@@ -50,8 +50,6 @@ namespace customGL
         {
             delete m_oImage;
         }
-        // 从显存中移除
-        deleteGPUResource();
         // 从cache中移除
         TextureCache::getInstance()->removeFromCache(this);
     }

@@ -132,6 +132,9 @@ namespace customGL
         {
             glDeleteTextures(1, &m_pTexture->m_uTextureId);
         }
+
+		// 设置GPU删除标记
+		m_pTexture->setGPUDeleted(true);
     }
     
     void GPUOperateTexture2DCommand::setImage(Image* image)

@@ -25,8 +25,10 @@ namespace customGL
         virtual void finish();
 
     protected:
-        // 创建GLProram
+        // 创建GLProgram
         void createGLProgram();
+		// 删除GLProgram
+		void deleteGLProgram();
         
         REGISTER_PROPERTY_SET(GLProgram*, m_pGLProgram, GLProgram)
         void setVertShaderPath(const char* path)
@@ -37,6 +39,10 @@ namespace customGL
         {
             m_sFragShaderPath = path;
         }
+		void setUniforms(const std::unordered_map<std::string, UniformValue>& uniforms)
+		{
+			//m_mUniforms = uniforms;
+		}
         
 	protected:
         // GLProgram操作对象

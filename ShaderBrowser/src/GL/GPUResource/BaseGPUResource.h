@@ -45,13 +45,20 @@ namespace customGL
 		BaseGPUResource();
 		virtual ~BaseGPUResource() {}
 
+	public:
+		// 引用计数-1，并在引用计数=0的时候判断是否立即释放
+		virtual void release();
+
 	protected:
 		// 创建gpu资源
 		virtual void createGPUResource();
 		// 更新gpu资源
 		virtual void updateGPUResource();
-		// 删除gpu资源
-		virtual void deleteGPUResource();
+		// 删除gpu资源 (因为要在release()调用的时候，判断是否释放GPU资源，所以这个函数是纯虚函数，子类一定要实现！！！)
+		virtual void deleteGPUResource() = 0;
+
+
+		REGISTER_PROPERTY_GET_SET(bool, m_bGPUDeleted, GPUDeleted)
 
 	protected:
 		// 资源加载状态
@@ -60,7 +67,8 @@ namespace customGL
 		GPUResourceType m_eResourceType;
 		// 数据脏标记
 		bool m_bDirty;
-
+		// GPU上是否被删除
+		bool m_bGPUDeleted;
 	};
 
 }

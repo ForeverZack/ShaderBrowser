@@ -43,8 +43,8 @@ namespace browser
         void init(Material* material);
         
 		// 修改模型材质shader
-        void changeMaterial(int index, const std::string& materialName, const std::string& programName);
-        void changeMaterial(int index, Material* material);
+        Material* changeMaterial(int index, const std::string& materialName, const std::string& programName);
+		Material* changeMaterial(int index, Material* material);
         // 获取材质队列中对应的材质（对于一个节点包含多个mesh的情况，现在的处理方式是：mesh队列和material队列一一对应，对于多出的material将会用来对最后一个mesh进行重复渲染）
         Material* getMaterialByIndex(int index = 0);
 		// 添加材质

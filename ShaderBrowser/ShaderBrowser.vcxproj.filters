@@ -327,6 +327,9 @@
     <ClCompile Include="src\GL\GPUResource\Model\Mesh.cpp">
       <Filter>src\GL\GPUResource\Model</Filter>
     </ClCompile>
+    <ClCompile Include="src\GL\GPUOperateCommand\GPUOperateGLProgramCommand.cpp">
+      <Filter>src\GL\GPUOperateCommand</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\GL\GLDefine.h">
@@ -556,6 +559,9 @@
     </ClInclude>
     <ClInclude Include="src\GL\GPUResource\Model\Mesh.h">
       <Filter>src\GL\GPUResource\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GL\GPUOperateCommand\GPUOperateGLProgramCommand.h">
+      <Filter>src\GL\GPUOperateCommand</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

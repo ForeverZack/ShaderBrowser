@@ -157,8 +157,8 @@ void testVal()
     mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_COLOR, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), colors);
     mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_TEX_COORD, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), coords);
     mesh->setIndicesInfo(indices, 6);
-    mesh->addTexture("CGL_TEXTURE0", texture1);
-    mesh->addTexture("CGL_TEXTURE1", texture2);
+    //mesh->addTexture("CGL_TEXTURE0", texture1);
+    //mesh->addTexture("CGL_TEXTURE1", texture2);
     mesh->setupVAO();
 	
 
@@ -176,7 +176,9 @@ void testVal()
     entity->setPosition(0, 1, 0);
     // 组件：渲染组件
     BaseRender* renderCom = BaseRender::createBaseRender();
-    renderCom->changeMaterial(0, mesh->getMaterialName(), "Triangles");   // 修改mesh的材质对应的shader
+    Material* mat = renderCom->changeMaterial(0, mesh->getMaterialName(), "Triangles");   // 修改mesh的材质对应的shader
+	mat->setUniformTex2D("CGL_TEXTURE0", texture1);
+	mat->setUniformTex2D("CGL_TEXTURE1", texture2);
     entity->addComponent(renderCom);
     // 包围盒
     entity->addComponent(new AABBBoundBox());
@@ -210,9 +212,11 @@ void testVal()
     scene->addChild(modelEntity);
     modelEntity->playAnimation("Take 001", true);
 //    modelEntity->changeAllMeshesMaterial(GLProgram::DEFAULT_SKELETON_GLPROGRAM_NAME);
-    browser::MeshFilter* fighterMeshFilter = static_cast<SkinnedMeshRenderer*>(modelEntity->getTransform()->getChildren()[0]->getBelongEntity()->getRenderer())->getMeshFilter();
+	SkinnedMeshRenderer* fighterSkinedMeshRenderer = static_cast<SkinnedMeshRenderer*>(modelEntity->getTransform()->getChildren()[0]->getBelongEntity()->getRenderer());
+    browser::MeshFilter* fighterMeshFilter = fighterSkinedMeshRenderer->getMeshFilter();
 //    MeshFilter* fighterMeshFilter = static_cast<SkinnedMeshRenderer*>(modelEntity->getTransform()->getChildren()[0]->getBelongEntity()->getRenderer())->getMeshFilter();
-    fighterMeshFilter->getMeshes()[0]->setTexture(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_TEXUTRE0], TextureCache::getInstance()->getTexture("models/Fighter/Fighter.png"));
+    //fighterMeshFilter->getMeshes()[0]->setTexture(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_TEXUTRE0], TextureCache::getInstance()->getTexture("models/Fighter/Fighter.png"));
+	fighterSkinedMeshRenderer->getMaterialByIndex()->setUniformTex2D(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_TEXUTRE0], TextureCache::getInstance()->getTexture("models/Fighter/Fighter.png"));
 
     // MeshFilter组件
 //    MeshFilter* fighterMeshFilter = modelEntity->getTransform()->getChildren()[0]->getBelongEntity()->getMeshFilter();

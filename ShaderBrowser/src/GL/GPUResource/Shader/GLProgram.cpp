@@ -96,32 +96,6 @@ namespace customGL
 
 	GLProgram::~GLProgram()
 	{
-        deleteGPUResource();
-        
-        // TODO: GPU资源
-		if (m_uVertShader)
-		{
-			glDeleteShader(m_uVertShader);
-		}
-		if (m_uFragShader)
-		{
-			glDeleteShader(m_uFragShader);
-		}
-        if (m_uCompShader)
-        {
-            glDeleteShader(m_uCompShader);
-        }
-        if (m_sVertexSource)
-        {
-            delete[] m_sVertexSource;
-        }
-        if (m_sFragSource)
-        {
-            delete[] m_sFragSource;
-        }
-		m_uVertShader = m_uFragShader = m_uCompShader = 0;
-
-		glDeleteProgram(m_uProgram);
 	}
     
     GLProgram* GLProgram::clone()
@@ -227,6 +201,7 @@ namespace customGL
             
             return false;
         }
+		m_eResouceState = GRS_Loaded;
         
         return true;
     }
@@ -383,7 +358,12 @@ namespace customGL
     
     void GLProgram::deleteGPUResource()
     {
-        BROWSER_LOG("GLProgram::deleteGPUResource");
+		BROWSER_ASSERT(m_eResouceState == GRS_Loaded, "GLProgram state must be GRS_Loaded, then it can be deleted on gpu");
+
+		auto cmd = GPUOperateCommandPool::getInstance()->popCommand<GPUOperateGLProgramCommand>(GPUOperateCommandType::GOCT_GLProgram);
+		cmd->setGLProgram(this);
+		cmd->ready(GPUOperateType::GOT_Delete);
+		GPUOperateSystem::getInstance()->addCommand(cmd);
     }
 
 	void GLProgram::useProgram()

@@ -75,6 +75,7 @@
     <ClCompile Include="src\GL\GLStateCache.cpp" />
     <ClCompile Include="src\GL\GPUOperateCommand\BaseGPUOperateCommand.cpp" />
     <ClCompile Include="src\GL\GPUOperateCommand\GPUOperateCommandPool.cpp" />
+    <ClCompile Include="src\GL\GPUOperateCommand\GPUOperateGLProgramCommand.cpp" />
     <ClCompile Include="src\GL\GPUOperateCommand\GPUOperateTexture2DCommand.cpp" />
     <ClCompile Include="src\GL\GPUResource\BaseGPUResource.cpp" />
     <ClCompile Include="src\GL\GPUResource\Model\Mesh.cpp" />
@@ -157,6 +158,7 @@
     <ClInclude Include="src\GL\GLStateCache.h" />
     <ClInclude Include="src\GL\GPUOperateCommand\BaseGPUOperateCommand.h" />
     <ClInclude Include="src\GL\GPUOperateCommand\GPUOperateCommandPool.h" />
+    <ClInclude Include="src\GL\GPUOperateCommand\GPUOperateGLProgramCommand.h" />
     <ClInclude Include="src\GL\GPUOperateCommand\GPUOperateTexture2DCommand.h" />
     <ClInclude Include="src\GL\GPUResource\BaseGPUResource.h" />
     <ClInclude Include="src\GL\GPUResource\Model\Mesh.h" />
@@ -181,7 +183,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
