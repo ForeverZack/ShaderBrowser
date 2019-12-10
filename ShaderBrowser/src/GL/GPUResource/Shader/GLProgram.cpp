@@ -353,7 +353,7 @@ namespace customGL
 
     void GLProgram::updateGPUResource(const std::unordered_map<std::string, UniformValue>& uniforms)
     {
-		// 绘制命令会处理这部分，所以没有必要
+		// 绘制命令会处理这部分，所以这里没有必要更新了
 
 		//auto cmd = GPUOperateCommandPool::getInstance()->popCommand<GPUOperateGLProgramCommand>(GPUOperateCommandType::GOCT_GLProgram);
 		//cmd->setGLProgram(this);

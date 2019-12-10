@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include "GL/GPUResource/Shader/Material.h"
@@ -39,8 +40,6 @@ namespace browser
         
         REGISTER_PROPERTY_GET(Material*, m_oMaterial, Material);
         REGISTER_PROPERTY_GET(Mesh*, m_oMesh, Mesh);
-        REGISTER_PROPERTY_GET(Transform*, m_oTransform, Transform);
-        REGISTER_PROPERTY_GET(Camera*, m_oCamera, Camera);
         REGISTER_PROPERTY_GET(BaseRender::RendererType, m_oRenderType, RenderType);
         
         
@@ -51,13 +50,18 @@ namespace browser
         Material* m_oMaterial;
         // 网格模型
         Mesh* m_oMesh;
-        // Transfor组件
-        Transform* m_oTransform;
-        // 相机
-        Camera* m_oCamera;
         // 是否使用gpuInstance
         bool m_bGpuInstance;
         
+
+		// 顶点数据脏标记
+		bool m_bVerticesDirty;
+		// 顶点数据
+		std::vector<glm::vec4> m_vVertices;
+		// 顶点数量
+		unsigned int m_uVertexCount;
+		// 索引数量
+		unsigned int m_uIndexCount;
         // Transform脏标记(为true时，model矩阵才有意义)
 		bool m_bTransformDirty;
 		// model矩阵

@@ -6,9 +6,10 @@ namespace browser
         : m_oRenderType(BaseRender::RendererType::Base)
         , m_oMaterial(nullptr)
         , m_oMesh(nullptr)
-        , m_oTransform(nullptr)
-        , m_oCamera(nullptr)
         , m_bGpuInstance(false)
+		, m_bVerticesDirty(false)
+		, m_uVertexCount(0)
+		, m_uIndexCount(0)
 		, m_bTransformDirty(false)
 		, m_bCameraDirty(false)
 	{
@@ -33,9 +34,10 @@ namespace browser
     {
         m_oMaterial = material;
         m_oMesh = mesh;
-        m_oTransform = transform;
-        m_oCamera = camera;
         m_bGpuInstance = gpuInstance;
+
+		m_uVertexCount = mesh->getVertexCount();
+		m_uIndexCount = mesh->getIndexCount();
 
 		m_bTransformDirty = transform->getCurFrameDirty();
 		if (m_bTransformDirty)
@@ -56,13 +58,12 @@ namespace browser
     void BaseRenderCommand::draw()
     {
         GLuint vao = m_oMesh->getVAO();
-        int indexCount = m_oMesh->getIndexCount();
         m_oMaterial->useMaterial(m_bTransformDirty, m_oModelMatrix, m_bCameraDirty, m_oViewMatrix, m_oProjectionMatrix, m_mUniforms);
 
         // 5.绘制
         glBindVertexArray(vao);
         //typedef void (APIENTRYP PFNGLDRAWELEMENTSPROC)(GLenum mode, GLsizei count, GLenum type, const void *indices);
-        glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_SHORT, (void*)0);
+        glDrawElements(GL_TRIANGLES, m_uIndexCount, GL_UNSIGNED_SHORT, (void*)0);
         //            glDrawArrays(GL_TRIANGLES, 0, vertCount);
         glBindVertexArray(0);
     }

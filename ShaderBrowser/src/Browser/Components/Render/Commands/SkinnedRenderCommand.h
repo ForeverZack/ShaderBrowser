@@ -24,9 +24,7 @@ namespace browser
         
         
 	protected:
-        // 实体
-        BaseEntity* m_oEntity;
-        
+
         
 	};
     

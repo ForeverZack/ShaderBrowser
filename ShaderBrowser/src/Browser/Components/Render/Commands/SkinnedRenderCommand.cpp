@@ -4,7 +4,6 @@
 namespace browser
 {
 	SkinnedRenderCommand::SkinnedRenderCommand()
-        : m_oEntity(nullptr)
 	{
         // 记得修改渲染类型
         m_oRenderType = BaseRender::RendererType::Skinned;
@@ -19,28 +18,36 @@ namespace browser
     {
 		BaseRenderCommand::init(material, mesh, transform, camera, gpuInstance);
 
-		m_oEntity = entity;        
-    }
+
+		// 更新骨骼矩阵samplerBuffer
+		entity->useBonesMatrix(material);
+
+		// 更新顶点数据 (TODO: 顶点数据应该在Mesh中更新，不要在渲染命令中检测)
+		m_vVertices.clear();
+		glm::vec4* vertices = entity->getVertices(mesh, m_bVerticesDirty);
+		if (m_bVerticesDirty)
+		{
+			for (unsigned int i = 0; i < m_uVertexCount; ++i)
+			{
+				m_vVertices.push_back(vertices[i]);
+			}
+		}
+		
+	}
     
     void SkinnedRenderCommand::draw()
     {
         GLuint vao = m_oMesh->getVAO();
         
-        bool verticesDirty = false;
-        // 顶点属性
-        glm::vec4* vertices = m_oEntity->getVertices(m_oMesh, verticesDirty);
-        int vertCount = m_oMesh->getVertexCount();
-        // 顶点索引数组
-        int indexCount = m_oMesh->getIndexCount();
         
-        if (verticesDirty)
+        if (m_bVerticesDirty)
         {
             // 1.绑定对应的vao
             glBindVertexArray(vao);
             
             // 2.传递顶点数据
             glBindBuffer(GL_ARRAY_BUFFER, m_oMesh->getVBOs()[RenderSystem::VertexBufferType::RenderSystem_ArrayBuffer_Position]);
-            glBufferData(GL_ARRAY_BUFFER, vertCount * sizeof(glm::vec4), &vertices[0], GL_STATIC_DRAW);
+            glBufferData(GL_ARRAY_BUFFER, m_uVertexCount * sizeof(glm::vec4), &m_vVertices[0], GL_STATIC_DRAW);
             
             // normal
             
@@ -57,13 +64,12 @@ namespace browser
         }
         
         // 4.使用材质
-        m_oEntity->useBonesMatrix(m_oMaterial);
         m_oMaterial->useMaterial(m_bTransformDirty, m_oModelMatrix, m_bCameraDirty, m_oViewMatrix, m_oProjectionMatrix, m_mUniforms);
         
         // 5.绘制
         glBindVertexArray(vao);
         //typedef void (APIENTRYP PFNGLDRAWELEMENTSPROC)(GLenum mode, GLsizei count, GLenum type, const void *indices);
-        glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_SHORT, (void*)0);
+        glDrawElements(GL_TRIANGLES, m_uIndexCount, GL_UNSIGNED_SHORT, (void*)0);
         //            glDrawArrays(GL_TRIANGLES, 0, vertCount);
         glBindVertexArray(0);
     }
