@@ -39,10 +39,6 @@ namespace customGL
         {
             m_sFragShaderPath = path;
         }
-		void setUniforms(const std::unordered_map<std::string, UniformValue>& uniforms)
-		{
-			//m_mUniforms = uniforms;
-		}
         
 	protected:
         // GLProgram操作对象
@@ -52,8 +48,6 @@ namespace customGL
         string m_sVertShaderPath;
         // 片段着色器源码路径
         string m_sFragShaderPath;
-        // uniforms
-        std::unordered_map<std::string, UniformValue> m_mUniforms;
         
 	};
 

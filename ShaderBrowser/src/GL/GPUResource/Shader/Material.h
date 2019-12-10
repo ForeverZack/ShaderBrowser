@@ -41,10 +41,9 @@ namespace customGL
 		void init();
         // 添加pass
         void addPass(Pass* pass);
-		// 使用材质的第几个Pass
+		// 使用材质的第几个Pass (渲染线程调用)
 		// TODO: 这里实际上应该根据pass的类型来决定，而不是根据index ( 这里的类型也跟渲染队列有关，比方说如果在进行阴影深度贴图的渲染，应该使用对应的简单的pass )
-		void useMaterial(bool transformDirty, const glm::mat4& modelMatrix, bool cameraDirty, const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix, int index = 0);
-        
+		void useMaterial(bool transformDirty, const glm::mat4& modelMatrix, bool cameraDirty, const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix, std::unordered_map<std::string, UniformValue>& uniforms, int index = 0);
 
         // 添加\设置uniform
         void setUniformInt(const std::string& uniformName, int value);
@@ -82,6 +81,10 @@ namespace customGL
         REGISTER_PROPERTY_GET_SET(bool, m_bDefaultMaterialFlag, DefaultMaterialFlag)
         REGISTER_PROPERTY_GET_SET(RenderQueue, m_eQueue, RenderQueue)
 		REGISTER_PROPERTY_GET_SET(browser::Camera*, m_oCurCamera, CurCamera)
+		const std::unordered_map<std::string, UniformValue>& getUniforms() 
+		{
+			return m_mUniforms;
+		}
 
 	private:
         // id

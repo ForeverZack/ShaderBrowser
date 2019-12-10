@@ -32,17 +32,13 @@ namespace customGL
 	public:
 		// 初始化材质
 		void init(GLProgram* program);
-        // 设置参数列表（从所属的material获得）
-        void setUniformsFromMaterial(std::unordered_map<std::string, UniformValue>* uniforms);
 		// 使用材质
-		void usePass(bool transformDirty, const glm::mat4& modelMatrix, bool cameraDirty, const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix);
+		void usePass(bool transformDirty, const glm::mat4& modelMatrix, bool cameraDirty, const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix, std::unordered_map<std::string, UniformValue>& uniforms);
 
 
 		REGISTER_PROPERTY_GET(GLProgram*, m_oGLProgram, GLProgram)
 
 	private:
-		// uniform数据指针（从所属material获得）
-        std::unordered_map<std::string, UniformValue>* m_mUniforms;
 		// 对应的shader程序
 		GLProgram* m_oGLProgram;
 	};

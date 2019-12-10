@@ -8,8 +8,6 @@ namespace customGL
     {
         m_eCommandType = GOCT_GLProgram;
         m_eOperateType = GOT_Update;
-
-		m_mUniforms.clear();
 	}
     
     GPUOperateGLProgramCommand::~GPUOperateGLProgramCommand()
@@ -41,7 +39,6 @@ namespace customGL
         case GPUOperateType::GOT_Update:
             {
                 // 更新GLProgram
-                
             }
             break;
                 

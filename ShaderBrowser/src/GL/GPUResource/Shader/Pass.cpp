@@ -24,8 +24,6 @@ namespace customGL
         {
             m_oGLProgram->release();
         }
-        
-        m_mUniforms = nullptr;
 	}
 
 	void Pass::init(GLProgram* program)
@@ -33,19 +31,14 @@ namespace customGL
         program->retain();
 		m_oGLProgram = program;
 	}
-    
-    void Pass::setUniformsFromMaterial(std::unordered_map<std::string, UniformValue>* uniforms)
-    {
-        m_mUniforms = uniforms;
-    }
 
-	void Pass::usePass(bool transformDirty, const glm::mat4& modelMatrix, bool cameraDirty, const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix)
+	void Pass::usePass(bool transformDirty, const glm::mat4& modelMatrix, bool cameraDirty, const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix, std::unordered_map<std::string, UniformValue>& uniforms)
 	{
         // 注意在更新uniform变量的值之前，要先使用着色器glUseProgram
 		m_oGLProgram->useProgram();
 
-		// 更新属性 (TODO: 这一步需要移到GPU命令中去)
-		for (auto itor = m_mUniforms->begin(); itor != m_mUniforms->end(); ++itor)
+		// 更新属性
+		for (auto itor = uniforms.begin(); itor != uniforms.end(); ++itor)
 		{
 			itor->second.updateGLProgramUniformValue(m_oGLProgram, itor->first);
 		}

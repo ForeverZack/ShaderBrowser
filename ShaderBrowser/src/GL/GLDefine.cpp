@@ -43,11 +43,18 @@ namespace customGL {
     {
         
     }
+
+	UniformValue::UniformValue(const UniformValue& uniformVal)
+	{
+		m_eType = uniformVal.m_eType;
+		_value = uniformVal._value;
+		m_bDirty = uniformVal.m_bDirty;
+	}
     
     UniformValue::UniformValue(const UniformValue&& uniformVal) noexcept
     {
         m_eType = uniformVal.m_eType;
-        _value = uniformVal._value;
+        _value = std::move(uniformVal._value);
         m_bDirty = uniformVal.m_bDirty;
     }
     
@@ -377,7 +384,7 @@ namespace customGL {
         return m_eType;
     }
 
-	bool UniformValue::isTexture()
+	bool UniformValue::isTexture() const
 	{
 		return m_eType == UniformValueType_ImageBuffer || m_eType == UniformValueType_SamplerBuffer || m_eType == UniformValueType_Sampler2D;
 	}

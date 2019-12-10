@@ -330,9 +330,6 @@
     <ClCompile Include="src\GL\GPUOperateCommand\GPUOperateGLProgramCommand.cpp">
       <Filter>src\GL\GPUOperateCommand</Filter>
     </ClCompile>
-    <ClCompile Include="src\GL\GPUResource\Shader\MaterialManager.cpp">
-      <Filter>src\GL\GPUResource\Shader</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\GL\GLDefine.h">
@@ -565,9 +562,6 @@
     </ClInclude>
     <ClInclude Include="src\GL\GPUOperateCommand\GPUOperateGLProgramCommand.h">
       <Filter>src\GL\GPUOperateCommand</Filter>
-    </ClInclude>
-    <ClInclude Include="src\GL\GPUResource\Shader\MaterialManager.h">
-      <Filter>src\GL\GPUResource\Shader</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

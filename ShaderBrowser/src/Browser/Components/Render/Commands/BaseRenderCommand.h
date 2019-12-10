@@ -67,6 +67,8 @@ namespace browser
 		// view, projection矩阵
 		glm::mat4 m_oViewMatrix;
 		glm::mat4 m_oProjectionMatrix;
+		// 材质属性
+		std::unordered_map<std::string, UniformValue> m_mUniforms;
 	};
     
 }

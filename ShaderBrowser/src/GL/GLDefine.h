@@ -357,6 +357,8 @@ namespace customGL
     public:
         // 构造函数
         UniformValue();
+		// 拷贝构造函数
+		UniformValue(const UniformValue& uniformVal);
         // 移动构造函数
         UniformValue(const UniformValue&& uniformVal) noexcept;
         // 析构函数
@@ -401,7 +403,7 @@ namespace customGL
         void updateGLProgramUniformValue(GLProgram* glProgram, std::string uniformName, bool forceUpdate = false);
         
 		// 是否是纹理类资源(占用了纹理单元，每次切换Shader都需要设置的，所以这类资源不参与dirty)
-		bool isTexture();
+		bool isTexture() const;
 
         
     public:

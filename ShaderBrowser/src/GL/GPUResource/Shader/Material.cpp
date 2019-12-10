@@ -1,5 +1,4 @@
 #include "Material.h"
-#include "GL/GPUResource/Shader/MaterialManager.h"
 #include "Common/Tools/Utils.h"
 #include "Common/System/Cache/GLProgramCache.h"
 
@@ -41,9 +40,6 @@ namespace customGL
         , m_oCurCamera(nullptr)
 	{
         m_vPass.clear();
-
-		// 添加到MaterialManager中
-		MaterialManager::getInstance()->addMaterial(this);
 	}
 
 	Material::~Material()
@@ -52,9 +48,6 @@ namespace customGL
         {
             (*itor)->release();
         }
-
-		// 从MaterialManager中移除
-		MaterialManager::getInstance()->removeMaterial(this);
 	}
 
 	void Material::init()
@@ -67,19 +60,16 @@ namespace customGL
     {
         pass->retain();
         m_vPass.push_back(pass);
-        
-        // 设置pass的uniform数据来源
-        pass->setUniformsFromMaterial(&m_mUniforms);
     }
     
-	void Material::useMaterial(bool transformDirty, const glm::mat4& modelMatrix, bool cameraDirty, const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix, int index/* = 0*/)
+	void Material::useMaterial(bool transformDirty, const glm::mat4& modelMatrix, bool cameraDirty, const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix, std::unordered_map<std::string, UniformValue>& uniforms, int index/* = 0*/)
 	{
         common::BROWSER_ASSERT(m_vPass.size()>index && m_vPass[index], "cannot found pass in function Material::useMaterial");
         
-		// TODO: 注意前面有一步骨骼矩阵纹理
+		// TODO: 注意前面有一步骨骼矩阵纹理！！！
 
-        // 使用glProgram
-        m_vPass[index]->usePass(transformDirty, modelMatrix, cameraDirty, viewMatrix, projectionMatrix);
+        // 使用glProgram		TODO: usePass会改变UniformValue的dirty状态，如果是多个pass会出问题的！！
+        m_vPass[index]->usePass(transformDirty, modelMatrix, cameraDirty, viewMatrix, projectionMatrix, uniforms);
 	}
     
     void Material::setUniformInt(const std::string& uniformName, int value)

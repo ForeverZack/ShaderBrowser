@@ -149,8 +149,8 @@ namespace customGL
     protected:
         // 创建gpu资源
         void createGPUResource(const char* vertPath, const char* fragPath);
-        // 更新gpu资源
-        virtual void updateGPUResource();
+		// 更新gpu资源
+		void updateGPUResource(const std::unordered_map<std::string, UniformValue>& uniforms);
         // 删除gpu资源
         virtual void deleteGPUResource();
         

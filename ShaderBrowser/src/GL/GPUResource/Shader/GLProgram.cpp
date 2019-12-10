@@ -351,9 +351,15 @@ namespace customGL
         GPUOperateSystem::getInstance()->addCommand(cmd);
     }
 
-    void GLProgram::updateGPUResource()
+    void GLProgram::updateGPUResource(const std::unordered_map<std::string, UniformValue>& uniforms)
     {
-        BROWSER_LOG("GLProgram::updateGPUResource");
+		// 绘制命令会处理这部分，所以没有必要
+
+		//auto cmd = GPUOperateCommandPool::getInstance()->popCommand<GPUOperateGLProgramCommand>(GPUOperateCommandType::GOCT_GLProgram);
+		//cmd->setGLProgram(this);
+		//cmd->setUniforms(uniforms);
+		//cmd->ready(GPUOperateType::GOT_Update);
+		//GPUOperateSystem::getInstance()->addCommand(cmd);
     }
     
     void GLProgram::deleteGPUResource()

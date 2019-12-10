@@ -49,13 +49,15 @@ namespace browser
 			m_oViewMatrix = camera->getViewMatrix();
 			m_oProjectionMatrix = camera->getProjectionMatrix();
 		}
+		const std::unordered_map<std::string, UniformValue>& uniforms = material->getUniforms();
+		m_mUniforms = uniforms;
     }
     
     void BaseRenderCommand::draw()
     {
         GLuint vao = m_oMesh->getVAO();
         int indexCount = m_oMesh->getIndexCount();
-        m_oMaterial->useMaterial(m_bTransformDirty, m_oModelMatrix, m_bCameraDirty, m_oViewMatrix, m_oProjectionMatrix);
+        m_oMaterial->useMaterial(m_bTransformDirty, m_oModelMatrix, m_bCameraDirty, m_oViewMatrix, m_oProjectionMatrix, m_mUniforms);
 
         // 5.绘制
         glBindVertexArray(vao);
