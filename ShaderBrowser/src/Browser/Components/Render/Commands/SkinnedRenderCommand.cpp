@@ -17,12 +17,9 @@ namespace browser
 
     void SkinnedRenderCommand::init(BaseEntity* entity, Material* material, Mesh* mesh, Transform* transform, Camera* camera, bool gpuInstance /*= false*/)
     {
-        m_oEntity = entity;
-        m_oMaterial = material;
-        m_oMesh = mesh;
-        m_oTransform = transform;
-        m_oCamera = camera;
-        m_bGpuInstance = gpuInstance;
+		BaseRenderCommand::init(material, mesh, transform, camera, gpuInstance);
+
+		m_oEntity = entity;        
     }
     
     void SkinnedRenderCommand::draw()
@@ -61,7 +58,7 @@ namespace browser
         
         // 4.使用材质
         m_oEntity->useBonesMatrix(m_oMaterial);
-        m_oMaterial->useMaterial(m_oMesh, m_oTransform, m_oCamera);
+        m_oMaterial->useMaterial(m_bTransformDirty, m_oModelMatrix, m_bCameraDirty, m_oViewMatrix, m_oProjectionMatrix);
         
         // 5.绘制
         glBindVertexArray(vao);

@@ -170,6 +170,9 @@ namespace customGL
         unsigned int m_uVertexCount;
         // 索引个数
         unsigned int m_uIndexCount;
+
+
+		// TODO: 这部分属性其实不应该属于Mesh的属性，只是读取Model时方便才用的，应该放到model的默认材质中去，后面记得改！！！
 		// 纹理数组
         std::unordered_map<std::string, TextureData> m_mTextures;
         // 材质名称

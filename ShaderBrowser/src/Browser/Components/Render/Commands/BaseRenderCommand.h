@@ -1,5 +1,7 @@
 #pragma once
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include "GL/GPUResource/Shader/Material.h"
 #include "GL/GPUResource/Model/Mesh.h"
 #include "Browser/Components/Camera/Camera.h"
@@ -56,7 +58,15 @@ namespace browser
         // 是否使用gpuInstance
         bool m_bGpuInstance;
         
-        
+        // Transform脏标记(为true时，model矩阵才有意义)
+		bool m_bTransformDirty;
+		// model矩阵
+		glm::mat4 m_oModelMatrix;
+		// Camera脏标记(为true时，view projection矩阵才有意义)
+		bool m_bCameraDirty;
+		// view, projection矩阵
+		glm::mat4 m_oViewMatrix;
+		glm::mat4 m_oProjectionMatrix;
 	};
     
 }

@@ -84,6 +84,7 @@
     <ClCompile Include="src\GL\GPUResource\Model\SkeletonAnimation.cpp" />
     <ClCompile Include="src\GL\GPUResource\Shader\GLProgram.cpp" />
     <ClCompile Include="src\GL\GPUResource\Shader\Material.cpp" />
+    <ClCompile Include="src\GL\GPUResource\Shader\MaterialManager.cpp" />
     <ClCompile Include="src\GL\GPUResource\Shader\Pass.cpp" />
     <ClCompile Include="src\GL\GPUResource\Texture\Image.cpp" />
     <ClCompile Include="src\GL\GPUResource\Texture\Texture2D.cpp" />
@@ -167,6 +168,7 @@
     <ClInclude Include="src\GL\GPUResource\Model\SkeletonAnimation.h" />
     <ClInclude Include="src\GL\GPUResource\Shader\GLProgram.h" />
     <ClInclude Include="src\GL\GPUResource\Shader\Material.h" />
+    <ClInclude Include="src\GL\GPUResource\Shader\MaterialManager.h" />
     <ClInclude Include="src\GL\GPUResource\Shader\Pass.h" />
     <ClInclude Include="src\GL\GPUResource\Texture\Image.h" />
     <ClInclude Include="src\GL\GPUResource\Texture\Texture2D.h" />

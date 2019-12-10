@@ -12,12 +12,6 @@ namespace customGL
         , sizeSK(0)
    {
         this->autorelease();
-        
-        m_vBones.clear();
-        m_mBonesIdMap.clear();
-        m_vBonesInitPosition.clear();
-        m_vBonesInitRotation.clear();
-        m_vBonesInitScale.clear();
        
        hasInit = true;
        sizeSK = m_mBonesIdMap.size();

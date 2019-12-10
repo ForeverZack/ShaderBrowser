@@ -9,6 +9,8 @@ namespace browser
         , m_oTransform(nullptr)
         , m_oCamera(nullptr)
         , m_bGpuInstance(false)
+		, m_bTransformDirty(false)
+		, m_bCameraDirty(false)
 	{
 	}
 
@@ -34,14 +36,27 @@ namespace browser
         m_oTransform = transform;
         m_oCamera = camera;
         m_bGpuInstance = gpuInstance;
+
+		m_bTransformDirty = transform->getCurFrameDirty();
+		if (m_bTransformDirty)
+		{
+			m_oModelMatrix = transform->getModelMatrix();
+		}
+		m_bCameraDirty = camera!=material->getCurCamera() || camera->getTransDirty();
+		if (m_bCameraDirty)
+		{
+			material->setCurCamera(camera);
+			m_oViewMatrix = camera->getViewMatrix();
+			m_oProjectionMatrix = camera->getProjectionMatrix();
+		}
     }
     
     void BaseRenderCommand::draw()
     {
         GLuint vao = m_oMesh->getVAO();
         int indexCount = m_oMesh->getIndexCount();
-        m_oMaterial->useMaterial(m_oMesh, m_oTransform, m_oCamera);
-        
+        m_oMaterial->useMaterial(m_bTransformDirty, m_oModelMatrix, m_bCameraDirty, m_oViewMatrix, m_oProjectionMatrix);
+
         // 5.绘制
         glBindVertexArray(vao);
         //typedef void (APIENTRYP PFNGLDRAWELEMENTSPROC)(GLenum mode, GLsizei count, GLenum type, const void *indices);

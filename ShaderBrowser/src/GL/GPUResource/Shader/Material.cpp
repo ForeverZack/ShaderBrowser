@@ -1,4 +1,5 @@
 #include "Material.h"
+#include "GL/GPUResource/Shader/MaterialManager.h"
 #include "Common/Tools/Utils.h"
 #include "Common/System/Cache/GLProgramCache.h"
 
@@ -19,6 +20,7 @@ namespace customGL
     
     Material* Material::createMaterial(const std::string& programName, const std::string& materialName)
     {
+		// 因为只有发生改变的UniformValue会在GPU中重新设置，所以每个Material对应的GLProgram都应该是独立的，可合并的应该是相同的material
         GLProgram* program = GLProgramCache::getInstance()->getGLProgramCopy(programName);
         Pass* pass = Pass::createPass(program);
         
@@ -36,10 +38,12 @@ namespace customGL
         , m_uSharedId(0)
         , m_bDefaultMaterialFlag(false)
         , m_bTransparentFlag(false)
-        , m_bInitColorProperties(false)
         , m_oCurCamera(nullptr)
 	{
         m_vPass.clear();
+
+		// 添加到MaterialManager中
+		MaterialManager::getInstance()->addMaterial(this);
 	}
 
 	Material::~Material()
@@ -48,6 +52,9 @@ namespace customGL
         {
             (*itor)->release();
         }
+
+		// 从MaterialManager中移除
+		MaterialManager::getInstance()->removeMaterial(this);
 	}
 
 	void Material::init()
@@ -65,51 +72,14 @@ namespace customGL
         pass->setUniformsFromMaterial(&m_mUniforms);
     }
     
-	void Material::useMaterial(Mesh* mesh, browser::Transform* transform, browser::Camera* camera, int index/* = 0*/)
+	void Material::useMaterial(bool transformDirty, const glm::mat4& modelMatrix, bool cameraDirty, const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix, int index/* = 0*/)
 	{
         common::BROWSER_ASSERT(m_vPass.size()>index && m_vPass[index], "cannot found pass in function Material::useMaterial");
+        
+		// TODO: 注意前面有一步骨骼矩阵纹理
 
-        // 应用网格的纹理		TODO:这里不应该仅仅是模型的纹理，应该是纹理类型的都要更新 (另外注意前面有一步骨骼矩阵纹理)
-        /* （每次都执行这一步是因为，opengl的纹理单元是固定的，我们要去替换当前纹理单元对应的纹理。
-          GLStateCache::bindTexture2DN中先调用glActiveTexture来激活纹理单元，再glBindTexture来绑定纹理到纹理单元中）*/
-		//const std::unordered_map<std::string, TextureData>& textureInfos = mesh->getTextures();
-		//Texture2D* texture;
-		//for (auto itor = textureInfos.cbegin(); itor != textureInfos.cend(); ++itor)
-		//{
-		//	texture = itor->second.texture;
-		//	setUniformTex2D(itor->second.uniformName.c_str(), texture);
-		//}
-        
-        // 设置uniform（uniform需要每帧更新！！！！）
-        // 设置模型材质属性到pass （TODO: pass理论上可以修改它们的值，应该做判断，这里先覆盖）
-        if (!m_bInitColorProperties)
-        {
-            m_bInitColorProperties = true;
-            
-            const std::unordered_map<std::string, glm::vec4>& colorProperties = mesh->getColorProperties();
-            for (auto itor = colorProperties.begin(); itor != colorProperties.end(); ++itor)
-            {
-                setUniformV4f(itor->first, itor->second);
-            }
-        }
-        
-        
-        // 设置model矩阵
-        if (transform->getCurFrameDirty())
-        {
-            setUniformMat4(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_MODEL_MATRIX], transform->getModelMatrix());
-        }
-        // 设置view矩阵,projection矩阵
-        if (camera!=m_oCurCamera || camera->getTransDirty())
-        {
-            m_oCurCamera = camera;
-            
-            setUniformMat4(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_VIEW_MATRIX], camera->getViewMatrix());
-            setUniformMat4(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_PROJECTION_MATRIX], camera->getProjectionMatrix());
-        }
-        
         // 使用glProgram
-        m_vPass[index]->usePass();
+        m_vPass[index]->usePass(transformDirty, modelMatrix, cameraDirty, viewMatrix, projectionMatrix);
 	}
     
     void Material::setUniformInt(const std::string& uniformName, int value)

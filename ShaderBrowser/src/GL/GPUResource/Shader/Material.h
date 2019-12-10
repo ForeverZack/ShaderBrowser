@@ -4,6 +4,7 @@
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <vector>
+#include "GL/GPUResource/BaseGPUResource.h"
 #include "GL/GPUResource/Shader/Pass.h"
 #include "GL/GPUResource/Shader/GLProgram.h"
 #include "Common/Tools/Utils.h"
@@ -42,7 +43,7 @@ namespace customGL
         void addPass(Pass* pass);
 		// 使用材质的第几个Pass
 		// TODO: 这里实际上应该根据pass的类型来决定，而不是根据index ( 这里的类型也跟渲染队列有关，比方说如果在进行阴影深度贴图的渲染，应该使用对应的简单的pass )
-		void useMaterial(Mesh* mesh, browser::Transform* transform, browser::Camera* camera, int index = 0);
+		void useMaterial(bool transformDirty, const glm::mat4& modelMatrix, bool cameraDirty, const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix, int index = 0);
         
 
         // 添加\设置uniform
@@ -80,6 +81,7 @@ namespace customGL
         REGISTER_PROPERTY_GET_SET(unsigned int, m_uSharedId, SharedId)
         REGISTER_PROPERTY_GET_SET(bool, m_bDefaultMaterialFlag, DefaultMaterialFlag)
         REGISTER_PROPERTY_GET_SET(RenderQueue, m_eQueue, RenderQueue)
+		REGISTER_PROPERTY_GET_SET(browser::Camera*, m_oCurCamera, CurCamera)
 
 	private:
         // id
@@ -115,8 +117,6 @@ namespace customGL
         
         
         // 一些其他属性
-        // 是否已经初始化mesh的原始color
-        bool m_bInitColorProperties;
         // 当前渲染用的相机
         browser::Camera* m_oCurCamera;
         

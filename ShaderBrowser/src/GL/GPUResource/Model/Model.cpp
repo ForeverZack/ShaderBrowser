@@ -640,11 +640,16 @@ namespace customGL
 					{
 						// 设置材质纹理
 						const std::unordered_map<std::string, TextureData>& textureInfos = mesh->getTextures();
-						Texture2D* texture;
 						for (auto itor = textureInfos.cbegin(); itor != textureInfos.cend(); ++itor)
 						{
-							texture = itor->second.texture;
-							sharedMaterial->setUniformTex2D(itor->second.uniformName.c_str(), texture);
+							sharedMaterial->setUniformTex2D(itor->second.uniformName.c_str(), itor->second.texture);
+						}
+
+						// 设置模型材质属性
+						const std::unordered_map<std::string, glm::vec4>& colorProperties = mesh->getColorProperties();
+						for (auto itor = colorProperties.begin(); itor != colorProperties.end(); ++itor)
+						{
+							sharedMaterial->setUniformV4f(itor->first, itor->second);
 						}
 					}
 
