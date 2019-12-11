@@ -51,37 +51,11 @@ namespace browser
 	protected:
 		// 处理组件事件
 		virtual void handleEvent(ComponentEvent event, BaseComponentMessage* msg);
-        // 获取MeshFilter组件
-        template <typename MsgType>
-        void getMeshFilterFromMsg(BaseComponentMessage* msg)
-        {
-            MsgType* convertMsg = static_cast<MsgType*>(msg);
-            MeshFilter* meshFilter = convertMsg->getMeshFilter();
-            if (!m_oMeshFilter && meshFilter)
-            {
-                m_oMeshFilter = meshFilter;
-            }
-        }
-        // 获取Animator组件
-        template <typename MsgType>
-        void getAnimatorFromMsg(BaseComponentMessage* msg)
-        {
-            MsgType* convertMsg = static_cast<MsgType*>(msg);
-            Animator* animator = convertMsg->getAnimator();
-            if (!m_oAnimator && animator)   // 如果Animator已经被设置，则不会更新（用来防治存在多个animator嵌套的情况）
-            {
-                m_oAnimator = animator;
-            }
-        }
         
         REGISTER_PROPERTY_CONSTREF_GET(std::vector<glm::vec3>, m_vDisplayVertices, DisplayVertices)
-        REGISTER_PROPERTY_GET_SET(MeshFilter*, m_oMeshFilter, MeshFilter)
+
         
 	protected:
-        // MeshFilter组件
-        MeshFilter* m_oMeshFilter;
-        // Animator组件（来自entityRoot）
-        Animator* m_oAnimator;
         // 骨骼矩阵
         std::vector<glm::mat4> m_vBonesMatrix;
         // 是否根据骨骼动画的变换重新生成包围盒

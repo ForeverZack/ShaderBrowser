@@ -1,7 +1,10 @@
 #include "AABBBoundBox.h"
 #include "GL/GLDefine.h"
 #include "Browser/Components/Mesh/MeshFilter.h"
+//#include "Browser/Components/Render/BaseRender.h"
+#include "Browser/Components/Render/SkinnedMeshRenderer.h"
 #include "Browser/Components/Animation/Animator.h"
+#include "Browser/Entitys/BaseEntity.h"
 
 namespace browser
 {
@@ -46,18 +49,29 @@ namespace browser
 
 	void AABBBoundBox::updateBoundBox(float deltaTime)
 	{        
-        if (m_oTransform && m_oMeshFilter)
+		Transform* transform = m_oBelongEntity ? m_oBelongEntity->getComponent<Transform>() : nullptr;
+		BaseRender* baseRenderer = m_oBelongEntity ? m_oBelongEntity->getComponent<BaseRender>() : nullptr;
+		MeshFilter* meshFilter = m_oBelongEntity ? m_oBelongEntity->getComponent<MeshFilter>() : nullptr;
+		if (baseRenderer && baseRenderer->getRendererType()== BaseRender::RendererType::Skinned)
+		{
+			// skinnedMeshRenderer的MeshFilter存在它本身的类中，没有挂在BaseEntity上
+			meshFilter = static_cast<SkinnedMeshRenderer*>(baseRenderer)->getMeshFilter();
+		}
+
+		if (transform && meshFilter)
         {
+			BaseEntity* modelRootEntity= m_oBelongEntity ? m_oBelongEntity->getModelRootEntity() : nullptr;
+			Animator* animator = modelRootEntity ? modelRootEntity->getComponent<Animator>() : nullptr;
             // 当前使用的MeshFilter和本entity的MeshFilter组件不符,则重新生成AABB包围盒
-            if (m_oMeshFilter && (m_oMeshFilter!=m_oInUseMeshFilter || (m_bDynamic && m_oAnimator && m_oAnimator->getDirty())))
+            if ((meshFilter !=m_oInUseMeshFilter || (m_bDynamic && animator && animator->getDirty())))
             {
-                m_oInUseMeshFilter = m_oMeshFilter;
+                m_oInUseMeshFilter = meshFilter;
                 // 重新计算包围盒
                 calculateAABBBoundBox();
             }
             
             // model矩阵
-            const glm::mat4& modelMatrix = m_oTransform->getModelMatrix();
+            const glm::mat4& modelMatrix = transform->getModelMatrix();
             
             glm::vec3 min(GLM_VEC3_ZERO), max(GLM_VEC3_ZERO);
             // x' = m11*x + m21*y + m31*z ; y' = m12*x + m22*y + m32*z ; z' = m13*x + m23*y + m33*z;
@@ -161,7 +175,7 @@ namespace browser
             
             // 填充Vertex数组
             // 上面的3*3矩阵没有位移,所以这里把位移加上去,并且因为上面已经做了缩放旋转变换,所以这里要加的应该是世界坐标
-            glm::vec3 global_position = m_oTransform->getGlobalPosition();
+            glm::vec3 global_position = transform->getGlobalPosition();
             min += global_position;
             max += global_position;
             
@@ -180,7 +194,7 @@ namespace browser
     
     bool AABBBoundBox::checkVisibility(Camera* camera, bool reCalculate /*= false*/)
     {       
-        if (m_oTransform && reCalculate)
+        if (m_oBelongEntity && m_oBelongEntity->getComponent<Transform>() && reCalculate)
         {	
             const glm::mat4& view_matrix = camera->getViewMatrix();
             const glm::mat4& projection_matrix = camera->getProjectionMatrix();
@@ -299,9 +313,11 @@ namespace browser
     {
         bool hasInit = false;
         
-        if (m_oAnimator)
+		BaseEntity* modelRootEntity = m_oBelongEntity ? m_oBelongEntity->getModelRootEntity() : nullptr;
+		Animator* animator = modelRootEntity ? modelRootEntity->getComponent<Animator>() : nullptr;
+        if (animator)
         {
-            m_vBonesMatrix = m_oAnimator->getBonesMatrix();
+            m_vBonesMatrix = animator->getBonesMatrix();
         }
         Mesh* mesh = nullptr;
         glm::vec4 position;

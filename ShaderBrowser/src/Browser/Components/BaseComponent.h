@@ -1,5 +1,4 @@
-#ifndef COMS_BASECOMPONENT_H
-#define COMS_BASECOMPONENT_H
+#pragma once
 
 #include <string>
 #include "Common/Components/Reference.h"
@@ -72,23 +71,10 @@ namespace browser
         // 接受事件
         virtual void handleEvent(ComponentEvent event, BaseComponentMessage* msg) {}
 
+
 		REGISTER_PROPERTY_GET(SystemType, m_eBelongSystem, BelongSystem)
 		REGISTER_PROPERTY_GET_SET(BaseEntity*, m_oBelongEntity, BelongEntity)
         REGISTER_PROPERTY_CONSTREF_GET(std::string, m_sComponentName, ComponentName)
-        REGISTER_PROPERTY_GET_SET(Transform*, m_oTransform, Transform)
-        
-    public:
-        // 获取Transform组件
-        template <typename MsgType>
-        void getTransformFromMsg(BaseComponentMessage* msg)
-        {
-            MsgType* convertMsg = static_cast<MsgType*>(msg);
-            Transform* transform = convertMsg->getTransform();
-            if (!m_oTransform && transform)
-            {
-                m_oTransform = transform;
-            }
-        }
 
     protected:
         // Transform组件
@@ -106,4 +92,3 @@ namespace browser
 	};
 }
 
-#endif

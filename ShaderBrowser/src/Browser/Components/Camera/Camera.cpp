@@ -1,5 +1,6 @@
 #include "Camera.h"
 #include "GL/GLDefine.h"
+#include "Browser/Entitys/BaseEntity.h"
 
 namespace browser
 {
@@ -57,10 +58,11 @@ namespace browser
 
 	void Camera::updateCamera(float deltaTime)
 	{
-		if (m_oTransform)
+		Transform* transform = m_oBelongEntity ? m_oBelongEntity->getComponent<Transform>() : nullptr;
+		if (transform)
 		{
 			// 获取相机的model矩阵
-			const glm::mat4& matrix_model = m_oTransform->getModelMatrix();
+			const glm::mat4& matrix_model = transform->getModelMatrix();
 			// 计算相机上向量
 			glm::vec4 vector_up(GLM_AXIS_Y, 0.0f);
 			vector_up = matrix_model * vector_up;
@@ -71,7 +73,7 @@ namespace browser
 			// 相机上向量
 			glm::vec3 camera_up(vector_up.x, vector_up.y, vector_up.z);
 			// 相机位置
-			const glm::vec3& camera_position = m_oTransform->getPosition();
+			const glm::vec3& camera_position = transform->getPosition();
 			// 目标位置
 			glm::vec3 camera_front(vector_forward.x, vector_forward.y, vector_forward.z);
 			glm::vec3 camera_target = camera_position + camera_front;
@@ -79,7 +81,7 @@ namespace browser
 			// 计算视矩阵	( glm::LookAt函数需要一个位置、目标和上向量 )
 			m_oViewMatrix = glm::lookAt(camera_position, camera_target, camera_up);
 
-            m_bTransDirty = m_oTransform->getCurFrameDirty();
+            m_bTransDirty = transform->getCurFrameDirty();
 		}
 	}
 
@@ -110,14 +112,12 @@ namespace browser
 		case ComponentEvent::Camera_AddComponent:
 			{
 //                BROWSER_LOG("Camera_AddComponent Message received");
-				getTransformFromMsg<CameraAddComponentMessage>(msg);
 			}
 			break;
 
 		case ComponentEvent::Transform_AddComponent:
 			{
 //                BROWSER_LOG("Transform_AddComponent Message received");
-				getTransformFromMsg<TransformAddComponentMessage>(msg);
 			}
 			break;
 		}

@@ -22,7 +22,6 @@ namespace browser
 		case ComponentEvent::Transform_AddComponent:
 			{
 //                BROWSER_LOG("Transform_AddComponent Message received");
-				getTransformFromMsg<TransformAddComponentMessage>(msg);
 			}
 			break;
                 

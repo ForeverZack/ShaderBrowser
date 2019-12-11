@@ -36,15 +36,12 @@ namespace browser
         // 包围盒：虽然包围盒是在skinnedMeshRenderer中创建的，但在renderer组件添加到entity上时，会把包围盒组件也添加上去
         m_oBoundBox = new AABBBoundBox();
         m_oBoundBox->retain();
-        m_oBoundBox->setMeshFilter(m_oMeshFilter);
 	}
 
 	SkinnedMeshRenderer::~SkinnedMeshRenderer()
 	{
         // 释放网格筛选器
         m_oMeshFilter->release();
-        // 释放包围盒
-        m_oBoundBox->release();
 	}
     
     void SkinnedMeshRenderer::addMesh(Mesh* mesh)
@@ -74,7 +71,6 @@ namespace browser
         case ComponentEvent::Transform_AddComponent:
             {
                 //                BROWSER_LOG("Transform_AddComponent Message received");
-                m_oBoundBox->getTransformFromMsg<TransformAddComponentMessage>(msg);
             }
             break;
                 
