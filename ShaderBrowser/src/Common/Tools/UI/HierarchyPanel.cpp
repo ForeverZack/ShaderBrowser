@@ -112,7 +112,7 @@ namespace common
             m_oScene = TransformSystem::getInstance()->getScene();
         }
         
-        if(!m_oScene || !m_oScene->getTransform())
+        if(!m_oScene || !m_oScene->getComponent<browser::Transform>())
         {
             return;
         }
@@ -126,7 +126,7 @@ namespace common
         // 如果有结构发生改变
         cleanContent();
         // 基类BaseGUIPanel的m_vContent只是用来做显示用的，但这里需要根据节点来查找数据，所以加了个unordered_map
-        traverseNode(m_oScene->getTransform(), true);
+        traverseNode(m_oScene->getComponent<browser::Transform>(), true);
     }
 
 }

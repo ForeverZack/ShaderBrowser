@@ -16,6 +16,9 @@ namespace browser
 	class Camera : public BaseComponent
 	{
 	public:
+		static EnumComponentClass ComponentClass;
+
+	public:
 		// 投影类型
 		enum ProjectionType
 		{

@@ -3,6 +3,8 @@
 
 namespace browser
 {
+	EnumComponentClass Camera::ComponentClass = EnumComponentClass::ECC_Camera;
+
 	Camera* Camera::create(ProjectionType type /*= ProjectionType::Ortho*/, float nearPlane /*= 0.3f*/, float farPlane /*= 1000.0f*/, int viewportWidth /*= 800*/
 							, int viewportHeight /*= 600*/, float FOV /*= 60.0f*/)
 	{

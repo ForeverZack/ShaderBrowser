@@ -74,10 +74,53 @@ namespace browser
 		void useBonesMatrix(Material* material);
         
         
-		REGISTER_PROPERTY_GET(MeshFilter*, m_oMeshFilterComponent, MeshFilter);
-		REGISTER_PROPERTY_GET(Transform*, m_oTransformComponent, Transform);
-        REGISTER_PROPERTY_GET(BaseBoundBox*, m_oBoundBox, BoundBox);
-        REGISTER_PROPERTY_GET(Animator*, m_oAnimator, Animator);
+		// 获取组件
+		template <typename T>
+		T* getComponent()
+		{
+			switch (T::ComponentClass)
+			{
+			case EnumComponentClass::ECC_Transform:
+				{
+					return static_cast<T*>(m_oTransform);
+				}
+				break;
+			case EnumComponentClass::ECC_BaseRenderer:
+			case EnumComponentClass::ECC_SkinnedMeshRenderer:
+				{
+					return static_cast<T*>(m_oRenderer);
+				}
+				break;
+
+			case EnumComponentClass::ECC_MeshFilter:
+				{
+					return static_cast<T*>(m_oMeshFilter);
+				}
+				break;
+
+			case EnumComponentClass::ECC_BaseBoundBox:
+			case EnumComponentClass::ECC_AABBBoundBox:
+				{
+					return static_cast<T*>(m_oBoundBox);
+				}
+				break;
+
+			case EnumComponentClass::ECC_Animator:
+				{
+					return static_cast<T*>(m_oAnimator);
+				}
+				break;
+
+			case EnumComponentClass::ECC_Camera:
+				{
+					return static_cast<T*>(m_oCamera);
+				}
+				break;
+			}
+
+			return nullptr;
+		}
+
         REGISTER_PROPERTY_GET_SET(bool, m_bIsVisible, IsVisible);
         REGISTER_PROPERTY_GET_SET(bool, m_bIsAxisVisible, IsAxisVisible);
         REGISTER_PROPERTY_GET_SET(bool, m_bIsBoundBoxVisible, IsBoundBoxVisible)
@@ -85,7 +128,6 @@ namespace browser
 		REGISTER_PROPERTY_GET_SET(Model*, m_oModel, Model)
 		REGISTER_PROPERTY_GET(BaseEntity*, m_oModelRootEntity, ModelRootEntity)
         void setModelRootEntity(BaseEntity* root);
-        REGISTER_PROPERTY_GET_SET(BaseRender*, m_oRenderer, Renderer)
         void setBoneInfo(int boneId, const glm::mat4& bindpose); // 设置Transform的骨骼信息
         
 	private:
@@ -110,22 +152,23 @@ namespace browser
 			}
 		}
 
+
 	private:
 		// 组件队列
 		// 注意：这里的组件列表是通过system添加过来的，system会检测组件是否互斥（一个entity是否已经拥有相同类型的组件）
 		std::vector<BaseComponent*> m_vComponents;
 		// Transform组件
-		Transform* m_oTransformComponent;
+		BaseComponent* m_oTransform;
 		// 渲染组件(方便快速获取组件对象)
-		BaseRender* m_oRenderer;
+		BaseComponent* m_oRenderer;
 		// 网格过滤器组件
-		MeshFilter* m_oMeshFilterComponent;
+		BaseComponent* m_oMeshFilter;
         // 包围盒
-        BaseBoundBox* m_oBoundBox;
+		BaseComponent* m_oBoundBox;
         // 动画播放器
-        Animator* m_oAnimator;
+		BaseComponent* m_oAnimator;
         // 相机
-        Camera* m_oCamera;
+		BaseComponent* m_oCamera;
 		
 		// 原始模型文件
 		Model* m_oModel;

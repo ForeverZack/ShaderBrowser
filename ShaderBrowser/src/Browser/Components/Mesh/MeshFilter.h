@@ -13,7 +13,9 @@ namespace browser
 {
 	class MeshFilter : public BaseComponent
 	{
-	       
+	public:
+		static EnumComponentClass ComponentClass;
+
     public:
         static MeshFilter* create();
         

@@ -21,7 +21,7 @@ namespace browser
     
     void TransformSystem::setScene(BaseEntity* scene)
     {
-		BROWSER_ASSERT(scene->getTransform(), "You cannot set the BaseEntity without Transform component as Scene in function TransformSystem::setScene");
+		BROWSER_ASSERT(scene->getComponent<Transform>(), "You cannot set the BaseEntity without Transform component as Scene in function TransformSystem::setScene");
 
         if(m_oScene)
         {
@@ -52,7 +52,7 @@ namespace browser
     {
         if (m_oScene)
         {
-            Transform* scene_transform = m_oScene->getTransform();
+            Transform* scene_transform = m_oScene->getComponent<Transform>();
             // 从scene节点开始遍历，更新每个节点的transform
             scene_transform->visit(customGL::GLM_MAT4_UNIT, false);
         }

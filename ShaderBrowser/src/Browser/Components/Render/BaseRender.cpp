@@ -5,6 +5,8 @@
 
 namespace browser
 {
+	EnumComponentClass BaseRender::ComponentClass = EnumComponentClass::ECC_BaseRenderer;
+
 	BaseRender* BaseRender::createBaseRender(const std::string& materialName /*= Material::DEFAULT_MATERIAL_NAME*/, const std::string& programeName /*= GLProgram::DEFAULT_GLPROGRAM_NAME*/)
 	{
 		BaseRender* renderer = new BaseRender();

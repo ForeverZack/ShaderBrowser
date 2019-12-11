@@ -562,17 +562,17 @@ namespace customGL
                 entity->setBoneInfo(boneId, Assimp::ConvertToGLM(bone->mOffsetMatrix));
                 if (animator)
                 {
-                    animator->addBone(boneId, entity->getTransform());
+                    animator->addBone(boneId, entity->getComponent<browser::Transform>());
                     if (node == m_oRootBoneNode)
                     {
-                        animator->setRootBone(entity->getTransform());
+                        animator->setRootBone(entity->getComponent<browser::Transform>());
                     }
                 }
 //                entity->setPosition(position.x, position.y, position.z);
 //                entity->setQuaternion(rotation.x, rotation.y, rotation.z, rotation.w);
 //                entity->setScale(scale.x, scale.y, scale.z);
             }
-            entity->getTransform()->setSrcModelTransformation(position, rotation, scale);
+            entity->getComponent<browser::Transform>()->setSrcModelTransformation(position, rotation, scale);
         }
         
         bool skinned = false;

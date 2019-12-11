@@ -9,6 +9,8 @@ using namespace customGL;
 
 namespace browser
 {
+	EnumComponentClass Animator::ComponentClass = EnumComponentClass::ECC_Animator;
+
     // 默认动画名称前缀
     const std::string Animator::DEFAULT_ANIMATION_NAME = "DefaultAnim_";
     

@@ -2,6 +2,8 @@
 
 namespace browser
 {
+	EnumComponentClass BaseBoundBox::ComponentClass = EnumComponentClass::ECC_BaseBoundBox;
+
 	BaseBoundBox::BaseBoundBox()
         : BaseComponent("Bound Box")
         , m_bRecVisibility(true)

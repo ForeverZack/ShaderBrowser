@@ -40,9 +40,9 @@ namespace browser
 	}
 
 	BaseEntity::BaseEntity()
-		: m_oTransformComponent(nullptr)
+		: m_oTransform(nullptr)
 		, m_oRenderer(nullptr)
-		, m_oMeshFilterComponent(nullptr)
+		, m_oMeshFilter(nullptr)
         , m_oBoundBox(nullptr)
         , m_bIsVisible(true)
         , m_bIsAxisVisible(false)
@@ -60,9 +60,9 @@ namespace browser
         BROWSER_LOG("~BaseEntity");
 
 		// 移除所有children
-		if (m_oTransformComponent)
+		if (m_oTransform)
 		{
-			const std::vector<Transform*>& children = m_oTransformComponent->getChildren();
+			const std::vector<Transform*>& children = getComponent<Transform>()->getChildren();
 			for (int i=0; i<children.size(); ++i)
 			{
 				children[i]->getBelongEntity()->release();
@@ -82,64 +82,64 @@ namespace browser
 
 	void BaseEntity::addChild(BaseEntity* entity)
 	{
-		BROWSER_ASSERT(m_oTransformComponent, "Cannot find Transform component on parent entity in function BaseEntity::addChild(BaseEntity* entity)");
+		BROWSER_ASSERT(m_oTransform, "Cannot find Transform component on parent entity in function BaseEntity::addChild(BaseEntity* entity)");
 
-		Transform* transform = entity->getTransform();
+		Transform* transform = entity->getComponent<Transform>();
 		BROWSER_ASSERT(transform, "Cannot find Transform component on child entity in function BaseEntity::addChild(BaseEntity* entity)");
-		m_oTransformComponent->addChild(transform);
+		getComponent<Transform>()->addChild(transform);
 		entity->retain();
 	}
 
 	void BaseEntity::removeChild(BaseEntity* entity)
 	{
-		BROWSER_ASSERT(m_oTransformComponent, "Cannot find Transform component on parent entity in function BaseEntity::removeChild(BaseEntity* entity)");
+		BROWSER_ASSERT(m_oTransform, "Cannot find Transform component on parent entity in function BaseEntity::removeChild(BaseEntity* entity)");
 
-		Transform* transform = entity->getTransform();
+		Transform* transform = entity->getComponent<Transform>();
 		BROWSER_ASSERT(transform, "Cannot find Transform component on child entity in function BaseEntity::addChild(BaseEntity* entity)");
-		m_oTransformComponent->removeChild(transform);
+		getComponent<Transform>()->removeChild(transform);
 		entity->release();
 	}
 
 	void BaseEntity::setPosition(float x, float y, float z)
 	{
-		BROWSER_ASSERT(m_oTransformComponent, "Cannot find Transform component on parent entity in function BaseEntity::setPosition");
-		m_oTransformComponent->setPosition(x, y, z);
+		BROWSER_ASSERT(m_oTransform, "Cannot find Transform component on parent entity in function BaseEntity::setPosition");
+		getComponent<Transform>()->setPosition(x, y, z);
 	}
 
 	void BaseEntity::setEulerAngle(float x, float y, float z)
 	{
-		BROWSER_ASSERT(m_oTransformComponent, "Cannot find Transform component on parent entity in function BaseEntity::setEulerAngle");
-		m_oTransformComponent->setEulerAngle(x, y, z);
+		BROWSER_ASSERT(m_oTransform, "Cannot find Transform component on parent entity in function BaseEntity::setEulerAngle");
+		getComponent<Transform>()->setEulerAngle(x, y, z);
 	}
 
     void BaseEntity::setQuaternion(float x, float y, float z, float w)
     {
-        BROWSER_ASSERT(m_oTransformComponent, "Cannot find Transform component on parent entity in function BaseEntity::setQuaternion");
-        m_oTransformComponent->setQuaternion(x, y, z, w);
+        BROWSER_ASSERT(m_oTransform, "Cannot find Transform component on parent entity in function BaseEntity::setQuaternion");
+		getComponent<Transform>()->setQuaternion(x, y, z, w);
     }
     
 	void BaseEntity::setScale(float x, float y, float z)
 	{
-		BROWSER_ASSERT(m_oTransformComponent, "Cannot find Transform component on parent entity in function BaseEntity::setScale");
-		m_oTransformComponent->setScale(x, y, z);
+		BROWSER_ASSERT(m_oTransform, "Cannot find Transform component on parent entity in function BaseEntity::setScale");
+		getComponent<Transform>()->setScale(x, y, z);
 	}
 
 	void BaseEntity::setName(const std::string& name)
 	{
-		BROWSER_ASSERT(m_oTransformComponent, "Cannot find Transform component on parent entity in function BaseEntity::setName");
-		m_oTransformComponent->setName(name);
+		BROWSER_ASSERT(m_oTransform, "Cannot find Transform component on parent entity in function BaseEntity::setName");
+		getComponent<Transform>()->setName(name);
 	}
     
     void BaseEntity::setModelRootEntity(BaseEntity* root)
     {
         m_oModelRootEntity = root;
-        m_oTransformComponent->setBoneRoot(root->getTransform());
+		getComponent<Transform>()->setBoneRoot(root->getComponent<Transform>());
     }
     
     void BaseEntity::setBoneInfo(int boneId, const glm::mat4& bindpose)
     {
-        m_oTransformComponent->setBoneId(boneId);
-        m_oTransformComponent->setBindposeMatrix(bindpose);
+		getComponent<Transform>()->setBoneId(boneId);
+		getComponent<Transform>()->setBindposeMatrix(bindpose);
     }
     
 	bool BaseEntity::isRenderable()
@@ -147,11 +147,11 @@ namespace browser
         // 是否需要被渲染
         if (m_oRenderer)
         {
-            switch(m_oRenderer->getRendererType())
+            switch(getComponent<BaseRender>()->getRendererType())
             {
                 case BaseRender::RendererType::Base:
                     {
-                        if(m_oMeshFilterComponent)
+                        if(m_oMeshFilter)
                         {
                             return true;
                         }
@@ -173,19 +173,19 @@ namespace browser
     {
         return (
                 // 普通网格检测
-                (m_oBoundBox && m_oBoundBox->checkVisibility(camera, reCalculate))
+                (m_oBoundBox && getComponent<BaseBoundBox>()->checkVisibility(camera, reCalculate))
                 // 蒙皮网格检测
-                || (m_oRenderer && m_oRenderer->getRendererType()==BaseRender::RendererType::Skinned ? static_cast<SkinnedMeshRenderer*>(m_oRenderer)->checkVisibility(camera, reCalculate) : false)
+                || (m_oRenderer && getComponent<BaseRender>()->getRendererType()==BaseRender::RendererType::Skinned ? static_cast<SkinnedMeshRenderer*>(m_oRenderer)->checkVisibility(camera, reCalculate) : false)
         );
     }
     
     glm::vec4* BaseEntity::getVertices(Mesh* mesh, bool& dirty)
     {
         // 检测模型根节点是否含有动画组件
-        if(m_oModelRootEntity && m_oModelRootEntity->m_oAnimator && m_oModelRootEntity->m_oAnimator->getIsPlaying() && !m_oModelRootEntity->m_oAnimator->getUseGPU())
+        if(m_oModelRootEntity && m_oModelRootEntity->m_oAnimator && m_oModelRootEntity->getComponent<Animator>()->getIsPlaying() && !m_oModelRootEntity->getComponent<Animator>()->getUseGPU())
         {
 			dirty = true;
-            const std::unordered_map<Mesh*, glm::vec4*>& vertices = m_oModelRootEntity->m_oAnimator->getVertices();
+            const std::unordered_map<Mesh*, glm::vec4*>& vertices = m_oModelRootEntity->getComponent<Animator>()->getVertices();
             return vertices.find(mesh)->second;
         }
         else
@@ -203,7 +203,7 @@ namespace browser
 		}
         
         // 将骨骼矩阵存入tbo，并传给材质
-        GLuint texId = m_oModelRootEntity->m_oAnimator->useBonesMatrix();
+        GLuint texId = m_oModelRootEntity->getComponent<Animator>()->useBonesMatrix();
         material->setUniformSamplerBuffer(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_BONES_MATRIX], texId);
     }
     
@@ -214,7 +214,7 @@ namespace browser
         BROWSER_ASSERT(this==m_oModelRootEntity, "You cannot play animation on a child entity, please select the root model entity! Block in function BaseEntity::playAnimation");
         
         // 播放动画
-        m_oAnimator->play(animName, repeat, speed, interpolate);
+		getComponent<Animator>()->play(animName, repeat, speed, interpolate);
     }
     
     void BaseEntity::playAnimation(int animIdx, bool repeat /*= false*/, float speed /*= 1.0f*/, bool interpolate /*= false*/)
@@ -224,7 +224,7 @@ namespace browser
         BROWSER_ASSERT(this==m_oModelRootEntity, "You cannot play animation on a child entity, please select the root model entity! Block in function BaseEntity::playAnimation");
         
         // 播放动画
-        m_oAnimator->play(animIdx, repeat, speed, interpolate);
+		getComponent<Animator>()->play(animIdx, repeat, speed, interpolate);
     }
 
 	void BaseEntity::setAnimatorUseGPU(bool useGPU)
@@ -232,14 +232,14 @@ namespace browser
 		BROWSER_ASSERT(m_oModelRootEntity, "Entity must set the model root entity, after that it can play animation!");
 		BROWSER_ASSERT(this == m_oModelRootEntity, "You cannot play animation on a child entity, please select the root model entity! Block in function BaseEntity::playAnimation");
 
-		m_oAnimator->setUseGPU(useGPU);
+		getComponent<Animator>()->setUseGPU(useGPU);
 	}
 
 	void BaseEntity::changeAllMeshesMaterial(const std::string& programName)
 	{
 		traverseEntity(this, [=](BaseEntity* entity) {
-			BaseRender* renderer = entity->getRenderer();
-			MeshFilter* meshFilter = entity->getMeshFilter();
+			BaseRender* renderer = entity->getComponent<BaseRender>();
+			MeshFilter* meshFilter = entity->getComponent<MeshFilter>();
 			if (renderer && meshFilter)
 			{
 				const std::vector<Mesh*>& meshes = meshFilter->getMeshes();
@@ -255,9 +255,9 @@ namespace browser
 	{
 		callback(entity);
 
-		if (entity->m_oTransformComponent)
+		if (entity->m_oTransform)
 		{
-			const std::vector<Transform*>& children = entity->m_oTransformComponent->getChildren();
+			const std::vector<Transform*>& children = entity->getComponent<Transform>()->getChildren();
 			for (auto itor = children.begin(); itor != children.end(); ++itor)
 			{
 				traverseEntity((*itor)->getBelongEntity(), callback);
@@ -325,9 +325,9 @@ namespace browser
     void BaseEntity::deliverComponentMessageToChildren(ComponentEvent event, BaseComponentMessage* msg)
     {
         std::deque<Transform*> traverseVec;
-        if (m_oTransformComponent)
+        if (m_oTransform)
         {
-            traverseVec.push_back(m_oTransformComponent);
+            traverseVec.push_back(getComponent<Transform>());
         }
         
         Transform* node = nullptr;
@@ -363,26 +363,26 @@ namespace browser
 		{
 		case SystemType::Transform:
 			//Transform组件
-			MARK_SPECIAL_COMPONENT(m_oTransformComponent, component, bEmpty);
-			deliverComponentMessage(ComponentEvent::Transform_AddComponent, new TransformAddComponentMessage(m_oTransformComponent));
+			MARK_SPECIAL_COMPONENT(m_oTransform, component, bEmpty);
+			deliverComponentMessage(ComponentEvent::Transform_AddComponent, new TransformAddComponentMessage(getComponent<Transform>()));
 			break;
                 
         case SystemType::MeshFilter:
             //MeshFilter组件
-			MARK_SPECIAL_COMPONENT(m_oMeshFilterComponent, component, bEmpty);
-            deliverComponentMessage(ComponentEvent::MeshFilter_AddComponent, new MeshFilterAddComponentMessage(m_oMeshFilterComponent));
+			MARK_SPECIAL_COMPONENT(m_oMeshFilter, component, bEmpty);
+            deliverComponentMessage(ComponentEvent::MeshFilter_AddComponent, new MeshFilterAddComponentMessage(getComponent<MeshFilter>()));
             break;
 
 		case SystemType::RenderSystem:
 			// 渲染组件
 			MARK_SPECIAL_COMPONENT(m_oRenderer, component, bEmpty);
-            deliverComponentMessage(ComponentEvent::Render_AddComponent, new RenderAddComponentMessage(m_oRenderer, this));
+            deliverComponentMessage(ComponentEvent::Render_AddComponent, new RenderAddComponentMessage(getComponent<BaseRender>(), this));
 			break;
 
 		case SystemType::Camera:
 			// 相机
 			MARK_SPECIAL_COMPONENT(m_oCamera, component, bEmpty);
-            deliverComponentMessage(ComponentEvent::Camera_AddComponent, new CameraAddComponentMessage(m_oCamera, m_oTransformComponent));
+            deliverComponentMessage(ComponentEvent::Camera_AddComponent, new CameraAddComponentMessage(getComponent<Camera>(), getComponent<Transform>()));
 			break;
                 
         case SystemType::BoundBox:
@@ -390,22 +390,23 @@ namespace browser
                 // 包围盒
                 MARK_SPECIAL_COMPONENT(m_oBoundBox, component, bEmpty);
                 Animator* rootAnimator = nullptr;
-                if (m_oModelRootEntity && m_oModelRootEntity->getAnimator())
+                if (m_oModelRootEntity && m_oModelRootEntity->getComponent<Animator>())
                 {
-                    rootAnimator = m_oModelRootEntity->getAnimator();
+                    rootAnimator = m_oModelRootEntity->getComponent<Animator>();
                 }
-                deliverComponentMessage(ComponentEvent::BoundBox_AddComponent, new BoundBoxAddComponentMessage(m_oBoundBox, m_oTransformComponent, m_oMeshFilterComponent, rootAnimator));
-            }
-            break;
-                
+				deliverComponentMessage(ComponentEvent::BoundBox_AddComponent, new BoundBoxAddComponentMessage(getComponent<BaseBoundBox>(), getComponent<Transform>(), getComponent<MeshFilter>(), rootAnimator));
+		}
+			break;
+
         case SystemType::Animation:
             // 动画
             MARK_SPECIAL_COMPONENT(m_oAnimator, component, bEmpty);
-            deliverComponentMessage(ComponentEvent::Animator_AddComponent, new AnimatorAddComponentMessage(m_oAnimator, m_oModel));
-            deliverComponentMessageToChildren(ComponentEvent::Animator_ParentAddComponent, new AnimatorAddComponentMessage(m_oAnimator, m_oModel));
+            deliverComponentMessage(ComponentEvent::Animator_AddComponent, new AnimatorAddComponentMessage(getComponent<Animator>(), m_oModel));
+            deliverComponentMessageToChildren(ComponentEvent::Animator_ParentAddComponent, new AnimatorAddComponentMessage(getComponent<Animator>(), m_oModel));
             break;
 
 		}
+
 	}
 
 

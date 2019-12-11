@@ -332,13 +332,13 @@ namespace browser
                 {
                     vao = m_oAxisMesh->getVAO();    // TODO: 这里使用的是模型坐标轴的vao,后面看看要不要换掉
 					vbos = m_oAxisMesh->getVBOs();
-                    renderer = entity->getRenderer();
-                    transform = entity->getTransform();
+                    renderer = entity->getComponent<BaseRender>();
+                    transform = entity->getComponent<Transform>();
                     if(renderer->getRendererType()==BaseRender::RendererType::Skinned)
                     {
                         skinnedRenderer = static_cast<SkinnedMeshRenderer*>(renderer);
                     }
-                    boundBox = skinnedRenderer ? skinnedRenderer->getBoundBox() : entity->getBoundBox();
+                    boundBox = skinnedRenderer ? skinnedRenderer->getBoundBox() : entity->getComponent<BaseBoundBox>();
                     
                     BROWSER_ASSERT(boundBox, "Entity have no BoundBox compoent, block in function RenderSystem::renderScene(Camera* camera)");
                     // 显示包围盒的顶点
@@ -393,7 +393,7 @@ namespace browser
             for(auto itor = m_mComponentsList.begin(); itor!=m_mComponentsList.end(); ++itor)
             {
                 entity = itor->first;
-                transform = entity->getTransform();
+                transform = entity->getComponent<Transform>();
                 
 //                if (entity->getIsVisible() && entity->getIsAxisVisible() && entity->checkVisibility(camera))
                 if (entity->getIsVisible() && entity->getIsAxisVisible())
@@ -481,8 +481,8 @@ namespace browser
 			const std::list<BaseComponent*>& renderList = itor->second;
             render = static_cast<BaseRender*>(*(renderList.begin()));
             entity = render->getBelongEntity();
-            meshFilter = entity->getMeshFilter();
-            transform = entity->getTransform();
+            meshFilter = entity->getComponent<MeshFilter>();
+            transform = entity->getComponent<Transform>();
             
             // 是否需要渲染
             if (!entity->getIsVisible() || !entity->checkVisibility(camera, true))

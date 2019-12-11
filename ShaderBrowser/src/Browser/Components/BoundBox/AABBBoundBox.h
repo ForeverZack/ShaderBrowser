@@ -7,6 +7,9 @@ namespace browser
 {
 	class AABBBoundBox : public BaseBoundBox
 	{
+	public:
+		static EnumComponentClass ComponentClass;
+
     public:
         enum AABBBoundBoxVertices
         {
