@@ -39,11 +39,13 @@ namespace common
             }
         });
     
-        
+		Reference* reference = nullptr;
 		std::vector<Reference*>::iterator iter = m_vReleaseReferences.begin();
 		for(; iter!=m_vReleaseReferences.end(); ++iter)
 		{
-			(*iter)->release();
+			reference = *iter;
+			reference->release();
+			reference = nullptr;
 		}
 		m_vReleaseReferences.clear();
 	}
