@@ -147,7 +147,7 @@ namespace browser
         // 是否需要被渲染
         if (m_oRenderer)
         {
-            switch(getComponent<BaseRender>()->getRendererType())
+            switch(static_cast<BaseRender*>(m_oRenderer)->getRendererType())
             {
                 case BaseRender::RendererType::Base:
                     {
@@ -171,11 +171,12 @@ namespace browser
     
     bool BaseEntity::checkVisibility(Camera* camera, bool reCalculate/* = false*/)
     {
+		SkinnedMeshRenderer* skinnedMeshRenderer = getComponent<SkinnedMeshRenderer>();
         return (
                 // 普通网格检测
-                (m_oBoundBox && getComponent<BaseBoundBox>()->checkVisibility(camera, reCalculate))
+                (m_oBoundBox && getComponent<AABBBoundBox>()->checkVisibility(camera, reCalculate))
                 // 蒙皮网格检测
-                || (m_oRenderer && getComponent<BaseRender>()->getRendererType()==BaseRender::RendererType::Skinned ? static_cast<SkinnedMeshRenderer*>(m_oRenderer)->checkVisibility(camera, reCalculate) : false)
+                || (skinnedMeshRenderer && skinnedMeshRenderer->checkVisibility(camera, reCalculate))
         );
     }
     
@@ -376,7 +377,7 @@ namespace browser
 		case SystemType::RenderSystem:
 			// 渲染组件
 			MARK_SPECIAL_COMPONENT(m_oRenderer, component, bEmpty);
-            deliverComponentMessage(ComponentEvent::Render_AddComponent, new RenderAddComponentMessage(getComponent<BaseRender>(), this));
+            deliverComponentMessage(ComponentEvent::Render_AddComponent, new RenderAddComponentMessage(static_cast<BaseRender*>(m_oRenderer), this));
 			break;
 
 		case SystemType::Camera:
@@ -394,7 +395,7 @@ namespace browser
                 {
                     rootAnimator = m_oModelRootEntity->getComponent<Animator>();
                 }
-				deliverComponentMessage(ComponentEvent::BoundBox_AddComponent, new BoundBoxAddComponentMessage(getComponent<BaseBoundBox>(), getComponent<Transform>(), getComponent<MeshFilter>(), rootAnimator));
+				deliverComponentMessage(ComponentEvent::BoundBox_AddComponent, new BoundBoxAddComponentMessage(getComponent<AABBBoundBox>(), getComponent<Transform>(), getComponent<MeshFilter>(), rootAnimator));
 		}
 			break;
 

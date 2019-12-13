@@ -4,7 +4,7 @@
 #include "Browser/Components/Render/Commands/SkinnedRenderCommand.h"
 #include "GL/GPUResource/Shader/Material.h"
 #include "Browser/Components/Mesh/MeshFilter.h"
-#include "Browser/Components/BoundBox/BaseBoundBox.h"
+#include "Browser/Components/BoundBox/AABBBoundBox.h"
 #include "Browser/Components/Render/SkinnedMeshRenderer.h"
 #include "Browser/Components/Animation/Animator.h"
 #include "GL/GPUResource/Shader/Pass.h"
@@ -320,7 +320,6 @@ namespace browser
         // 开启深度测试
         GLStateCache::getInstance()->openDepthTest();
         {
-            BaseRender* renderer = nullptr;
             SkinnedMeshRenderer* skinnedRenderer = nullptr;
             BaseBoundBox* boundBox = nullptr;
             GLProgram* linesProgram = GLProgramCache::getInstance()->getGLProgram(GLProgram::DEFAULT_LINES_GLPROGRAM_NAME);
@@ -332,13 +331,9 @@ namespace browser
                 {
                     vao = m_oAxisMesh->getVAO();    // TODO: 这里使用的是模型坐标轴的vao,后面看看要不要换掉
 					vbos = m_oAxisMesh->getVBOs();
-                    renderer = entity->getComponent<BaseRender>();
+					skinnedRenderer = entity->getComponent<SkinnedMeshRenderer>();
                     transform = entity->getComponent<Transform>();
-                    if(renderer->getRendererType()==BaseRender::RendererType::Skinned)
-                    {
-                        skinnedRenderer = static_cast<SkinnedMeshRenderer*>(renderer);
-                    }
-                    boundBox = skinnedRenderer ? skinnedRenderer->getBoundBox() : entity->getComponent<BaseBoundBox>();
+                    boundBox = skinnedRenderer ? skinnedRenderer->getBoundBox() : entity->getComponent<AABBBoundBox>();
                     
                     BROWSER_ASSERT(boundBox, "Entity have no BoundBox compoent, block in function RenderSystem::renderScene(Camera* camera)");
                     // 显示包围盒的顶点

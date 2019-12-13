@@ -62,7 +62,7 @@ namespace browser
         // 可见性检测
         bool checkVisibility(Camera* camera, bool reCalculate = false);
         
-		// 修改所有网格模型shader
+		// 修改所有网格模型shader (仅针对BaseRender)
 		void changeAllMeshesMaterial(const std::string& programName);
         // 播放动画
         void playAnimation(const std::string& animName, bool repeat = false, float speed = 1.0f, bool interpolate = true);
@@ -73,7 +73,9 @@ namespace browser
 		// 获取骨骼数组
 		void useBonesMatrix(Material* material);
         
-        
+        // 获取组件列表
+		//template <typename T>
+
 		// 获取组件
 		template <typename T>
 		T* getComponent()
@@ -85,10 +87,21 @@ namespace browser
 					return static_cast<T*>(m_oTransform);
 				}
 				break;
+
 			case EnumComponentClass::ECC_BaseRenderer:
+				{
+					if (static_cast<BaseRender*>(m_oRenderer)->getRendererType() == BaseRender::RendererType::Base)
+					{
+						return static_cast<T*>(m_oRenderer);
+					}
+				}
+				break;
 			case EnumComponentClass::ECC_SkinnedMeshRenderer:
 				{
-					return static_cast<T*>(m_oRenderer);
+					if (static_cast<BaseRender*>(m_oRenderer)->getRendererType() == BaseRender::RendererType::Skinned)
+					{
+						return static_cast<T*>(m_oRenderer);
+					}
 				}
 				break;
 
@@ -98,7 +111,6 @@ namespace browser
 				}
 				break;
 
-			case EnumComponentClass::ECC_BaseBoundBox:
 			case EnumComponentClass::ECC_AABBBoundBox:
 				{
 					return static_cast<T*>(m_oBoundBox);

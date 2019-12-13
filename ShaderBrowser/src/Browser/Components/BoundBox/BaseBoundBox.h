@@ -20,9 +20,6 @@ namespace browser
     
 	class BaseBoundBox : public BaseComponent
 	{
-	public:
-		static EnumComponentClass ComponentClass;
-
     public:
         // 包围盒类型
         enum BoundBoxType

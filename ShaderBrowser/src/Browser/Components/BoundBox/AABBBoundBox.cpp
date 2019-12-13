@@ -50,12 +50,12 @@ namespace browser
 	void AABBBoundBox::updateBoundBox(float deltaTime)
 	{        
 		Transform* transform = m_oBelongEntity ? m_oBelongEntity->getComponent<Transform>() : nullptr;
-		BaseRender* baseRenderer = m_oBelongEntity ? m_oBelongEntity->getComponent<BaseRender>() : nullptr;
+		SkinnedMeshRenderer* skinnedMeshRenderer = m_oBelongEntity ? m_oBelongEntity->getComponent<SkinnedMeshRenderer>() : nullptr;
 		MeshFilter* meshFilter = m_oBelongEntity ? m_oBelongEntity->getComponent<MeshFilter>() : nullptr;
-		if (baseRenderer && baseRenderer->getRendererType()== BaseRender::RendererType::Skinned)
+		if (skinnedMeshRenderer)
 		{
 			// skinnedMeshRenderer的MeshFilter存在它本身的类中，没有挂在BaseEntity上
-			meshFilter = static_cast<SkinnedMeshRenderer*>(baseRenderer)->getMeshFilter();
+			meshFilter = skinnedMeshRenderer->getMeshFilter();
 		}
 
 		if (transform && meshFilter)

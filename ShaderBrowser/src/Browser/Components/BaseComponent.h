@@ -22,7 +22,6 @@ namespace browser
 		ECC_BaseRenderer,
 		ECC_SkinnedMeshRenderer,
 		ECC_MeshFilter,
-		ECC_BaseBoundBox,
 		ECC_AABBBoundBox,
 		ECC_Animator,
 		ECC_Camera,
@@ -32,6 +31,7 @@ namespace browser
 	class BaseComponent : public common::Reference
 	{
 	public:
+		// 每个组件都需要定义组件类型，方便通过Entity来查找组件
 		static EnumComponentClass ComponentClass;
 
 	public:

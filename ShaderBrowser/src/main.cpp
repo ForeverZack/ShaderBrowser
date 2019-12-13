@@ -212,7 +212,7 @@ void testVal()
     scene->addChild(modelEntity);
     modelEntity->playAnimation("Take 001", true);
 //    modelEntity->changeAllMeshesMaterial(GLProgram::DEFAULT_SKELETON_GLPROGRAM_NAME);
-	SkinnedMeshRenderer* fighterSkinedMeshRenderer = static_cast<SkinnedMeshRenderer*>(modelEntity->getComponent<browser::Transform>()->getChildren()[0]->getBelongEntity()->getComponent<BaseRender>());
+	SkinnedMeshRenderer* fighterSkinedMeshRenderer = modelEntity->getComponent<browser::Transform>()->getChildren()[0]->getBelongEntity()->getComponent<SkinnedMeshRenderer>();
     browser::MeshFilter* fighterMeshFilter = fighterSkinedMeshRenderer->getMeshFilter();
 //    MeshFilter* fighterMeshFilter = static_cast<SkinnedMeshRenderer*>(modelEntity->getTransform()->getChildren()[0]->getBelongEntity()->getRenderer())->getMeshFilter();
     //fighterMeshFilter->getMeshes()[0]->setTexture(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_TEXUTRE0], TextureCache::getInstance()->getTexture("models/Fighter/Fighter.png"));
