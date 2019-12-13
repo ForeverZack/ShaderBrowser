@@ -1,5 +1,6 @@
 #pragma once
 
+#include <list>
 #include <vector>
 #include <unordered_map>
 #include "Common/Components/Reference.h"
@@ -73,9 +74,43 @@ namespace browser
 		// 获取骨骼数组
 		void useBonesMatrix(Material* material);
         
-        // 获取组件列表
-		//template <typename T>
 
+        // 从子级节点获取组件列表
+		template <typename T>
+		std::list<T*> getComponentsInChildren(bool includeInactive = false)
+		{
+			std::list<T*> result;
+
+			std::list<BaseEntity*> entities;
+			entities.push_back(this);
+			
+			BaseEntity* entity = nullptr;
+			Transform* transform = nullptr;
+			T* component = nullptr;
+			while (entities.size() > 0)
+			{
+				entity = entities.front();
+				entities.pop_front();
+
+				transform = entity->getComponent<Transform>();
+				const std::vector<Transform*>& children = transform->getChildren();
+				for (int i = 0; i < children.size(); ++i)
+				{
+					entities.push_back(children[i]->getBelongEntity());
+				}
+
+				if (includeInactive || entity->m_bIsActive )
+				{
+					component = entity->getComponent<T>();
+					if (component)
+					{
+						result.push_back(component);
+					}
+				}
+			}
+
+			return result;
+		}
 		// 获取组件
 		template <typename T>
 		T* getComponent()
@@ -90,7 +125,7 @@ namespace browser
 
 			case EnumComponentClass::ECC_BaseRenderer:
 				{
-					if (static_cast<BaseRender*>(m_oRenderer)->getRendererType() == BaseRender::RendererType::Base)
+					if (m_oRenderer && static_cast<BaseRender*>(m_oRenderer)->getRendererType()==BaseRender::RendererType::Base)
 					{
 						return static_cast<T*>(m_oRenderer);
 					}
@@ -98,7 +133,7 @@ namespace browser
 				break;
 			case EnumComponentClass::ECC_SkinnedMeshRenderer:
 				{
-					if (static_cast<BaseRender*>(m_oRenderer)->getRendererType() == BaseRender::RendererType::Skinned)
+					if (m_oRenderer && static_cast<BaseRender*>(m_oRenderer)->getRendererType()==BaseRender::RendererType::Skinned)
 					{
 						return static_cast<T*>(m_oRenderer);
 					}
@@ -187,6 +222,8 @@ namespace browser
         // 模型根节点处的实体
         BaseEntity* m_oModelRootEntity;
         
+		// 是否激活
+		bool m_bIsActive;
         // 是否可见
         bool m_bIsVisible;
         // 是否显示坐标轴

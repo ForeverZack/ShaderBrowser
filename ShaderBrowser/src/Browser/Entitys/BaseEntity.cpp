@@ -51,6 +51,7 @@ namespace browser
         , m_oCamera(nullptr)
         , m_oModel(nullptr)
         , m_oModelRootEntity(nullptr)
+		, m_bIsActive(true)
 	{
 
 	}
@@ -396,14 +397,14 @@ namespace browser
                     rootAnimator = m_oModelRootEntity->getComponent<Animator>();
                 }
 				deliverComponentMessage(ComponentEvent::BoundBox_AddComponent, new BoundBoxAddComponentMessage(getComponent<AABBBoundBox>(), getComponent<Transform>(), getComponent<MeshFilter>(), rootAnimator));
-		}
+			}
 			break;
 
         case SystemType::Animation:
-            // 动画
-            MARK_SPECIAL_COMPONENT(m_oAnimator, component, bEmpty);
-            deliverComponentMessage(ComponentEvent::Animator_AddComponent, new AnimatorAddComponentMessage(getComponent<Animator>(), m_oModel));
-            deliverComponentMessageToChildren(ComponentEvent::Animator_ParentAddComponent, new AnimatorAddComponentMessage(getComponent<Animator>(), m_oModel));
+			// 动画
+			MARK_SPECIAL_COMPONENT(m_oAnimator, component, bEmpty);
+			deliverComponentMessage(ComponentEvent::Animator_AddComponent, new AnimatorAddComponentMessage(getComponent<Animator>(), m_oModel));
+			deliverComponentMessageToChildren(ComponentEvent::Animator_ParentAddComponent, new AnimatorAddComponentMessage(getComponent<Animator>(), m_oModel));
             break;
 
 		}
