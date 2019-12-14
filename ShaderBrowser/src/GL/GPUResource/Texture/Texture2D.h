@@ -52,7 +52,7 @@ namespace customGL
 
 	private:
 		// 纹理（1.创建纹理 2.绑定纹理 3.设置纹理参数 4.纹理数据 5.生成多级渐远纹理）
-		unsigned int m_uTextureId;
+		GLuint m_uTextureId;
 		// Image
 		Image* m_oImage;
         

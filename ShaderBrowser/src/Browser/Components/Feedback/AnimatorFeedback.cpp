@@ -66,9 +66,9 @@ namespace browser
             boneIds[i] = i;
         }
         addVertexAttribute(0, 1, GL_INT, GL_FALSE, 0, (void*)0, &boneIds[0], sizeof(int)*m_iBoneCount, VertexDataType::Int);
-        addFeedbackBuffer(sizeof(glm::vec4)*m_iBoneCount, VARYINGS[0], BufferType::TextureBuffer); // position
-        addFeedbackBuffer(sizeof(glm::vec4)*m_iBoneCount, VARYINGS[1], BufferType::TextureBuffer); // rotation
-        addFeedbackBuffer(sizeof(glm::vec4)*m_iBoneCount, VARYINGS[2], BufferType::TextureBuffer); // scale
+        addFeedbackBuffer(sizeof(glm::vec4)*m_iBoneCount, VARYINGS[0], BufferType::BT_TextureBuffer); // position
+        addFeedbackBuffer(sizeof(glm::vec4)*m_iBoneCount, VARYINGS[1], BufferType::BT_TextureBuffer); // rotation
+        addFeedbackBuffer(sizeof(glm::vec4)*m_iBoneCount, VARYINGS[2], BufferType::BT_TextureBuffer); // scale
         setupVAOandVBOs();
         
         // 设置骨骼数量

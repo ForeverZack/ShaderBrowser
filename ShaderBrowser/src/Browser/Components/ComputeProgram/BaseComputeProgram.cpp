@@ -63,7 +63,7 @@ namespace browser
                     
                 switch(declaration->type)
                 {
-                    case BufferType::StorageBuffer:
+                    case BufferType::BT_StorageBuffer:
 						{
 							// data
 							//glBindBuffer(GL_ARRAY_BUFFER, declaration->vbos[i]);
@@ -71,7 +71,7 @@ namespace browser
 						}
                         break;
                             
-                    case BufferType::TextureBuffer:
+                    case BufferType::BT_TextureBuffer:
 						{
 							// tbo
 							glBindBuffer(GL_TEXTURE_BUFFER, vbo);
@@ -120,7 +120,7 @@ namespace browser
 		m_vTextureBuffers.push_back(declaration);
 		        
 		// 记录tbo数量
-		if (type == BufferType::TextureBuffer)
+		if (type == BufferType::BT_TextureBuffer)
 		{
 		    ++m_uTexNum;
 		}

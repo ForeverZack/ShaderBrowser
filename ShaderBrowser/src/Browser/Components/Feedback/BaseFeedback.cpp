@@ -106,7 +106,7 @@ namespace browser
         m_mFeedbackBufDeclarations.emplace(bindIdx, declaration);
         
         // 记录tbo数量
-        if (type == BufferType::TextureBuffer)
+        if (type == BufferType::BT_TextureBuffer)
         {
             ++m_uOutTexNum;
         }
@@ -185,7 +185,7 @@ namespace browser
                     
                     switch(declaration->type)
                     {
-                        case BufferType::ArrayBuffer:
+                        case BufferType::BT_ArrayBuffer:
                         {
                             // data
                             glBindBuffer(GL_ARRAY_BUFFER, declaration->vbos[i]);
@@ -193,7 +193,7 @@ namespace browser
                         }
                             break;
                             
-                        case BufferType::TextureBuffer:
+                        case BufferType::BT_TextureBuffer:
                         {
                             // tbo
                             glBindBuffer(GL_TEXTURE_BUFFER, declaration->vbos[i]);
@@ -292,14 +292,14 @@ namespace browser
         FeedbackBufferDeclaration* declaration = m_mFeedbackBufDeclarations[bindIdx];
         switch(declaration->type)
         {
-            case BufferType::ArrayBuffer:
+            case BufferType::BT_ArrayBuffer:
                 {
                     glBindBuffer(GL_ARRAY_BUFFER, declaration->vbos[getCurFrameTag()]);
                     glGetBufferSubData(GL_ARRAY_BUFFER, 0, size, output);
                 }
                 break;
                 
-            case BufferType::TextureBuffer:
+            case BufferType::BT_TextureBuffer:
                 {
                     glBindBuffer(GL_TEXTURE_BUFFER, declaration->vbos[getCurFrameTag()]);
                     glGetBufferSubData(GL_TEXTURE_BUFFER, 0, size, output);

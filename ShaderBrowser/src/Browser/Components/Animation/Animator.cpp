@@ -294,7 +294,6 @@ namespace browser
             // 更新骨骼矩阵
             glBindBuffer(GL_TEXTURE_BUFFER, m_uVBO);
             glBufferData(GL_TEXTURE_BUFFER, sizeof(glm::mat4)*m_vAllBones.size(), &m_vBonesMatrix[0], GL_DYNAMIC_DRAW); // m_vBonesMatrix(glm::mat4)会按照列主序的顺序传入，即第一列第二列第三列
-            glUnmapBuffer(GL_ARRAY_BUFFER);
             glBindBuffer(GL_TEXTURE_BUFFER, 0);
         }
 

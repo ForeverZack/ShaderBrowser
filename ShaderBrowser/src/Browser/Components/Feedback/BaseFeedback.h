@@ -71,7 +71,7 @@ namespace browser
         void setUniformMat3V(const std::string& uniformName, int count, const float* value);
         void setUniformMat3x4V(const std::string& uniformName, int count, const float* value);
         // output
-        void addFeedbackBuffer(GLuint size, const string& name, BufferType type = BufferType::ArrayBuffer, GLenum internalFormat = GL_RGBA32F);
+        void addFeedbackBuffer(GLuint size, const string& name, BufferType type = BufferType::BT_ArrayBuffer, GLenum internalFormat = GL_RGBA32F);
         void clearFeedbackBuffers();
         // setup 设置vao和vbos
         void setupVAOandVBOs();

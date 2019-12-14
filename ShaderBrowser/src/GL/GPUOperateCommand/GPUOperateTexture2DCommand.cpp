@@ -128,7 +128,7 @@ namespace customGL
     
     void GPUOperateTexture2DCommand::deleteTexture2D()
     {
-        if (m_pTexture->m_uTextureId)
+        if (m_pTexture->m_uTextureId != 0)
         {
             glDeleteTextures(1, &m_pTexture->m_uTextureId);
         }

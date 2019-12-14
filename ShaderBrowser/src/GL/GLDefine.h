@@ -90,12 +90,12 @@ namespace customGL
     enum BufferType
     {
         // vbo
-        ArrayBuffer = 0,
+        BT_ArrayBuffer = 0,
         // tbo
-        TextureBuffer,
+        BT_TextureBuffer,
 		// storage buffer	(unifor块和着色器存储缓存的最大区别在于，着色器存储缓存可以在着色器中读写)	eg: layout (std430, binding = 0) buffer BufferObject { int mode; vec4 points[]; };
 		// glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, buf);
-		StorageBuffer,
+		BT_StorageBuffer,
     };
     
     // 单个顶点数据结构
@@ -201,7 +201,7 @@ namespace customGL
     {
     public:
         FeedbackBufferDeclaration()
-        : type(BufferType::ArrayBuffer)
+        : type(BufferType::BT_ArrayBuffer)
         , varying("")
         , bindIdx(0)
         , size(0)
@@ -236,7 +236,7 @@ namespace customGL
     {
     public:
         ComputeBufferDeclaration()
-			: type(BufferType::TextureBuffer)
+			: type(BufferType::BT_TextureBuffer)
 			, name("")
 			, size(0)
 			, format(GL_RGBA32F)

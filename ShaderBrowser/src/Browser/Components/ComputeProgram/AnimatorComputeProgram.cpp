@@ -47,7 +47,7 @@ namespace browser
 
 		// 初始化并设置计算着色器
 		BaseComputeProgram::initComputeProgram(comp_shader_fullpath.c_str(), m_iBoneCount);
-		addComputeBuffer("result_buffers", m_iSamplerSize, GL_READ_WRITE, BufferType::TextureBuffer, GL_RGBA32F);
+		addComputeBuffer("result_buffers", m_iSamplerSize, GL_READ_WRITE, BufferType::BT_TextureBuffer, GL_RGBA32F);
 		setupVBOs();
 
 		// 设置骨骼数量

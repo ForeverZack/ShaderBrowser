@@ -28,14 +28,14 @@ namespace customGL
 		GRT_Undefined = 0,
 		// 纹理2D
 		GRT_Texture2D,
+		// 纹理缓存
+		GRT_TextureBuffer,
 		// 网格
 		GRT_Mesh,
 		// 模型
 		GRT_Model,
 		// shader
 		GRT_GLProgram,
-		// 材质
-		GRT_Material,
 	};
 
 	// GPU资源基类
@@ -67,7 +67,7 @@ namespace customGL
 		GPUResourceType m_eResourceType;
 		// 数据脏标记
 		bool m_bDirty;
-		// GPU上是否被删除
+		// GPU上是否被删除 (release的时候要先释放GPU资源，才能释放CPU资源)
 		bool m_bGPUDeleted;
 	};
 

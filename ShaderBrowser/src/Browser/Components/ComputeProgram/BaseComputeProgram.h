@@ -40,7 +40,7 @@ namespace browser
         bool initComputeProgram(const char* src, int local_size_x = 1, int local_size_y = 1, int local_size_z = 1, int num_groups_x = 1, int num_groups_y = 1, int num_groups_z = 1);
 
 		// buffers
-		void addComputeBuffer(const std::string& name, GLuint size, GLenum access = GL_READ_ONLY, BufferType type = BufferType::TextureBuffer, GLenum format = GL_RGBA32F);
+		void addComputeBuffer(const std::string& name, GLuint size, GLenum access = GL_READ_ONLY, BufferType type = BufferType::BT_TextureBuffer, GLenum format = GL_RGBA32F);
 		// input
         void setUniformInt(const std::string& uniformName, int value);
         void setUniformFloat(const std::string& uniformName, float value);
@@ -80,7 +80,7 @@ namespace browser
 			ComputeBufferDeclaration* declaration = m_vTextureBuffers[index];
 			switch (declaration->type)
 			{
-				case BufferType::TextureBuffer:
+				case BufferType::BT_TextureBuffer:
 				{
 					glBindBuffer(GL_TEXTURE_BUFFER, m_vVBOs[index]);
 					glGetBufferSubData(GL_TEXTURE_BUFFER, 0, size, output);

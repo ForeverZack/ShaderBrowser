@@ -95,10 +95,10 @@ namespace common
         static VertexAttribDeclaration* createVertexAttribDeclaration(GLuint location, GLint size, GLenum type, GLboolean normalized, GLsizei stride, GLvoid* pointer, GLvoid* data, GLint dataSize, VertexDataType dataType = VertexDataType::Float);
         
         // 创建FeedbackBufferDeclaration
-        static FeedbackBufferDeclaration* createFeedbackBufferDeclaration(GLuint bindIdx, GLuint size, const string& name, BufferType type = BufferType::ArrayBuffer, GLenum internalFormat = GL_RGBA32F);
+        static FeedbackBufferDeclaration* createFeedbackBufferDeclaration(GLuint bindIdx, GLuint size, const string& name, BufferType type = BufferType::BT_ArrayBuffer, GLenum internalFormat = GL_RGBA32F);
         
 		// 创建ComputeBufferDeclaration
-		static ComputeBufferDeclaration* createComputeBufferDeclaration(const string& name, GLuint size, GLenum access = GL_READ_ONLY, BufferType type = BufferType::TextureBuffer, GLenum format = GL_RGBA32F);
+		static ComputeBufferDeclaration* createComputeBufferDeclaration(const string& name, GLuint size, GLenum access = GL_READ_ONLY, BufferType type = BufferType::BT_TextureBuffer, GLenum format = GL_RGBA32F);
 
         // 拆解矩阵 （从矩阵中，获取位移、旋转和缩放）
         static void parseMatrix(const glm::mat4& matrix, glm::vec3& position, glm::quat& rotation, glm::vec3& scale);
