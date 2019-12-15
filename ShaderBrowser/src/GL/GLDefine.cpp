@@ -350,7 +350,7 @@ namespace customGL {
         _value.tex2D.texture = texture;
     }
     
-    void UniformValue::setSamplerBuffer(GLuint textureId)
+    void UniformValue::setSamplerBuffer(TextureBuffer* textureBuffer)
     {
         common::BROWSER_ASSERT(m_eType==UniformValueType::UniformValueType_Undefined
                                || m_eType==UniformValueType::UniformValueType_SamplerBuffer,
@@ -358,7 +358,7 @@ namespace customGL {
         
         m_bDirty = true;
         m_eType = UniformValueType::UniformValueType_SamplerBuffer;
-        _value.samplerBuffer.textureId = textureId;
+        _value.samplerBuffer.textureBuffer = textureBuffer;
     }
 
 	void UniformValue::setImageBuffer(GLuint textureId, GLenum access, GLenum format)
@@ -456,7 +456,7 @@ namespace customGL {
                 
             case UniformValueType_SamplerBuffer:
                 // texture2D
-                glProgram->setUniformWithSamplerBuffer(uniformName.c_str(), _value.samplerBuffer.textureId);
+                glProgram->setUniformWithSamplerBuffer(uniformName.c_str(), _value.samplerBuffer.textureBuffer);
                 break;
                 
                 

@@ -46,47 +46,47 @@ namespace browser
     
     bool AnimatorFeedback::initFeedback(Model* model)
     {
-        m_oSrcModel = model;
-        m_iBoneCount = model->getBoneNum();
-        m_iSamplerSize = sizeof(glm::vec4) * m_iBoneCount;
-        m_pSamplerPosition = new float[m_iSamplerSize];
-        m_pSamplerRotation = new float[m_iSamplerSize];
-        m_pSamplerScale = new float[m_iSamplerSize];
-        std::string vert_shader_fullpath = FileUtils::getInstance()->getAbsolutePathForFilename(VERTEX_SHADER_PROGRAM_SRC);
-        
-        std::string addtionVertCode = "";
-        
-        BaseFeedback::initFeedback(vert_shader_fullpath.c_str(), VARYINGS, VARYINGS_NUM, addtionVertCode, GL_SEPARATE_ATTRIBS);
-        
-        // 注意，由于这里的骨骼id都是我自己创建的，我知道他是从0开始连续的，所以这里我直接生成了一个骨骼id的数组传给gpu了。
-        std::vector<int> boneIds;
-        boneIds.resize(m_iBoneCount);
-        for(int i=0; i<m_iBoneCount; ++i)
-        {
-            boneIds[i] = i;
-        }
-        addVertexAttribute(0, 1, GL_INT, GL_FALSE, 0, (void*)0, &boneIds[0], sizeof(int)*m_iBoneCount, VertexDataType::Int);
-        addFeedbackBuffer(sizeof(glm::vec4)*m_iBoneCount, VARYINGS[0], BufferType::BT_TextureBuffer); // position
-        addFeedbackBuffer(sizeof(glm::vec4)*m_iBoneCount, VARYINGS[1], BufferType::BT_TextureBuffer); // rotation
-        addFeedbackBuffer(sizeof(glm::vec4)*m_iBoneCount, VARYINGS[2], BufferType::BT_TextureBuffer); // scale
-        setupVAOandVBOs();
-        
-        // 设置骨骼数量
-        setUniformInt("bone_count", m_iBoneCount);
-        // 设置采样用到的samplerBuffer
-        // position_keys
-        GLuint position_keys = m_oSrcModel->getGpuAnimSamplerBuffer(ModelGpuAnimationData::ModelGpuAnimBufferType::PositionKeys);
-        setUniformSamplerBuffer("position_keys", position_keys);
-        // rotation_keys
-        GLuint rotation_keys = m_oSrcModel->getGpuAnimSamplerBuffer(ModelGpuAnimationData::ModelGpuAnimBufferType::RotationKeys);
-        setUniformSamplerBuffer("rotation_keys", rotation_keys);
-        // rotation_times
-        GLuint rotation_times = m_oSrcModel->getGpuAnimSamplerBuffer(ModelGpuAnimationData::ModelGpuAnimBufferType::RotationTimes);
-        setUniformSamplerBuffer("rotation_times", rotation_times);
-        // scale_keys
-        GLuint scale_keys = m_oSrcModel->getGpuAnimSamplerBuffer(ModelGpuAnimationData::ModelGpuAnimBufferType::ScaleKeys);
-        setUniformSamplerBuffer("scale_keys", scale_keys);
-        
+//        m_oSrcModel = model;
+//        m_iBoneCount = model->getBoneNum();
+//        m_iSamplerSize = sizeof(glm::vec4) * m_iBoneCount;
+//        m_pSamplerPosition = new float[m_iSamplerSize];
+//        m_pSamplerRotation = new float[m_iSamplerSize];
+//        m_pSamplerScale = new float[m_iSamplerSize];
+//        std::string vert_shader_fullpath = FileUtils::getInstance()->getAbsolutePathForFilename(VERTEX_SHADER_PROGRAM_SRC);
+//        
+//        std::string addtionVertCode = "";
+//        
+//        BaseFeedback::initFeedback(vert_shader_fullpath.c_str(), VARYINGS, VARYINGS_NUM, addtionVertCode, GL_SEPARATE_ATTRIBS);
+//        
+//        // 注意，由于这里的骨骼id都是我自己创建的，我知道他是从0开始连续的，所以这里我直接生成了一个骨骼id的数组传给gpu了。
+//        std::vector<int> boneIds;
+//        boneIds.resize(m_iBoneCount);
+//        for(int i=0; i<m_iBoneCount; ++i)
+//        {
+//            boneIds[i] = i;
+//        }
+//        addVertexAttribute(0, 1, GL_INT, GL_FALSE, 0, (void*)0, &boneIds[0], sizeof(int)*m_iBoneCount, VertexDataType::Int);
+//        addFeedbackBuffer(sizeof(glm::vec4)*m_iBoneCount, VARYINGS[0], BufferType::BT_TextureBuffer); // position
+//        addFeedbackBuffer(sizeof(glm::vec4)*m_iBoneCount, VARYINGS[1], BufferType::BT_TextureBuffer); // rotation
+//        addFeedbackBuffer(sizeof(glm::vec4)*m_iBoneCount, VARYINGS[2], BufferType::BT_TextureBuffer); // scale
+//        setupVAOandVBOs();
+//        
+//        // 设置骨骼数量
+//        setUniformInt("bone_count", m_iBoneCount);
+//        // 设置采样用到的samplerBuffer
+//        // position_keys
+//        GLuint position_keys = m_oSrcModel->getGpuAnimSamplerBuffer(ModelGpuAnimationData::ModelGpuAnimBufferType::PositionKeys);
+//        setUniformSamplerBuffer("position_keys", position_keys);
+//        // rotation_keys
+//        GLuint rotation_keys = m_oSrcModel->getGpuAnimSamplerBuffer(ModelGpuAnimationData::ModelGpuAnimBufferType::RotationKeys);
+//        setUniformSamplerBuffer("rotation_keys", rotation_keys);
+//        // rotation_times
+//        GLuint rotation_times = m_oSrcModel->getGpuAnimSamplerBuffer(ModelGpuAnimationData::ModelGpuAnimBufferType::RotationTimes);
+//        setUniformSamplerBuffer("rotation_times", rotation_times);
+//        // scale_keys
+//        GLuint scale_keys = m_oSrcModel->getGpuAnimSamplerBuffer(ModelGpuAnimationData::ModelGpuAnimBufferType::ScaleKeys);
+//        setUniformSamplerBuffer("scale_keys", scale_keys);
+//        
         
         return true;
     }

@@ -13,6 +13,7 @@ namespace customGL
     
     class GLProgram;
 	class Texture2D;
+    class TextureBuffer;
     
     
 //    // 顶点数据结构体
@@ -375,7 +376,7 @@ namespace customGL
         void setVec3(const glm::vec3& value);
         void setVec4(const glm::vec4& value);
         void setTex2D(Texture2D* texture);
-        void setSamplerBuffer(GLuint textureId);
+        void setSamplerBuffer(TextureBuffer* textureBuffer);
         
         void setIntV(int count, const int* value);
         void setIVec2(const glm::ivec2& value);
@@ -430,7 +431,7 @@ namespace customGL
                 Texture2D* texture;
             } tex2D;
             struct {
-                GLuint textureId;
+                TextureBuffer* textureBuffer;
             } samplerBuffer;
             struct {
                 const int* pointer;
@@ -446,6 +447,9 @@ namespace customGL
 				GLenum format;
 			} imageBuffer;
             
+            
+//        如果在Union中的类型添加了构造函数，或者添加析构函数，就会发现程序会出现错误。由于union里面的东西共享内存，所以不能定义静态、引用类型的变量。由于在union里也不允许存放带有构造函数、析构函数和复制构造函数等的类的对象，但是可以存放对应的类对象指针。编译器无法保证类的构造函数和析构函数得到正确的调用，由此，就可能出现内存泄漏。所以，在C++中使用union时，尽量保持C语言中使用union的风格，尽量不要让union带有对象。
+            // 这样可以避免报错
             U() { memset(this, 0, sizeof(*this)); }
             ~U() {}
             U& operator=(const U& other) {

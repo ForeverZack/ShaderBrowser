@@ -52,7 +52,13 @@ namespace browser
 			m_oProjectionMatrix = camera->getProjectionMatrix();
 		}
 		const std::unordered_map<std::string, UniformValue>& uniforms = material->getUniforms();
-		m_mUniforms = uniforms;
+//		m_mUniforms = uniforms;
+        m_mUniforms.clear();
+        m_mUniforms.reserve(uniforms.size());
+        for(auto itor=uniforms.begin(); itor!=uniforms.end(); ++itor)
+        {
+            m_mUniforms.emplace(itor->first, itor->second);
+        }
     }
     
     void BaseRenderCommand::draw()

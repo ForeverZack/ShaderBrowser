@@ -41,6 +41,8 @@
 		14941422221EF7B200A735DA /* libassimp.4.1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 14FF768421C4B6D80008462D /* libassimp.4.1.0.dylib */; };
 		149C01FF21F4AF910011DAE2 /* GLProgramCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 149C01FE21F4AF910011DAE2 /* GLProgramCache.cpp */; };
 		14A08F5D22FE9787009D7D71 /* AnimatorComputeProgram.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14A08F5B22FE9787009D7D71 /* AnimatorComputeProgram.cpp */; };
+		14A1A41123A61ADA0098977B /* TextureBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14A1A41023A61ADA0098977B /* TextureBuffer.cpp */; };
+		14A1A41323A61AEA0098977B /* GPUOperateTextureBufferCommand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14A1A41223A61AEA0098977B /* GPUOperateTextureBufferCommand.cpp */; };
 		14B1AA832258AD99000AB04E /* SkinnedMeshRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B1AA822258AD99000AB04E /* SkinnedMeshRenderer.cpp */; };
 		14B3F7F022F7CE2F008C0AE6 /* BaseComputeProgram.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B3F7EF22F7CE2F008C0AE6 /* BaseComputeProgram.cpp */; };
 		14B45A21220C227400FE5777 /* BaseBoundBox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B45A1F220C227400FE5777 /* BaseBoundBox.cpp */; };
@@ -170,6 +172,10 @@
 		149F476022D0C103001C4294 /* BaseFeedback.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BaseFeedback.h; sourceTree = "<group>"; };
 		14A08F5B22FE9787009D7D71 /* AnimatorComputeProgram.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AnimatorComputeProgram.cpp; sourceTree = "<group>"; };
 		14A08F5C22FE9787009D7D71 /* AnimatorComputeProgram.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnimatorComputeProgram.h; sourceTree = "<group>"; };
+		14A1A40A23A61A480098977B /* GPUOperateTextureBufferCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GPUOperateTextureBufferCommand.h; sourceTree = "<group>"; };
+		14A1A40D23A61A780098977B /* TextureBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureBuffer.h; sourceTree = "<group>"; };
+		14A1A41023A61ADA0098977B /* TextureBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextureBuffer.cpp; sourceTree = "<group>"; };
+		14A1A41223A61AEA0098977B /* GPUOperateTextureBufferCommand.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GPUOperateTextureBufferCommand.cpp; sourceTree = "<group>"; };
 		14B1AA812258AD99000AB04E /* SkinnedMeshRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkinnedMeshRenderer.h; sourceTree = "<group>"; };
 		14B1AA822258AD99000AB04E /* SkinnedMeshRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SkinnedMeshRenderer.cpp; sourceTree = "<group>"; };
 		14B3F7ED22F7CD9F008C0AE6 /* BaseComputeProgram.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BaseComputeProgram.h; sourceTree = "<group>"; };
@@ -724,9 +730,11 @@
 			isa = PBXGroup;
 			children = (
 				14232A39239B55270023C85C /* GPUOperateCommandPool.h */,
+				14232A3C239B5AED0023C85C /* GPUOperateCommandPool.cpp */,
+				14A1A40A23A61A480098977B /* GPUOperateTextureBufferCommand.h */,
+				14A1A41223A61AEA0098977B /* GPUOperateTextureBufferCommand.cpp */,
 				1484F500239D10B300CBF04C /* GPUOperateGLProgramCommand.h */,
 				1484F501239D10FB00CBF04C /* GPUOperateGLProgramCommand.cpp */,
-				14232A3C239B5AED0023C85C /* GPUOperateCommandPool.cpp */,
 				14232A3A239B57F40023C85C /* BaseGPUOperateCommand.cpp */,
 				14B9A036239A86E200B9F169 /* BaseGPUOperateCommand.h */,
 				14B9A03B239A8ADF00B9F169 /* GPUOperateTexture2DCommand.h */,
@@ -740,6 +748,8 @@
 			children = (
 				14B9A040239AABB400B9F169 /* Texture2D.h */,
 				14B9A045239AAC2D00B9F169 /* Texture2D.cpp */,
+				14A1A40D23A61A780098977B /* TextureBuffer.h */,
+				14A1A41023A61ADA0098977B /* TextureBuffer.cpp */,
 				14B9A043239AABB400B9F169 /* Image.h */,
 				14B9A044239AAC2D00B9F169 /* Image.cpp */,
 			);
@@ -881,6 +891,7 @@
 				14B9068921BABC8F00554B0B /* Reference.cpp in Sources */,
 				14B9068621BABC8F00554B0B /* Utils.cpp in Sources */,
 				1415B6DC222A5B2A00C7E37B /* AnimationSystem.cpp in Sources */,
+				14A1A41123A61ADA0098977B /* TextureBuffer.cpp in Sources */,
 				14EB11832220184D00D3C29D /* imgui_draw.cpp in Sources */,
 				1469977F220F14B600F4C802 /* BaseLight.cpp in Sources */,
 				14232A5A239BCFC70023C85C /* SkeletonAnimation.cpp in Sources */,
@@ -915,6 +926,7 @@
 				14FCCDB122F53049006ECEA0 /* GLComputeProgram.cpp in Sources */,
 				14EB118C22202A0100D3C29D /* InspectorPanel.cpp in Sources */,
 				14E1431A22084724001A2EB1 /* ModelCache.cpp in Sources */,
+				14A1A41323A61AEA0098977B /* GPUOperateTextureBufferCommand.cpp in Sources */,
 				14B9068D21BABC8F00554B0B /* main.cpp in Sources */,
 				14B45A21220C227400FE5777 /* BaseBoundBox.cpp in Sources */,
 				14E349D421C658CA00EB5785 /* GLDefine.cpp in Sources */,

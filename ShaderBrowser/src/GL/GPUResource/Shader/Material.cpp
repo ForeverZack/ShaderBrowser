@@ -244,19 +244,19 @@ namespace customGL
         }
     }
     
-    void Material::setUniformSamplerBuffer(const std::string& uniformName, GLuint textureId)
+    void Material::setUniformSamplerBuffer(const std::string& uniformName, TextureBuffer* textureBuffer)
     {
         auto itor = m_mUniforms.find(uniformName);
         if (itor == m_mUniforms.end())
         {
             UniformValue uniformValue;
-            uniformValue.setSamplerBuffer(textureId);
+            uniformValue.setSamplerBuffer(textureBuffer);
             m_mUniforms.emplace(uniformName, std::move(uniformValue));
         }
         else
         {
             UniformValue& uniformValue = itor->second;
-            uniformValue.setSamplerBuffer(textureId);
+            uniformValue.setSamplerBuffer(textureBuffer);
         }
     }
 

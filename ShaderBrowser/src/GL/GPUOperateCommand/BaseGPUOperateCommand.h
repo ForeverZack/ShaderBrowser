@@ -25,6 +25,8 @@ namespace customGL
         GOCT_Undefined = 0,
         // 2D纹理
         GOCT_Texture2D,
+        // 纹理缓存
+        GOCT_TextureBuffer,
         // GLProgram
         GOCT_GLProgram,
         

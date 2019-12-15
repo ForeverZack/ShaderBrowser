@@ -9,7 +9,7 @@ using namespace common;
 
 namespace customGL
 {
-    class GPUOperateTexture2DCommand;
+    class GPUOperateTextureBufferCommand;
     
 	class TextureBuffer : public BaseGPUResource
 	{
@@ -22,6 +22,9 @@ namespace customGL
 		friend class GPUOperateTextureBufferCommand;
 
     public:
+        // 设置数据
+        void setData(const std::vector<float>& data);
+        void setData(const std::vector<glm::mat4>& data);
 
         REGISTER_PROPERTY_GET(unsigned int, m_uTextureId, TextureId);
 
@@ -29,11 +32,11 @@ namespace customGL
 		// 创建gpu资源
 		virtual void createGPUResource();
 		// 更新gpu资源
-		virtual void updateGPUResource();
+//		virtual void updateGPUResource();
 		// 删除gpu资源
 		virtual void deleteGPUResource();
         // 更新gpu资源属性
-        void updateGPUResourceProperties();
+//        void updateGPUResourceProperties();
        
 
 	private:

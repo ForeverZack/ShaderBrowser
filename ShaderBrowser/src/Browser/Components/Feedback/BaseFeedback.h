@@ -9,6 +9,7 @@
 #include "Common/Tools/Utils.h"
 #include "Common/Components/Reference.h"
 #include "GL/GPUResource/Texture/Texture2D.h"
+#include "GL/GPUResource/Texture/TextureBuffer.h"
 
 using namespace common;
 using namespace customGL;
@@ -55,7 +56,7 @@ namespace browser
         void setUniformV3f(const std::string& uniformName, const glm::vec3& value);
         void setUniformV4f(const std::string& uniformName, const glm::vec4& value);
         void setUniformTex2D(const std::string& uniformName, Texture2D* texture);
-        void setUniformSamplerBuffer(const std::string& uniformName, GLuint textureId);
+        void setUniformSamplerBuffer(const std::string& uniformName, TextureBuffer* textureBuffer);
         void setUniformIntV(const std::string& uniformName, int count, const int* value);
         void setUniformIVec2(const std::string& uniformName, const glm::ivec2& value);
         void setUniformVec2V(const std::string& uniformName, int count, const float* value);

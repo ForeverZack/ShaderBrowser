@@ -7,7 +7,7 @@ namespace customGL
 {
     class TextureBuffer;
     
-    // 2D纹理操作命令
+    // 纹理缓存操作命令
 	class GPUOperateTextureBufferCommand : public BaseGPUOperateCommand
 	{
 	public:
@@ -31,13 +31,29 @@ namespace customGL
         void deleteTextureBuffer();
     
 		REGISTER_PROPERTY_SET(TextureBuffer*, m_pTexture, TextureBuffer)
-		REGISTER_PROPERTY_SET(GLenum, m_eInternalFormat, InternalFormat)
-
+        REGISTER_PROPERTY_SET(GLenum, m_eInternalFormat, InternalFormat)
+        void setData(const std::vector<glm::mat4>& data);
+        void setData(const std::vector<float>& data);
+        
 	protected:
         // 纹理缓存对象
 		TextureBuffer* m_pTexture;
         
-		// 纹理format
+        // 纹理数据
+        union U {
+            std::vector<glm::mat4> val_mat4;
+            std::vector<float> val_float;
+            
+            U() { memset(this, 0, sizeof(*this)); }
+            ~U() {}
+            U& operator=(const U& other) {
+                memcpy(this, &other, sizeof(*this));
+                return *this;
+            }
+        } m_uValue;
+        void* m_pData;
+        unsigned int m_uSize;
+        // 纹理format
 		GLenum m_eInternalFormat;
 	};
 

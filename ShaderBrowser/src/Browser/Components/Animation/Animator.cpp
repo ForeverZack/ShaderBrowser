@@ -57,8 +57,7 @@ namespace browser
 	Animator::Animator()
         : BaseComponent("Animator")
         , m_oSrcModel(nullptr)
-        , m_uTexId(0)
-        , m_uVBO(0)
+        , m_pTextureBuffer(nullptr)
         , m_bIsPlaying(false)
         , m_bUseGPU(true)
         , m_fBlendTimer(0)
@@ -88,8 +87,7 @@ namespace browser
 	{
 		BROWSER_LOG("~Animator");
         
-        glDeleteTextures(1, &m_uTexId);
-        glDeleteBuffers(1, &m_uVBO);
+        m_pTextureBuffer->release();
 //        m_oFeedback->release();
 //		m_oComputeProgram->release();
 	}
@@ -256,7 +254,7 @@ namespace browser
                     m_oSrcModel = convertMsg->getModel();
                 }
                 break;
-                
+            
 		}
 	}
     
@@ -264,14 +262,8 @@ namespace browser
     {
         m_vAllBones.resize(boneNum);
         
-        glGenTextures(1, &m_uTexId);
-        glGenBuffers(1, &m_uVBO);
-        
-        glBindBuffer(GL_TEXTURE_BUFFER, m_uVBO);
-        glBindTexture(GL_TEXTURE_BUFFER, m_uTexId);
-        glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA32F, m_uVBO);
-        glBindTexture(GL_TEXTURE_BUFFER, 0);
-        glBindBuffer(GL_TEXTURE_BUFFER, 0);
+        m_pTextureBuffer = TextureBuffer::create();
+        m_pTextureBuffer->retain();
     }
     
     void Animator::addBone(unsigned int boneId, Transform* boneNode)
@@ -279,7 +271,7 @@ namespace browser
         m_vAllBones[boneId] = boneNode;
     }
     
-    GLuint Animator::useBonesMatrix()
+    TextureBuffer* Animator::useBonesMatrix()
     {
         if (m_bDirty && m_bIsPlaying)
         {
@@ -292,12 +284,10 @@ namespace browser
 //            }
             
             // 更新骨骼矩阵
-            glBindBuffer(GL_TEXTURE_BUFFER, m_uVBO);
-            glBufferData(GL_TEXTURE_BUFFER, sizeof(glm::mat4)*m_vAllBones.size(), &m_vBonesMatrix[0], GL_DYNAMIC_DRAW); // m_vBonesMatrix(glm::mat4)会按照列主序的顺序传入，即第一列第二列第三列
-            glBindBuffer(GL_TEXTURE_BUFFER, 0);
+            m_pTextureBuffer->setData(m_vBonesMatrix);
         }
 
-        return m_uTexId;
+        return m_pTextureBuffer;
     }
     
     void Animator::updateAnimation(float deltaTime)

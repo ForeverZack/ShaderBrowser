@@ -6,8 +6,10 @@ namespace customGL
 	GPUOperateTextureBufferCommand::GPUOperateTextureBufferCommand()
         : m_pTexture(nullptr)
 		, m_eInternalFormat(GL_RGBA32F)
+        , m_pData(nullptr)
+        , m_uSize(0)
     {
-        m_eCommandType = GOCT_Texture2D;
+        m_eCommandType = GOCT_TextureBuffer;
         m_eOperateType = GOT_Update;
 	}
     
@@ -57,6 +59,15 @@ namespace customGL
     // 结束执行 (渲染线程调用)
     void GPUOperateTextureBufferCommand::finish()
     {
+        // 清除
+        m_pData = nullptr;
+        m_uSize = 0;
+        if (m_eCommandType == GPUOperateType::GOT_Update)
+        {
+            std::vector<float> vec;
+            m_uValue.val_float.swap(vec);
+        }
+        
         // 回收命令
         BaseGPUOperateCommand::finish();
         
@@ -78,7 +89,14 @@ namespace customGL
     
     void GPUOperateTextureBufferCommand::updateTextureBuffer()
     {
-      
+        if (!m_pData || m_uSize<=0)
+        {
+            return;
+        }
+        
+        glBindBuffer(GL_TEXTURE_BUFFER, m_pTexture->m_uVBO);
+        glBufferData(GL_TEXTURE_BUFFER, m_uSize, m_pData, GL_DYNAMIC_DRAW);
+        glBindBuffer(GL_TEXTURE_BUFFER, 0);
     }
     
     void GPUOperateTextureBufferCommand::deleteTextureBuffer()
@@ -94,6 +112,37 @@ namespace customGL
 
 		// 设置GPU删除标记
 		m_pTexture->setGPUDeleted(true);
+    }
+    
+    void GPUOperateTextureBufferCommand::setData(const std::vector<glm::mat4>& data)
+    {
+        // (glm::mat4)会按照列主序的顺序传入，即第一列第二列第三列
+        m_uValue.val_mat4 = data;
+        if (data.size() > 0)
+        {
+            m_pData = &m_uValue.val_mat4[0];
+            m_uSize = sizeof(glm::mat4) * data.size();
+        }
+        else
+        {
+            m_pData = nullptr;
+            m_uSize = 0;
+        }
+    }
+    
+    void GPUOperateTextureBufferCommand::setData(const std::vector<float>& data)
+    {
+        m_uValue.val_float = data;
+        if (data.size() > 0)
+        {
+            m_pData = &m_uValue.val_float[0];
+            m_uSize = sizeof(float) * data.size();
+        }
+        else
+        {
+            m_pData = nullptr;
+            m_uSize = 0;
+        }
     }
     
 

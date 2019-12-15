@@ -2,6 +2,7 @@
 #include "Common/System/ECSManager.h"
 #include "Browser/Components/BoundBox/AABBBoundBox.h"
 #include "Browser/Components/Render/SkinnedMeshRenderer.h"
+#include "GL/GPUResource/Texture/TextureBuffer.h"
 #include <deque>
 #ifdef  _WIN32
 #pragma warning(disable:4996)
@@ -205,8 +206,8 @@ namespace browser
 		}
         
         // 将骨骼矩阵存入tbo，并传给材质
-        GLuint texId = m_oModelRootEntity->getComponent<Animator>()->useBonesMatrix();
-        material->setUniformSamplerBuffer(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_BONES_MATRIX], texId);
+        TextureBuffer* textureBuffer = m_oModelRootEntity->getComponent<Animator>()->useBonesMatrix();
+        material->setUniformSamplerBuffer(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_BONES_MATRIX], textureBuffer);
     }
     
     void BaseEntity::playAnimation(const std::string& animName, bool repeat/* = false*/, float speed/* = 1.0f*/, bool interpolate/* = true*/)

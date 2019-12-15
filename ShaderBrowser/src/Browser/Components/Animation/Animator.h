@@ -6,6 +6,7 @@
 #include "Browser/Components/BaseComponent.h"
 #include "Common/Tools/Utils.h"
 #include "Common/Tools/Thread/BaseThread.h"
+#include "GL/GPUResource/Texture/TextureBuffer.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -79,7 +80,7 @@ namespace browser
         void updateBonesTranform();
         
         // 使用骨骼矩阵
-        GLuint useBonesMatrix();
+        TextureBuffer* useBonesMatrix();
         
         
         // 骨骼信息
@@ -118,8 +119,7 @@ namespace browser
 //		// compute program
 //		AnimatorComputeProgram* m_oComputeProgram;
         // 骨骼矩阵tbo
-        GLuint m_uTexId;
-        GLuint m_uVBO;
+        TextureBuffer* m_pTextureBuffer;
         
         // 顶点数组
         std::unordered_map<Mesh*, glm::vec4*> m_mVertices;

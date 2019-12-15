@@ -2,6 +2,7 @@
 #include "Common/Tools/Utils.h"
 #include "GL/GLStateCache.h"
 #include "GL/GPUResource/Texture/Texture2D.h"
+#include "GL/GPUResource/Texture/TextureBuffer.h"
 #include "GL/GPUOperateCommand/GPUOperateCommandPool.h"
 #include "GL/GPUOperateCommand/GPUOperateGLProgramCommand.h"
 #include "GL/System/GPUOperateSystem.h"
@@ -581,7 +582,7 @@ namespace customGL
         GLStateCache::getInstance()->bindTexture2DN(textureUnit, texture->getTextureId());
     }
     
-    void GLProgram::setUniformWithSamplerBuffer(const std::string& uniformName, GLuint textureId)
+    void GLProgram::setUniformWithSamplerBuffer(const std::string& uniformName, TextureBuffer* textureBuffer)
     {
         // 自动生成纹理单元
         GLuint textureUnit;
@@ -601,7 +602,7 @@ namespace customGL
         common::BROWSER_ASSERT(textureUnit<MAX_ACTIVE_TEXTURE, "texture unit value is too big, it is out off support range in function GLProgram::setUniformSamplerBuffer");
         
         // 绑定纹理到opengl
-        GLStateCache::getInstance()->bindSamplerBuffer(textureUnit, textureId);
+        GLStateCache::getInstance()->bindSamplerBuffer(textureUnit, textureBuffer->getTextureId());
     }
 
 	void GLProgram::setUniformWithImageBuffer(const std::string& uniformName, GLuint textureId, GLenum access, GLenum format)

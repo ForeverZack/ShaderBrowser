@@ -37,34 +37,34 @@ namespace browser
 
 	bool AnimatorComputeProgram::initComputeProgram(Model* model)
 	{
-		m_oSrcModel = model;
-		m_iBoneCount = model->getBoneNum();
-		m_iSamplerSize = sizeof(glm::vec4) * m_iBoneCount * 3;
-		m_pSamplerBuffer = new float[m_iSamplerSize];
-		std::string comp_shader_fullpath = FileUtils::getInstance()->getAbsolutePathForFilename(COMPUTE_SHADER_PROGRAM_SRC);
-
-		std::string addtionVertCode = "";
-
-		// 初始化并设置计算着色器
-		BaseComputeProgram::initComputeProgram(comp_shader_fullpath.c_str(), m_iBoneCount);
-		addComputeBuffer("result_buffers", m_iSamplerSize, GL_READ_WRITE, BufferType::BT_TextureBuffer, GL_RGBA32F);
-		setupVBOs();
-
-		// 设置骨骼数量
-		setUniformInt("bone_count", m_iBoneCount);
-		// 设置采样用到的samplerBuffer
-		// position_keys
-		GLuint position_keys = m_oSrcModel->getGpuAnimSamplerBuffer(ModelGpuAnimationData::ModelGpuAnimBufferType::PositionKeys);
-		setUniformSamplerBuffer("position_keys", position_keys);
-		// rotation_keys
-		GLuint rotation_keys = m_oSrcModel->getGpuAnimSamplerBuffer(ModelGpuAnimationData::ModelGpuAnimBufferType::RotationKeys);
-		setUniformSamplerBuffer("rotation_keys", rotation_keys);
-		// rotation_times
-		GLuint rotation_times = m_oSrcModel->getGpuAnimSamplerBuffer(ModelGpuAnimationData::ModelGpuAnimBufferType::RotationTimes);
-		setUniformSamplerBuffer("rotation_times", rotation_times);
-		// scale_keys
-		GLuint scale_keys = m_oSrcModel->getGpuAnimSamplerBuffer(ModelGpuAnimationData::ModelGpuAnimBufferType::ScaleKeys);
-		setUniformSamplerBuffer("scale_keys", scale_keys);
+//		m_oSrcModel = model;
+//		m_iBoneCount = model->getBoneNum();
+//		m_iSamplerSize = sizeof(glm::vec4) * m_iBoneCount * 3;
+//		m_pSamplerBuffer = new float[m_iSamplerSize];
+//		std::string comp_shader_fullpath = FileUtils::getInstance()->getAbsolutePathForFilename(COMPUTE_SHADER_PROGRAM_SRC);
+//
+//		std::string addtionVertCode = "";
+//
+//		// 初始化并设置计算着色器
+//		BaseComputeProgram::initComputeProgram(comp_shader_fullpath.c_str(), m_iBoneCount);
+//		addComputeBuffer("result_buffers", m_iSamplerSize, GL_READ_WRITE, BufferType::BT_TextureBuffer, GL_RGBA32F);
+//		setupVBOs();
+//
+//		// 设置骨骼数量
+//		setUniformInt("bone_count", m_iBoneCount);
+//		// 设置采样用到的samplerBuffer
+//		// position_keys
+//		GLuint position_keys = m_oSrcModel->getGpuAnimSamplerBuffer(ModelGpuAnimationData::ModelGpuAnimBufferType::PositionKeys);
+//		setUniformSamplerBuffer("position_keys", position_keys);
+//		// rotation_keys
+//		GLuint rotation_keys = m_oSrcModel->getGpuAnimSamplerBuffer(ModelGpuAnimationData::ModelGpuAnimBufferType::RotationKeys);
+//		setUniformSamplerBuffer("rotation_keys", rotation_keys);
+//		// rotation_times
+//		GLuint rotation_times = m_oSrcModel->getGpuAnimSamplerBuffer(ModelGpuAnimationData::ModelGpuAnimBufferType::RotationTimes);
+//		setUniformSamplerBuffer("rotation_times", rotation_times);
+//		// scale_keys
+//		GLuint scale_keys = m_oSrcModel->getGpuAnimSamplerBuffer(ModelGpuAnimationData::ModelGpuAnimBufferType::ScaleKeys);
+//		setUniformSamplerBuffer("scale_keys", scale_keys);
 
 
 		return true;
