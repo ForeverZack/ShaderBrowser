@@ -389,6 +389,11 @@ namespace customGL {
 		return m_eType == UniformValueType_ImageBuffer || m_eType == UniformValueType_SamplerBuffer || m_eType == UniformValueType_Sampler2D;
 	}
     
+    void UniformValue::resetDirty()
+    {
+        m_bDirty = false;
+    }
+    
     void UniformValue::updateGLProgramUniformValue(GLProgram* glProgram, std::string uniformName, bool forceUpdate/* = false*/)
     {
         if(!m_bDirty && !isTexture())

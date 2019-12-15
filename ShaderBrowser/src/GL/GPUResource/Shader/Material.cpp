@@ -484,6 +484,14 @@ namespace customGL
         }
     }
     
+    void Material::resetUniformsDirty()
+    {
+        for (auto itor=m_mUniforms.begin(); itor!=m_mUniforms.end(); ++itor)
+        {
+            itor->second.resetDirty();
+        }
+    }
+    
     
 
 }

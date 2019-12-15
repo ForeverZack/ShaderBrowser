@@ -403,6 +403,8 @@ namespace customGL
         // 更新设置GLProgram的数值
         void updateGLProgramUniformValue(GLProgram* glProgram, std::string uniformName, bool forceUpdate = false);
         
+        // 重置藏标记
+        void resetDirty();
 		// 是否是纹理类资源(占用了纹理单元，每次切换Shader都需要设置的，所以这类资源不参与dirty)
 		bool isTexture() const;
 

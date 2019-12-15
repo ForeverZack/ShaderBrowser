@@ -51,8 +51,10 @@ namespace browser
 			m_oViewMatrix = camera->getViewMatrix();
 			m_oProjectionMatrix = camera->getProjectionMatrix();
 		}
+        
+        // 记录uniform    TODO: 这里的uniform是复制的，在所有的所有渲染命令都拷贝完material之后，应该将材质UniformValue的dirty重置为false (Tips: 可以试试独立了渲染线程之后，还需不需要这个dirty了)
 		const std::unordered_map<std::string, UniformValue>& uniforms = material->getUniforms();
-//		m_mUniforms = uniforms;
+//		m_mUniforms = uniforms; // TODO: mac直接拷贝有问题
         m_mUniforms.clear();
         m_mUniforms.reserve(uniforms.size());
         for(auto itor=uniforms.begin(); itor!=uniforms.end(); ++itor)

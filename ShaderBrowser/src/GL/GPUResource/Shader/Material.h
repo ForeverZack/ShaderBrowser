@@ -73,6 +73,7 @@ namespace customGL
         void setUniformMat4x3V(const std::string& uniformName, int count, const float* value);
         void setUniformMat3V(const std::string& uniformName, int count, const float* value);
         void setUniformMat3x4V(const std::string& uniformName, int count, const float* value);
+        void resetUniformsDirty();  // 将所有UniformValue的dirty标记重置为false
         
 
         REGISTER_PROPERTY_GET_SET(unsigned int, m_uMaterialId, MaterialId)
