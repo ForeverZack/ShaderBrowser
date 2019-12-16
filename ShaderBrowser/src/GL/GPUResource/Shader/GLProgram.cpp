@@ -74,13 +74,13 @@ namespace customGL
 		, m_uFragShader(0)
         , m_uCompShader(0)
 		, m_uTextureUnitIndex(0)
-        , m_sVertexSource(nullptr)
-        , m_sFragSource(nullptr)
-        , m_sCompSource(nullptr)
         , m_sAddtionVertCode("")
         , m_sAddtionFragCode("")
         , m_sAddtionCompCode("")
         , m_sCompLocalGroupDefCode("")
+		, m_sVertexSource("")
+		, m_sFragSource("")
+		, m_sCompSource("")
 	{
         m_eResourceType = GPUResourceType::GRT_GLProgram;
         
@@ -101,14 +101,10 @@ namespace customGL
     
     GLProgram* GLProgram::clone()
     {
-        BROWSER_ASSERT(m_sVertexSource || m_sFragSource || m_sCompSource, "No shader source code in GLProgram obeject, you cannot use GLProgram::clone function.");
+        BROWSER_ASSERT(m_sVertexSource!="" || m_sFragSource!="" || m_sCompSource!="", "No shader source code in GLProgram obeject, you cannot use GLProgram::clone function.");
         
         GLProgram* program = new GLProgram();
-        if (!program->cloneProgram(this))
-        {
-            delete program;
-            return nullptr;
-        }
+		program->cloneProgram(this);
         return program;
     }
 
@@ -149,65 +145,13 @@ namespace customGL
     
     bool GLProgram::cloneProgram(GLProgram* srcGLProgram)
     {
-        
-        // 1.创建着色器程序
-        GLuint program = glCreateProgram();
-        m_uProgram = program;
-        
-        // 2.创建shader
-        // 顶点着色器
-        if (!createShader(GL_VERTEX_SHADER, m_uVertShader, srcGLProgram->getSourceSavePointer(GL_VERTEX_SHADER)))
-        {
-            return false;
-        }
-        // 片段着色器
-        if (!createShader(GL_FRAGMENT_SHADER, m_uFragShader, srcGLProgram->getSourceSavePointer(GL_FRAGMENT_SHADER)))
-        {
-            return false;
-        }
-        
-        
-        // 3.着色器程序绑定shader
-        // 顶点shader
-        glAttachShader(m_uProgram, m_uVertShader);
-        // 片段shader
-        glAttachShader(m_uProgram, m_uFragShader);
-        
-        // 绑定预定义的顶点属性
-        bindPredefinedVertexAttribs();
-        
-        // 4.链接着色器程序
-        glLinkProgram(m_uProgram);
-        
-        // 5.记录uniform变量位置
-        updatePreDefinedUniformsLocation();
-        
-        
-        // 检查着色器程序链接状态信息
-        GLint linked;
-        glGetProgramiv(m_uProgram, GL_LINK_STATUS, &linked);
-        if (!linked)
-        {
-            //#ifdef _DEBUG
-            GLsizei len;
-            glGetProgramiv(m_uProgram, GL_INFO_LOG_LENGTH, &len);
-            
-            GLchar* log = new GLchar[len + 1];
-            glGetProgramInfoLog(m_uProgram, len, &len, log);
-            std::cerr << "Shader linking failed: " << log << std::endl;
-            delete[] log;
-            
-            //#endif /* DEBUG */
-            common::BROWSER_ASSERT(linked, "shader program linked error in function GLProgram::initProgram");
-            
-            return false;
-        }
-		m_eResouceState = GRS_Loaded;
-        
+		// 创建GPU资源
+		m_eResouceState = GRS_DataLoaded;
+		createGPUResourceBySource(srcGLProgram->m_sVertexSource, srcGLProgram->m_sFragSource);
         return true;
     }
 
-	bool GLProgram::createShader(GLenum type, GLuint& shader, const char* shaderSrc, bool saveSource)
+	bool GLProgram::createShader(GLenum type, GLuint& shader, const char* shaderSrc)
 	{
 		// 读取着色器内容
 		GLchar* source = common::Utils::readFile(shaderSrc);
@@ -217,22 +161,14 @@ namespace customGL
 			return false;
 		}
 
-        bool successFlag = createShader(type, shader, source);
+        bool successFlag = createShaderBySource(type, shader, source);
 
-        if(saveSource)
-        {
-            GLchar*& save_pointer = getSourceSavePointer(type);
-            save_pointer = source;
-        }
-        else
-        {
-            delete[] source;
-        }
+		delete[] source;
 
         return successFlag;
 	}
     
-    bool GLProgram::createShader(GLenum type, GLuint& shader, const char* shaderSource)
+    bool GLProgram::createShaderBySource(GLenum type, GLuint& shader, const char* shaderSource)
     {
         if (shaderSource == NULL)
         {
@@ -294,6 +230,10 @@ namespace customGL
         
         // 3.编译shader
         glCompileShader(shader);
+
+		// 保存shader源码
+		string& save_pointer = getSourceSavePointer(type);
+		save_pointer = shaderSource;
         
         // 检查编译情况
         GLint compiled;
@@ -318,7 +258,7 @@ namespace customGL
         return true;
     }
     
-    GLchar*& GLProgram::getSourceSavePointer(GLenum type)
+	string& GLProgram::getSourceSavePointer(GLenum type)
     {
         switch (type) {
             case GL_VERTEX_SHADER:
@@ -351,6 +291,18 @@ namespace customGL
         cmd->ready(GPUOperateType::GOT_Create);
         GPUOperateSystem::getInstance()->addCommand(cmd);
     }
+
+	void GLProgram::createGPUResourceBySource(const string& vertSource, const string& fragSource)
+	{
+		BROWSER_ASSERT(m_eResouceState == GRS_DataLoaded, "GLProgram state must be GRS_DataLoaded, then it can be created on gpu");
+
+		auto cmd = GPUOperateCommandPool::getInstance()->popCommand<GPUOperateGLProgramCommand>(GPUOperateCommandType::GOCT_GLProgram);
+		cmd->setGLProgram(this);
+		cmd->setVertShaderSource(vertSource);
+		cmd->setFragShaderSource(fragSource);
+		cmd->ready(GPUOperateType::GOT_Create);
+		GPUOperateSystem::getInstance()->addCommand(cmd);
+	}
 
     void GLProgram::updateGPUResource(const std::unordered_map<std::string, UniformValue>& uniforms)
     {

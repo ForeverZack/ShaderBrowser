@@ -53,7 +53,7 @@ namespace customGL
 
 		// 2.创建shader
 		// 顶点着色器
-		if (!createShader(GL_VERTEX_SHADER, m_uVertShader, vertSrc, false))
+		if (!createShader(GL_VERTEX_SHADER, m_uVertShader, vertSrc))
 		{
 			return false;
 		}

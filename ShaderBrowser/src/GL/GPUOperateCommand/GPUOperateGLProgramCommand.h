@@ -31,6 +31,8 @@ namespace customGL
 		void deleteGLProgram();
         
         REGISTER_PROPERTY_SET(GLProgram*, m_pGLProgram, GLProgram)
+		REGISTER_PROPERTY_CONSTREF_SET(string, m_sVertShaderSource, VertShaderSource)
+		REGISTER_PROPERTY_CONSTREF_SET(string, m_sFragShaderSource, FragShaderSource)
         void setVertShaderPath(const char* path)
         {
             m_sVertShaderPath = path;
@@ -39,7 +41,7 @@ namespace customGL
         {
             m_sFragShaderPath = path;
         }
-        
+
 	protected:
         // GLProgram操作对象
         GLProgram* m_pGLProgram;
@@ -49,6 +51,10 @@ namespace customGL
         // 片段着色器源码路径
         string m_sFragShaderPath;
         
+		// 顶点着色器源码
+		string m_sVertShaderSource;
+		// 片段着色器源码
+		string m_sFragShaderSource;
 	};
 
 }

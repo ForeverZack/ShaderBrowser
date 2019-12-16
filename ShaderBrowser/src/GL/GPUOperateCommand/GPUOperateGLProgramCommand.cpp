@@ -55,6 +55,12 @@ namespace customGL
     // 结束执行 (渲染线程调用)
     void GPUOperateGLProgramCommand::finish()
     {
+		// 清除
+		m_sVertShaderPath = "";
+		m_sFragShaderPath = "";
+		m_sVertShaderSource = "";
+		m_sFragShaderSource = "";
+
         // 回收命令
         BaseGPUOperateCommand::finish();
         
@@ -71,15 +77,36 @@ namespace customGL
 
         // 2.创建shader
         // 顶点着色器
-        if (!m_pGLProgram->createShader(GL_VERTEX_SHADER, m_pGLProgram->m_uVertShader, m_sVertShaderPath.c_str(), true))
-        {
-            return;
-        }
+		if (m_sVertShaderPath != "")
+		{
+			if (!m_pGLProgram->createShader(GL_VERTEX_SHADER, m_pGLProgram->m_uVertShader, m_sVertShaderPath.c_str()))
+			{
+				BROWSER_ASSERT(false, "Init vertex shader failed 0.");
+			}
+		}
+		else
+		{
+			if (!m_pGLProgram->createShaderBySource(GL_VERTEX_SHADER, m_pGLProgram->m_uVertShader, m_sVertShaderSource.c_str()))
+			{
+				BROWSER_ASSERT(false, "Init vertex shader failed 1.");
+			}
+		}
+
         // 片段着色器
-        if (!m_pGLProgram->createShader(GL_FRAGMENT_SHADER, m_pGLProgram->m_uFragShader, m_sFragShaderPath.c_str(), true))
-        {
-            return;
-        }
+		if (m_sVertShaderPath != "")
+		{
+			if (!m_pGLProgram->createShader(GL_FRAGMENT_SHADER, m_pGLProgram->m_uFragShader, m_sFragShaderPath.c_str()))
+			{
+				BROWSER_ASSERT(false, "Init frag shader failed 0.");
+			}
+		}
+		else
+		{
+			if (!m_pGLProgram->createShaderBySource(GL_FRAGMENT_SHADER, m_pGLProgram->m_uFragShader, m_sFragShaderSource.c_str()))
+			{
+				BROWSER_ASSERT(false, "Init frag shader failed 1.");
+			}
+		}
 
         // 3.着色器程序绑定shader
         // 顶点shader
@@ -131,14 +158,6 @@ namespace customGL
 		if (m_pGLProgram->m_uCompShader > 0)
 		{
 			glDeleteShader(m_pGLProgram->m_uCompShader);
-		}
-		if (m_pGLProgram->m_sVertexSource)
-		{
-			delete[] m_pGLProgram->m_sVertexSource;
-		}
-		if (m_pGLProgram->m_sFragSource)
-		{
-			delete[] m_pGLProgram->m_sFragSource;
 		}
 
 		glDeleteProgram(m_pGLProgram->m_uProgram);

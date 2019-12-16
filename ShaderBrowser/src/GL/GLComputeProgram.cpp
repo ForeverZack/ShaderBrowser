@@ -52,7 +52,7 @@ namespace customGL
         
         // 2.创建shader
         // 计算着色器
-        if (!createShader(GL_COMPUTE_SHADER, m_uCompShader, src, false))
+        if (!createShader(GL_COMPUTE_SHADER, m_uCompShader, src))
         {
             return false;
         }

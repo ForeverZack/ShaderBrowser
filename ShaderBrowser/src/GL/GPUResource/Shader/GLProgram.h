@@ -150,6 +150,7 @@ namespace customGL
     protected:
         // 创建gpu资源
         void createGPUResource(const char* vertPath, const char* fragPath);
+		void createGPUResourceBySource(const string& vertSource, const string& fragSource);
 		// 更新gpu资源
 		void updateGPUResource(const std::unordered_map<std::string, UniformValue>& uniforms);
         // 删除gpu资源
@@ -160,12 +161,12 @@ namespace customGL
 		void initProgram(const char* vertSrc, const char* fragSrc, bool saveSource = true);
         bool cloneProgram(GLProgram* srcGLProgram);
 		// 创建着色器
-		bool createShader(GLenum type, GLuint& shader, const char* shaderSrc, bool saveSource);
-        bool createShader(GLenum type, GLuint& shader, const char* shaderSource);
+		bool createShader(GLenum type, GLuint& shader, const char* shaderSrc);
+        bool createShaderBySource(GLenum type, GLuint& shader, const char* shaderSource);
 		// 绑定预定义的顶点属性变量位置
 		void bindPredefinedVertexAttribs();
         // 获取存储着色器源码的指针
-        GLchar*& getSourceSavePointer(GLenum type);
+		string& getSourceSavePointer(GLenum type);
 
 
 	protected:
@@ -196,11 +197,11 @@ namespace customGL
         std::string m_sAddtionCompCode;
 
         // 顶点着色器源码
-        GLchar* m_sVertexSource;
+        string m_sVertexSource;
         // 片段着色器源码
-        GLchar* m_sFragSource;
+		string m_sFragSource;
         // 计算着色器源码
-        GLchar* m_sCompSource;
+		string m_sCompSource;
         
 	};
 }
