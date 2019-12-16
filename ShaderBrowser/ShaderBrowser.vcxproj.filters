@@ -150,9 +150,6 @@
     <ClCompile Include="src\Browser\Components\Mesh\MeshFilter.cpp">
       <Filter>src\Browser\Components\Mesh</Filter>
     </ClCompile>
-    <ClCompile Include="src\Browser\System\MeshSystem.cpp">
-      <Filter>src\Browser\System</Filter>
-    </ClCompile>
     <ClCompile Include="src\Common\System\Cache\GLProgramCache.cpp">
       <Filter>src\Common\System\Cache</Filter>
     </ClCompile>
@@ -336,6 +333,9 @@
     <ClCompile Include="src\GL\GPUOperateCommand\GPUOperateTextureBufferCommand.cpp">
       <Filter>src\GL\GPUOperateCommand</Filter>
     </ClCompile>
+    <ClCompile Include="src\Browser\System\MeshFilterSystem.cpp">
+      <Filter>src\Browser\System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\GL\GLDefine.h">
@@ -379,9 +379,6 @@
     </ClInclude>
     <ClInclude Include="src\Browser\Components\Mesh\MeshFilter.h">
       <Filter>src\Browser\Components\Mesh</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Browser\System\MeshSystem.h">
-      <Filter>src\Browser\System</Filter>
     </ClInclude>
     <ClInclude Include="src\Common\System\Cache\GLProgramCache.h">
       <Filter>src\Common\System\Cache</Filter>
@@ -574,6 +571,9 @@
     </ClInclude>
     <ClInclude Include="src\GL\GPUOperateCommand\GPUOperateTextureBufferCommand.h">
       <Filter>src\GL\GPUOperateCommand</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Browser\System\MeshFilterSystem.h">
+      <Filter>src\Browser\System</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

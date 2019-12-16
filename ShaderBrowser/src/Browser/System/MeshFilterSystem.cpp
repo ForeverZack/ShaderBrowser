@@ -1,8 +1,8 @@
-#include "MeshSystem.h"
+#include "MeshFilterSystem.h"
 
 namespace browser
 {
-	MeshSystem::MeshSystem()
+	MeshFilterSystem::MeshFilterSystem()
 	{
 		m_iPriority = 0;
 		m_eSystemType = common::SystemType::MeshFilter;

@@ -9,12 +9,12 @@ using namespace common;
 namespace browser
 {
     
-	class MeshSystem : public common::BaseSystem, public BaseSingleton<MeshSystem>
+	class MeshFilterSystem : public common::BaseSystem, public BaseSingleton<MeshFilterSystem>
 	{
 
 	public:
-		MeshSystem();
-		~MeshSystem() {};
+		MeshFilterSystem();
+		~MeshFilterSystem() {};
 
 	private:
 

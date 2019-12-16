@@ -4,7 +4,7 @@
 #include "Common/System/ECSManager.h"
 #include "Common/System/AutoReleasePool.h"
 #include "Browser/System/TransformSystem.h"
-#include "Browser/System/MeshSystem.h"
+#include "Browser/System/MeshFilterSystem.h"
 #include "Browser/System/CameraSystem.h"
 #include "Browser/System/BoundBoxSystem.h"
 #include "Browser/System/LightSystem.h"
@@ -35,7 +35,7 @@ namespace core
 
 		// 注册基本系统
 		ECSManager::getInstance()->registerSystem(browser::TransformSystem::getInstance()); // Transform
-		ECSManager::getInstance()->registerSystem(browser::MeshSystem::getInstance()); // Mesh
+		ECSManager::getInstance()->registerSystem(browser::MeshFilterSystem::getInstance()); // Mesh
 		ECSManager::getInstance()->registerSystem(browser::CameraSystem::getInstance());	// Camera
 		ECSManager::getInstance()->registerSystem(browser::BoundBoxSystem::getInstance()); // 包围盒
 		ECSManager::getInstance()->registerSystem(browser::LightSystem::getInstance()); // 灯光系统

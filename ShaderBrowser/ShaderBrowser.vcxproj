@@ -45,7 +45,7 @@
     <ClCompile Include="src\Browser\System\CameraSystem.cpp" />
     <ClCompile Include="src\Browser\System\FeedbackSystem.cpp" />
     <ClCompile Include="src\Browser\System\LightSystem.cpp" />
-    <ClCompile Include="src\Browser\System\MeshSystem.cpp" />
+    <ClCompile Include="src\Browser\System\MeshFilterSystem.cpp" />
     <ClCompile Include="src\Browser\System\RenderSystem.cpp" />
     <ClCompile Include="src\Browser\System\TransformSystem.cpp" />
     <ClCompile Include="src\Common\Components\Reference.cpp" />
@@ -123,7 +123,7 @@
     <ClInclude Include="src\Browser\System\CameraSystem.h" />
     <ClInclude Include="src\Browser\System\FeedbackSystem.h" />
     <ClInclude Include="src\Browser\System\LightSystem.h" />
-    <ClInclude Include="src\Browser\System\MeshSystem.h" />
+    <ClInclude Include="src\Browser\System\MeshFilterSystem.h" />
     <ClInclude Include="src\Browser\System\RenderSystem.h" />
     <ClInclude Include="src\Browser\System\TransformSystem.h" />
     <ClInclude Include="src\Common\CommonDefine.h" />
