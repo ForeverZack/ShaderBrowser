@@ -36,6 +36,8 @@ namespace customGL
         , m_vBoneIndices(nullptr)
         , m_vBoneWeights(nullptr)
 	{
+		//this->autorelease();
+
         // 清空
         m_mVertexAttribDeclarations.clear();
         m_mTextures.clear();

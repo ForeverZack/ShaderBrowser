@@ -52,6 +52,7 @@
     <ClCompile Include="src\Common\System\AutoReleasePool.cpp" />
     <ClCompile Include="src\Common\System\Cache\GLProgramCache.cpp" />
     <ClCompile Include="src\Common\System\Cache\MaterialCache.cpp" />
+    <ClCompile Include="src\Common\System\Cache\MeshCache.cpp" />
     <ClCompile Include="src\Common\System\Cache\ModelCache.cpp" />
     <ClCompile Include="src\Common\System\Cache\TextureCache.cpp" />
     <ClCompile Include="src\Common\System\ECSManager.cpp" />
@@ -135,6 +136,7 @@
     <ClInclude Include="src\Common\System\Cache\BaseLoader.h" />
     <ClInclude Include="src\Common\System\Cache\GLProgramCache.h" />
     <ClInclude Include="src\Common\System\Cache\MaterialCache.h" />
+    <ClInclude Include="src\Common\System\Cache\MeshCache.h" />
     <ClInclude Include="src\Common\System\Cache\ModelCache.h" />
     <ClInclude Include="src\Common\System\Cache\TextureCache.h" />
     <ClInclude Include="src\Common\System\ECSManager.h" />

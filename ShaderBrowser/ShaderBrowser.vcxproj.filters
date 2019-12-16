@@ -336,6 +336,9 @@
     <ClCompile Include="src\Browser\System\MeshFilterSystem.cpp">
       <Filter>src\Browser\System</Filter>
     </ClCompile>
+    <ClCompile Include="src\Common\System\Cache\MeshCache.cpp">
+      <Filter>src\Common\System\Cache</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\GL\GLDefine.h">
@@ -574,6 +577,9 @@
     </ClInclude>
     <ClInclude Include="src\Browser\System\MeshFilterSystem.h">
       <Filter>src\Browser\System</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Common\System\Cache\MeshCache.h">
+      <Filter>src\Common\System\Cache</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

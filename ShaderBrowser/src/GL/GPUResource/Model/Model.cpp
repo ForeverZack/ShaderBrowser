@@ -1,6 +1,7 @@
 #include "Model.h"
 #include "Common/Tools/FileUtils.h"
 #include "Common/System/Cache/MaterialCache.h"
+#include "Common/System/Cache/MeshCache.h"
 #include "GL/Assimp.h"
 #include "GL/AssimpConvert.h"
 #include "GL/Rescale.h"
@@ -829,7 +830,10 @@ namespace customGL
         {
             // 注意:如果纹理创建不成功(例如没有找到),应该有一张白色默认纹理来代替,以防程序出问题
             Mesh* mesh = Mesh::create(aiMesh->mNumVertices, aiMesh->mName.C_Str(), aiMesh->HasBones() ? Mesh::MeshType::MeshWithBone : Mesh::MeshType::CommonMesh );
-            // 顶点位置
+			// 将mesh加入缓存
+			MeshCache::getInstance()->addSharedMesh(mesh);
+
+			// 顶点位置
             mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_POSITION, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), aiMesh->mVertices);
             // 顶点颜色
 			if (aiMesh->mColors[0] && aiMesh->mColors[1])
@@ -949,15 +953,15 @@ namespace customGL
         {
             (*itor)->setupVAO();
         }
-        // 处理动画数据
-        if (m_oGpuAnimData != nullptr)
-        {
-            const std::unordered_map<std::string, unsigned int>& bonesIdMap = m_oSkeleton->getBonesIdMap();
-            std::vector<glm::vec4>& bonesInitPosition = m_oSkeleton->getBonesInitPositionRef();
-            std::vector<glm::vec4>& bonesInitRotation = m_oSkeleton->getBonesInitRotationRef();
-            std::vector<glm::vec4>& bonesInitScale = m_oSkeleton->getBonesInitScaleRef();
-            m_oGpuAnimData->generateDataBuffer(m_vAnimations, bonesIdMap, bonesInitPosition, bonesInitRotation, bonesInitScale);
-        }
+        //// 处理动画数据
+        //if (m_oGpuAnimData != nullptr)
+        //{
+        //    const std::unordered_map<std::string, unsigned int>& bonesIdMap = m_oSkeleton->getBonesIdMap();
+        //    std::vector<glm::vec4>& bonesInitPosition = m_oSkeleton->getBonesInitPositionRef();
+        //    std::vector<glm::vec4>& bonesInitRotation = m_oSkeleton->getBonesInitRotationRef();
+        //    std::vector<glm::vec4>& bonesInitScale = m_oSkeleton->getBonesInitScaleRef();
+        //    m_oGpuAnimData->generateDataBuffer(m_vAnimations, bonesIdMap, bonesInitPosition, bonesInitRotation, bonesInitScale);
+        //}
     }
     
     void Model::readTextureData(Mesh* mesh, aiMaterial* material, aiTextureType type, const char* uniformName /*= GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_TEXUTRE0] */)
@@ -1276,7 +1280,7 @@ namespace customGL
                      if (texture)
                      {
                          // 将texture的环绕方式设为repeat
-                         texture->setTexWrapParams(GL_REPEAT, GL_REPEAT);
+                         //texture->setTexWrapParams(GL_REPEAT, GL_REPEAT);
                          // 记录texture
                          m_vTextures.push_back(texture);
                      

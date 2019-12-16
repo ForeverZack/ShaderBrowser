@@ -105,6 +105,7 @@ namespace customGL
         // 向RenderSystem注册vao
         void setupVAO();
         
+		REGISTER_PROPERTY_GET_SET(unsigned int, m_uMeshId, MeshId)
         REGISTER_PROPERTY_GET(MeshType, m_eMeshType, MeshType)
         REGISTER_PROPERTY_GET(unsigned int, m_uVAO, VAO)
         REGISTER_PROPERTY_GET(unsigned int, m_uVertexCount, VertexCount)
@@ -144,6 +145,9 @@ namespace customGL
         
         
 	protected:
+		// id
+		unsigned int m_uMeshId;
+
         // 顶点属性如下：
         // 位置
         glm::vec4* m_vVertices;

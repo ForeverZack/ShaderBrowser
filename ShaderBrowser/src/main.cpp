@@ -160,7 +160,7 @@ void testVal()
     //mesh->addTexture("CGL_TEXTURE0", texture1);
     //mesh->addTexture("CGL_TEXTURE1", texture2);
     mesh->setupVAO();
-	
+	mesh->retain();
 
 	// 着色器程序
 	//GLProgram* program = GLProgram::create("./res/shaders/triangles.vert", "./res/shaders/triangles.frag");
