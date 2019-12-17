@@ -40,10 +40,9 @@ namespace common
         });
     
 		Reference* reference = nullptr;
-		std::vector<Reference*>::iterator iter = m_vReleaseReferences.begin();
-		for(; iter!=m_vReleaseReferences.end(); ++iter)
+		for(auto itor=m_vReleaseReferences.begin(); itor!=m_vReleaseReferences.end(); ++itor)
 		{
-			reference = *iter;
+			reference = *itor;
 			reference->release();
 			reference = nullptr;
 		}

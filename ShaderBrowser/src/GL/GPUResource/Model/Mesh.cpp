@@ -18,8 +18,17 @@ namespace customGL
         
         return mesh;
     }
+
+	Mesh* Mesh::createRetain(int length, const std::string& meshName /*= DEFAULT_MESH_NAME*/, MeshType type /*= MeshType::CommonMesh*/)
+	{
+		Mesh* mesh = new Mesh(meshName, type, true);
+
+		mesh->init(length);
+
+		return mesh;
+	}
     
-	Mesh::Mesh(const std::string& meshName /*= DEFAULT_MESH_NAME*/, MeshType type /*= MeshType::CommonMesh*/)
+	Mesh::Mesh(const std::string& meshName /*= DEFAULT_MESH_NAME*/, MeshType type /*= MeshType::CommonMesh*/, bool isRetain/* = false*/)
         : m_uVAO(0)
         , m_eMeshType(type)
         , m_bGenVAO(false)
@@ -36,7 +45,11 @@ namespace customGL
         , m_vBoneIndices(nullptr)
         , m_vBoneWeights(nullptr)
 	{
-		//this->autorelease();
+		this->autorelease();
+		if (isRetain)
+		{
+			this->retain();
+		}
 
         // 清空
         m_mVertexAttribDeclarations.clear();

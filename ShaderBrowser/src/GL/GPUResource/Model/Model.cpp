@@ -829,9 +829,11 @@ namespace customGL
         if (aiMesh)
         {
             // 注意:如果纹理创建不成功(例如没有找到),应该有一张白色默认纹理来代替,以防程序出问题
-            Mesh* mesh = Mesh::create(aiMesh->mNumVertices, aiMesh->mName.C_Str(), aiMesh->HasBones() ? Mesh::MeshType::MeshWithBone : Mesh::MeshType::CommonMesh );
+			// 防止Model是异步加载的，所以这里在构造的时候直接retain了，防止被autoRelease掉，这样的用法记得多手动release一次
+            Mesh* mesh = Mesh::createRetain(aiMesh->mNumVertices, aiMesh->mName.C_Str(), aiMesh->HasBones() ? Mesh::MeshType::MeshWithBone : Mesh::MeshType::CommonMesh );
 			// 将mesh加入缓存
 			MeshCache::getInstance()->addSharedMesh(mesh);
+			mesh->release();
 
 			// 顶点位置
             mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_POSITION, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), aiMesh->mVertices);

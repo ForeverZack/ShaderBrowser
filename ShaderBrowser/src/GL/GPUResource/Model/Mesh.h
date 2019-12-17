@@ -79,10 +79,11 @@ namespace customGL
 		static const char* DEFAULT_MESH_NAME;
         
     public:
-        static Mesh* create(int length, const std::string& meshName = DEFAULT_MESH_NAME, MeshType type = MeshType::CommonMesh);
+		static Mesh* create(int length, const std::string& meshName = DEFAULT_MESH_NAME, MeshType type = MeshType::CommonMesh);
+		static Mesh* createRetain(int length, const std::string& meshName = DEFAULT_MESH_NAME, MeshType type = MeshType::CommonMesh);
         
 	public:
-        Mesh(const std::string& meshName = DEFAULT_MESH_NAME, MeshType type = MeshType::CommonMesh);
+        Mesh(const std::string& meshName = DEFAULT_MESH_NAME, MeshType type = MeshType::CommonMesh, bool isRetain = false);
 		~Mesh();
 
 	public:
