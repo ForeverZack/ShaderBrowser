@@ -155,18 +155,31 @@ namespace customGL
     {
     public:
         VertexAttribDeclaration()
-        : data_type(VertexDataType::Float)
-        , index(-1)
-        , size(3)
-        , type(GL_FLOAT)
-        , normalized(GL_FALSE)
-        , stride(0)
-        , pointer(nullptr)
-        , name("")
-        , data(nullptr)
-        , data_size(0)
+			: data_type(VertexDataType::Float)
+			, index(-1)
+			, size(3)
+			, type(GL_FLOAT)
+			, normalized(GL_FALSE)
+			, stride(0)
+			, pointer(nullptr)
+			, name("")
+			, data(nullptr)
+			, data_size(0)
         {
         }
+		VertexAttribDeclaration(const VertexAttribDeclaration&& declaration) noexcept
+			: data_type(declaration.data_type)
+			, index(declaration.index)
+			, size(declaration.size)
+			, type(declaration.type)
+			, normalized(declaration.normalized)
+			, stride(declaration.stride)
+			, pointer(declaration.pointer)
+			, name(declaration.name)
+			, data(declaration.data)
+			, data_size(declaration.data_size)
+		{
+		}
         ~VertexAttribDeclaration()
         {
         }

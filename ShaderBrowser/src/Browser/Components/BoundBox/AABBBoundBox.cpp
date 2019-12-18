@@ -327,8 +327,8 @@ namespace browser
         {
             mesh = *itor;
             glm::vec4* vertices = mesh->getVertices22();
-            glm::uvec4* bonesIndices = mesh->getBoneIndices();
-            glm::vec4* bonesWeights = mesh->getBoneWeights();
+			std::vector<glm::uvec4>& bonesIndices = mesh->getBoneIndicesRef();
+			std::vector<glm::vec4>& bonesWeights = mesh->getBoneWeightsRef();
             for (int i=0; i<mesh->getVertexCount(); ++i)
             {
                 position = vertices[i];

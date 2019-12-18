@@ -458,8 +458,8 @@ namespace browser
 				for (auto itor = meshes.begin(); itor != meshes.end(); ++itor)
 				{
 					glm::vec4* vertices = (*itor)->getVertices22();
-					glm::uvec4* boneIndices = (*itor)->getBoneIndices();
-					glm::vec4* boneWeights = (*itor)->getBoneWeights();
+					std::vector<glm::uvec4>& boneIndices = (*itor)->getBoneIndicesRef();
+					std::vector<glm::vec4>& boneWeights = (*itor)->getBoneWeightsRef();
 					glm::vec3* normals = (*itor)->getNormals();
 					glm::vec3* tangents = (*itor)->getTangents();
 

@@ -339,6 +339,9 @@
     <ClCompile Include="src\Common\System\Cache\MeshCache.cpp">
       <Filter>src\Common\System\Cache</Filter>
     </ClCompile>
+    <ClCompile Include="src\GL\GPUOperateCommand\GPUOperateMeshCommand.cpp">
+      <Filter>src\GL\GPUOperateCommand</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\GL\GLDefine.h">
@@ -580,6 +583,9 @@
     </ClInclude>
     <ClInclude Include="src\Common\System\Cache\MeshCache.h">
       <Filter>src\Common\System\Cache</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GL\GPUOperateCommand\GPUOperateMeshCommand.h">
+      <Filter>src\GL\GPUOperateCommand</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

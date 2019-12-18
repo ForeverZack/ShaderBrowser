@@ -36,14 +36,6 @@ namespace customGL
         , m_uIndexCount(0)
         , m_sMaterialName(Material::DEFAULT_MATERIAL_NAME)
 		, m_sMeshName(meshName)
-        , m_vVertices(nullptr)
-        , m_vIndices(nullptr)
-        , m_vColors(nullptr)
-        , m_vTexcoords1(nullptr)
-        , m_vNormals(nullptr)
-        , m_vTangents(nullptr)
-        , m_vBoneIndices(nullptr)
-        , m_vBoneWeights(nullptr)
 	{
 		this->autorelease();
 		if (isRetain)
@@ -58,16 +50,6 @@ namespace customGL
 
 	Mesh::~Mesh()
 	{
-        // 删除数据
-        BROWSER_SAFE_RELEASE_ARRAY_POINTER(m_vVertices);
-        BROWSER_SAFE_RELEASE_ARRAY_POINTER(m_vColors);
-        BROWSER_SAFE_RELEASE_ARRAY_POINTER(m_vIndices);
-        BROWSER_SAFE_RELEASE_ARRAY_POINTER(m_vTexcoords1);
-        BROWSER_SAFE_RELEASE_ARRAY_POINTER(m_vNormals);
-        BROWSER_SAFE_RELEASE_ARRAY_POINTER(m_vTangents);
-        BROWSER_SAFE_RELEASE_ARRAY_POINTER(m_vBoneIndices);
-        BROWSER_SAFE_RELEASE_ARRAY_POINTER(m_vBoneWeights);
-        
         // 删除vao
         glDeleteVertexArrays(1, &m_uVAO);
         
@@ -83,6 +65,8 @@ namespace customGL
     
     void Mesh::setupVAO()
     {
+		createGPUResource();
+
         if (!m_bGenVAO)
         {
             m_bGenVAO = true;
@@ -111,42 +95,42 @@ namespace customGL
 		}
         
         // uv
-        if (m_vTexcoords1)
+        if (m_vTexcoords1.size() > 0)
         {
             glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[browser::RenderSystem::VertexBufferType::RenderSystem_ArrayBuffer_UV1]);
             glBufferData(GL_ARRAY_BUFFER, getVertexCount() * sizeof(glm::vec2), &m_vTexcoords1[0], GL_STATIC_DRAW);
         }
         
         // colors
-//        if(m_vColors)
+        if(m_vColors.size() > 0)
         {
             glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[browser::RenderSystem::VertexBufferType::RenderSystem_ArrayBuffer_Color]);
             glBufferData(GL_ARRAY_BUFFER, getVertexCount() * sizeof(glm::vec4), &m_vColors[0], GL_STATIC_DRAW);
         }
         
         // normal
-        if (m_vNormals)
+        if (m_vNormals.size() > 0)
         {
             glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[browser::RenderSystem::VertexBufferType::RenderSystem_ArrayBuffer_Normal]);
             glBufferData(GL_ARRAY_BUFFER, getVertexCount() * sizeof(glm::vec3), &m_vNormals[0], GL_STATIC_DRAW);
         }
         
         // tangents
-        if (m_vTangents)
+        if (m_vTangents.size() > 0)
         {
             glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[browser::RenderSystem::VertexBufferType::RenderSystem_ArrayBuffer_Tangent]);
             glBufferData(GL_ARRAY_BUFFER, getVertexCount() * sizeof(glm::vec3), &m_vTangents[0], GL_STATIC_DRAW);
         }
                                                   
         // boneIndices
-        if (m_vBoneIndices)
+        if (m_vBoneIndices.size() > 0)
         {
             glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[browser::RenderSystem::VertexBufferType::RenderSystem_ArrayBuffer_BoneIndices]);
             glBufferData(GL_ARRAY_BUFFER, getVertexCount() * sizeof(glm::uvec4), &m_vBoneIndices[0], GL_STATIC_DRAW);
         }
         
         // boneWeights
-        if (m_vBoneWeights)
+        if (m_vBoneWeights.size() > 0)
         {
             glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[browser::RenderSystem::VertexBufferType::RenderSystem_ArrayBuffer_BoneWeights]);
             glBufferData(GL_ARRAY_BUFFER, getVertexCount() * sizeof(glm::vec4), &m_vBoneWeights[0], GL_STATIC_DRAW);
@@ -164,8 +148,8 @@ namespace customGL
          调用reserve(n)后，若容器的capacity<n，则重新分配内存空间，从而使得capacity等于n。如果capacity>=n呢？capacity无变化。
          */
         m_uVertexCount = length;
-        m_vVertices = new glm::vec4[length];
-        
+		m_vVertices.clear();
+		m_vVertices.resize(length);
 
         if(m_eMeshType == MeshType::MeshWithBone)
         {
@@ -175,14 +159,8 @@ namespace customGL
     
     void Mesh::initBonesData()
     {
-        m_vBoneIndices = new glm::uvec4[m_uVertexCount];
-        m_vBoneWeights = new glm::vec4[m_uVertexCount];
-        
-        for(int i=0; i<m_uVertexCount; ++i)
-        {
-            m_vBoneIndices[i] = GLM_VEC4_ZERO;
-            m_vBoneWeights[i] = GLM_VEC4_ZERO;
-        }
+        m_vBoneIndices.resize(m_uVertexCount);
+        m_vBoneWeights.resize(m_uVertexCount);
     }
     
     void Mesh::addTexture(const std::string& uniformName, Texture2D* texture)
@@ -211,14 +189,14 @@ namespace customGL
     {
         m_uIndexCount = length;
         
-        m_vIndices = new GLushort[length];
+        m_vIndices.resize(length);
         for(int i=0; i<length; ++i)
         {
             m_vIndices[i] = data[i];
         }
     }
     
-    void Mesh::setIndicesInfo(std::function<void(GLushort*&, unsigned int&)> setFunc)
+    void Mesh::setIndicesInfo(std::function<void(std::vector<GLushort>&, unsigned int&)> setFunc)
     {
         setFunc(m_vIndices, m_uIndexCount);
     }
@@ -275,16 +253,14 @@ namespace customGL
                 {
                     // 位置属性
                     ANALYSIS_ARRAY_DATA_VERTEX(data);
+					m_eResouceState = GRS_DataLoaded;
                 }
                 break;
                 
             case GLProgram::VERTEX_ATTR_COLOR:
                 {
                     // 颜色属性
-                    if(!m_vColors)
-                    {
-                        m_vColors = new glm::vec4[m_uVertexCount];
-                    }
+					m_vColors.resize(m_uVertexCount);
                     ANALYSIS_ARRAY_DATA_VEC4(m_vColors, data);
                 }
                 break;
@@ -292,10 +268,7 @@ namespace customGL
             case GLProgram::VERTEX_ATTR_TEX_COORD:
                 {
                     // 纹理uv属性
-                    if(!m_vTexcoords1)
-                    {
-                        m_vTexcoords1 = new glm::vec2[m_uVertexCount];
-                    }
+					m_vTexcoords1.resize(m_uVertexCount);
                     ANALYSIS_ARRAY_DATA_TEXCOORD(m_vTexcoords1, data);
                 }
                 break;
@@ -303,10 +276,7 @@ namespace customGL
             case GLProgram::VERTEX_ATTR_NORMAL:
                 {
                     // 法线属性
-                    if(!m_vNormals)
-                    {
-                        m_vNormals = new glm::vec3[m_uVertexCount];
-                    }
+					m_vNormals.resize(m_uVertexCount);
                     ANALYSIS_ARRAY_DATA_VEC3(m_vNormals, data);
                 }
                 break;
@@ -314,10 +284,7 @@ namespace customGL
             case GLProgram::VERTEX_ATTR_TANGENT:
                 {
                     // 切线属性
-                    if(!m_vTangents)
-                    {
-                        m_vTangents = new glm::vec3[m_uVertexCount];
-                    }
+					m_vTangents.resize(m_uVertexCount);
                     ANALYSIS_ARRAY_DATA_VEC3(m_vTangents, data);
                 }
                 break;
@@ -329,5 +296,20 @@ namespace customGL
         }
     }
 
+	void Mesh::createGPUResource()
+	{
+		BROWSER_ASSERT(m_eResouceState == GRS_DataLoaded, "Mesh state must be GRS_DataLoaded, then it can be created on gpu");
+
+	}
+
+	void Mesh::updateGPUResource()
+	{
+
+	}
+
+	void Mesh::deleteGPUResource()
+	{
+
+	}
 
 }

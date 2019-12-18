@@ -4,7 +4,6 @@
 #include "GL/GPUResource/Model/Mesh.h"
 
 using namespace customGL;
-using namespace browser;
 
 namespace common
 {

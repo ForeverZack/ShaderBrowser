@@ -77,6 +77,7 @@
     <ClCompile Include="src\GL\GPUOperateCommand\BaseGPUOperateCommand.cpp" />
     <ClCompile Include="src\GL\GPUOperateCommand\GPUOperateCommandPool.cpp" />
     <ClCompile Include="src\GL\GPUOperateCommand\GPUOperateGLProgramCommand.cpp" />
+    <ClCompile Include="src\GL\GPUOperateCommand\GPUOperateMeshCommand.cpp" />
     <ClCompile Include="src\GL\GPUOperateCommand\GPUOperateTexture2DCommand.cpp" />
     <ClCompile Include="src\GL\GPUOperateCommand\GPUOperateTextureBufferCommand.cpp" />
     <ClCompile Include="src\GL\GPUResource\BaseGPUResource.cpp" />
@@ -163,6 +164,7 @@
     <ClInclude Include="src\GL\GPUOperateCommand\BaseGPUOperateCommand.h" />
     <ClInclude Include="src\GL\GPUOperateCommand\GPUOperateCommandPool.h" />
     <ClInclude Include="src\GL\GPUOperateCommand\GPUOperateGLProgramCommand.h" />
+    <ClInclude Include="src\GL\GPUOperateCommand\GPUOperateMeshCommand.h" />
     <ClInclude Include="src\GL\GPUOperateCommand\GPUOperateTexture2DCommand.h" />
     <ClInclude Include="src\GL\GPUOperateCommand\GPUOperateTextureBufferCommand.h" />
     <ClInclude Include="src\GL\GPUResource\BaseGPUResource.h" />

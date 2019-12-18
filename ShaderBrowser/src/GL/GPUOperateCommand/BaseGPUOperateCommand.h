@@ -19,16 +19,18 @@ namespace customGL
      */
     
     // GPU操作命令类型(也可以理解为操作对象类型)
-    enum GPUOperateCommandType
-    {
-        // 未定义
-        GOCT_Undefined = 0,
-        // 2D纹理
-        GOCT_Texture2D,
-        // 纹理缓存
-        GOCT_TextureBuffer,
-        // GLProgram
-        GOCT_GLProgram,
+	enum GPUOperateCommandType
+	{
+		// 未定义
+		GOCT_Undefined = 0,
+		// 2D纹理
+		GOCT_Texture2D,
+		// 纹理缓存
+		GOCT_TextureBuffer,
+		// GLProgram
+		GOCT_GLProgram,
+		// 网格
+		GOCT_Mesh,
         
     };
     

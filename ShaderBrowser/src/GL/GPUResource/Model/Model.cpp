@@ -442,10 +442,10 @@ namespace customGL
                         if(m_oSkeleton->isBone(parentNode->mName.C_Str(), boneIdx))
                         {
                             Mesh* mesh = m_vMeshes[index];
-                            glm::vec4* boneWeights = mesh->getBoneWeights();
-                            if (mesh->getVertexCount()>0 && mesh->getMeshType()==Mesh::MeshType::CommonMesh && (!boneWeights || boneWeights[0][0]==0.0f))
+							std::vector<glm::vec4>& boneWeights = mesh->getBoneWeightsRef();
+                            if (mesh->getVertexCount()>0 && mesh->getMeshType()==Mesh::MeshType::CommonMesh && (boneWeights.size()==0 || boneWeights[0][0]==0.0f))
                             {
-                                if(!boneWeights)
+                                if(boneWeights.size() == 0)
                                 {
                                     mesh->initBonesData();
                                 }
@@ -845,14 +845,14 @@ namespace customGL
             // 顶点uv坐标
             if (aiMesh->mTextureCoords[0])
             {
-                mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_TEX_COORD, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), aiMesh->mTextureCoords[0]);
+                mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_TEX_COORD, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), aiMesh->mTextureCoords[0]);
             }
             // 法线
             mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_NORMAL, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), aiMesh->mNormals);
             // 切线
             mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_TANGENT, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), aiMesh->mTangents);
             // 索引信息
-            mesh->setIndicesInfo([=](GLushort*& indices, unsigned int& indexCount) -> void
+            mesh->setIndicesInfo([=](std::vector<GLushort>& indices, unsigned int& indexCount) -> void
                  {
                      indexCount = 0;
                      for(int i=0; i<aiMesh->mNumFaces; ++i)
@@ -861,7 +861,7 @@ namespace customGL
                          indexCount += face.mNumIndices;
                      }
                      
-                     indices = new GLushort[indexCount];
+                     indices.resize(indexCount);
                      
                      int now_index = 0;
                      for(int i=0; i<aiMesh->mNumFaces; ++i)
@@ -877,8 +877,8 @@ namespace customGL
                  });
 
 			// 骨骼信息
-            glm::uvec4* mesh_boneIndices = mesh->getBoneIndices();
-            glm::vec4* mesh_boneWeights = mesh->getBoneWeights();
+			std::vector<glm::uvec4>& mesh_boneIndices = mesh->getBoneIndicesRef();
+			std::vector<glm::vec4>& mesh_boneWeights = mesh->getBoneWeightsRef();
 			aiBone* bone = nullptr;
 			aiVertexWeight * vertexWeight = nullptr;
 			unsigned int boneIdx;
@@ -1242,8 +1242,8 @@ namespace customGL
         }
         
         glm::vec4* vertices = mesh->getVertices22();
-        glm::uvec4* boneIndices = mesh->getBoneIndices();
-        glm::vec4* boneWeights = mesh->getBoneWeights();
+		std::vector<glm::uvec4>& boneIndices = mesh->getBoneIndicesRef();
+		std::vector<glm::vec4>& boneWeights = mesh->getBoneWeightsRef();
         for (int i=0; i<mesh->getVertexCount(); ++i)
         {
             vertices[i] = transformation * vertices[i];
