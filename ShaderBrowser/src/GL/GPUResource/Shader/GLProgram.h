@@ -32,7 +32,7 @@ namespace customGL
         
 	public:
 		// 预定义的顶点着色器属性位置枚举( layout (location = n) )
-		enum
+		enum VERTEX_ATTR
 		{
 			// 0. 顶点数据
 			VERTEX_ATTR_POSITION = 0,

@@ -9,6 +9,8 @@
 #include "Browser/System/BoundBoxSystem.h"
 #include "Browser/System/LightSystem.h"
 #include "Browser/System/AnimationSystem.h"
+#include "Common/System/Cache/TextureCache.h"
+#include "Common/System/Cache/ModelCache.h"
 
 
 namespace core
@@ -68,6 +70,10 @@ namespace core
 		recTime("====SystemType::Camera=====");
 		ECSManager::getInstance()->updateSystem(SystemType::BoundBox, deltaTime);   // 更新BoundBox
 		recTime("====SystemType::BoundBox=====");
+
+		// temp
+		TextureCache::getInstance()->update(deltaTime);
+		ModelCache::getInstance()->update(deltaTime);
 
 		// auto release
 		AutoReleasePool::getInstance()->update();

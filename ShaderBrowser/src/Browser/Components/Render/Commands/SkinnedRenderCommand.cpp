@@ -46,7 +46,7 @@ namespace browser
             glBindVertexArray(vao);
             
             // 2.传递顶点数据
-            glBindBuffer(GL_ARRAY_BUFFER, m_oMesh->getVBOs()[RenderSystem::VertexBufferType::RenderSystem_ArrayBuffer_Position]);
+            glBindBuffer(GL_ARRAY_BUFFER, m_oMesh->getVBOs()[GLProgram::VERTEX_ATTR::VERTEX_ATTR_POSITION]);
             glBufferData(GL_ARRAY_BUFFER, m_uVertexCount * sizeof(glm::vec4), &m_vVertices[0], GL_STATIC_DRAW);
             
             // normal

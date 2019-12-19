@@ -3,8 +3,6 @@
 #include "Common/Tools/UI/GUIFramework.h"
 #include "Common/Tools/UI/InspectorPanel.h"
 #include "Common/Tools/UI/GameStatusPanel.h"
-#include "Common/System/Cache/TextureCache.h"
-#include "Common/System/Cache/ModelCache.h"
 #include "Common/System/Cache/GLProgramCache.h"
 #include "Browser/System/RenderSystem.h"
 #include "GL/GLStateCache.h"
@@ -134,12 +132,8 @@ namespace core
     
     void RenderCore::renderLoop(float deltaTime)
     {
-		//// temp
-		//TextureCache::getInstance()->update(deltaTime);
-		//ModelCache::getInstance()->update(deltaTime);
-        
         // 处理gpu操作指令
-//        GPUOperateSystem::getInstance()->update();
+        //GPUOperateSystem::getInstance()->update();
 
 		// 重置GL状态（这里主要是为了防止插件如imgui绑定纹理，造成缓存失效）
 		GLStateCache::getInstance()->update(deltaTime);
@@ -163,9 +157,6 @@ namespace core
         glfwSwapBuffers(m_pWindow);
 		glfwPollEvents();
 
-		// temp
-		TextureCache::getInstance()->update(deltaTime);
-		ModelCache::getInstance()->update(deltaTime);
     }
     
     GLFWwindow* RenderCore::initWindow()

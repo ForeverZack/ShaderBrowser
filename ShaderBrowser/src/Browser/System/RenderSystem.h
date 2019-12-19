@@ -82,8 +82,6 @@ namespace browser
         // 渲染队列
         std::vector<BaseRenderCommand*> m_vRenderCommands;
         
-		// vbos
-		unsigned int m_uVBOs[RenderSystem_Buffer_Maxcount];
         // 绘制所用的draw call次数
         unsigned int m_uDrawCalls;
 		// 顶点数量

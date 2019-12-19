@@ -2,6 +2,9 @@
 #include "GL/GPUResource/Shader/GLProgram.h"
 #include "GL/GPUResource/Shader/Material.h"
 #include "Browser/System/RenderSystem.h"
+#include "GL/GPUOperateCommand/GPUOperateCommandPool.h"
+#include "GL/GPUOperateCommand/GPUOperateMeshCommand.h"
+#include "GL/System/GPUOperateSystem.h"
 
 using namespace browser;
 
@@ -30,6 +33,7 @@ namespace customGL
     
 	Mesh::Mesh(const std::string& meshName /*= DEFAULT_MESH_NAME*/, MeshType type /*= MeshType::CommonMesh*/, bool isRetain/* = false*/)
         : m_uVAO(0)
+		, m_uIndicesVBO(0)
         , m_eMeshType(type)
         , m_bGenVAO(false)
         , m_uVertexCount(0)
@@ -50,6 +54,8 @@ namespace customGL
 
 	Mesh::~Mesh()
 	{
+		deleteGPUResource();
+
         // 删除vao
         glDeleteVertexArrays(1, &m_uVAO);
         
@@ -74,6 +80,8 @@ namespace customGL
             glGenVertexArrays(1, &m_uVAO);
 			// 生成vbo
 			glGenBuffers(MESH_VERTEX_ATTR_COUNT, m_uVBOs);
+			glGenBuffers(1, &m_uIndicesVBO);
+
         }
 
 		// 设置vao
@@ -84,55 +92,55 @@ namespace customGL
 		glBindVertexArray(m_uVAO);
 
 		// 2.传递顶点数据
-		glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[browser::RenderSystem::VertexBufferType::RenderSystem_ArrayBuffer_Position]);
+		glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[GLProgram::VERTEX_ATTR_POSITION]);
         glBufferData(GL_ARRAY_BUFFER, getVertexCount() * sizeof(glm::vec4), &m_vVertices[0], GL_STATIC_DRAW);
 
 		// 3.传递索引数组
         if (m_uIndexCount > 0)
 		{
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_uVBOs[browser::RenderSystem::VertexBufferType::RenderSystem_Indices_Buffer]);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_uIndicesVBO);
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLushort)*getIndexCount(), &m_vIndices[0], GL_STATIC_DRAW);
 		}
         
         // uv
         if (m_vTexcoords1.size() > 0)
         {
-            glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[browser::RenderSystem::VertexBufferType::RenderSystem_ArrayBuffer_UV1]);
+            glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[GLProgram::VERTEX_ATTR_TEX_COORD]);
             glBufferData(GL_ARRAY_BUFFER, getVertexCount() * sizeof(glm::vec2), &m_vTexcoords1[0], GL_STATIC_DRAW);
         }
         
         // colors
         if(m_vColors.size() > 0)
         {
-            glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[browser::RenderSystem::VertexBufferType::RenderSystem_ArrayBuffer_Color]);
+            glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[GLProgram::VERTEX_ATTR_COLOR]);
             glBufferData(GL_ARRAY_BUFFER, getVertexCount() * sizeof(glm::vec4), &m_vColors[0], GL_STATIC_DRAW);
         }
         
         // normal
         if (m_vNormals.size() > 0)
         {
-            glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[browser::RenderSystem::VertexBufferType::RenderSystem_ArrayBuffer_Normal]);
+            glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[GLProgram::VERTEX_ATTR_NORMAL]);
             glBufferData(GL_ARRAY_BUFFER, getVertexCount() * sizeof(glm::vec3), &m_vNormals[0], GL_STATIC_DRAW);
         }
         
         // tangents
         if (m_vTangents.size() > 0)
         {
-            glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[browser::RenderSystem::VertexBufferType::RenderSystem_ArrayBuffer_Tangent]);
+            glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[GLProgram::VERTEX_ATTR_TANGENT]);
             glBufferData(GL_ARRAY_BUFFER, getVertexCount() * sizeof(glm::vec3), &m_vTangents[0], GL_STATIC_DRAW);
         }
                                                   
         // boneIndices
         if (m_vBoneIndices.size() > 0)
         {
-            glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[browser::RenderSystem::VertexBufferType::RenderSystem_ArrayBuffer_BoneIndices]);
+            glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[GLProgram::VERTEX_ATTR_BONE_IDS]);
             glBufferData(GL_ARRAY_BUFFER, getVertexCount() * sizeof(glm::uvec4), &m_vBoneIndices[0], GL_STATIC_DRAW);
         }
         
         // boneWeights
         if (m_vBoneWeights.size() > 0)
         {
-            glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[browser::RenderSystem::VertexBufferType::RenderSystem_ArrayBuffer_BoneWeights]);
+            glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[GLProgram::VERTEX_ATTR_BONE_WEIGHTS]);
             glBufferData(GL_ARRAY_BUFFER, getVertexCount() * sizeof(glm::vec4), &m_vBoneWeights[0], GL_STATIC_DRAW);
         }
 
@@ -222,6 +230,18 @@ namespace customGL
         VertexAttribDeclaration* declaration = Utils::createVertexAttribDeclaration(location, size, type, normalized, stride);
         m_mVertexAttribDeclarations.emplace(location, declaration);
     }
+
+	void Mesh::setVertices(void* data)
+	{
+		fillVertexsParam(GLProgram::VERTEX_ATTR_POSITION, data);
+
+		auto cmd = GPUOperateCommandPool::getInstance()->popCommand<GPUOperateMeshCommand>(GPUOperateCommandType::GOCT_Mesh);
+		cmd->setMesh(this);
+		cmd->setVertexAttribute(GLProgram::VERTEX_ATTR::VERTEX_ATTR_POSITION, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4));
+		cmd->setData(m_vVertices);
+		cmd->ready(GPUOperateType::GOT_Update);
+		GPUOperateSystem::getInstance()->addCommand(cmd);
+	}
     
     VertexAttribDeclaration* Mesh::getVertexAttribDeclaration(GLuint location)
     {

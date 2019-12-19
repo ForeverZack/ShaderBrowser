@@ -14,7 +14,7 @@
 namespace customGL
 {
     // mesh的顶点属性数量
-#define MESH_VERTEX_ATTR_COUNT 8
+#define MESH_VERTEX_ATTR_COUNT 7
     
     class Mesh : public BaseGPUResource
 	{
@@ -101,7 +101,10 @@ namespace customGL
         VertexAttribDeclaration* getVertexAttribDeclaration(GLuint location);
 		// 添加材质颜色属性
 		void addColorProperty(const std::string& propertyName, const glm::vec4& value);
-        
+
+		// 设置属性
+		void setVertices(void* data);
+
         // 向RenderSystem注册vao
         void setupVAO();
 
@@ -113,9 +116,6 @@ namespace customGL
 		// 删除gpu资源
 		virtual void deleteGPUResource() ;
 
-		// 设置数据
-		//void analysisArrayData(std::vector<glm::vec4>& vec, void* data);
-        
 		REGISTER_PROPERTY_GET_SET(unsigned int, m_uMeshId, MeshId)
         REGISTER_PROPERTY_GET(MeshType, m_eMeshType, MeshType)
         REGISTER_PROPERTY_GET(unsigned int, m_uVAO, VAO)
@@ -202,6 +202,8 @@ namespace customGL
         bool m_bGenVAO;
         // vbo
         unsigned int m_uVBOs[MESH_VERTEX_ATTR_COUNT];
+		// 索引buffer
+		unsigned int m_uIndicesVBO;
 	};
 }
 

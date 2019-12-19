@@ -837,6 +837,7 @@ namespace customGL
 
 			// 顶点位置
             mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_POSITION, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), aiMesh->mVertices);
+			//mesh->setVertices(aiMesh->mVertices);
             // 顶点颜色
 			if (aiMesh->mColors[0] && aiMesh->mColors[1])
 			{
@@ -845,7 +846,7 @@ namespace customGL
             // 顶点uv坐标
             if (aiMesh->mTextureCoords[0])
             {
-                mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_TEX_COORD, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), aiMesh->mTextureCoords[0]);
+                mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_TEX_COORD, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), aiMesh->mTextureCoords[0]);
             }
             // 法线
             mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_NORMAL, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), aiMesh->mNormals);

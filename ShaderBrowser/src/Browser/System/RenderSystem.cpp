@@ -68,7 +68,6 @@ namespace browser
     
     RenderSystem::~RenderSystem()
     {
-        glDeleteBuffers(RenderSystem_Buffer_Maxcount, m_uVBOs);
     }
 
 	void RenderSystem::init()
@@ -76,9 +75,7 @@ namespace browser
 		clearRenders();
 
         m_vRenderCommands.clear();
-        
-		// 生成VBO
-		glGenBuffers(RenderSystem_Buffer_Maxcount, m_uVBOs);
+       
 
         // 生成坐标轴模型
         m_oAxisMesh = Mesh::create(6);
@@ -182,38 +179,15 @@ namespace browser
             const VertexAttribDeclaration* declaration = itor->second;
             switch(declaration->index)
             {
-                case GLProgram::VERTEX_ATTR_POSITION:
+				case GLProgram::VERTEX_ATTR_POSITION:	// 1.顶点位置
+				case GLProgram::VERTEX_ATTR_COLOR:	// 2.顶点颜色
+				case GLProgram::VERTEX_ATTR_TEX_COORD:	// 3.主纹理坐标
+				case GLProgram::VERTEX_ATTR_NORMAL:		// 4.法线
+				case GLProgram::VERTEX_ATTR_TANGENT:	// 5.切线
+				case GLProgram::VERTEX_ATTR_BONE_WEIGHTS:	// 7.骨骼权重
                     {
                         // 1.顶点位置
-                        glBindBuffer(GL_ARRAY_BUFFER, vbos[RenderSystem_ArrayBuffer_Position]);
-                        glVertexAttribPointer(declaration->index, declaration->size, declaration->type, declaration->normalized, declaration->stride, (void*)0);
-                    }
-                    break;
-                case GLProgram::VERTEX_ATTR_COLOR:
-                    {
-                        // 2.顶点颜色
-                        glBindBuffer(GL_ARRAY_BUFFER, vbos[RenderSystem_ArrayBuffer_Color]);
-                        glVertexAttribPointer(declaration->index, declaration->size, declaration->type, declaration->normalized, declaration->stride, (void*)0);
-                    }
-                    break;
-                case GLProgram::VERTEX_ATTR_TEX_COORD:
-                    {
-                        // 3.主纹理坐标
-                        glBindBuffer(GL_ARRAY_BUFFER, vbos[RenderSystem_ArrayBuffer_UV1]);
-                        glVertexAttribPointer(declaration->index, declaration->size, declaration->type, declaration->normalized, declaration->stride, (void*)0);
-                    }
-                    break;
-                case GLProgram::VERTEX_ATTR_NORMAL:
-                    {
-                        // 4.法线
-                        glBindBuffer(GL_ARRAY_BUFFER, vbos[RenderSystem_ArrayBuffer_Normal]);
-                        glVertexAttribPointer(declaration->index, declaration->size, declaration->type, declaration->normalized, declaration->stride, (void*)0);
-                    }
-                    break;
-                case GLProgram::VERTEX_ATTR_TANGENT:
-                    {
-                        // 5.切线
-                        glBindBuffer(GL_ARRAY_BUFFER, vbos[RenderSystem_ArrayBuffer_Tangent]);
+                        glBindBuffer(GL_ARRAY_BUFFER, vbos[declaration->index]);
                         glVertexAttribPointer(declaration->index, declaration->size, declaration->type, declaration->normalized, declaration->stride, (void*)0);
                     }
                     break;
@@ -221,17 +195,11 @@ namespace browser
 					{
 						// 6.骨骼id
 						// 注意！！！这里要用glVertexAttribIPointer来传递int值，不然都是float类型的，索引数组会找不到
-                        glBindBuffer(GL_ARRAY_BUFFER, vbos[RenderSystem_ArrayBuffer_BoneIndices]);
+                        glBindBuffer(GL_ARRAY_BUFFER, vbos[declaration->index]);
 						glVertexAttribIPointer(declaration->index, declaration->size, declaration->type, declaration->stride, (void*)0);
 					}
 					break;
-				case GLProgram::VERTEX_ATTR_BONE_WEIGHTS:
-					{
-						// 7.骨骼权重
-                        glBindBuffer(GL_ARRAY_BUFFER, vbos[RenderSystem_ArrayBuffer_BoneWeights]);
-						glVertexAttribPointer(declaration->index, declaration->size, declaration->type, declaration->normalized, declaration->stride, (void*)0);
-					}
-					break;
+
             }
             
             glEnableVertexAttribArray(declaration->index);
@@ -356,9 +324,9 @@ namespace browser
                     glBindVertexArray(vao);
                     
                     // 2.传递顶点数据
-                    glBindBuffer(GL_ARRAY_BUFFER, vbos[RenderSystem_ArrayBuffer_Position]);
+                    glBindBuffer(GL_ARRAY_BUFFER, vbos[GLProgram::VERTEX_ATTR::VERTEX_ATTR_POSITION]);
                     glBufferData(GL_ARRAY_BUFFER, vertCount * sizeof(glm::vec4), &trans_vertices[0], GL_STATIC_DRAW);
-                    glBindBuffer(GL_ARRAY_BUFFER, vbos[RenderSystem_ArrayBuffer_Color]);
+                    glBindBuffer(GL_ARRAY_BUFFER, vbos[GLProgram::VERTEX_ATTR::VERTEX_ATTR_COLOR]);
                     glBufferData(GL_ARRAY_BUFFER, vertCount * sizeof(glm::vec4), &trans_colors[0], GL_STATIC_DRAW);
                     
                     
@@ -415,9 +383,9 @@ namespace browser
                     glBindVertexArray(vao);
                     
                     // 2.传递顶点数据
-                    glBindBuffer(GL_ARRAY_BUFFER, vbos[RenderSystem_ArrayBuffer_Position]);
+                    glBindBuffer(GL_ARRAY_BUFFER, vbos[GLProgram::VERTEX_ATTR::VERTEX_ATTR_POSITION]);
                     glBufferData(GL_ARRAY_BUFFER, vertCount * sizeof(glm::vec4), &trans_vertices[0], GL_STATIC_DRAW);
-                    glBindBuffer(GL_ARRAY_BUFFER, vbos[RenderSystem_ArrayBuffer_Color]);
+                    glBindBuffer(GL_ARRAY_BUFFER, vbos[GLProgram::VERTEX_ATTR::VERTEX_ATTR_COLOR]);
                     glBufferData(GL_ARRAY_BUFFER, vertCount * sizeof(glm::vec4), &trans_colors[0], GL_STATIC_DRAW);
                     
                     glBindBuffer(GL_ARRAY_BUFFER, 0);
