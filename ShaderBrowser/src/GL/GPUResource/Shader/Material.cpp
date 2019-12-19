@@ -71,6 +71,18 @@ namespace customGL
         // 使用glProgram		TODO: usePass会改变UniformValue的dirty状态，如果是多个pass会出问题的！！
         m_vPass[index]->usePass(transformDirty, modelMatrix, cameraDirty, viewMatrix, projectionMatrix, uniforms);
 	}
+
+	bool  Material::isGPUResourceLoaded()
+	{
+		for (int i = 0; i < m_vPass.size(); ++i)
+		{
+			if (!m_vPass[i]->isGPUResourceLoaded())
+			{
+				return false;
+			}
+		}
+		return true;
+	}
     
     void Material::setUniformInt(const std::string& uniformName, int value)
     {

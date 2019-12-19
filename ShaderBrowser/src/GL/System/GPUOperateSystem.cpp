@@ -16,9 +16,9 @@ namespace customGL
     void GPUOperateSystem::addCommand(BaseGPUOperateCommand* cmd)
     {
         // TODO: 为了让程序跑起来，现在立刻执行，不知道后面延迟执行会不会报错。。。
-        cmd->execute();
-        cmd->finish();
-        return;
+        //cmd->execute();
+        //cmd->finish();
+        //return;
         
         m_qWaitCommands.push(cmd);
     }

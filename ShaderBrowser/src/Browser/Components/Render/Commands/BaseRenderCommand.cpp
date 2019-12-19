@@ -39,12 +39,12 @@ namespace browser
 		m_uVertexCount = mesh->getVertexCount();
 		m_uIndexCount = mesh->getIndexCount();
 
-		m_bTransformDirty = transform->getCurFrameDirty();
+		m_bTransformDirty = true;// transform->getCurFrameDirty();
 		if (m_bTransformDirty)
 		{
 			m_oModelMatrix = transform->getModelMatrix();
 		}
-		m_bCameraDirty = camera!=material->getCurCamera() || camera->getTransDirty();
+		m_bCameraDirty = camera != material->getCurCamera() || camera->getTransDirty();
 		if (m_bCameraDirty)
 		{
 			material->setCurCamera(camera);

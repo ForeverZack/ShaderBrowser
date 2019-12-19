@@ -26,33 +26,6 @@ namespace browser
 	class RenderSystem : public common::BaseSystem, public BaseSingleton<RenderSystem>
 	{
 	public:
-        
-		// vbo缓存类型
-		enum VertexBufferType
-        {
-            // 0. 顶点位置缓冲
-            RenderSystem_ArrayBuffer_Position = 0,
-            // 1. 索引缓冲
-            RenderSystem_Indices_Buffer,
-            // 2. 顶点颜色缓冲
-            RenderSystem_ArrayBuffer_Color,
-            // 3. 主纹理uv缓冲
-            RenderSystem_ArrayBuffer_UV1,
-            // 4. 法线
-            RenderSystem_ArrayBuffer_Normal,
-            // 5. 切线
-            RenderSystem_ArrayBuffer_Tangent,
-            // 6. 骨骼id索引
-            RenderSystem_ArrayBuffer_BoneIndices,
-            // 7. 骨骼权重
-            RenderSystem_ArrayBuffer_BoneWeights,
-            
-            
-            // 最大值
-            RenderSystem_Buffer_Maxcount,
-		};
-
-	public:
 		RenderSystem();
 		~RenderSystem();
 

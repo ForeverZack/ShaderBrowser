@@ -89,6 +89,9 @@ namespace customGL
 		glGenBuffers(MESH_VERTEX_ATTR_COUNT, m_pMesh->m_uVBOs);
 		// 生成索引buffer
 		glGenBuffers(1, &m_pMesh->m_uIndicesVBO);
+
+		// 资源加载完成
+		m_pMesh->m_eResouceState = GRS_Loaded;
     }
     
     void GPUOperateMeshCommand::updateMesh()

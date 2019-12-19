@@ -57,7 +57,7 @@ namespace customGL
 		// 删除gpu资源 (因为要在release()调用的时候，判断是否释放GPU资源，所以这个函数是纯虚函数，子类一定要实现！！！)
 		virtual void deleteGPUResource() = 0;
 
-
+		REGISTER_PROPERTY_REF_GET(MutexVariable<GPUResourceState>, m_eResouceState, ResouceState)
 		REGISTER_PROPERTY_GET_SET(bool, m_bGPUDeleted, GPUDeleted)
 
 	protected:

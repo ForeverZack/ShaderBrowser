@@ -85,6 +85,9 @@ namespace customGL
 		glTexBuffer(GL_TEXTURE_BUFFER, m_eInternalFormat, m_pTexture->m_uVBO);
 		glBindTexture(GL_TEXTURE_BUFFER, 0);
 		glBindBuffer(GL_TEXTURE_BUFFER, 0);
+
+		// 资源加载完成
+		m_pTexture->m_eResouceState = GRS_Loaded;
     }
     
     void GPUOperateTextureBufferCommand::updateTextureBuffer()

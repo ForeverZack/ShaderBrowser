@@ -101,10 +101,17 @@ namespace customGL
     
     GLProgram* GLProgram::clone()
     {
-        BROWSER_ASSERT(m_sVertexSource!="" || m_sFragSource!="" || m_sCompSource!="", "No shader source code in GLProgram obeject, you cannot use GLProgram::clone function.");
+        BROWSER_ASSERT(m_sVertexSource!="" || m_sFragSource!="" || m_sCompSource!="" || m_sFragFilePath!="" || m_sVertFilePath!="", "No shader source code in GLProgram obeject, you cannot use GLProgram::clone function.");
         
         GLProgram* program = new GLProgram();
-		program->cloneProgram(this);
+		if (this->getResouceState() != GRS_Loaded)
+		{
+			program->initProgram(m_sVertFilePath.c_str(), m_sFragFilePath.c_str());
+		}
+		else
+		{
+			program->cloneProgram(this);
+		}
         return program;
     }
 
@@ -140,6 +147,8 @@ namespace customGL
         
         // 创建GPU资源
         m_eResouceState = GRS_DataLoaded;
+		m_sVertFilePath = vertSrc;
+		m_sFragFilePath = fragSrc;
         createGPUResource(vertSrc, fragSrc);
 	}
     
@@ -344,17 +353,18 @@ namespace customGL
 		}
 	}
     
+	static const std::string LOCATION_ERROR_STR = "Cannot find uniform location in function GLProgram::getUniformLocation named: ";
     GLint GLProgram::getUniformLocation(const std::string& uniformName)
     {
         std::string str_uniformName(uniformName);
-        if (m_mUniformLocations.find(str_uniformName) == m_mUniformLocations.end())
+        if (m_mUniformLocations.find(str_uniformName)==m_mUniformLocations.end() || m_mUniformLocations[uniformName]==-1)
         {
             GLint location = glGetUniformLocation(m_uProgram, str_uniformName.c_str());
             
-            m_mUniformLocations.emplace(str_uniformName, location);
+            m_mUniformLocations[str_uniformName] = location;
             
             // shader中声明但未使用的变量，opengl会自动优化移除它，所以这些uniform的location也为-1，使用glUniformXXX设置位置为-1的变量并不会报错
-            common::BROWSER_WARNING(location>=0, "Cannot find uniform location in function GLProgram::getUniformLocation");
+            //common::BROWSER_WARNING(location>=0, (LOCATION_ERROR_STR + uniformName).c_str());
         }
         
         GLint location = m_mUniformLocations[str_uniformName];
@@ -523,13 +533,15 @@ namespace customGL
 		{
 			textureUnit = m_uTextureUnitIndex++;
 			m_mTextureUnits[uniformName] = textureUnit;
-
-			// 注意！！！！ 还要通过使用glUniform1i设置每个采样器的方式告诉OpenGL每个着色器采样器属于哪个纹理单元。我们只需要设置一次即可
-			setUniformWithInt(uniformName, textureUnit);
 		}
         
         common::BROWSER_ASSERT(textureUnit<MAX_ACTIVE_TEXTURE, "texture unit value is too big, it is out off support range in function GLProgram::setUniformWithTex2d");
-        
+		
+		//if (m_mUniformLocations[uniformName] == -1)
+		{
+			// 注意！！！！ 还要通过使用glUniform1i设置每个采样器的方式告诉OpenGL每个着色器采样器属于哪个纹理单元。我们只需要设置一次即可
+			setUniformWithInt(uniformName, textureUnit);
+		}
         // 绑定纹理到opengl
         GLStateCache::getInstance()->bindTexture2DN(textureUnit, texture->getTextureId());
     }
@@ -552,7 +564,11 @@ namespace customGL
         }
         
         common::BROWSER_ASSERT(textureUnit<MAX_ACTIVE_TEXTURE, "texture unit value is too big, it is out off support range in function GLProgram::setUniformSamplerBuffer");
-        
+		if (m_mUniformLocations[uniformName] == -1)
+		{
+			// 注意！！！！ 还要通过使用glUniform1i设置每个采样器的方式告诉OpenGL每个着色器采样器属于哪个纹理单元。我们只需要设置一次即可
+			setUniformWithInt(uniformName, textureUnit);
+		}
         // 绑定纹理到opengl
         GLStateCache::getInstance()->bindSamplerBuffer(textureUnit, textureBuffer->getTextureId());
     }

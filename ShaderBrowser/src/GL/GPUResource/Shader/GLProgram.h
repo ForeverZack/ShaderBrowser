@@ -202,6 +202,11 @@ namespace customGL
 		string m_sFragSource;
         // 计算着色器源码
 		string m_sCompSource;
+
+		// 顶点着色器路径
+		string m_sVertFilePath;
+		// 片段着色器路径
+		string m_sFragFilePath;
         
 	};
 }

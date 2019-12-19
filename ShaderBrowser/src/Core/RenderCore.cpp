@@ -133,7 +133,7 @@ namespace core
     void RenderCore::renderLoop(float deltaTime)
     {
         // 处理gpu操作指令
-        //GPUOperateSystem::getInstance()->update();
+        GPUOperateSystem::getInstance()->update();
 
 		// 重置GL状态（这里主要是为了防止插件如imgui绑定纹理，造成缓存失效）
 		GLStateCache::getInstance()->update(deltaTime);

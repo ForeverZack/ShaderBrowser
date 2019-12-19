@@ -32,6 +32,11 @@ namespace customGL
 		m_oGLProgram = program;
 	}
 
+	bool Pass::isGPUResourceLoaded()
+	{
+		return m_oGLProgram->getResouceState() == GRS_Loaded;
+	}
+
 	void Pass::usePass(bool transformDirty, const glm::mat4& modelMatrix, bool cameraDirty, const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix, std::unordered_map<std::string, UniformValue>& uniforms)
 	{
         // 注意在更新uniform变量的值之前，要先使用着色器glUseProgram
