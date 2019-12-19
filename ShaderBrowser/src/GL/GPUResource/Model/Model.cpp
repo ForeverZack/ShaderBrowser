@@ -296,7 +296,7 @@ namespace customGL
     
     
     // ==================================== Model class ================= start ===================
-    Model* Model::create(const char* fileName, shared_ptr<std::vector<std::string>> animFileNames)
+    Model* Model::createAsync(const char* fileName, shared_ptr<std::vector<std::string>> animFileNames)
     {
         Model* model = new Model();
         if (!model->initWithFile(fileName, *animFileNames, DEFAULT_ASSIMP_FLAG))
@@ -318,6 +318,7 @@ namespace customGL
             delete model;
             return nullptr;
         }
+		model->initWithScenes();
         model->autorelease();
         
         return model;
@@ -337,6 +338,7 @@ namespace customGL
 	{
         // 清理
 		m_vImporters.clear();
+		m_vAiScenes.clear();
         m_vMeshes.clear();
         m_vAiMeshes.clear();
         m_vTextures.clear();
@@ -406,68 +408,7 @@ namespace customGL
 			}
             // 记录importer，否则场景数据会被析构
 			m_vImporters.push_back(importer);
-			// 初始化骨骼数据
-			{
-				m_uBoneNum = 0;
-                m_oSkeleton = new Skeleton();
-                m_oSkeleton->retain();
-			}
-			// 加载模型网格数据
-			{
-                m_oScene = scene;
-				m_oRootNode = scene->mRootNode;
-				m_vMeshes.resize(scene->mNumMeshes);
-                m_vAiMeshes.resize(scene->mNumMeshes);
-				traverseNode(scene->mRootNode, scene);
-                
-                m_uBoneNum = m_oSkeleton->getBoneNum();
-			}
-            // 将骨骼树节点下的mesh绑定到骨骼 (在这里检测是否已经有网格模型绑定在骨骼上了。如果有，并且该网格模型没有绑定任何的骨骼，则执行网格的骨骼绑定)
-            {
-                aiMesh* aiMesh = nullptr;
-                aiNode* meshNode = nullptr;
-                aiNode* parentNode = nullptr;
-                int index = 0;
-                std::unordered_map<std::string, unsigned int>::const_iterator boneItor;
-				unsigned int boneIdx;
-                for(auto itor=m_vAiMeshes.cbegin(); itor!=m_vAiMeshes.cend(); ++itor)
-                {
-                    aiMesh = std::get<0>(*itor);
-                    meshNode = std::get<1>(*itor);
-                    parentNode = meshNode->mParent;
-                    aiMatrix4x4 globalTransformation;
-                    
-                    while(parentNode)
-                    {
-                        if(m_oSkeleton->isBone(parentNode->mName.C_Str(), boneIdx))
-                        {
-                            Mesh* mesh = m_vMeshes[index];
-							std::vector<glm::vec4>& boneWeights = mesh->getBoneWeightsRef();
-                            if (mesh->getVertexCount()>0 && mesh->getMeshType()==Mesh::MeshType::CommonMesh && (boneWeights.size()==0 || boneWeights[0][0]==0.0f))
-                            {
-                                if(boneWeights.size() == 0)
-                                {
-                                    mesh->initBonesData();
-                                }
-                                
-                                // now：之前是将模型作为一个整体来计算变换的(boneMatrix)，其实并没有使用到Transform来计算骨骼矩阵，Transform对象的属性也不一定正确。现在改用Transform来计算，所以要绑定的网格只要将骨骼节点作为父节点即可
-//                                calculateTransformMatrix(meshNode, parentNode, globalTransformation);
-                                
-                                // 绑定模型到骨骼
-                                bindMeshOnSingleBone(mesh, boneIdx, Assimp::ConvertToGLM(globalTransformation));
-                            }
-                            
-                            break;
-                        }
-                        parentNode = parentNode->mParent;
-                    }
-                    
-                    ++index;
-                }
-            }
-            
-            // 加载模型动画数据
-            loadAnimations(scene);
+			m_vAiScenes.push_back(scene);
 		}
 		
 		// 加载其余的动画文件（动画文件列表）
@@ -491,30 +432,112 @@ namespace customGL
 				}
                 // 记录importer，否则场景数据会被析构
                 m_vImporters.push_back(importer);
-                // 加载模型动画数据
-                loadAnimations(scene);
+				m_vAiScenes.push_back(scene);
 			}
 		}
         
-        // 搜寻骨骼根节点
-        findModelRootBondNode(m_oRootNode);
-        m_oSkeleton->setRootBoneNode(m_oRootBoneNode);
-
-        // 加载创建纹理
-        if (m_oSuccessCallback)
-        {
-            loadTextures(m_sDirectory);
-        }
-        
-        // 记录骨骼初始变换
-        recordBonesInitialTransform();
-        // 创建gpu动画数据
-        if (m_vAnimations.size() > 0)
-        {
-            m_oGpuAnimData = make_shared<ModelGpuAnimationData>(m_uBoneNum);
-        }
-        
 		return true;
+	}
+
+	void Model::initWithScenes()
+	{
+		// 加载模型（主模型文件）
+		{
+			const aiScene* scene = m_vAiScenes[0];
+			// 初始化骨骼数据
+			{
+				m_uBoneNum = 0;
+				m_oSkeleton = new Skeleton();
+				m_oSkeleton->retain();
+			}
+			// 加载模型网格数据
+			{
+				m_oScene = scene;
+				m_oRootNode = scene->mRootNode;
+				m_vMeshes.resize(scene->mNumMeshes);
+				m_vAiMeshes.resize(scene->mNumMeshes);
+				traverseNode(scene->mRootNode, scene);
+
+				m_uBoneNum = m_oSkeleton->getBoneNum();
+			}
+			// 将骨骼树节点下的mesh绑定到骨骼 (在这里检测是否已经有网格模型绑定在骨骼上了。如果有，并且该网格模型没有绑定任何的骨骼，则执行网格的骨骼绑定)
+			{
+				aiMesh* aiMesh = nullptr;
+				aiNode* meshNode = nullptr;
+				aiNode* parentNode = nullptr;
+				int index = 0;
+				std::unordered_map<std::string, unsigned int>::const_iterator boneItor;
+				unsigned int boneIdx;
+				for (auto itor = m_vAiMeshes.cbegin(); itor != m_vAiMeshes.cend(); ++itor)
+				{
+					aiMesh = std::get<0>(*itor);
+					meshNode = std::get<1>(*itor);
+					parentNode = meshNode->mParent;
+					aiMatrix4x4 globalTransformation;
+
+					while (parentNode)
+					{
+						if (m_oSkeleton->isBone(parentNode->mName.C_Str(), boneIdx))
+						{
+							Mesh* mesh = m_vMeshes[index];
+							std::vector<glm::vec4>& boneWeights = mesh->getBoneWeightsRef();
+							if (mesh->getVertexCount() > 0 && mesh->getMeshType() == Mesh::MeshType::CommonMesh && (boneWeights.size() == 0 || boneWeights[0][0] == 0.0f))
+							{
+								if (boneWeights.size() == 0)
+								{
+									mesh->initBonesData();
+								}
+
+								// now：之前是将模型作为一个整体来计算变换的(boneMatrix)，其实并没有使用到Transform来计算骨骼矩阵，Transform对象的属性也不一定正确。现在改用Transform来计算，所以要绑定的网格只要将骨骼节点作为父节点即可
+//                                calculateTransformMatrix(meshNode, parentNode, globalTransformation);
+
+								// 绑定模型到骨骼
+								bindMeshOnSingleBone(mesh, boneIdx, Assimp::ConvertToGLM(globalTransformation));
+							}
+
+							break;
+						}
+						parentNode = parentNode->mParent;
+					}
+
+					++index;
+				}
+			}
+
+			// 加载模型动画数据
+			loadAnimations(scene);
+		}
+
+		// 加载其余的动画文件（动画文件列表）
+		{
+			for (int i=1; i<m_vAiScenes.size(); ++i)
+			{
+				const aiScene* scene = m_vAiScenes[i];
+				// 加载模型动画数据
+				loadAnimations(scene);
+			}
+		}
+
+		// 搜寻骨骼根节点
+		findModelRootBondNode(m_oRootNode);
+		m_oSkeleton->setRootBoneNode(m_oRootBoneNode);
+
+		// 加载创建纹理
+		if (m_oSuccessCallback)
+		{
+			loadTextures(m_sDirectory);
+		}
+
+		// 记录骨骼初始变换
+		recordBonesInitialTransform();
+		// 创建gpu动画数据
+		if (m_vAnimations.size() > 0)
+		{
+			m_oGpuAnimData = make_shared<ModelGpuAnimationData>(m_uBoneNum);
+		}
+
+		// 在gpu上设置生成模型相关的数据
+		setupGpuData();
 	}
 
 	BaseEntity* Model::createNewEntity(const std::string& name)

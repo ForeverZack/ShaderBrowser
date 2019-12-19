@@ -6,7 +6,7 @@ namespace common
 {    
 
 	ModelCache::ModelCache()
-    : BaseAsyncLoader<Model, std::function<void(Model*)>, std::vector<std::string>>(Model::create, MAX_MODELCACHE_THREAD_COUNT)
+    : BaseAsyncLoader<Model, std::function<void(Model*)>, std::vector<std::string>>(Model::createAsync, MAX_MODELCACHE_THREAD_COUNT)
     {
     }
     
@@ -90,7 +90,7 @@ namespace common
                 model->retain();
                 
                 // 在gpu上设置生成模型相关的数据
-                model->setupGpuData();
+                model->initWithScenes();
                 
                 // 添加纹理加载回调,表示整个模型+纹理都加载完毕
                 model->setSuccessCallback([=](Model* responseModel)
