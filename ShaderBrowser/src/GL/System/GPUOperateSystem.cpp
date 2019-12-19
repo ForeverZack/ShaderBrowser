@@ -29,7 +29,8 @@ namespace customGL
         m_vCommands.clear();
         m_qWaitCommands.operateQueue([&](std::queue<BaseGPUOperateCommand*>& queue)
         {
-            for (int i=0; i<queue.size(); ++i)
+            int length = queue.size();
+            for (int i=0; i<length; ++i)
             {
                 m_vCommands.push_back(queue.front());
                 queue.pop();

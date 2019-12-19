@@ -396,6 +396,7 @@ namespace customGL {
     
     void UniformValue::updateGLProgramUniformValue(GLProgram* glProgram, std::string uniformName, bool forceUpdate/* = false*/)
     {
+        // TODO: RenderCommand里的UniformValue哈希表还没有对dirty进行重置！！！
         if(!m_bDirty && !isTexture())
         {
             return;

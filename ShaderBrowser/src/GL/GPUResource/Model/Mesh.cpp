@@ -33,6 +33,7 @@ namespace customGL
     
 	Mesh::Mesh(const std::string& meshName /*= DEFAULT_MESH_NAME*/, MeshType type /*= MeshType::CommonMesh*/, bool isRetain/* = false*/)
         : m_uVAO(0)
+        , m_uMeshId(0)
 		, m_uIndicesVBO(0)
         , m_eMeshType(type)
         , m_bGenVAO(false)

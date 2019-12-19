@@ -32,7 +32,8 @@ namespace common
         // 将渲染线程的待释放对象加入逻辑线程队列
         m_qRenderReferences.operateQueue([&](std::queue<Reference*>& queue)
         {
-            for (int i=0; i<queue.size(); ++i)
+            int length = queue.size();
+            for (int i=0; i<length; ++i)
             {
                 m_vReleaseReferences.push_back(queue.front());
                 queue.pop();

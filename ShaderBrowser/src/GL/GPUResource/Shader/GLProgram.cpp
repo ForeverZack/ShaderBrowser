@@ -537,11 +537,6 @@ namespace customGL
         
         common::BROWSER_ASSERT(textureUnit<MAX_ACTIVE_TEXTURE, "texture unit value is too big, it is out off support range in function GLProgram::setUniformWithTex2d");
 		
-		//if (m_mUniformLocations[uniformName] == -1)
-		{
-			// 注意！！！！ 还要通过使用glUniform1i设置每个采样器的方式告诉OpenGL每个着色器采样器属于哪个纹理单元。我们只需要设置一次即可
-			setUniformWithInt(uniformName, textureUnit);
-		}
         // 绑定纹理到opengl
         GLStateCache::getInstance()->bindTexture2DN(textureUnit, texture->getTextureId());
     }
@@ -564,11 +559,7 @@ namespace customGL
         }
         
         common::BROWSER_ASSERT(textureUnit<MAX_ACTIVE_TEXTURE, "texture unit value is too big, it is out off support range in function GLProgram::setUniformSamplerBuffer");
-		if (m_mUniformLocations[uniformName] == -1)
-		{
-			// 注意！！！！ 还要通过使用glUniform1i设置每个采样器的方式告诉OpenGL每个着色器采样器属于哪个纹理单元。我们只需要设置一次即可
-			setUniformWithInt(uniformName, textureUnit);
-		}
+
         // 绑定纹理到opengl
         GLStateCache::getInstance()->bindSamplerBuffer(textureUnit, textureBuffer->getTextureId());
     }

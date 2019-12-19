@@ -7,32 +7,64 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "331BFA3C-8F0F-4A8E-B756-0E9A36F4C2A0"
+            uuid = "E8693419-7AAE-44C5-B7A2-240087593BF7"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "ShaderBrowser/src/GL/GPUResource/Texture/TextureBuffer.cpp"
+            filePath = "ShaderBrowser/src/main.cpp"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "41"
-            endingLineNumber = "41"
-            landmarkName = "TextureBuffer::setData(data)"
+            startingLineNumber = "219"
+            endingLineNumber = "219"
+            landmarkName = "testVal()"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "3CDF0517-14A6-4965-A98B-F0D1284B34D5"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ShaderBrowser/src/GL/GPUResource/Shader/Material.cpp"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "245"
+            endingLineNumber = "245"
+            landmarkName = "Material::setUniformTex2D(uniformName, texture)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "99134B2D-7776-4894-ADC6-2C471D32D77E"
+            uuid = "CD4A131D-BD97-426A-9C80-0CCC070E412C"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ShaderBrowser/src/Browser/Components/Render/Commands/SkinnedRenderCommand.cpp"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "67"
+            endingLineNumber = "67"
+            landmarkName = "SkinnedRenderCommand::draw()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "6AB705DD-0E3F-4FE2-B993-FD30B714AF7D"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "ShaderBrowser/src/GL/GPUOperateCommand/GPUOperateTextureBufferCommand.cpp"
+            filePath = "ShaderBrowser/src/GL/GPUResource/Shader/GLProgram.cpp"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "92"
-            endingLineNumber = "92"
-            landmarkName = "GPUOperateTextureBufferCommand::updateTextureBuffer()"
+            startingLineNumber = "527"
+            endingLineNumber = "527"
+            landmarkName = "GLProgram::setUniformWithTex2D(uniformName, texture)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

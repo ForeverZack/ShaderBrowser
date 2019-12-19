@@ -39,7 +39,7 @@ namespace browser
 		m_uVertexCount = mesh->getVertexCount();
 		m_uIndexCount = mesh->getIndexCount();
 
-		m_bTransformDirty = true;// transform->getCurFrameDirty();
+		m_bTransformDirty = transform->getCurFrameDirty();
 		if (m_bTransformDirty)
 		{
 			m_oModelMatrix = transform->getModelMatrix();
