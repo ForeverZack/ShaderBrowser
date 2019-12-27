@@ -1306,7 +1306,8 @@ namespace customGL
                      if (texture)
                      {
                          // 将texture的环绕方式设为repeat
-                         //texture->setTexWrapParams(GL_REPEAT, GL_REPEAT);
+						 // 注意：模型的纹理，环绕方式默认务必设置成repeat。uv可能会不在0~1之间，如纳米装
+                         texture->setTexWrapParams(GL_REPEAT, GL_REPEAT);
                          // 记录texture
                          m_vTextures.push_back(texture);
                      

@@ -66,8 +66,6 @@ namespace customGL
 	{
         common::BROWSER_ASSERT(m_vPass.size()>index && m_vPass[index], "cannot found pass in function Material::useMaterial");
         
-		// TODO: 注意前面有一步骨骼矩阵纹理！！！
-
         // 使用glProgram		TODO: usePass会改变UniformValue的dirty状态，如果是多个pass会出问题的！！
         m_vPass[index]->usePass(transformDirty, modelMatrix, cameraDirty, viewMatrix, projectionMatrix, uniforms);
 	}
