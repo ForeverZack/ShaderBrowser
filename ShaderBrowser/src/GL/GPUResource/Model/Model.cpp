@@ -876,29 +876,30 @@ namespace customGL
             // 切线
             mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_TANGENT, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), aiMesh->mTangents);
             // 索引信息
-            mesh->setIndicesInfo([=](std::vector<GLushort>& indices, unsigned int& indexCount) -> void
-                 {
-                     indexCount = 0;
-                     for(int i=0; i<aiMesh->mNumFaces; ++i)
-                     {
-                         const aiFace& face = aiMesh->mFaces[i];
-                         indexCount += face.mNumIndices;
-                     }
-                     
-                     indices.resize(indexCount);
-                     
-                     int now_index = 0;
-                     for(int i=0; i<aiMesh->mNumFaces; ++i)
-                     {
-                         const aiFace& face = aiMesh->mFaces[i];
-                         for(int j=0; j<face.mNumIndices; ++j)
-                         {
-                             indices[now_index] = face.mIndices[j];
-                             ++now_index;
-                         }
-                         
-                     }
-                 });
+            {
+                int indexCount = 0;
+                for(int i=0; i<aiMesh->mNumFaces; ++i)
+                {
+                    const aiFace& face = aiMesh->mFaces[i];
+                    indexCount += face.mNumIndices;
+                }
+                
+                std::vector<GLushort> indices;
+                indices.resize(indexCount);
+                
+                int now_index = 0;
+                for(int i=0; i<aiMesh->mNumFaces; ++i)
+                {
+                    const aiFace& face = aiMesh->mFaces[i];
+                    for(int j=0; j<face.mNumIndices; ++j)
+                    {
+                        indices[now_index] = face.mIndices[j];
+                        ++now_index;
+                    }
+                }
+            
+                mesh->setIndices(&indices[0], indexCount);
+            }
 
 			// 骨骼信息
 			std::vector<glm::uvec4>& mesh_boneIndices = mesh->getBoneIndicesRef();

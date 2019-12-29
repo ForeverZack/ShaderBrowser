@@ -91,9 +91,6 @@ namespace customGL
         void initBonesData();
         // 添加顶点属性(注意：如果重复添加相同的属性，会替换之前已有的)
         void addVertexAttribute(GLuint location, GLint size, GLenum type, GLboolean normalized, GLsizei stride, void* data);
-        // 设置顶点索引信息
-        void setIndicesInfo(GLushort* data, unsigned int length);
-		void setIndicesInfo(std::function<void(std::vector<GLushort>&, unsigned int&)> setFunc);
         // 添加纹理属性
         void addTexture(const std::string& uniformName, Texture2D* texture);
         void setTexture(const std::string& uniformName, Texture2D* texture);
@@ -102,8 +99,13 @@ namespace customGL
 		// 添加材质颜色属性
 		void addColorProperty(const std::string& propertyName, const glm::vec4& value);
 
-		// 设置属性
+		// 设置属性：
+        // 顶点
 		void setVertices(void* data);
+        // 索引
+        void setIndices(GLushort* data, unsigned int length);
+        // 主纹理uv1
+        void setUV(void* data);
 
         // 向RenderSystem注册vao
         void setupVAO();

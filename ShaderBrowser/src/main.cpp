@@ -156,7 +156,7 @@ void testVal()
     mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_POSITION, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), vertices);
     mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_COLOR, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), colors);
     mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_TEX_COORD, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), coords);
-    mesh->setIndicesInfo(indices, 6);
+    mesh->setIndices(indices, 6);
     //mesh->addTexture("CGL_TEXTURE0", texture1);
     //mesh->addTexture("CGL_TEXTURE1", texture2);
     mesh->setupVAO();

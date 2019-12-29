@@ -194,22 +194,6 @@ namespace customGL
         addTexture(uniformName, texture);
     }
     
-    void Mesh::setIndicesInfo(GLushort* data, unsigned int length)
-    {
-        m_uIndexCount = length;
-        
-        m_vIndices.resize(length);
-        for(int i=0; i<length; ++i)
-        {
-            m_vIndices[i] = data[i];
-        }
-    }
-    
-    void Mesh::setIndicesInfo(std::function<void(std::vector<GLushort>&, unsigned int&)> setFunc)
-    {
-        setFunc(m_vIndices, m_uIndexCount);
-    }
-    
     void Mesh::addVertexAttribute(GLuint location, GLint size, GLenum type, GLboolean normalized, GLsizei stride, void* data)
     {
         BROWSER_ASSERT(m_uVertexCount>0, "MeshFilter cannot add vertex attribute before init, break in function MeshFilter::addVertexAttribute.");
@@ -243,6 +227,29 @@ namespace customGL
 		cmd->ready(GPUOperateType::GOT_Update);
 		GPUOperateSystem::getInstance()->addCommand(cmd);
 	}
+    
+    void Mesh::setIndices(GLushort* data, unsigned int length)
+    {
+        m_uIndexCount = length;
+        
+        m_vIndices.resize(length);
+        for(int i=0; i<length; ++i)
+        {
+            m_vIndices[i] = data[i];
+        }
+        
+//        auto cmd = GPUOperateCommandPool::getInstance()->popCommand<GPUOperateMeshCommand>(GPUOperateCommandType::GOCT_Mesh);
+//        cmd->setMesh(this);
+//        cmd->setVertexAttribute(GLProgram::VERTEX_ATTR::VERTEX_ATTR_TEX_COORD, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2));
+//        cmd->setData(m_vVertices);
+//        cmd->ready(GPUOperateType::GOT_UpdateProperties_1);
+//        GPUOperateSystem::getInstance()->addCommand(cmd);
+    }
+    
+    void Mesh::setUV(void* data)
+    {
+        fillVertexsParam(GLProgram::VERTEX_ATTR_TEX_COORD, data);
+    }
     
     VertexAttribDeclaration* Mesh::getVertexAttribDeclaration(GLuint location)
     {
@@ -321,6 +328,10 @@ namespace customGL
 	{
 		BROWSER_ASSERT(m_eResouceState == GRS_DataLoaded, "Mesh state must be GRS_DataLoaded, then it can be created on gpu");
 
+//        auto cmd = GPUOperateCommandPool::getInstance()->popCommand<GPUOperateMeshCommand>(GPUOperateCommandType::GOCT_Mesh);
+//        cmd->setMesh(this);
+//        cmd->ready(GPUOperateType::GOT_Create);
+//        GPUOperateSystem::getInstance()->addCommand(cmd);
 	}
 
 	void Mesh::updateGPUResource()
