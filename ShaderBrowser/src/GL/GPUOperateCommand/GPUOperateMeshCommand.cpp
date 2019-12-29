@@ -70,8 +70,6 @@ namespace customGL
 		m_uSize = 0;
 		if (m_eCommandType == GPUOperateType::GOT_Update)
 		{
-			std::vector<U> vec;
-			m_uValue.swap(vec);
 		}
         
         // 回收命令
@@ -191,12 +189,8 @@ namespace customGL
 	{
 		BROWSER_ASSERT(data.size() > 0, "Data size must bigger than 0 in function GPUOperateMeshCommand::setData(const vector<glm::vec3>& data)");
 
-        m_uValue.resize(data.size());
-        for(int i=0; i<data.size(); ++i)
-        {
-            m_uValue[i].val_vec3 = data[i];
-        }
-        m_pData = &m_uValue[0];
+		val_vec3 = data;
+        m_pData = &val_vec3[0];
 		m_uSize = sizeof(glm::vec3)*data.size();
 	}
 
@@ -204,12 +198,8 @@ namespace customGL
 	{
 		BROWSER_ASSERT(data.size() > 0, "Data size must bigger than 0 in function GPUOperateMeshCommand::setData(const vector<glm::vec4>& data)");
 
-        m_uValue.resize(data.size());
-        for(int i=0; i<data.size(); ++i)
-        {
-            m_uValue[i].val_vec4 = data[i];
-        }
-		m_pData = &m_uValue[0];
+		val_vec4 = data;
+		m_pData = &val_vec4[0];
 		m_uSize = sizeof(glm::vec4)*data.size();
 	}
 
@@ -217,12 +207,8 @@ namespace customGL
 	{
 		BROWSER_ASSERT(data.size() > 0, "Data size must bigger than 0 in function GPUOperateMeshCommand::setData(const vector<glm::uvec4>& data)");
 
-        m_uValue.resize(data.size());
-        for(int i=0; i<data.size(); ++i)
-        {
-            m_uValue[i].val_uvec4 = data[i];
-        }
-        m_pData = &m_uValue[0];
+		val_uvec4 = data;
+        m_pData = &val_uvec4[0];
 		m_uSize = sizeof(glm::uvec4)*data.size();
 	}
 
@@ -230,12 +216,8 @@ namespace customGL
 	{
 		BROWSER_ASSERT(data.size() > 0, "Data size must bigger than 0 in function GPUOperateMeshCommand::setData(const vector<float>& data)");
 
-        m_uValue.resize(data.size());
-        for(int i=0; i<data.size(); ++i)
-        {
-            m_uValue[i].val_float = data[i];
-        }
-        m_pData = &m_uValue[0];
+		val_float = data;
+        m_pData = &val_float[0];
 		m_uSize = sizeof(float)*data.size();
 	}
 
@@ -243,12 +225,8 @@ namespace customGL
 	{
 		BROWSER_ASSERT(data.size() > 0, "Data size must bigger than 0 in function GPUOperateMeshCommand::setData(const vector<GLushort>& data)");
 
-        m_uValue.resize(data.size());
-        for(int i=0; i<data.size(); ++i)
-        {
-            m_uValue[i].val_ushort = data[i];
-        }
-        m_pData = &m_uValue[0];
+		val_ushort = data;
+        m_pData = &val_ushort[0];
 		m_uSize = sizeof(GLushort)*data.size();
 	}
 

@@ -66,6 +66,12 @@ namespace customGL
 			}
 		};
         std::vector<U> m_uValue;
+
+		std::vector<glm::vec3> val_vec3;
+		std::vector<glm::vec4> val_vec4;
+		std::vector<glm::uvec4> val_uvec4;
+		std::vector<float> val_float;
+		std::vector<GLushort> val_ushort;
         
 		void* m_pData;
 		GLsizeiptr m_uSize;
