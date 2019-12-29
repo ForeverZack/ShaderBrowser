@@ -71,14 +71,18 @@ namespace customGL
         {   \
             varName[i].x = values[i].x;    \
             varName[i].y  = values[i].y;    \
+            varName[i].z  = values[i].z;    \
         }
 
 		// 默认网格名称
 		static const char* DEFAULT_MESH_NAME;
         
     public:
+        // 逻辑线程调用，无需手动调用createMeshOnGPU
 		static Mesh* create(int length, const std::string& meshName = DEFAULT_MESH_NAME, MeshType type = MeshType::CommonMesh);
-		static Mesh* createRetain(int length, const std::string& meshName = DEFAULT_MESH_NAME, MeshType type = MeshType::CommonMesh);
+        
+        // 非逻辑线程创建mesh的时候用的，需要手动调用createMeshOnGPU
+		static Mesh* createAsync(int length, const std::string& meshName = DEFAULT_MESH_NAME, MeshType type = MeshType::CommonMesh);
         
 	public:
         Mesh(const std::string& meshName = DEFAULT_MESH_NAME, MeshType type = MeshType::CommonMesh, bool isRetain = false);
@@ -89,13 +93,11 @@ namespace customGL
         // 初始化
         void init(int length);
         void initBonesData();
-        // 添加顶点属性(注意：如果重复添加相同的属性，会替换之前已有的)
-        void addVertexAttribute(GLuint location, GLint size, GLenum type, GLboolean normalized, GLsizei stride, void* data);
+        // 在GPU上创建Mesh
+        void createMeshOnGPU();
         // 添加纹理属性
         void addTexture(const std::string& uniformName, Texture2D* texture);
         void setTexture(const std::string& uniformName, Texture2D* texture);
-        // 根据location获取顶点属性
-        VertexAttribDeclaration* getVertexAttribDeclaration(GLuint location);
 		// 添加材质颜色属性
 		void addColorProperty(const std::string& propertyName, const glm::vec4& value);
 
@@ -105,10 +107,17 @@ namespace customGL
         // 索引
         void setIndices(GLushort* data, unsigned int length);
         // 主纹理uv1
-        void setUV(void* data);
-
-        // 向RenderSystem注册vao
-        void setupVAO();
+        void setUVs(void* data);
+        // 顶点颜色
+        void setColors(void* data);
+        // 法线
+        void setNormals(void* data);
+        // 切线
+        void setTangents(void* data);
+        // 骨骼索引
+        void setBoneIndices(const std::vector<glm::uvec4>& boneIndices);
+        // 骨骼权重
+        void setBoneWeights(const std::vector<glm::vec4>& boneWeights);
 
 	protected:
 		// 创建gpu资源
@@ -116,7 +125,17 @@ namespace customGL
 		// 更新gpu资源
 		virtual void updateGPUResource();
 		// 删除gpu资源
-		virtual void deleteGPUResource() ;
+		virtual void deleteGPUResource();
+        
+        // 更新属性:
+        void updateVertices();
+        void updateIndices();
+        void updateUVs();
+        void updateColors();
+        void updateNormals();
+        void updateTangents();
+        void updateBoneIndices();
+        void updateBoneWeights();
 
 		REGISTER_PROPERTY_GET_SET(unsigned int, m_uMeshId, MeshId)
         REGISTER_PROPERTY_GET(MeshType, m_eMeshType, MeshType)
@@ -132,13 +151,11 @@ namespace customGL
         
         //
 		REGISTER_PROPERTY_GET(glm::vec4*, &m_vVertices[0], Vertices22)
-        REGISTER_PROPERTY_GET(glm::vec2*, &m_vTexcoords1[0], Texcoords1)
+        REGISTER_PROPERTY_GET(glm::vec4*, &m_vTexcoords1[0], Texcoords1)
         REGISTER_PROPERTY_GET(glm::vec3*, &m_vNormals[0], Normals)
         REGISTER_PROPERTY_GET(glm::vec3*, &m_vTangents[0], Tangents)
-		REGISTER_PROPERTY_REF_GET(std::vector<glm::uvec4>, m_vBoneIndices, BoneIndicesRef)
-		REGISTER_PROPERTY_REF_GET(std::vector<glm::vec4>, m_vBoneWeights, BoneWeightsRef)
-        
-//        REGISTER_PROPERTY_CONSTREF_GET(std::unordered_map<std::string, TextureData>, m_mTextures, Textures);
+        REGISTER_PROPERTY_REF_GET(std::vector<glm::uvec4>, m_vBoneIndices, BoneIndicesRef)
+        REGISTER_PROPERTY_REF_GET(std::vector<glm::vec4>, m_vBoneWeights, BoneWeightsRef)
         const std::unordered_map<std::string, TextureData>& getTextures()
         {
             return m_mTextures;
@@ -166,7 +183,7 @@ namespace customGL
         // 颜色
         std::vector<glm::vec4> m_vColors;
         // uv
-        std::vector<glm::vec2> m_vTexcoords1;
+        std::vector<glm::vec4> m_vTexcoords1;
         // 法线
         std::vector<glm::vec3> m_vNormals;
         // 切线
@@ -175,6 +192,9 @@ namespace customGL
         std::vector<glm::uvec4> m_vBoneIndices;
         // 骨骼权重
 		std::vector<glm::vec4> m_vBoneWeights;
+        
+        // 属性脏标记
+        unsigned int m_uPropertiesDirty;
         
         // 模型类型
         MeshType m_eMeshType;
@@ -196,8 +216,6 @@ namespace customGL
         
         
 
-        // 顶点属性格式（设置vao时需要用到）
-        std::unordered_map<GLuint, VertexAttribDeclaration*> m_mVertexAttribDeclarations;
         // vao
         unsigned int m_uVAO;
         // 是否生成vao

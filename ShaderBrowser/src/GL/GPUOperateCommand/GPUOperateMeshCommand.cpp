@@ -70,8 +70,8 @@ namespace customGL
 		m_uSize = 0;
 		if (m_eCommandType == GPUOperateType::GOT_Update)
 		{
-			std::vector<float> vec;
-			m_uValue.val_float.swap(vec);
+			std::vector<U> vec;
+			m_uValue.swap(vec);
 		}
         
         // 回收命令
@@ -149,19 +149,19 @@ namespace customGL
 		// 1.设置顶点属性
 		switch (declaration.index)
 		{
-		case GLProgram::VERTEX_ATTR_POSITION:	// 1.顶点位置
-		case GLProgram::VERTEX_ATTR_COLOR:	// 2.顶点颜色
-		case GLProgram::VERTEX_ATTR_TEX_COORD:	// 3.主纹理坐标
-		case GLProgram::VERTEX_ATTR_NORMAL:		// 4.法线
-		case GLProgram::VERTEX_ATTR_TANGENT:	// 5.切线
-		case GLProgram::VERTEX_ATTR_BONE_WEIGHTS:	// 7.骨骼权重
+		case GLProgram::VERTEX_ATTR_POSITION:	// 0.顶点位置
+		case GLProgram::VERTEX_ATTR_COLOR:	// 1.顶点颜色
+		case GLProgram::VERTEX_ATTR_TEX_COORD:	// 2.主纹理坐标
+		case GLProgram::VERTEX_ATTR_NORMAL:		// 3.法线
+		case GLProgram::VERTEX_ATTR_TANGENT:	// 4.切线
+		case GLProgram::VERTEX_ATTR_BONE_WEIGHTS:	// 6.骨骼权重
 			{
 				glBindBuffer(GL_ARRAY_BUFFER, vbos[declaration.index]);
 				glVertexAttribPointer(declaration.index, declaration.size, declaration.type, declaration.normalized, declaration.stride, (void*)0);
 			}
 			break;
 
-		case GLProgram::VERTEX_ATTR_BONE_IDS:	// 6.骨骼id
+		case GLProgram::VERTEX_ATTR_BONE_IDS:	// 5.骨骼id
 			{
 				// 注意！！！这里要用glVertexAttribIPointer来传递int值，不然都是float类型的，索引数组会找不到
 				glBindBuffer(GL_ARRAY_BUFFER, vbos[declaration.index]);
@@ -191,8 +191,12 @@ namespace customGL
 	{
 		BROWSER_ASSERT(data.size() > 0, "Data size must bigger than 0 in function GPUOperateMeshCommand::setData(const vector<glm::vec3>& data)");
 
-		m_uValue.val_vec3 = data;
-		m_pData = &m_uValue.val_vec3[0];
+        m_uValue.resize(data.size());
+        for(int i=0; i<data.size(); ++i)
+        {
+            m_uValue[i].val_vec3 = data[i];
+        }
+        m_pData = &m_uValue[0];
 		m_uSize = sizeof(glm::vec3)*data.size();
 	}
 
@@ -200,8 +204,12 @@ namespace customGL
 	{
 		BROWSER_ASSERT(data.size() > 0, "Data size must bigger than 0 in function GPUOperateMeshCommand::setData(const vector<glm::vec4>& data)");
 
-		m_uValue.val_vec4 = data;
-		m_pData = &m_uValue.val_vec4[0];
+        m_uValue.resize(data.size());
+        for(int i=0; i<data.size(); ++i)
+        {
+            m_uValue[i].val_vec4 = data[i];
+        }
+		m_pData = &m_uValue[0];
 		m_uSize = sizeof(glm::vec4)*data.size();
 	}
 
@@ -209,8 +217,12 @@ namespace customGL
 	{
 		BROWSER_ASSERT(data.size() > 0, "Data size must bigger than 0 in function GPUOperateMeshCommand::setData(const vector<glm::uvec4>& data)");
 
-		m_uValue.val_uvec4 = data;
-		m_pData = &m_uValue.val_uvec4[0];
+        m_uValue.resize(data.size());
+        for(int i=0; i<data.size(); ++i)
+        {
+            m_uValue[i].val_uvec4 = data[i];
+        }
+        m_pData = &m_uValue[0];
 		m_uSize = sizeof(glm::uvec4)*data.size();
 	}
 
@@ -218,8 +230,12 @@ namespace customGL
 	{
 		BROWSER_ASSERT(data.size() > 0, "Data size must bigger than 0 in function GPUOperateMeshCommand::setData(const vector<float>& data)");
 
-		m_uValue.val_float = data;
-		m_pData = &m_uValue.val_float[0];
+        m_uValue.resize(data.size());
+        for(int i=0; i<data.size(); ++i)
+        {
+            m_uValue[i].val_float = data[i];
+        }
+        m_pData = &m_uValue[0];
 		m_uSize = sizeof(float)*data.size();
 	}
 
@@ -227,8 +243,12 @@ namespace customGL
 	{
 		BROWSER_ASSERT(data.size() > 0, "Data size must bigger than 0 in function GPUOperateMeshCommand::setData(const vector<GLushort>& data)");
 
-		m_uValue.val_ushort = data;
-		m_pData = &m_uValue.val_ushort[0];
+        m_uValue.resize(data.size());
+        for(int i=0; i<data.size(); ++i)
+        {
+            m_uValue[i].val_ushort = data[i];
+        }
+        m_pData = &m_uValue[0];
 		m_uSize = sizeof(GLushort)*data.size();
 	}
 

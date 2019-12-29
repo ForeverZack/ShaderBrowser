@@ -52,11 +52,11 @@ namespace customGL
 		VertexAttribDeclaration m_oDeclaration;
 		// 网格数据
 		union U {
-			std::vector<glm::vec3> val_vec3;
-			std::vector<glm::vec4> val_vec4;
-			std::vector<glm::uvec4> val_uvec4;
-			std::vector<float> val_float;
-			std::vector<GLushort> val_ushort;
+			glm::vec3 val_vec3;
+			glm::vec4 val_vec4;
+			glm::uvec4 val_uvec4;
+			float val_float;
+			GLushort val_ushort;
 
 			U() { memset(this, 0, sizeof(*this)); }
 			~U() {}
@@ -64,7 +64,9 @@ namespace customGL
 				memcpy(this, &other, sizeof(*this));
 				return *this;
 			}
-		} m_uValue;
+		};
+        std::vector<U> m_uValue;
+        
 		void* m_pData;
 		GLsizeiptr m_uSize;
         

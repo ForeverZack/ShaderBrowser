@@ -18,11 +18,12 @@ namespace customGL
 		Mesh* mesh = new Mesh(meshName, type);
         
 		mesh->init(length);
+        mesh->createMeshOnGPU();
         
         return mesh;
     }
 
-	Mesh* Mesh::createRetain(int length, const std::string& meshName /*= DEFAULT_MESH_NAME*/, MeshType type /*= MeshType::CommonMesh*/)
+	Mesh* Mesh::createAsync(int length, const std::string& meshName /*= DEFAULT_MESH_NAME*/, MeshType type /*= MeshType::CommonMesh*/)
 	{
 		Mesh* mesh = new Mesh(meshName, type, true);
 
@@ -41,6 +42,7 @@ namespace customGL
         , m_uIndexCount(0)
         , m_sMaterialName(Material::DEFAULT_MATERIAL_NAME)
 		, m_sMeshName(meshName)
+        , m_uPropertiesDirty(0)
 	{
 		this->autorelease();
 		if (isRetain)
@@ -49,104 +51,18 @@ namespace customGL
 		}
 
         // 清空
-        m_mVertexAttribDeclarations.clear();
         m_mTextures.clear();
 	}
 
 	Mesh::~Mesh()
 	{
 		deleteGPUResource();
-
-        // 删除vao
-        glDeleteVertexArrays(1, &m_uVAO);
-        
-        // 删除vbo
-        glDeleteBuffers(MESH_VERTEX_ATTR_COUNT, m_uVBOs);
-        
-        for (auto itor=m_mVertexAttribDeclarations.begin(); itor!=m_mVertexAttribDeclarations.end(); ++itor)
-        {
-            BROWSER_SAFE_RELEASE_POINTER(itor->second);
-        }
-        m_mVertexAttribDeclarations.clear();
 	}
     
-    void Mesh::setupVAO()
+    void Mesh::createMeshOnGPU()
     {
 		createGPUResource();
-
-        if (!m_bGenVAO)
-        {
-            m_bGenVAO = true;
-            // 生成vao
-            glGenVertexArrays(1, &m_uVAO);
-			// 生成vbo
-			glGenBuffers(MESH_VERTEX_ATTR_COUNT, m_uVBOs);
-			glGenBuffers(1, &m_uIndicesVBO);
-
-        }
-
-		// 设置vao
-        browser::RenderSystem::getInstance()->setupVAO(m_uVAO, m_uVBOs, m_mVertexAttribDeclarations);
-        
-		// 绑定数据
-		// 1.绑定对应的vao
-		glBindVertexArray(m_uVAO);
-
-		// 2.传递顶点数据
-		glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[GLProgram::VERTEX_ATTR_POSITION]);
-        glBufferData(GL_ARRAY_BUFFER, getVertexCount() * sizeof(glm::vec4), &m_vVertices[0], GL_STATIC_DRAW);
-
-		// 3.传递索引数组
-        if (m_uIndexCount > 0)
-		{
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_uIndicesVBO);
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLushort)*getIndexCount(), &m_vIndices[0], GL_STATIC_DRAW);
-		}
-        
-        // uv
-        if (m_vTexcoords1.size() > 0)
-        {
-            glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[GLProgram::VERTEX_ATTR_TEX_COORD]);
-            glBufferData(GL_ARRAY_BUFFER, getVertexCount() * sizeof(glm::vec2), &m_vTexcoords1[0], GL_STATIC_DRAW);
-        }
-        
-        // colors
-        if(m_vColors.size() > 0)
-        {
-            glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[GLProgram::VERTEX_ATTR_COLOR]);
-            glBufferData(GL_ARRAY_BUFFER, getVertexCount() * sizeof(glm::vec4), &m_vColors[0], GL_STATIC_DRAW);
-        }
-        
-        // normal
-        if (m_vNormals.size() > 0)
-        {
-            glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[GLProgram::VERTEX_ATTR_NORMAL]);
-            glBufferData(GL_ARRAY_BUFFER, getVertexCount() * sizeof(glm::vec3), &m_vNormals[0], GL_STATIC_DRAW);
-        }
-        
-        // tangents
-        if (m_vTangents.size() > 0)
-        {
-            glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[GLProgram::VERTEX_ATTR_TANGENT]);
-            glBufferData(GL_ARRAY_BUFFER, getVertexCount() * sizeof(glm::vec3), &m_vTangents[0], GL_STATIC_DRAW);
-        }
-                                                  
-        // boneIndices
-        if (m_vBoneIndices.size() > 0)
-        {
-            glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[GLProgram::VERTEX_ATTR_BONE_IDS]);
-            glBufferData(GL_ARRAY_BUFFER, getVertexCount() * sizeof(glm::uvec4), &m_vBoneIndices[0], GL_STATIC_DRAW);
-        }
-        
-        // boneWeights
-        if (m_vBoneWeights.size() > 0)
-        {
-            glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[GLProgram::VERTEX_ATTR_BONE_WEIGHTS]);
-            glBufferData(GL_ARRAY_BUFFER, getVertexCount() * sizeof(glm::vec4), &m_vBoneWeights[0], GL_STATIC_DRAW);
-        }
-
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glBindVertexArray(0);
+        updateGPUResource();
     }
     
     void Mesh::init(int length)
@@ -164,6 +80,8 @@ namespace customGL
         {
             initBonesData();
         }
+        
+        m_eResouceState = GRS_DataLoaded;
     }
     
     void Mesh::initBonesData()
@@ -193,72 +111,233 @@ namespace customGL
     {
         addTexture(uniformName, texture);
     }
-    
-    void Mesh::addVertexAttribute(GLuint location, GLint size, GLenum type, GLboolean normalized, GLsizei stride, void* data)
-    {
-        BROWSER_ASSERT(m_uVertexCount>0, "MeshFilter cannot add vertex attribute before init, break in function MeshFilter::addVertexAttribute.");
-        
-        // 移除旧值
-        auto itor = m_mVertexAttribDeclarations.find(location);
-        if (itor != m_mVertexAttribDeclarations.end())
-        {
-            m_mVertexAttribDeclarations.erase(itor);
-        }
-        
-        // 填充数据
-		if (data)
-		{
-			fillVertexsParam(location, data);
-		}
-        
-        // 将顶点属性记录下来，用来设置vao
-        VertexAttribDeclaration* declaration = Utils::createVertexAttribDeclaration(location, size, type, normalized, stride);
-        m_mVertexAttribDeclarations.emplace(location, declaration);
-    }
 
 	void Mesh::setVertices(void* data)
 	{
+        // 填充数据
 		fillVertexsParam(GLProgram::VERTEX_ATTR_POSITION, data);
 
-		auto cmd = GPUOperateCommandPool::getInstance()->popCommand<GPUOperateMeshCommand>(GPUOperateCommandType::GOCT_Mesh);
-		cmd->setMesh(this);
-		cmd->setVertexAttribute(GLProgram::VERTEX_ATTR::VERTEX_ATTR_POSITION, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4));
-		cmd->setData(m_vVertices);
-		cmd->ready(GPUOperateType::GOT_Update);
-		GPUOperateSystem::getInstance()->addCommand(cmd);
+        // 更新GPU顶点数据
+        updateVertices();
 	}
     
     void Mesh::setIndices(GLushort* data, unsigned int length)
     {
+        // 填充数据
         m_uIndexCount = length;
-        
         m_vIndices.resize(length);
         for(int i=0; i<length; ++i)
         {
             m_vIndices[i] = data[i];
         }
         
-//        auto cmd = GPUOperateCommandPool::getInstance()->popCommand<GPUOperateMeshCommand>(GPUOperateCommandType::GOCT_Mesh);
-//        cmd->setMesh(this);
-//        cmd->setVertexAttribute(GLProgram::VERTEX_ATTR::VERTEX_ATTR_TEX_COORD, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2));
-//        cmd->setData(m_vVertices);
-//        cmd->ready(GPUOperateType::GOT_UpdateProperties_1);
-//        GPUOperateSystem::getInstance()->addCommand(cmd);
+        // 更新GPU顶点索引数据
+        updateIndices();
     }
     
-    void Mesh::setUV(void* data)
+    void Mesh::setUVs(void* data)
     {
+        // 填充数据
         fillVertexsParam(GLProgram::VERTEX_ATTR_TEX_COORD, data);
+        
+        // 更新GPU纹理坐标数据
+        updateUVs();
     }
     
-    VertexAttribDeclaration* Mesh::getVertexAttribDeclaration(GLuint location)
+    void Mesh::setColors(void* data)
     {
-        const auto itr = m_mVertexAttribDeclarations.find(location);
-        if (itr!=m_mVertexAttribDeclarations.end())
+        // 填充数据
+        fillVertexsParam(GLProgram::VERTEX_ATTR_COLOR, data);
+        
+        // 更新GPU顶点颜色数据
+        updateColors();
+    }
+    
+    void Mesh::setNormals(void* data)
+    {
+        // 填充数据
+        fillVertexsParam(GLProgram::VERTEX_ATTR_NORMAL, data);
+        
+        // 更新GPU顶点法线数据
+        updateNormals();
+    }
+    
+    void Mesh::setTangents(void* data)
+    {
+        // 填充数据
+        fillVertexsParam(GLProgram::VERTEX_ATTR_TANGENT, data);
+        
+        // 更新GPU顶点切线数据
+        updateTangents();
+    }
+    
+    void Mesh::setBoneIndices(const std::vector<glm::uvec4>& boneIndices)
+    {
+        // 填充数据
+        m_vBoneIndices = boneIndices;
+        
+        // 更新GPU顶点骨骼索引
+        updateBoneIndices();
+    }
+    
+    void Mesh::setBoneWeights(const std::vector<glm::vec4>& boneWeights)
+    {
+        // 填充数据
+        m_vBoneWeights = boneWeights;
+        
+        // 更新GPU顶点骨骼权重
+        updateBoneWeights();
+    }
+    
+    void Mesh::updateVertices()
+    {
+        if (m_eResouceState==GRS_Loaded)
         {
-            return itr->second;
+            BROWSER_CLEAR_BIT(m_uPropertiesDirty, GLProgram::VERTEX_ATTR::VERTEX_ATTR_POSITION)
+            
+            auto cmd = GPUOperateCommandPool::getInstance()->popCommand<GPUOperateMeshCommand>(GPUOperateCommandType::GOCT_Mesh);
+            cmd->setMesh(this);
+            cmd->setVertexAttribute(GLProgram::VERTEX_ATTR::VERTEX_ATTR_POSITION, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4));
+            cmd->setData(m_vVertices);
+            cmd->ready(GPUOperateType::GOT_Update);
+            GPUOperateSystem::getInstance()->addCommand(cmd);
         }
-        return nullptr;
+        else
+        {
+            BROWSER_SET_BIT(m_uPropertiesDirty, GLProgram::VERTEX_ATTR::VERTEX_ATTR_POSITION)
+        }
+    }
+    
+    void Mesh::updateIndices()
+    {
+        if (m_eResouceState == GRS_Loaded)
+        {
+            BROWSER_CLEAR_BIT(m_uPropertiesDirty, GLProgram::VERTEX_ATTR::VERTEX_ATTR_MAXCOUNT)
+            
+            auto cmd = GPUOperateCommandPool::getInstance()->popCommand<GPUOperateMeshCommand>(GPUOperateCommandType::GOCT_Mesh);
+            cmd->setMesh(this);
+            cmd->setData(m_vIndices);
+            cmd->ready(GPUOperateType::GOT_UpdateProperties_1);
+            GPUOperateSystem::getInstance()->addCommand(cmd);
+        }
+        else
+        {
+            BROWSER_SET_BIT(m_uPropertiesDirty, GLProgram::VERTEX_ATTR::VERTEX_ATTR_MAXCOUNT)
+        }
+    }
+    
+    void Mesh::updateUVs()
+    {
+        if (m_eResouceState == GRS_Loaded)
+        {
+            BROWSER_CLEAR_BIT(m_uPropertiesDirty, GLProgram::VERTEX_ATTR::VERTEX_ATTR_TEX_COORD)
+            
+            auto cmd = GPUOperateCommandPool::getInstance()->popCommand<GPUOperateMeshCommand>(GPUOperateCommandType::GOCT_Mesh);
+            cmd->setMesh(this);
+            cmd->setVertexAttribute(GLProgram::VERTEX_ATTR::VERTEX_ATTR_TEX_COORD, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4));
+            cmd->setData(m_vTexcoords1);
+            cmd->ready(GPUOperateType::GOT_Update);
+            GPUOperateSystem::getInstance()->addCommand(cmd);
+        }
+        else
+        {
+            BROWSER_SET_BIT(m_uPropertiesDirty, GLProgram::VERTEX_ATTR::VERTEX_ATTR_TEX_COORD)
+        }
+    }
+    
+    void Mesh::updateColors()
+    {
+        if (m_eResouceState == GRS_Loaded)
+        {
+            BROWSER_CLEAR_BIT(m_uPropertiesDirty, GLProgram::VERTEX_ATTR::VERTEX_ATTR_COLOR)
+            
+            auto cmd = GPUOperateCommandPool::getInstance()->popCommand<GPUOperateMeshCommand>(GPUOperateCommandType::GOCT_Mesh);
+            cmd->setMesh(this);
+            cmd->setVertexAttribute(GLProgram::VERTEX_ATTR::VERTEX_ATTR_COLOR, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4));
+            cmd->setData(m_vColors);
+            cmd->ready(GPUOperateType::GOT_Update);
+            GPUOperateSystem::getInstance()->addCommand(cmd);
+        }
+        else
+        {
+            BROWSER_SET_BIT(m_uPropertiesDirty, GLProgram::VERTEX_ATTR::VERTEX_ATTR_COLOR)
+        }
+    }
+    
+    void Mesh::updateNormals()
+    {
+        if (m_eResouceState == GRS_Loaded)
+        {
+            BROWSER_CLEAR_BIT(m_uPropertiesDirty, GLProgram::VERTEX_ATTR::VERTEX_ATTR_NORMAL)
+            
+            auto cmd = GPUOperateCommandPool::getInstance()->popCommand<GPUOperateMeshCommand>(GPUOperateCommandType::GOCT_Mesh);
+            cmd->setMesh(this);
+            cmd->setVertexAttribute(GLProgram::VERTEX_ATTR::VERTEX_ATTR_NORMAL, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3));
+            cmd->setData(m_vNormals);
+            cmd->ready(GPUOperateType::GOT_Update);
+            GPUOperateSystem::getInstance()->addCommand(cmd);
+        }
+        else
+        {
+            BROWSER_SET_BIT(m_uPropertiesDirty, GLProgram::VERTEX_ATTR::VERTEX_ATTR_NORMAL)
+        }
+    }
+    
+    void Mesh::updateTangents()
+    {
+        if (m_eResouceState == GRS_Loaded)
+        {
+            BROWSER_CLEAR_BIT(m_uPropertiesDirty, GLProgram::VERTEX_ATTR::VERTEX_ATTR_TANGENT)
+            
+            auto cmd = GPUOperateCommandPool::getInstance()->popCommand<GPUOperateMeshCommand>(GPUOperateCommandType::GOCT_Mesh);
+            cmd->setMesh(this);
+            cmd->setVertexAttribute(GLProgram::VERTEX_ATTR::VERTEX_ATTR_TANGENT, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3));
+            cmd->setData(m_vTangents);
+            cmd->ready(GPUOperateType::GOT_Update);
+            GPUOperateSystem::getInstance()->addCommand(cmd);
+        }
+        else
+        {
+            BROWSER_SET_BIT(m_uPropertiesDirty, GLProgram::VERTEX_ATTR::VERTEX_ATTR_TANGENT)
+        }
+    }
+    
+    void Mesh::updateBoneIndices()
+    {
+        if (m_eResouceState == GRS_Loaded)
+        {
+            BROWSER_CLEAR_BIT(m_uPropertiesDirty, GLProgram::VERTEX_ATTR::VERTEX_ATTR_BONE_IDS)
+            
+            auto cmd = GPUOperateCommandPool::getInstance()->popCommand<GPUOperateMeshCommand>(GPUOperateCommandType::GOCT_Mesh);
+            cmd->setMesh(this);
+            cmd->setVertexAttribute(GLProgram::VERTEX_ATTR::VERTEX_ATTR_BONE_IDS, 4, GL_UNSIGNED_INT, GL_FALSE, sizeof(glm::uvec4));
+            cmd->setData(m_vBoneIndices);
+            cmd->ready(GPUOperateType::GOT_Update);
+            GPUOperateSystem::getInstance()->addCommand(cmd);
+        }
+        else
+        {
+            BROWSER_SET_BIT(m_uPropertiesDirty, GLProgram::VERTEX_ATTR::VERTEX_ATTR_BONE_IDS)
+        }
+    }
+    
+    void Mesh::updateBoneWeights()
+    {
+        if (m_eResouceState == GRS_Loaded)
+        {
+            BROWSER_CLEAR_BIT(m_uPropertiesDirty, GLProgram::VERTEX_ATTR::VERTEX_ATTR_BONE_WEIGHTS)
+            
+            auto cmd = GPUOperateCommandPool::getInstance()->popCommand<GPUOperateMeshCommand>(GPUOperateCommandType::GOCT_Mesh);
+            cmd->setMesh(this);
+            cmd->setVertexAttribute(GLProgram::VERTEX_ATTR::VERTEX_ATTR_BONE_WEIGHTS, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4));
+            cmd->setData(m_vBoneWeights);
+            cmd->ready(GPUOperateType::GOT_Update);
+            GPUOperateSystem::getInstance()->addCommand(cmd);
+        }
+        else
+        {
+            BROWSER_SET_BIT(m_uPropertiesDirty, GLProgram::VERTEX_ATTR::VERTEX_ATTR_BONE_WEIGHTS)
+        }
     }
     
 	void Mesh::addColorProperty(const std::string& propertyName, const glm::vec4& value)
@@ -281,7 +360,6 @@ namespace customGL
                 {
                     // 位置属性
                     ANALYSIS_ARRAY_DATA_VERTEX(data);
-					m_eResouceState = GRS_DataLoaded;
                 }
                 break;
                 
@@ -328,20 +406,56 @@ namespace customGL
 	{
 		BROWSER_ASSERT(m_eResouceState == GRS_DataLoaded, "Mesh state must be GRS_DataLoaded, then it can be created on gpu");
 
-//        auto cmd = GPUOperateCommandPool::getInstance()->popCommand<GPUOperateMeshCommand>(GPUOperateCommandType::GOCT_Mesh);
-//        cmd->setMesh(this);
-//        cmd->ready(GPUOperateType::GOT_Create);
-//        GPUOperateSystem::getInstance()->addCommand(cmd);
+        auto cmd = GPUOperateCommandPool::getInstance()->popCommand<GPUOperateMeshCommand>(GPUOperateCommandType::GOCT_Mesh);
+        cmd->setMesh(this);
+        cmd->ready(GPUOperateType::GOT_Create);
+        GPUOperateSystem::getInstance()->addCommand(cmd);
 	}
 
 	void Mesh::updateGPUResource()
 	{
-
+        if (BROWSER_GET_BIT(m_uPropertiesDirty, GLProgram::VERTEX_ATTR::VERTEX_ATTR_POSITION))
+        {
+            updateVertices();
+        }
+        if (BROWSER_GET_BIT(m_uPropertiesDirty, GLProgram::VERTEX_ATTR::VERTEX_ATTR_MAXCOUNT))
+        {
+            updateIndices();
+        }
+        if (BROWSER_GET_BIT(m_uPropertiesDirty, GLProgram::VERTEX_ATTR::VERTEX_ATTR_TEX_COORD))
+        {
+            updateUVs();
+        }
+        if (BROWSER_GET_BIT(m_uPropertiesDirty, GLProgram::VERTEX_ATTR::VERTEX_ATTR_COLOR))
+        {
+            updateColors();
+        }
+        if (BROWSER_GET_BIT(m_uPropertiesDirty, GLProgram::VERTEX_ATTR::VERTEX_ATTR_NORMAL))
+        {
+            updateNormals();
+        }
+        if (BROWSER_GET_BIT(m_uPropertiesDirty, GLProgram::VERTEX_ATTR::VERTEX_ATTR_TANGENT))
+        {
+            updateTangents();
+        }
+        if (BROWSER_GET_BIT(m_uPropertiesDirty, GLProgram::VERTEX_ATTR::VERTEX_ATTR_BONE_IDS))
+        {
+            updateBoneIndices();
+        }
+        if (BROWSER_GET_BIT(m_uPropertiesDirty, GLProgram::VERTEX_ATTR::VERTEX_ATTR_BONE_WEIGHTS))
+        {
+            updateBoneWeights();
+        }
 	}
 
 	void Mesh::deleteGPUResource()
 	{
-
+        BROWSER_ASSERT(m_eResouceState == GRS_Loaded, "Mesh state must be GRS_Loaded, then it can be deleted on gpu");
+        
+        auto cmd = GPUOperateCommandPool::getInstance()->popCommand<GPUOperateMeshCommand>(GPUOperateCommandType::GOCT_Mesh);
+        cmd->setMesh(this);
+        cmd->ready(GPUOperateType::GOT_Delete);
+        GPUOperateSystem::getInstance()->addCommand(cmd);
 	}
 
 }

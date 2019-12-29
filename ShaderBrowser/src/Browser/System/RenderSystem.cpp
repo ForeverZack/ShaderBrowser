@@ -79,9 +79,8 @@ namespace browser
 
         // 生成坐标轴模型
         m_oAxisMesh = Mesh::create(6);
-        m_oAxisMesh->addVertexAttribute(GLProgram::VERTEX_ATTR_POSITION, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), axis_vertices);
-        m_oAxisMesh->addVertexAttribute(GLProgram::VERTEX_ATTR_COLOR, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), axis_colors);
-        m_oAxisMesh->setupVAO();
+        m_oAxisMesh->setVertices(axis_vertices);
+        m_oAxisMesh->setColors(axis_colors);
         m_oAxisMesh->retain();
         // 坐标轴缩放矩阵
         glm::vec3 axis_scale(SHOW_AXIS_SCALE, SHOW_AXIS_SCALE, SHOW_AXIS_SCALE);
@@ -143,75 +142,6 @@ namespace browser
         m_uNoRenderVertices = 0;
     }
     
-//    void RenderSystem::setupVAO(GLuint vao)
-//    {
-//        glBindVertexArray(vao);
-//        
-//        // 1.顶点位置
-//        glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[RenderSystem_ArrayBuffer_Position]);
-//        glVertexAttribPointer(GLProgram::VERTEX_ATTR_POSITION, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), (void*)0);
-//        glEnableVertexAttribArray(GLProgram::VERTEX_ATTR_POSITION);
-//        
-//        // 2.顶点颜色
-//        glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[RenderSystem_ArrayBuffer_Color]);
-//        glVertexAttribPointer(GLProgram::VERTEX_ATTR_COLOR, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), (void*)0);
-//        glEnableVertexAttribArray(GLProgram::VERTEX_ATTR_COLOR);
-//        
-//        // 3.主纹理坐标
-//        glBindBuffer(GL_ARRAY_BUFFER, m_uVBOs[RenderSystem_ArrayBuffer_UV1]);
-//        glVertexAttribPointer(GLProgram::VERTEX_ATTR_TEX_COORD, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), (void*)0);
-//        glEnableVertexAttribArray(GLProgram::VERTEX_ATTR_TEX_COORD);
-//        
-//        glBindBuffer(GL_ARRAY_BUFFER, 0);
-//        glBindVertexArray(0);
-//    }
-    
-    void RenderSystem::setupVAO(GLuint vao, unsigned int vbos[], const std::unordered_map<GLuint, VertexAttribDeclaration*>& declarations)
-    {
-        // 1.绑定vao和vbo
-        glBindVertexArray(vao);
-        
-        
-        // 2.设置顶点属性
-        // 在glBindBuffer后使用glVertexAttribPointer，会让该vbo(刚绑定的)绑定到对应的vertex attr上
-        for (auto itor=declarations.cbegin(); itor!=declarations.cend(); ++itor)
-        {
-            const VertexAttribDeclaration* declaration = itor->second;
-            switch(declaration->index)
-            {
-				case GLProgram::VERTEX_ATTR_POSITION:	// 1.顶点位置
-				case GLProgram::VERTEX_ATTR_COLOR:	// 2.顶点颜色
-				case GLProgram::VERTEX_ATTR_TEX_COORD:	// 3.主纹理坐标
-				case GLProgram::VERTEX_ATTR_NORMAL:		// 4.法线
-				case GLProgram::VERTEX_ATTR_TANGENT:	// 5.切线
-				case GLProgram::VERTEX_ATTR_BONE_WEIGHTS:	// 7.骨骼权重
-                    {
-                        // 1.顶点位置
-                        glBindBuffer(GL_ARRAY_BUFFER, vbos[declaration->index]);
-                        glVertexAttribPointer(declaration->index, declaration->size, declaration->type, declaration->normalized, declaration->stride, (void*)0);
-                    }
-                    break;
-				case GLProgram::VERTEX_ATTR_BONE_IDS:
-					{
-						// 6.骨骼id
-						// 注意！！！这里要用glVertexAttribIPointer来传递int值，不然都是float类型的，索引数组会找不到
-                        glBindBuffer(GL_ARRAY_BUFFER, vbos[declaration->index]);
-						glVertexAttribIPointer(declaration->index, declaration->size, declaration->type, declaration->stride, (void*)0);
-					}
-					break;
-
-            }
-            
-            glEnableVertexAttribArray(declaration->index);
-        }
-        
-        // 3.解绑vao和vbo
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindVertexArray(0);
-    }
-
-
-
 	void RenderSystem::update(float deltaTime)
 	{
         // 重置draw call

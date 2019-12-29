@@ -16,15 +16,16 @@ namespace customGL
     void GPUOperateSystem::addCommand(BaseGPUOperateCommand* cmd)
     {
         // TODO: 为了让程序跑起来，现在立刻执行，不知道后面延迟执行会不会报错。。。
-        //cmd->execute();
-        //cmd->finish();
-        //return;
+        cmd->execute();
+        cmd->finish();
+        return;
         
         m_qWaitCommands.push(cmd);
     }
     
     void GPUOperateSystem::update()
     {
+        return;
         // 将逻辑线程命令队列加入到渲染线程待执行队列中
         m_vCommands.clear();
         m_qWaitCommands.operateQueue([&](std::queue<BaseGPUOperateCommand*>& queue)

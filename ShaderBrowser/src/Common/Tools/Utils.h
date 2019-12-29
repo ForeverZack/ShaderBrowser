@@ -75,6 +75,13 @@ namespace common
             delete[] pointerName; \
             pointerName = nullptr;  \
         }
+    
+    // 置位：将某一位设为1
+    #define BROWSER_SET_BIT(var, n) var|=1<<n;
+    // 复位：将某一位设为0
+    #define BROWSER_CLEAR_BIT(var, n) var&=~(1<<n);
+    // 取位：取出某一位
+    #define BROWSER_GET_BIT(var, n) var&(1<<n)
 
 	// 断言(如果不满足条件，会中断)
 	void BROWSER_ASSERT(bool condition, const char* msg);

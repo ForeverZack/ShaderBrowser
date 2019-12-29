@@ -42,9 +42,7 @@ namespace browser
         // 前向渲染
         void forwardRenderScene(Camera* camera, float deltaTime);
         
-        // 设置vao和vbo
-        void setupVAO(GLuint vao, unsigned int vbos[], const std::unordered_map<GLuint, VertexAttribDeclaration*>& declarations);
-        
+
         
 		REGISTER_PROPERTY_GET_SET(unsigned int, m_uDrawCalls, DrawCalls)
 		REGISTER_PROPERTY_GET_SET(unsigned long, m_uVerticesCount, VerticesCount)

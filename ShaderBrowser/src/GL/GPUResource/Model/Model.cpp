@@ -853,28 +853,28 @@ namespace customGL
         {
             // 注意:如果纹理创建不成功(例如没有找到),应该有一张白色默认纹理来代替,以防程序出问题
 			// 防止Model是异步加载的，所以这里在构造的时候直接retain了，防止被autoRelease掉，这样的用法记得多手动release一次
-            Mesh* mesh = Mesh::createRetain(aiMesh->mNumVertices, aiMesh->mName.C_Str(), aiMesh->HasBones() ? Mesh::MeshType::MeshWithBone : Mesh::MeshType::CommonMesh );
+            Mesh* mesh = Mesh::createAsync(aiMesh->mNumVertices, aiMesh->mName.C_Str(), aiMesh->HasBones() ? Mesh::MeshType::MeshWithBone : Mesh::MeshType::CommonMesh );
 			// 将mesh加入缓存
 			MeshCache::getInstance()->addSharedMesh(mesh);
 			mesh->release();
 
 			// 顶点位置
-            mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_POSITION, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), aiMesh->mVertices);
+            mesh->setVertices(aiMesh->mVertices);
 			//mesh->setVertices(aiMesh->mVertices);
             // 顶点颜色
 			if (aiMesh->mColors[0] && aiMesh->mColors[1])
 			{
-				mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_COLOR, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), aiMesh->mColors);
+                mesh->setColors(aiMesh->mColors);
 			}
             // 顶点uv坐标
             if (aiMesh->mTextureCoords[0])
             {
-                mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_TEX_COORD, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), aiMesh->mTextureCoords[0]);
+                mesh->setUVs(aiMesh->mTextureCoords[0]);
             }
             // 法线
-            mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_NORMAL, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), aiMesh->mNormals);
+            mesh->setNormals(aiMesh->mNormals);
             // 切线
-            mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_TANGENT, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), aiMesh->mTangents);
+            mesh->setTangents(aiMesh->mTangents);
             // 索引信息
             {
                 int indexCount = 0;
@@ -902,11 +902,13 @@ namespace customGL
             }
 
 			// 骨骼信息
-			std::vector<glm::uvec4>& mesh_boneIndices = mesh->getBoneIndicesRef();
-			std::vector<glm::vec4>& mesh_boneWeights = mesh->getBoneWeightsRef();
+			std::vector<glm::uvec4> mesh_boneIndices;
+			std::vector<glm::vec4> mesh_boneWeights;
 			aiBone* bone = nullptr;
 			aiVertexWeight * vertexWeight = nullptr;
 			unsigned int boneIdx;
+            mesh_boneIndices.resize(aiMesh->mNumVertices);
+            mesh_boneWeights.resize(aiMesh->mNumVertices);
 			for (unsigned int i = 0; i < aiMesh->mNumBones; ++i)
 			{
 				bone = aiMesh->mBones[i];	// aiBone
@@ -939,8 +941,8 @@ namespace customGL
 				}
 				
 			}
-            mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_BONE_IDS, 4, GL_UNSIGNED_INT, GL_FALSE, sizeof(glm::uvec4), nullptr);
-            mesh->addVertexAttribute(GLProgram::VERTEX_ATTR_BONE_WEIGHTS, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), nullptr);
+            mesh->setBoneIndices(mesh_boneIndices);
+            mesh->setBoneWeights(mesh_boneWeights);
 
             
             // 处理材质(这里的材质指的是纹理)
@@ -964,7 +966,7 @@ namespace customGL
             }
             if (m_oSuccessCallback)
             {
-                mesh->setupVAO();
+                mesh->createMeshOnGPU();
             }
                 
             return mesh;
@@ -978,7 +980,7 @@ namespace customGL
         // 处理网格模型vao
         for(auto itor=m_vMeshes.begin(); itor!=m_vMeshes.end(); ++itor)
         {
-            (*itor)->setupVAO();
+            (*itor)->createMeshOnGPU();
         }
         //// 处理动画数据
         //if (m_oGpuAnimData != nullptr)
