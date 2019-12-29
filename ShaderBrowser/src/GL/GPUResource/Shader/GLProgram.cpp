@@ -533,6 +533,9 @@ namespace customGL
 		{
 			textureUnit = m_uTextureUnitIndex++;
 			m_mTextureUnits[uniformName] = textureUnit;
+            
+            // 注意！！！！ 还要通过使用glUniform1i设置每个采样器的方式告诉OpenGL每个着色器采样器属于哪个纹理单元。我们只需要设置一次即可
+            setUniformWithInt(uniformName, textureUnit);
 		}
         
         common::BROWSER_ASSERT(textureUnit<MAX_ACTIVE_TEXTURE, "texture unit value is too big, it is out off support range in function GLProgram::setUniformWithTex2d");

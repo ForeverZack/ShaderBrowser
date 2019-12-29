@@ -70,7 +70,7 @@ namespace customGL
         m_vPass[index]->usePass(transformDirty, modelMatrix, cameraDirty, viewMatrix, projectionMatrix, uniforms);
 	}
 
-	bool  Material::isGPUResourceLoaded()
+	bool Material::isGPUResourceLoaded()
 	{
 		for (int i = 0; i < m_vPass.size(); ++i)
 		{
