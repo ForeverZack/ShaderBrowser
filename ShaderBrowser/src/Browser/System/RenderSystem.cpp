@@ -206,13 +206,19 @@ namespace browser
                     break;
             }
         }
-		
         
+        // 渲染包围盒跟坐标轴
+        renderAssistTools(camera);
+
+	}
+    
+    void RenderSystem::renderAssistTools(Camera* camera)
+    {
         GLuint vao;
         size_t vertCount;
-		unsigned int* vbos = nullptr;
-		BaseEntity* entity = nullptr;
-		Transform* transform = nullptr;
+        unsigned int* vbos = nullptr;
+        BaseEntity* entity = nullptr;
+        Transform* transform = nullptr;
         // 绘制调试信息
         // 1.包围盒
         // 开启深度测试
@@ -228,8 +234,8 @@ namespace browser
                 if (entity->isRenderable() && entity->getIsVisible() && entity->getIsBoundBoxVisible() && entity->checkVisibility(camera))
                 {
                     vao = m_oAxisMesh->getVAO();    // TODO: 这里使用的是模型坐标轴的vao,后面看看要不要换掉
-					vbos = m_oAxisMesh->getVBOs();
-					skinnedRenderer = entity->getComponent<SkinnedMeshRenderer>();
+                    vbos = m_oAxisMesh->getVBOs();
+                    skinnedRenderer = entity->getComponent<SkinnedMeshRenderer>();
                     transform = entity->getComponent<Transform>();
                     boundBox = skinnedRenderer ? skinnedRenderer->getBoundBox() : entity->getComponent<AABBBoundBox>();
                     
@@ -290,9 +296,9 @@ namespace browser
                 
 //                if (entity->getIsVisible() && entity->getIsAxisVisible() && entity->checkVisibility(camera))
                 if (entity->getIsVisible() && entity->getIsAxisVisible())
-                {                    
+                {
                     vao = m_oAxisMesh->getVAO();
-					vbos = m_oAxisMesh->getVBOs();
+                    vbos = m_oAxisMesh->getVBOs();
                     
                     
                     // 顶点属性
@@ -302,7 +308,7 @@ namespace browser
                     // 在CPU中处理顶点位置
                     glm::vec4* trans_vertices = new glm::vec4[vertCount];
                     glm::vec4* trans_colors = new glm::vec4[vertCount];
-					glm::mat4 noScaleModelMatrix = transform->traverseNoScaleModelMatrix();
+                    glm::mat4 noScaleModelMatrix = transform->traverseNoScaleModelMatrix();
                     for(int i=0; i<vertCount; ++i)
                     {
                         trans_vertices[i] = noScaleModelMatrix * m_oAxisScaleMatrix * vertices[i];
@@ -336,9 +342,7 @@ namespace browser
                 }
             }
         }
-    
-
-	}
+    }
     
     void RenderSystem::forwardRenderScene(Camera* camera, float deltaTime)
     {

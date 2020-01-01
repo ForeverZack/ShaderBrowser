@@ -193,6 +193,8 @@ namespace customGL
         // 骨骼权重
 		std::vector<glm::vec4> m_vBoneWeights;
         
+        // 创建脏标记
+        bool m_bCreated;
         // 属性脏标记
         unsigned int m_uPropertiesDirty;
         

@@ -48,6 +48,10 @@ namespace browser
 		REGISTER_PROPERTY_GET_SET(unsigned long, m_uVerticesCount, VerticesCount)
 		REGISTER_PROPERTY_GET_SET(unsigned long, m_uFrameIndex, FrameIndex)
 		REGISTER_PROPERTY_GET_SET(unsigned long, m_uFaceCount, FaceCount)
+        
+    private:
+        // 画出辅助工具
+        void renderAssistTools(Camera* camera);
 	
 	private:
         // 渲染队列

@@ -43,6 +43,7 @@ namespace customGL
         , m_sMaterialName(Material::DEFAULT_MATERIAL_NAME)
 		, m_sMeshName(meshName)
         , m_uPropertiesDirty(0)
+        , m_bCreated(false)
 	{
 		this->autorelease();
 		if (isRetain)
@@ -191,7 +192,7 @@ namespace customGL
     
     void Mesh::updateVertices()
     {
-        if (m_eResouceState==GRS_Loaded)
+        if (m_bCreated)
         {
             BROWSER_CLEAR_BIT(m_uPropertiesDirty, GLProgram::VERTEX_ATTR::VERTEX_ATTR_POSITION)
             
@@ -210,7 +211,7 @@ namespace customGL
     
     void Mesh::updateIndices()
     {
-        if (m_eResouceState == GRS_Loaded)
+        if (m_bCreated)
         {
             BROWSER_CLEAR_BIT(m_uPropertiesDirty, GLProgram::VERTEX_ATTR::VERTEX_ATTR_MAXCOUNT)
             
@@ -228,7 +229,7 @@ namespace customGL
     
     void Mesh::updateUVs()
     {
-        if (m_eResouceState == GRS_Loaded)
+        if (m_bCreated)
         {
             BROWSER_CLEAR_BIT(m_uPropertiesDirty, GLProgram::VERTEX_ATTR::VERTEX_ATTR_TEX_COORD)
             
@@ -247,7 +248,7 @@ namespace customGL
     
     void Mesh::updateColors()
     {
-        if (m_eResouceState == GRS_Loaded)
+        if (m_bCreated)
         {
             BROWSER_CLEAR_BIT(m_uPropertiesDirty, GLProgram::VERTEX_ATTR::VERTEX_ATTR_COLOR)
             
@@ -266,7 +267,7 @@ namespace customGL
     
     void Mesh::updateNormals()
     {
-        if (m_eResouceState == GRS_Loaded)
+        if (m_bCreated)
         {
             BROWSER_CLEAR_BIT(m_uPropertiesDirty, GLProgram::VERTEX_ATTR::VERTEX_ATTR_NORMAL)
             
@@ -285,7 +286,7 @@ namespace customGL
     
     void Mesh::updateTangents()
     {
-        if (m_eResouceState == GRS_Loaded)
+        if (m_bCreated)
         {
             BROWSER_CLEAR_BIT(m_uPropertiesDirty, GLProgram::VERTEX_ATTR::VERTEX_ATTR_TANGENT)
             
@@ -304,7 +305,7 @@ namespace customGL
     
     void Mesh::updateBoneIndices()
     {
-        if (m_eResouceState == GRS_Loaded)
+        if (m_bCreated)
         {
             BROWSER_CLEAR_BIT(m_uPropertiesDirty, GLProgram::VERTEX_ATTR::VERTEX_ATTR_BONE_IDS)
             
@@ -323,7 +324,7 @@ namespace customGL
     
     void Mesh::updateBoneWeights()
     {
-        if (m_eResouceState == GRS_Loaded)
+        if (m_bCreated)
         {
             BROWSER_CLEAR_BIT(m_uPropertiesDirty, GLProgram::VERTEX_ATTR::VERTEX_ATTR_BONE_WEIGHTS)
             
@@ -406,6 +407,7 @@ namespace customGL
 	{
 		BROWSER_ASSERT(m_eResouceState == GRS_DataLoaded, "Mesh state must be GRS_DataLoaded, then it can be created on gpu");
 
+        m_bCreated = true;
         auto cmd = GPUOperateCommandPool::getInstance()->popCommand<GPUOperateMeshCommand>(GPUOperateCommandType::GOCT_Mesh);
         cmd->setMesh(this);
         cmd->ready(GPUOperateType::GOT_Create);
