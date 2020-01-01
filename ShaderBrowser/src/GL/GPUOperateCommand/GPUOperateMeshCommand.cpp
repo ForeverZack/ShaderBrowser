@@ -70,7 +70,8 @@ namespace customGL
 		m_uSize = 0;
 		if (m_eCommandType == GPUOperateType::GOT_Update)
 		{
-			
+            // 清空网格数据
+            clearData();
 		}
         
         // 回收命令
@@ -181,12 +182,54 @@ namespace customGL
 		m_oDeclaration.data_type = dataType;
 	}
     
+    void GPUOperateMeshCommand::clearData()
+    {
+        switch (m_eDataType)
+        {
+        case GOMC_DataType::Vector3:
+            {
+                std::vector<glm::vec3> vec;
+                m_vValueVec3.swap(vec);
+            }
+            break;
+        
+        case GOMC_DataType::Vector4:
+            {
+                std::vector<glm::vec4> vec;
+                m_vValueVec4.swap(vec);
+            }
+            break;
+                
+        case GOMC_DataType::UnsignedVector4:
+            {
+                std::vector<glm::uvec4> vec;
+                m_vValueUVec4.swap(vec);
+            }
+            break;
+                
+        case GOMC_DataType::Float:
+            {
+                std::vector<float> vec;
+                m_vValueFloat.swap(vec);
+            }
+            break;
+        
+        case GOMC_DataType::UnsignedShort:
+            {
+                std::vector<GLushort> vec;
+                m_vValueUShort.swap(vec);
+            }
+            break;
+        }
+    }
+    
 	void GPUOperateMeshCommand::setData(const vector<glm::vec3>& data)
 	{
 		BROWSER_ASSERT(data.size() > 0, "Data size must bigger than 0 in function GPUOperateMeshCommand::setData(const vector<glm::vec3>& data)");
 
-		val_vec3 = data;
-        m_pData = &val_vec3[0];
+        m_eDataType = GOMC_DataType::Vector3;
+		m_vValueVec3 = data;
+        m_pData = &m_vValueVec3[0];
 		m_uSize = sizeof(glm::vec3)*data.size();
 	}
 
@@ -194,8 +237,9 @@ namespace customGL
 	{
 		BROWSER_ASSERT(data.size() > 0, "Data size must bigger than 0 in function GPUOperateMeshCommand::setData(const vector<glm::vec4>& data)");
 
-		val_vec4 = data;
-		m_pData = &val_vec4[0];
+        m_eDataType = GOMC_DataType::Vector4;
+		m_vValueVec4 = data;
+		m_pData = &m_vValueVec4[0];
 		m_uSize = sizeof(glm::vec4)*data.size();
 	}
 
@@ -203,8 +247,9 @@ namespace customGL
 	{
 		BROWSER_ASSERT(data.size() > 0, "Data size must bigger than 0 in function GPUOperateMeshCommand::setData(const vector<glm::uvec4>& data)");
 
-		val_uvec4 = data;
-        m_pData = &val_uvec4[0];
+        m_eDataType = GOMC_DataType::UnsignedVector4;
+		m_vValueUVec4 = data;
+        m_pData = &m_vValueUVec4[0];
 		m_uSize = sizeof(glm::uvec4)*data.size();
 	}
 
@@ -212,8 +257,9 @@ namespace customGL
 	{
 		BROWSER_ASSERT(data.size() > 0, "Data size must bigger than 0 in function GPUOperateMeshCommand::setData(const vector<float>& data)");
 
-		val_float = data;
-        m_pData = &val_float[0];
+        m_eDataType = GOMC_DataType::Float;
+		m_vValueFloat = data;
+        m_pData = &m_vValueFloat[0];
 		m_uSize = sizeof(float)*data.size();
 	}
 
@@ -221,8 +267,9 @@ namespace customGL
 	{
 		BROWSER_ASSERT(data.size() > 0, "Data size must bigger than 0 in function GPUOperateMeshCommand::setData(const vector<GLushort>& data)");
 
-		val_ushort = data;
-        m_pData = &val_ushort[0];
+        m_eDataType = GOMC_DataType::UnsignedShort;
+		m_vValueUShort = data;
+        m_pData = &m_vValueUShort[0];
 		m_uSize = sizeof(GLushort)*data.size();
 	}
 
