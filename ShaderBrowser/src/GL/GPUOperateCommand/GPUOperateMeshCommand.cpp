@@ -70,6 +70,7 @@ namespace customGL
 		m_uSize = 0;
 		if (m_eCommandType == GPUOperateType::GOT_Update)
 		{
+			
 		}
         
         // 回收命令
@@ -105,7 +106,6 @@ namespace customGL
 		glBufferData(GL_ARRAY_BUFFER, m_uSize, m_pData, GL_STATIC_DRAW);
 
 		// 4.解绑
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindVertexArray(0);
 	}
     
@@ -135,7 +135,6 @@ namespace customGL
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_uSize, m_pData, GL_STATIC_DRAW);
 
 		// 3.解绑
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 		glBindVertexArray(0);
 	}
 
@@ -170,9 +169,6 @@ namespace customGL
 
 		// 开启对应layout
 		glEnableVertexAttribArray(declaration.index);
-
-		// 2.解绑vbo
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 
 	void GPUOperateMeshCommand::setVertexAttribute(GLuint location, GLint size, GLenum type, GLboolean normalized, GLsizei stride, VertexDataType dataType /*= VertexDataType::Float*/)

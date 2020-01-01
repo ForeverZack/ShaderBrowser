@@ -12,6 +12,11 @@ namespace customGL
 	class GPUOperateMeshCommand : public BaseGPUOperateCommand
 	{
 	public:
+		enum GOMC_DataType
+		{
+			//
+		};
+	public:
 		GPUOperateMeshCommand();
         ~GPUOperateMeshCommand();
         
@@ -51,22 +56,6 @@ namespace customGL
 		// 顶点属性
 		VertexAttribDeclaration m_oDeclaration;
 		// 网格数据
-		union U {
-			glm::vec3 val_vec3;
-			glm::vec4 val_vec4;
-			glm::uvec4 val_uvec4;
-			float val_float;
-			GLushort val_ushort;
-
-			U() { memset(this, 0, sizeof(*this)); }
-			~U() {}
-			U& operator=(const U& other) {
-				memcpy(this, &other, sizeof(*this));
-				return *this;
-			}
-		};
-        std::vector<U> m_uValue;
-
 		std::vector<glm::vec3> val_vec3;
 		std::vector<glm::vec4> val_vec4;
 		std::vector<glm::uvec4> val_uvec4;
