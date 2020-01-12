@@ -103,7 +103,7 @@ namespace customGL
         friend class GPUOperateGLProgramCommand;
 
         // 拷贝glProgram
-        GLProgram* clone();
+        virtual GLProgram* clone();
 		// 使用着色器程序
 		void useProgram();
 		// 更新预定义uniform位置

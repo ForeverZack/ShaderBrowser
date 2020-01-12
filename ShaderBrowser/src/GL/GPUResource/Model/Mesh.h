@@ -89,6 +89,8 @@ namespace customGL
 		~Mesh();
 		friend class GPUOperateMeshCommand;
 
+        virtual Mesh* clone();
+        
 	public:
         // 初始化
         void init(int length);
@@ -150,7 +152,7 @@ namespace customGL
 		REGISTER_PROPERTY_CONSTREF_GET(std::string, m_sMeshName, MeshName)
         
         //
-		REGISTER_PROPERTY_GET(glm::vec4*, &m_vVertices[0], Vertices22)
+		REGISTER_PROPERTY_GET(glm::vec4*, &m_vVertices[0], Vertices)
         REGISTER_PROPERTY_GET(glm::vec4*, &m_vTexcoords1[0], Texcoords1)
         REGISTER_PROPERTY_GET(glm::vec3*, &m_vNormals[0], Normals)
         REGISTER_PROPERTY_GET(glm::vec3*, &m_vTangents[0], Tangents)

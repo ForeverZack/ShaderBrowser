@@ -194,7 +194,7 @@ namespace browser
         else
         {
 			dirty = false;
-            return mesh->getVertices22();
+            return mesh->getVertices();
         }
     }
 

@@ -302,7 +302,7 @@ namespace browser
                     
                     
                     // 顶点属性
-                    glm::vec4* vertices = m_oAxisMesh->getVertices22();
+                    glm::vec4* vertices = m_oAxisMesh->getVertices();
                     vertCount = m_oAxisMesh->getVertexCount();
                     
                     // 在CPU中处理顶点位置

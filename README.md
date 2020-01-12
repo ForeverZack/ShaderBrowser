@@ -1,8 +1,8 @@
 # ShaderBrowser
 
 ## 后续工作 <br>
--3)拆分过后BaseEntity::getVertices需要修改，法线和切线目前还没有传
--2) 实现Transform feedback，用来计算骨骼
+-3)sharedMesh的实现，个人理解是MeshFilter的Mesh是shared类型的，而SkinnedMeshRenderer是非share的(或者可以通过useGPU来判断)，
+-2)拆分过后BaseEntity::getVertices需要修改，法线和切线目前还没有传
 -1) 切分动画，以及切分动画之间的混合等操作 <br>
 0）骨骼的显示，包围盒的旋转问题，GLProgram的缓存机制问题，实体Visible的问题，骨骼动画的优化(例如看不见的模型，是不需要更新计算骨骼矩阵的)。优化重构代码，减轻组件之间的耦合，看看ogre中如何实现和优化的。<br>
 1）MeshFitter的AABB包围盒的生成,以及可见性检测。关于可见性检测,可能会需要添加四叉树或者八叉树来管理场景 <br>

@@ -457,7 +457,7 @@ namespace browser
 				const std::vector<Mesh*>& meshes = m_oSrcModel->getMeshes();
 				for (auto itor = meshes.begin(); itor != meshes.end(); ++itor)
 				{
-					glm::vec4* vertices = (*itor)->getVertices22();
+					glm::vec4* vertices = (*itor)->getVertices();
 					std::vector<glm::uvec4>& boneIndices = (*itor)->getBoneIndicesRef();
 					std::vector<glm::vec4>& boneWeights = (*itor)->getBoneWeightsRef();
 					glm::vec3* normals = (*itor)->getNormals();

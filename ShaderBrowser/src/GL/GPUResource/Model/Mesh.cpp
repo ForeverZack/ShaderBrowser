@@ -60,6 +60,50 @@ namespace customGL
 		deleteGPUResource();
 	}
     
+    Mesh* Mesh::clone()
+    {
+        Mesh* mesh = new Mesh(m_sMeshName, m_eMeshType);
+        
+        mesh->init(m_uVertexCount);
+        mesh->createMeshOnGPU();
+        
+        if(m_vVertices.size() > 0)
+        {
+            mesh->setVertices(&m_vVertices[0]);
+        }
+        if(m_vIndices.size() > 0)
+        {
+            mesh->setIndices(&m_vIndices[0], m_uIndexCount);
+        }
+        if(m_vTexcoords1.size() > 0)
+        {
+            mesh->setUVs(&m_vTexcoords1[0]);
+        }
+        if(m_vColors.size() > 0)
+        {
+            mesh->setColors(&m_vColors[0]);
+        }
+        if(m_vNormals.size() > 0)
+        {
+            mesh->setNormals(&m_vNormals[0]);
+        }
+        if(m_vTangents.size() > 0)
+        {
+            mesh->setTangents(&m_vTangents[0]);
+        }
+        if(m_vBoneIndices.size() > 0)
+        {
+            mesh->setBoneIndices(m_vBoneIndices);
+        }
+        if(m_vBoneWeights.size() > 0)
+        {
+            mesh->setBoneWeights(m_vBoneWeights);
+        }
+        
+        
+        return mesh;
+    }
+    
     void Mesh::createMeshOnGPU()
     {
 		createGPUResource();

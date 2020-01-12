@@ -326,7 +326,7 @@ namespace browser
         for(auto itor=meshes.begin(); itor!=meshes.end(); ++itor)
         {
             mesh = *itor;
-            glm::vec4* vertices = mesh->getVertices22();
+            glm::vec4* vertices = mesh->getVertices();
 			std::vector<glm::uvec4>& bonesIndices = mesh->getBoneIndicesRef();
 			std::vector<glm::vec4>& bonesWeights = mesh->getBoneWeightsRef();
             for (int i=0; i<mesh->getVertexCount(); ++i)
