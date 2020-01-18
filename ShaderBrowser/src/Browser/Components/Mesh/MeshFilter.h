@@ -42,6 +42,7 @@ namespace browser
         
 	protected:
 		// 网格模型列表
+        // tips: 这里使用列表是因为同一个节点下，可能会存在多个Mesh和多个材质的问题(Unity中通过Mesh的subMesh来实现，这里干脆直接用个Mesh队列，如果后面结构上存在问题，可以考虑按Unity的Mesh机制来弄)
 		std::vector<Mesh*> m_vMeshes;
 	};
 }
