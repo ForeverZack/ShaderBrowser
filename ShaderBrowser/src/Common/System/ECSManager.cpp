@@ -68,6 +68,15 @@ namespace common
 		}
 	}
     
+    void ECSManager::afterUpdateSystem(SystemType type, float deltaTime)
+    {
+        BaseSystem* system = getSystem(type);
+        if (system)
+        {
+            system->afterUpdate(deltaTime);
+        }
+    }
+    
     bool ECSManager::isSystemFinish(SystemType type)
     {
         BaseSystem* system = getSystem(type);

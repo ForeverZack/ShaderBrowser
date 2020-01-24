@@ -63,6 +63,7 @@ namespace common
 		// 根据类型更新系统
         void beforeUpdateSystem(SystemType type, float deltaTime);
 		void updateSystem(SystemType type, float deltaTime);
+        void afterUpdateSystem(SystemType type, float deltaTime);
         
         // 获取系统是否执行完成
         bool isSystemFinish(SystemType type);

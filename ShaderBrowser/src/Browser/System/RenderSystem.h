@@ -37,11 +37,12 @@ namespace browser
         void flushRenders();
 		// 每帧更新
 		void update(float deltaTime);
+        // 渲染场景结束后
+        void afterUpdate(float deltaTime);
 		// 绘制场景
 		void renderScene(Camera* camera, float deltaTime);
         // 前向渲染
         void forwardRenderScene(Camera* camera, float deltaTime);
-        
 
         
 		REGISTER_PROPERTY_GET_SET(unsigned int, m_uDrawCalls, DrawCalls)

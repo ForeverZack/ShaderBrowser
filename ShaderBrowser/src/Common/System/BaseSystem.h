@@ -86,10 +86,12 @@ namespace common
 		}
 		// 初始化
 		virtual void init() {}
-		// 在所有系统刷新前（用来重置一些标记等）
+		// 在系统刷新前（用来重置一些标记等）
         virtual void beforeUpdate(float deltaTime) {}
         // 每帧刷新
 		virtual void update(float deltaTime) {}
+        // 在系统刷新后（用来做一些后处理）
+        virtual void afterUpdate(float deltaTime) {}
 
 		REGISTER_PROPERTY_GET_SET(int, m_iPriority, Priority)
 		REGISTER_PROPERTY_GET_SET(bool, m_bComponentMutex, ComponentMutex)

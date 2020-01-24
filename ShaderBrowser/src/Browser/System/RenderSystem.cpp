@@ -159,6 +159,16 @@ namespace browser
 		// 当前第几帧
 		++m_uFrameIndex;
 	}
+    
+    void RenderSystem::afterUpdate(float deltaTime)
+    {
+        // 递交渲染命令
+        flushRenders();
+        
+        Camera* camera = CameraSystem::getInstance()->getMainCamera();
+        // 渲染包围盒跟坐标轴
+        renderAssistTools(camera);
+    }
 
 	void RenderSystem::renderScene(Camera* camera, float deltaTime)
 	{
@@ -206,9 +216,6 @@ namespace browser
                     break;
             }
         }
-        
-        // 渲染包围盒跟坐标轴
-        renderAssistTools(camera);
 
 	}
     
@@ -459,10 +466,6 @@ namespace browser
             }
             
         }
-        
-        // 递交渲染命令
-        flushRenders();
-
 
 #ifdef _SHADER_BROWSER_RENDER_SYSTEM_DEBUG
 

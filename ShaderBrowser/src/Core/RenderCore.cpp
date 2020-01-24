@@ -141,8 +141,8 @@ namespace core
         // 1.input
         processInput(m_pWindow);
         
-        // 更新渲染系统 TODO：实际上这里只应该执行渲染命令队列里的数据，而非生成渲染命令
-        ECSManager::getInstance()->updateSystem(SystemType::RenderSystem, deltaTime);
+        // 渲染场景结束后
+        ECSManager::getInstance()->afterUpdateSystem(SystemType::RenderSystem, deltaTime);
         
         // 更新调试信息
         common::GUIFramework::getInstance()->getGameStatusPanel()->setDeltaTime(deltaTime);

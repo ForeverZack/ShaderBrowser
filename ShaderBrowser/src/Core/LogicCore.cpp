@@ -70,6 +70,8 @@ namespace core
 		recTime("====SystemType::Camera=====");
 		ECSManager::getInstance()->updateSystem(SystemType::BoundBox, deltaTime);   // 更新BoundBox
 		recTime("====SystemType::BoundBox=====");
+        ECSManager::getInstance()->updateSystem(SystemType::RenderSystem, deltaTime);   // 更新渲染系统（这里只负责生成渲染命令队列，并不会有任何绘制操作）
+        recTime("====SystemType::Render=====");
 
 		// temp
 		TextureCache::getInstance()->update(deltaTime);
