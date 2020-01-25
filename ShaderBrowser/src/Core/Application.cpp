@@ -16,10 +16,10 @@ namespace core
 
 	void Application::init()
 	{
-		// ´´½¨´°¿Ú
+		// åˆ›å»ºçª—å£
 		RenderCore::getInstance()->createWindow();
 
-		// ³õÊ¼»¯
+		// åˆå§‹åŒ–
 		LogicCore::getInstance()->initLogic();
 		RenderCore::getInstance()->initRender();
 	}
@@ -47,7 +47,7 @@ namespace core
 
 	void Application::mainLoop()
 	{
-		// ¼ÆËãdeltaTime
+		// è®¡ç®—deltaTime
 		auto now = std::chrono::steady_clock::now();
 		float deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(now - _lastUpdate).count() / 1000000.0f;
 		deltaTime = deltaTime < 0 ? 0 : deltaTime;
@@ -62,7 +62,7 @@ namespace core
 		//    BROWSER_LOG(deltaTime);
 
 
-		// ËøÖ¡
+		// é”å¸§
 		//    float fps = ;
 		//    if (deltaTime < 1.0f/60.0f)
 		//    {

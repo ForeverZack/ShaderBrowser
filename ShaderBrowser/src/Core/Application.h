@@ -19,11 +19,11 @@ namespace core
 
 	private:
 		void mainLoop();
-		// ¼ÇÂ¼Ê±¼ä(²âÊÔÏµÍ³¼äµÄË¢ÐÂ¼ä¸ô)
+		// è®°å½•æ—¶é—´(æµ‹è¯•ç³»ç»Ÿé—´çš„åˆ·æ–°é—´éš”)
 		void recTime(const std::string& log);
 
 	private:
-		// ÉÏÒ»´Î¸üÐÂµÄÊ±¼ä´Á
+		// ä¸Šä¸€æ¬¡æ›´æ–°çš„æ—¶é—´æˆ³
 		std::chrono::steady_clock::time_point _lastUpdate;
 
     };

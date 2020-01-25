@@ -7,6 +7,7 @@
 #include "Browser/System/RenderSystem.h"
 #include "GL/GLStateCache.h"
 #include "GL/System/GPUOperateSystem.h"
+#include "Core/LogicCore.h"
 
 namespace core
 {
@@ -132,6 +133,9 @@ namespace core
     
     void RenderCore::renderLoop(float deltaTime)
     {
+        // wait
+        while(LogicCore::getInstance()->getLogicState() != LogicCore::LogicCoreState::LCS_Finish);
+        
         // 处理gpu操作指令
         GPUOperateSystem::getInstance()->update();
 

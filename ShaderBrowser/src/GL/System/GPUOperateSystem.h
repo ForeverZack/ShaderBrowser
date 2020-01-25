@@ -5,6 +5,7 @@
 #include "GL/GPUOperateCommand/BaseGPUOperateCommand.h"
 #include "Common/Tools/Utils.h"
 #include "Common/Tools/Thread/BaseThread.h"
+#include "Core/LogicCore.h"
 
 using namespace common;
 

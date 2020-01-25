@@ -39,10 +39,8 @@ namespace customGL
         
         // 注意！！！！！！！！！！！
         // 一定要等渲染线程拷贝完上一帧的命令队列数据，逻辑线程才可以继续执行下一帧！！！！！！！！！！！
-
-//        // test
-//        m_vCommands.clear();
-//        return;
+        // set mutex
+        core::LogicCore::getInstance()->setLogicState(core::LogicCore::LogicCoreState::LCS_Prepare);
         
         // 渲染线程执行命令队列
         BaseGPUOperateCommand* cmd = nullptr;

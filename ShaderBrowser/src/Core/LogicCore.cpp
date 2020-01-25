@@ -16,6 +16,7 @@
 namespace core
 {
 	LogicCore::LogicCore()
+        : m_eLogicState(LogicCoreState::LCS_Prepare)
 	{
 
 	}
@@ -53,6 +54,9 @@ namespace core
 
 	void LogicCore::logicLoop(float deltaTime)
 	{
+        // wait
+        while(LogicCore::getInstance()->getLogicState() != LogicCore::LogicCoreState::LCS_Prepare);
+        
 		// beforeUpdate
 		ECSManager::getInstance()->beforeUpdateSystem(SystemType::Transform, deltaTime); // 在所有系统刷新前刷新transform
 
@@ -79,7 +83,9 @@ namespace core
 
 		// auto release
 		AutoReleasePool::getInstance()->update();
-
+        
+        // set mutex
+        setLogicState(LogicCoreState::LCS_Finish);
 	}
 
 	void LogicCore::recTime(const std::string& log)
