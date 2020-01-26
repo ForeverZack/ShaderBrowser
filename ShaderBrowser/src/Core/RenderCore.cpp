@@ -3,11 +3,11 @@
 #include "Common/Tools/UI/GUIFramework.h"
 #include "Common/Tools/UI/InspectorPanel.h"
 #include "Common/Tools/UI/GameStatusPanel.h"
-#include "Common/System/Cache/GLProgramCache.h"
 #include "Browser/System/RenderSystem.h"
 #include "GL/GLStateCache.h"
 #include "GL/System/GPUOperateSystem.h"
 #include "Core/LogicCore.h"
+#include "Core/Application.h"
 
 namespace core
 {
@@ -62,6 +62,8 @@ namespace core
     
 	RenderCore::RenderCore()
         : m_pWindow(nullptr)
+        , m_bShouldCloseWindow(false)
+        , m_eRenderState(RenderCoreState::RCS_End)
     {
         
     }
@@ -74,41 +76,11 @@ namespace core
     void RenderCore::createWindow()
     {
         m_pWindow = initWindow();
-
-        // 关闭垂直同步
-    #ifdef _WIN32
-        // win32
-        bool isOk = InitVSync();
-        if (isOk)
-        {
-            SetVSyncState(false);
-        }
-    #endif // WIN32
-        
-    #ifdef __APPLE__
-        //    // mac获取extension的方法：3.0+的profile对glGetString传GL_EXTENSIONS已经被deprecated，属于invalid enumeration，正确的方法是用glGetStringi代替
-        //    {
-        //        GLint n, i;
-        //        glGetIntegerv(GL_NUM_EXTENSIONS, &n);
-        //        for (i = 0; i < n; i++)
-        //        {
-        //            printf("%s\n", glGetStringi(GL_EXTENSIONS, i));
-        //        }
-        //    }
-        // 禁用mac垂直同步
-        GLint sync = 0;
-        CGLContextObj ctx = CGLGetCurrentContext();
-        CGLSetParameter(ctx, kCGLCPSwapInterval, &sync);
-    #endif
-
-        // uncomment this call to draw in wireframe polygons.
-        //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
     }
     
     bool RenderCore::shouldCloseWindow()
     {
-        return glfwWindowShouldClose(m_pWindow);
+        return m_bShouldCloseWindow.getValue();
     }
     
     void RenderCore::destoryWindow()
@@ -120,21 +92,62 @@ namespace core
 
 	void RenderCore::initRender()
 	{
+        glfwMakeContextCurrent(m_pWindow);
+        
+        // 关闭垂直同步
+        #ifdef _WIN32
+            // win32
+            bool isOk = InitVSync();
+            if (isOk)
+            {
+                SetVSyncState(false);
+            }
+        #endif // WIN32
+        #ifdef __APPLE__
+            //    // mac获取extension的方法：3.0+的profile对glGetString传GL_EXTENSIONS已经被deprecated，属于invalid enumeration，正确的方法是用glGetStringi代替
+            //    {
+            //        GLint n, i;
+            //        glGetIntegerv(GL_NUM_EXTENSIONS, &n);
+            //        for (i = 0; i < n; i++)
+            //        {
+            //            printf("%s\n", glGetStringi(GL_EXTENSIONS, i));
+            //        }
+            //    }
+            // 禁用mac垂直同步
+            GLint sync = 0;
+            CGLContextObj ctx = CGLGetCurrentContext();
+            CGLSetParameter(ctx, kCGLCPSwapInterval, &sync);
+        #endif
+
+        // uncomment this call to draw in wireframe polygons.
+        //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        
+        // glad: load all OpenGL function pointers
+        // ---------------------------------------
+        if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+        {
+            std::cout << "Failed to initialize GLAD" << std::endl;
+            return;
+        }
+        ImGui_ImplGlfwGL3_Init(m_pWindow, true);
+        ImGui::StyleColorsDark();
+        
 		// 注册渲染系统
 		ECSManager::getInstance()->registerSystem(browser::RenderSystem::getInstance());	// 渲染系统
 																							// 初始化渲染系统
 		ECSManager::getInstance()->initSystem(SystemType::RenderSystem);
-		// 加载缓存
-		GLProgramCache::getInstance()->init();  // 着色器缓存
 
-												// 初始化调试GUI框架
+        // 初始化调试GUI框架
 		common::GUIFramework::getInstance()->init(SCR_WIDTH, SCR_HEIGHT);
 	}
     
-    void RenderCore::renderLoop(float deltaTime)
+    void RenderCore::renderLoop()
     {
         // wait
         while(LogicCore::getInstance()->getLogicState() != LogicCore::LogicCoreState::LCS_Finish);
+        m_eRenderState = RenderCoreState::RCS_Start;
+        
+        float deltaTime = Application::CurrentApplication->getDeltaTime();
         
         // 处理gpu操作指令
         GPUOperateSystem::getInstance()->update();
@@ -159,8 +172,12 @@ namespace core
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         glfwSwapBuffers(m_pWindow);
-		glfwPollEvents();
+//		glfwPollEvents();
 
+        // should close window
+        m_bShouldCloseWindow = glfwWindowShouldClose(m_pWindow);
+        
+        m_eRenderState = RenderCoreState::RCS_End;
     }
     
     GLFWwindow* RenderCore::initWindow()
@@ -179,14 +196,14 @@ namespace core
         #endif
 
 
-    #ifdef __APPLE__
-        // macOS
-        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // uncomment this statement to fix compilation on OS X
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);    // mac下只能用GLFW_OPENGL_CORE_PROFILE核心模式，不然程序会报错
-    #else
-         //win32
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);    // 这里如果用GLFW_OPENGL_CORE_PROFILE核心模式，则获取不到extensions
-    #endif
+        #ifdef __APPLE__
+            // macOS
+            glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // uncomment this statement to fix compilation on OS X
+            glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);    // mac下只能用GLFW_OPENGL_CORE_PROFILE核心模式，不然程序会报错
+        #else
+             //win32
+            glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);    // 这里如果用GLFW_OPENGL_CORE_PROFILE核心模式，则获取不到extensions
+        #endif
 
 
         // glfw window creation
@@ -198,23 +215,11 @@ namespace core
             glfwTerminate();
             return nullptr;
         }
-        glfwMakeContextCurrent(window);
+        
         glfwSetFramebufferSizeCallback(window, RenderCore::framebuffer_size_callback);
         glfwSetWindowSizeCallback(window, RenderCore::window_size_callback);
         glfwSetCursorPosCallback(window, RenderCore::mouse_callback);
         glfwSetMouseButtonCallback(window, RenderCore::mouse_button_callback);
-
-        ImGui_ImplGlfwGL3_Init(window, true);
-
-        ImGui::StyleColorsDark();
-
-        // glad: load all OpenGL function pointers
-        // ---------------------------------------
-        if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-        {
-            std::cout << "Failed to initialize GLAD" << std::endl;
-            return nullptr;
-        }
 
         return window;
     }

@@ -100,6 +100,13 @@ namespace browser
     
     void RenderSystem::flushRenders()
     {
+        //    清理FrameBuffer
+        glClearColor(0.45f, 0.55f, 0.60f, 1.00f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        
+        // 开启深度测试
+        GLStateCache::getInstance()->openDepthTest();
+        
         std::stable_sort(std::begin(m_vRenderCommands), std::end(m_vRenderCommands), [](BaseRenderCommand* c1, BaseRenderCommand* c2) {
             return c1->getMaterial()->getSharedId() < c2->getMaterial()->getSharedId();
         });
@@ -172,13 +179,6 @@ namespace browser
 
 	void RenderSystem::renderScene(Camera* camera, float deltaTime)
 	{
-		//	清理FrameBuffer
-		glClearColor(0.45f, 0.55f, 0.60f, 1.00f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        
-        // 开启深度测试
-        GLStateCache::getInstance()->openDepthTest();
-
 		// TODO: 以后需要实现合批
 		// 思考：什么情况下才可以合批
 		// 1. 排序

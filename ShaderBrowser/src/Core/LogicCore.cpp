@@ -11,6 +11,7 @@
 #include "Browser/System/AnimationSystem.h"
 #include "Common/System/Cache/TextureCache.h"
 #include "Common/System/Cache/ModelCache.h"
+#include "Common/System/Cache/GLProgramCache.h"
 
 
 namespace core
@@ -35,6 +36,9 @@ namespace core
 		// test flatbuffer
 		//    BinaryFileUtils::getInstance()->serialize();
 		//    BinaryFileUtils::getInstance()->deserialize();
+        
+        // 加载缓存
+        GLProgramCache::getInstance()->init();  // 着色器缓存
 
 		// 注册基本系统
 		ECSManager::getInstance()->registerSystem(browser::TransformSystem::getInstance()); // Transform
@@ -54,9 +58,6 @@ namespace core
 
 	void LogicCore::logicLoop(float deltaTime)
 	{
-        // wait
-        while(LogicCore::getInstance()->getLogicState() != LogicCore::LogicCoreState::LCS_Prepare);
-        
 		// beforeUpdate
 		ECSManager::getInstance()->beforeUpdateSystem(SystemType::Transform, deltaTime); // 在所有系统刷新前刷新transform
 
@@ -83,9 +84,6 @@ namespace core
 
 		// auto release
 		AutoReleasePool::getInstance()->update();
-        
-        // set mutex
-        setLogicState(LogicCoreState::LCS_Finish);
 	}
 
 	void LogicCore::recTime(const std::string& log)

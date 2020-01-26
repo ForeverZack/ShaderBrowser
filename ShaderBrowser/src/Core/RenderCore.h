@@ -19,6 +19,7 @@
 
 #include "Common/Tools/Utils.h"
 #include "Common/Tools/BaseSingleton.h"
+#include "Common/Tools/Thread/BaseThread.h"
 
 using namespace customGL;
 using namespace common;
@@ -33,6 +34,15 @@ namespace core
     class RenderCore : public BaseSingleton<RenderCore>
     {
     public:
+        enum RenderCoreState
+        {
+            // 渲染开始
+            RCS_Start = 0,
+            // 渲染结束
+            RCS_End,
+        };
+        
+    public:
         RenderCore();
         ~RenderCore();
         
@@ -44,7 +54,7 @@ namespace core
 		// 初始化
 		void initRender();
         // 循环
-        void renderLoop(float deltaTime);
+        void renderLoop();
         // 是否关闭窗口
         bool shouldCloseWindow();
         
@@ -56,11 +66,23 @@ namespace core
         static void mouse_callback(GLFWwindow* window, double xpos, double ypos);
         static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
         
+        
         REGISTER_PROPERTY_GET(GLFWwindow*, m_pWindow, Window)
+        RenderCoreState getRenderState()
+        {
+            return m_eRenderState.getValue();
+        }
+        void setRenderState(RenderCoreState state)
+        {
+            m_eRenderState = state;
+        }
         
     private:
         // window
         GLFWwindow* m_pWindow;
-
+        // should close window
+        MutexVariable<bool> m_bShouldCloseWindow;
+        // 渲染状态
+        MutexVariable<RenderCoreState> m_eRenderState;
     };
 }
