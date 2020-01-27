@@ -87,7 +87,6 @@ namespace core
     {
         // glfw: terminate, clearing all previously allocated GLFW resources.
         ImGui_ImplGlfwGL3_Shutdown();
-        glfwTerminate();
     }
 
 	void RenderCore::initRender()
@@ -133,8 +132,8 @@ namespace core
         ImGui::StyleColorsDark();
         
 		// 注册渲染系统
-		ECSManager::getInstance()->registerSystem(browser::RenderSystem::getInstance());	// 渲染系统
-																							// 初始化渲染系统
+		ECSManager::getInstance()->registerSystem(browser::RenderSystem::getInstance());
+        // 初始化渲染系统
 		ECSManager::getInstance()->initSystem(SystemType::RenderSystem);
 
         // 初始化调试GUI框架
@@ -160,7 +159,7 @@ namespace core
         
         // 渲染场景结束后
         ECSManager::getInstance()->afterUpdateSystem(SystemType::RenderSystem, deltaTime);
-        
+
         // 更新调试信息
         common::GUIFramework::getInstance()->getGameStatusPanel()->setDeltaTime(deltaTime);
         // 更新调试GUI框架

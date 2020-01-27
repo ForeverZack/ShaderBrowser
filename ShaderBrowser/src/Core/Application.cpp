@@ -44,10 +44,15 @@ namespace core
 
 	void Application::run()
 	{
-		while (m_bRenderInited && !RenderCore::getInstance()->shouldCloseWindow())
+        // 等待渲染线程初始化完毕，可能实际上不需要等待，但会有一定的风险，为了是为了安全起见
+        while(!m_bRenderInited);
+        
+		while (!RenderCore::getInstance()->shouldCloseWindow())
 		{
 			mainLoop();
 		}
+        // 结束glfw
+        glfwTerminate();
 	}
 
 	auto timePoint = std::chrono::steady_clock::now();
