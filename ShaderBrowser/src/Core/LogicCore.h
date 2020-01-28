@@ -37,6 +37,8 @@ namespace core
 	private:
 		// 记录时间(测试系统间的刷新间隔)
 		void recTime(const std::string& log);
+        // 处理输入事件
+        void processInput();
         
     public:
         LogicCoreState getLogicState()

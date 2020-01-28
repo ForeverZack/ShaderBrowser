@@ -31,6 +31,7 @@
 		1428BDEB2349D711000D13E2 /* BaseThread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1428BDE92349D711000D13E2 /* BaseThread.cpp */; };
 		143995D7238158B700323A90 /* Application.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 143995D3238158B700323A90 /* Application.cpp */; };
 		143995D8238158B700323A90 /* LogicCore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 143995D4238158B700323A90 /* LogicCore.cpp */; };
+		143E55B923E018D8003287C3 /* Input.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 143E55B723E018D8003287C3 /* Input.cpp */; };
 		1469977F220F14B600F4C802 /* BaseLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1469977E220F14B600F4C802 /* BaseLight.cpp */; };
 		147BBAF9222277EF00B3079B /* HierarchyPanel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 147BBAF8222277EE00B3079B /* HierarchyPanel.cpp */; };
 		148177B621D8A86D0037E11D /* Transform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 148177B421D8A86C0037E11D /* Transform.cpp */; };
@@ -156,6 +157,8 @@
 		143995D4238158B700323A90 /* LogicCore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LogicCore.cpp; sourceTree = "<group>"; };
 		143995D5238158B700323A90 /* Application.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Application.h; sourceTree = "<group>"; };
 		143995D6238158B700323A90 /* LogicCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LogicCore.h; sourceTree = "<group>"; };
+		143E55B723E018D8003287C3 /* Input.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Input.cpp; sourceTree = "<group>"; };
+		143E55B823E018D8003287C3 /* Input.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Input.h; sourceTree = "<group>"; };
 		1469977D220F14B600F4C802 /* BaseLight.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseLight.h; sourceTree = "<group>"; };
 		1469977E220F14B600F4C802 /* BaseLight.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BaseLight.cpp; sourceTree = "<group>"; };
 		147BBAF7222277EE00B3079B /* HierarchyPanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HierarchyPanel.h; sourceTree = "<group>"; };
@@ -333,6 +336,8 @@
 			children = (
 				14232A3F239B61110023C85C /* GPUOperateSystem.h */,
 				14232A41239B61AB0023C85C /* GPUOperateSystem.cpp */,
+				143E55B823E018D8003287C3 /* Input.h */,
+				143E55B723E018D8003287C3 /* Input.cpp */,
 			);
 			path = System;
 			sourceTree = "<group>";
@@ -905,6 +910,7 @@
 				14EB11832220184D00D3C29D /* imgui_draw.cpp in Sources */,
 				1469977F220F14B600F4C802 /* BaseLight.cpp in Sources */,
 				14232A5A239BCFC70023C85C /* SkeletonAnimation.cpp in Sources */,
+				143E55B923E018D8003287C3 /* Input.cpp in Sources */,
 				14B9067D21BABC8F00554B0B /* glad.c in Sources */,
 				14B9A046239AAC2D00B9F169 /* Image.cpp in Sources */,
 				148C358F227AFC62008CB8B1 /* SkinnedRenderCommand.cpp in Sources */,

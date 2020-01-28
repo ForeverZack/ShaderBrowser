@@ -51,18 +51,21 @@ namespace core
         void createWindow();
         // 销毁窗口
         void destoryWindow();
-		// 初始化
+		// 初始化 (设置当前线程的opengl上下文、初始化glad和imgui、初始化渲染系统和GUI框架)
 		void initRender();
-        // 循环
+        // 渲染循环
         void renderLoop();
         // 是否关闭窗口
         bool shouldCloseWindow();
+        // 设置关闭窗口
+        void setWindowShouldClose();
+        // input
+        int getKeyState(int keyCode);
         
     private:
         GLFWwindow* initWindow();
         static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
         static void window_size_callback(GLFWwindow* window, int width, int height);
-        static void processInput(GLFWwindow *window);
         static void mouse_callback(GLFWwindow* window, double xpos, double ypos);
         static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
         
@@ -80,8 +83,6 @@ namespace core
     private:
         // window
         GLFWwindow* m_pWindow;
-        // should close window
-        MutexVariable<bool> m_bShouldCloseWindow;
         // 渲染状态
         MutexVariable<RenderCoreState> m_eRenderState;
     };
