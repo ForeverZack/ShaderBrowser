@@ -31,11 +31,11 @@ namespace browser
 
 		// init
 		void init();
-		// 清空渲染队列
-		void clearRenders();
         // 遍历渲染队列并渲染
         void flushRenders();
-		// 每帧更新
+        // 渲染前（逻辑线程做好渲染准备）
+        virtual void beforeUpdate(float deltaTime);
+        // 每帧更新
 		void update(float deltaTime);
         // 渲染场景结束后
         void afterUpdate(float deltaTime);
@@ -55,8 +55,11 @@ namespace browser
         void renderAssistTools(Camera* camera);
 	
 	private:
-        // 渲染队列
+        // 渲染队列 (渲染线程)
+        // 注意：这里没有和GPUOperateSystem一样使用MutexQueue，因为这里的队列只在逻辑线程和渲染线程中使用。它们的复制过程只允许发生在逻辑线程一帧结束，并且渲染线程刚刚开始时，这里逻辑线程会被锁住，只有渲染线程在跑
         std::vector<BaseRenderCommand*> m_vRenderCommands;
+        // 渲染队列队列 (逻辑线程)
+        std::vector<BaseRenderCommand*> m_vWaitRenderCommands;
         
         // 绘制所用的draw call次数
         unsigned int m_uDrawCalls;
@@ -66,8 +69,6 @@ namespace browser
 		unsigned long m_uFaceCount;
 		// 当前帧
 		unsigned long m_uFrameIndex;
-        // 当前待渲染的顶点数量
-        unsigned int m_uNoRenderVertices;
         
         // 坐标轴模型
         Mesh* m_oAxisMesh;

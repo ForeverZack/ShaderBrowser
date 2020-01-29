@@ -59,7 +59,6 @@ namespace browser
 		: m_uDrawCalls(0)
 		, m_uVerticesCount(0)
 		, m_uFrameIndex(0)
-        , m_uNoRenderVertices(0)
 	{
 		m_iPriority = 0;
 		m_eSystemType = common::SystemType::RenderSystem;
@@ -72,9 +71,8 @@ namespace browser
 
 	void RenderSystem::init()
 	{
-		clearRenders();
-
         m_vRenderCommands.clear();
+        m_vWaitRenderCommands.clear();
        
 
         // 生成坐标轴模型
@@ -85,17 +83,6 @@ namespace browser
         // 坐标轴缩放矩阵
         glm::vec3 axis_scale(SHOW_AXIS_SCALE, SHOW_AXIS_SCALE, SHOW_AXIS_SCALE);
         m_oAxisScaleMatrix = glm::scale(GLM_MAT4_UNIT, axis_scale);
-	}
-
-	void RenderSystem::clearRenders()
-	{
-        m_vRenderCommands.clear();
-        
-//        for (auto itor = m_mComponentsList.begin(); itor != m_mComponentsList.end(); ++itor)
-//        {
-//            itor->second.clear();
-//        }
-//        m_mComponentsList.clear();
 	}
     
     void RenderSystem::flushRenders()
@@ -132,39 +119,34 @@ namespace browser
             //
             command->draw();
             
-            // 增加1次draw call
-            ++m_uDrawCalls;
-            // 增加顶点数量
-            m_uVerticesCount += command->getVertexCount();
-            // 增加三角面数量
-            m_uFaceCount += command->getIndexCount() / 3;
-            
             // 删除命令
             delete command;
         }
         
-        
         // 重置
         m_vRenderCommands.clear();
-        m_uNoRenderVertices = 0;
+    }
+    
+    void RenderSystem::beforeUpdate(float deltaTime)
+    {
+        // 重置draw call
+        m_uDrawCalls = 0;
+        // 重置顶点数量
+        m_uVerticesCount = 0;
+        // 重置三角面数量
+        m_uFaceCount = 0;
+        
+        // 渲染主相机场景
+        renderScene(CameraSystem::getInstance()->getMainCamera(), deltaTime);
+
+        // 当前第几帧
+        ++m_uFrameIndex;
     }
     
 	void RenderSystem::update(float deltaTime)
 	{
-        // 重置draw call
-        m_uDrawCalls = 0;
-		// 重置顶点数量
-		m_uVerticesCount = 0;
-		// 重置三角面数量
-		m_uFaceCount = 0;
-        // 重置待渲染顶点数量
-        m_uNoRenderVertices = 0;
-        
-		// 渲染主相机场景
-		renderScene(CameraSystem::getInstance()->getMainCamera(), deltaTime);
-
-		// 当前第几帧
-		++m_uFrameIndex;
+        m_vRenderCommands = m_vWaitRenderCommands;
+        m_vWaitRenderCommands.clear();
 	}
     
     void RenderSystem::afterUpdate(float deltaTime)
@@ -188,7 +170,7 @@ namespace browser
         if (camera)
         {
             // 清空渲染队列
-            clearRenders();
+            m_vWaitRenderCommands.clear();
             
             switch(camera->getRenderPathType())
             {
@@ -436,8 +418,14 @@ namespace browser
                         }
                         break;
                 }
-                m_vRenderCommands.push_back(command);
-                m_uNoRenderVertices += vertCount;
+                m_vWaitRenderCommands.push_back(command);
+                
+                // 增加1次draw call
+                ++m_uDrawCalls;
+                // 增加顶点数量
+                m_uVerticesCount += command->getVertexCount();
+                // 增加三角面数量
+                m_uFaceCount += command->getIndexCount() / 3;
 
 
 #ifdef _SHADER_BROWSER_RENDER_SYSTEM_DEBUG

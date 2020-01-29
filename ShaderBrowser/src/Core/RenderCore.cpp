@@ -152,7 +152,9 @@ namespace core
         
         float deltaTime = Application::CurrentApplication->getDeltaTime();
         
-        // 处理gpu操作指令
+        // 从逻辑线程拷贝渲染命令队列
+        ECSManager::getInstance()->updateSystem(SystemType::RenderSystem, deltaTime);
+        // 处理gpu操作指令  注意：这里会把LogicCore的状态置为LCS_Prepare
         GPUOperateSystem::getInstance()->update();
 
 		// 重置GL状态（这里主要是为了防止插件如imgui绑定纹理，造成缓存失效）

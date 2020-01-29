@@ -62,25 +62,31 @@ namespace core
 	{
         // input
         processInput();
-        
-		// beforeUpdate
-		ECSManager::getInstance()->beforeUpdateSystem(SystemType::Transform, deltaTime); // 在所有系统刷新前刷新transform
-
 		
 		m_oLastUpdate = std::chrono::steady_clock::now();
-
-		ECSManager::getInstance()->updateSystem(SystemType::Transform, deltaTime);  // 更新transform
+        
+        // 在所有系统刷新前刷新transform，重置脏标记
+        ECSManager::getInstance()->beforeUpdateSystem(SystemType::Transform, deltaTime);
+        // 更新transform
+		ECSManager::getInstance()->updateSystem(SystemType::Transform, deltaTime);
 		recTime("====SystemType::Transform=====");
-		ECSManager::getInstance()->updateSystem(SystemType::Animation, deltaTime);   // 更新动画系统
+        // 更新动画系统
+		ECSManager::getInstance()->updateSystem(SystemType::Animation, deltaTime);
 		recTime("====SystemType::Animation=====");
 
-		while (!ECSManager::getInstance()->isSystemFinish(SystemType::Transform));    // Transform系统必须更新完
+        // Transform系统必须更新完
+		while (!ECSManager::getInstance()->isSystemFinish(SystemType::Transform));
 
-		ECSManager::getInstance()->updateSystem(SystemType::Camera, deltaTime);  // 更新camera
+        // 更新camera
+		ECSManager::getInstance()->updateSystem(SystemType::Camera, deltaTime);
 		recTime("====SystemType::Camera=====");
-		ECSManager::getInstance()->updateSystem(SystemType::BoundBox, deltaTime);   // 更新BoundBox
+        
+        // 更新BoundBox
+		ECSManager::getInstance()->updateSystem(SystemType::BoundBox, deltaTime);
 		recTime("====SystemType::BoundBox=====");
-        ECSManager::getInstance()->updateSystem(SystemType::RenderSystem, deltaTime);   // 更新渲染系统（这里只负责生成渲染命令队列，并不会有任何绘制操作）
+        
+        // 更新渲染系统（这里只负责生成渲染命令队列，并不会有任何绘制操作）
+        ECSManager::getInstance()->beforeUpdateSystem(SystemType::RenderSystem, deltaTime);
         recTime("====SystemType::Render=====");
 
 		// temp
