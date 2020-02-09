@@ -97,6 +97,14 @@ namespace core
 	{
         glfwMakeContextCurrent(m_pWindow);
         
+		// glad: load all OpenGL function pointers
+		// ---------------------------------------
+		if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+		{
+			std::cout << "Failed to initialize GLAD" << std::endl;
+			return;
+		}
+		
         // 关闭垂直同步
         #ifdef _WIN32
             // win32
@@ -125,13 +133,6 @@ namespace core
         // uncomment this call to draw in wireframe polygons.
         //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         
-        // glad: load all OpenGL function pointers
-        // ---------------------------------------
-        if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-        {
-            std::cout << "Failed to initialize GLAD" << std::endl;
-            return;
-        }
         ImGui_ImplGlfwGL3_Init(m_pWindow, true);
         ImGui::StyleColorsDark();
         

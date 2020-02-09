@@ -342,6 +342,9 @@
     <ClCompile Include="src\GL\GPUOperateCommand\GPUOperateMeshCommand.cpp">
       <Filter>src\GL\GPUOperateCommand</Filter>
     </ClCompile>
+    <ClCompile Include="src\GL\System\Input.cpp">
+      <Filter>src\GL\System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\GL\GLDefine.h">
@@ -586,6 +589,9 @@
     </ClInclude>
     <ClInclude Include="src\GL\GPUOperateCommand\GPUOperateMeshCommand.h">
       <Filter>src\GL\GPUOperateCommand</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GL\System\Input.h">
+      <Filter>src\GL\System</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
