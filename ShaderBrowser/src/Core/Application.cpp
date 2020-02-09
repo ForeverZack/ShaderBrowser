@@ -58,8 +58,6 @@ namespace core
 	auto timePoint = std::chrono::steady_clock::now();
 	void Application::recTime(const std::string& log)
 	{
-		return;
-
 		auto now = std::chrono::steady_clock::now();
 		float deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(now - timePoint).count() / 1000.0f;
 		timePoint = now;
@@ -68,26 +66,30 @@ namespace core
 
 	void Application::mainLoop()
 	{
-        // logic wait (等待GPU操作命令队列拷贝完成,并开始渲染工作)
-        while(LogicCore::getInstance()->getLogicState() != LogicCore::LogicCoreState::LCS_Prepare);
-        
-		// 计算deltaTime
-		auto now = std::chrono::steady_clock::now();
-		float deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(now - _lastUpdate).count() / 1000000.0f;
-		deltaTime = deltaTime < 0 ? 0 : deltaTime;
+        // 计算deltaTime
+        auto now = std::chrono::steady_clock::now();
+        float deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(now - _lastUpdate).count() / 1000000.0f;
+        deltaTime = deltaTime < 0 ? 0 : deltaTime;
         m_fDeltaTime = deltaTime;
         _lastUpdate = now;
+        
+        timePoint = now;
+        // logic wait (等待GPU操作命令队列拷贝完成,并开始渲染工作)
+        while(LogicCore::getInstance()->getLogicState() != LogicCore::LogicCoreState::LCS_Prepare);
+        recTime("====logic wait 01=====");
 
-		// 2.render
-		recTime("====start=====");
+		
 		LogicCore::getInstance()->logicLoop(deltaTime);
         // set logic mutex
         LogicCore::getInstance()->setLogicState(LogicCore::LogicCoreState::LCS_Finish);
-        recTime("=====Logic=======");
+        
 		
+        timePoint = std::chrono::steady_clock::now();
         // wait render (在开始下一个循环前，必须确保上一帧渲染结束)
         while(RenderCore::getInstance()->getRenderState() != RenderCore::RenderCoreState::RCS_End);
+        recTime("====logic wait 02=====");
         glfwPollEvents();   // 负责更新窗口和事件
+        
         
 //		RenderCore::getInstance()->renderLoop(deltaTime);
 //		recTime("=====Render=======");

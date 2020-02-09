@@ -68,7 +68,7 @@ namespace core
         static void window_size_callback(GLFWwindow* window, int width, int height);
         static void mouse_callback(GLFWwindow* window, double xpos, double ypos);
         static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
-        
+        void recTime(const std::string& log);
         
         REGISTER_PROPERTY_GET(GLFWwindow*, m_pWindow, Window)
         RenderCoreState getRenderState()
@@ -85,5 +85,8 @@ namespace core
         GLFWwindow* m_pWindow;
         // 渲染状态
         MutexVariable<RenderCoreState> m_eRenderState;
+        
+        // 记录时刻
+        std::chrono::steady_clock::time_point m_oLastUpdate;
     };
 }

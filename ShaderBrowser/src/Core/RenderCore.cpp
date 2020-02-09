@@ -145,11 +145,24 @@ namespace core
 		common::GUIFramework::getInstance()->init(SCR_WIDTH, SCR_HEIGHT);
 	}
     
+    void RenderCore::recTime(const std::string& log)
+    {
+//        return;
+
+        auto now = std::chrono::steady_clock::now();
+        float deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(now - m_oLastUpdate).count() / 1000.0f;
+        m_oLastUpdate = now;
+        BROWSER_LOG(log + std::to_string(deltaTime) + "ms");
+    }
+    
     void RenderCore::renderLoop()
     {
+        m_oLastUpdate = std::chrono::steady_clock::now();
+        
         // wait
         while(LogicCore::getInstance()->getLogicState() != LogicCore::LogicCoreState::LCS_Finish);
         m_eRenderState = RenderCoreState::RCS_Start;
+        recTime("========render wait=======");
         
         float deltaTime = Application::CurrentApplication->getDeltaTime();
         
