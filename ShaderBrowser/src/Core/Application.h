@@ -8,9 +8,12 @@
 using namespace common;
 
 namespace core
-{
+{    
     class Application
     {
+     // 定义逻辑线程最大领先渲染线程几帧
+     #define LOGIC_RENDER_CORE_FRAME_INTERVAL 3
+    
     public:
         // 方便访问当前应用指针
         static Application* CurrentApplication;

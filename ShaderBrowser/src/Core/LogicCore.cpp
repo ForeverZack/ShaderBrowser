@@ -19,10 +19,8 @@
 namespace core
 {
 	LogicCore::LogicCore()
-        : m_eLogicState(LogicCoreState::LCS_Prepare)
-        , m_uFrameIndex(1)
+        : m_uFrameIndex(1)
 	{
-        setLogicState(1, LogicCoreState::LCS_Prepare);
 	}
 
 	LogicCore::~LogicCore()
@@ -97,6 +95,9 @@ namespace core
 		// auto release
 		AutoReleasePool::getInstance()->update();
         
+        // end
+        // 设置当前帧逻辑完成状态
+        setCurFrameLogicState(LogicCoreState::LCS_Finish);
         // frame index
         ++m_uFrameIndex;
 	}

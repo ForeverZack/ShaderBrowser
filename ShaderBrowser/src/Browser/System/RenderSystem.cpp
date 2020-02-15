@@ -332,7 +332,8 @@ namespace browser
     
     void RenderSystem::addCurFrameCommand(BaseRenderCommand* command)
     {
-        m_mWaitRenderCommands[core::LogicCore::getInstance()->getFrameIndex()].push_back(command);
+        unsigned long frameIndex = core::LogicCore::getInstance()->getFrameIndex();
+        m_mWaitRenderCommands[frameIndex].push_back(command);
     }
     
     const std::vector<BaseRenderCommand*> RenderSystem::getCommands(unsigned long frameIndex)

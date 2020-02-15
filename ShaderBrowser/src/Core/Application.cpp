@@ -73,21 +73,12 @@ namespace core
         m_fDeltaTime = deltaTime;
         _lastUpdate = now;
         
-        timePoint = now;
-        // logic wait (等待GPU操作命令队列拷贝完成,并开始渲染工作)
-        while(LogicCore::getInstance()->getLogicState() != LogicCore::LogicCoreState::LCS_Prepare);
-        recTime("====logic wait 01=====");
-
-		
-		LogicCore::getInstance()->logicLoop(deltaTime);
-        // set logic mutex
-        LogicCore::getInstance()->setLogicState(LogicCore::LogicCoreState::LCS_Finish);
-        
-		
         timePoint = std::chrono::steady_clock::now();
-        // wait render (在开始下一个循环前，必须确保上一帧渲染结束)
-        while(RenderCore::getInstance()->getRenderState() != RenderCore::RenderCoreState::RCS_End);
-        recTime("====logic wait 02=====");
+        while(LogicCore::getInstance()->getLogicStatesSize() > LOGIC_RENDER_CORE_FRAME_INTERVAL);
+		recTime("========logic wait=======" + std::to_string(LogicCore::getInstance()->getFrameIndex()) + "===");
+        
+		LogicCore::getInstance()->logicLoop(deltaTime);
+        
         glfwPollEvents();   // 负责更新窗口和事件
         
         

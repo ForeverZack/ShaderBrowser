@@ -161,9 +161,10 @@ namespace core
         m_oLastUpdate = std::chrono::steady_clock::now();
         
         // wait
-        while(LogicCore::getInstance()->getLogicState() != LogicCore::LogicCoreState::LCS_Finish);
+        while(LogicCore::getInstance()->getLogicState(m_uFrameIndex) != LogicCore::LogicCoreState::LCS_Finish);
+        LogicCore::getInstance()->eraseLogicState(m_uFrameIndex);
         m_eRenderState = RenderCoreState::RCS_Start;
-        recTime("========render wait=======");
+        recTime("========render wait=======" + std::to_string(m_uFrameIndex) + "===");
         
         float deltaTime = Application::CurrentApplication->getDeltaTime();
         

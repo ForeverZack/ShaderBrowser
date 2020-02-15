@@ -7,16 +7,48 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "2F5ADFF0-B94D-4098-9C40-3CD41451AE29"
+            uuid = "994372E9-4A80-482B-AF71-EFD506C53F85"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "ShaderBrowser/src/GL/System/GPUOperateSystem.cpp"
+            filePath = "ShaderBrowser/src/Browser/System/RenderSystem.cpp"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "53"
-            endingLineNumber = "53"
-            landmarkName = "GPUOperateSystem::update()"
+            startingLineNumber = "147"
+            endingLineNumber = "147"
+            landmarkName = "RenderSystem::update(deltaTime)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "9E253F7F-630A-46AF-8032-A94332A4F291"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ShaderBrowser/src/Browser/System/RenderSystem.cpp"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "337"
+            endingLineNumber = "337"
+            landmarkName = "RenderSystem::addCurFrameCommand(command)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "FF50B30E-CDBF-487A-98E9-62369F63393F"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ShaderBrowser/src/Browser/System/RenderSystem.cpp"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "341"
+            endingLineNumber = "341"
+            landmarkName = "RenderSystem::getCommands(frameIndex)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
