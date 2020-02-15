@@ -20,8 +20,9 @@ namespace core
 {
 	LogicCore::LogicCore()
         : m_eLogicState(LogicCoreState::LCS_Prepare)
+        , m_uFrameIndex(1)
 	{
-
+        setLogicState(1, LogicCoreState::LCS_Prepare);
 	}
 
 	LogicCore::~LogicCore()
@@ -95,6 +96,9 @@ namespace core
 
 		// auto release
 		AutoReleasePool::getInstance()->update();
+        
+        // frame index
+        ++m_uFrameIndex;
 	}
 
 	void LogicCore::recTime(const std::string& log)
@@ -106,6 +110,36 @@ namespace core
 		m_oLastUpdate = now;
 		BROWSER_LOG(log + std::to_string(deltaTime) + "ms");
 	}
+    
+    void LogicCore::setCurFrameLogicState(LogicCoreState state)
+    {
+        setLogicState(m_uFrameIndex, state);
+    }
+    
+    void LogicCore::setLogicState(unsigned long frameIndex, LogicCoreState state)
+    {
+        m_mLogicStates[frameIndex] = state;
+    }
+    
+    LogicCore::LogicCoreState LogicCore::getLogicState(unsigned long frameIndex)
+    {
+        if(m_mLogicStates.containsKey(frameIndex))
+        {
+            return m_mLogicStates[frameIndex];
+        }
+        else
+        {
+            return LogicCoreState::LCS_None;
+        }
+    }
+    
+    void LogicCore::eraseLogicState(unsigned long frameIndex)
+    {
+        if(m_mLogicStates.containsKey(frameIndex))
+        {
+            m_mLogicStates.erase(frameIndex);
+        }
+    }
     
     //    BaseComputeProgram* _computeProgram = nullptr;
     //

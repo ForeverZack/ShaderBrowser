@@ -1,7 +1,8 @@
 #include "BaseFeedback.h"
+#include <chrono>
 #include <glad/glad.h>
 #include "Browser/System/RenderSystem.h"
-#include <chrono>
+#include "Core/RenderCore.h"
 
 using namespace customGL;
 
@@ -334,9 +335,9 @@ namespace browser
     
     unsigned int BaseFeedback::getCurFrameTag()
     {
-        if (m_uCurFrameIdx != RenderSystem::getInstance()->getFrameIndex())
+        if (m_uCurFrameIdx != core::RenderCore::getInstance()->getFrameIndex())
         {
-            m_uCurFrameIdx = RenderSystem::getInstance()->getFrameIndex();
+            m_uCurFrameIdx = core::RenderCore::getInstance()->getFrameIndex();
             m_uCurFrameTag = m_uCurFrameIdx % EXCHANGE_BUFFERS_COUNT;    // 0 or 1
         }
         

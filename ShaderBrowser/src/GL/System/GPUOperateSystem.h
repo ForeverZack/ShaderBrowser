@@ -25,9 +25,17 @@ namespace customGL
         // 刷新 （渲染线程）
         void update();
         
+    private:
+        // 添加命令
+        void addCommand(unsigned long frameIndex, BaseGPUOperateCommand* cmd);
+        // 获取命令队列
+        const std::vector<BaseGPUOperateCommand*>& getCommands(unsigned long frameIndex);
+        // 清除队列
+        void eraseCommands(unsigned long frameIndex);
+        
     protected:
         // 待执行命令队列 (逻辑线程)
-        MutexQueue<BaseGPUOperateCommand*> m_qWaitCommands;
+        MutexUnorderedMap<unsigned long, std::vector<BaseGPUOperateCommand*>> m_mWaitCommands;
         // 命令队列 (渲染线程)
         std::vector<BaseGPUOperateCommand*> m_vCommands;
 

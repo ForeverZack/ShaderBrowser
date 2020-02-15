@@ -5,6 +5,7 @@
 #include <memory>
 #include <vector>
 #include <queue>
+#include <unordered_map>
 using namespace std;
 
 namespace common
@@ -113,6 +114,63 @@ namespace common
     private:
         // 队列
         std::queue<T> m_vQueue;
+        // 互斥锁
+        std::mutex m_oMutex;
+    };
+    
+    // 互斥队列
+    template <typename K, typename V>
+    class MutexUnorderedMap
+    {
+    public:
+        MutexUnorderedMap() {}
+        ~MutexUnorderedMap() {}
+    
+    public:
+        V& operator[](const K& key)
+        {
+            std::unique_lock<std::mutex> lock(m_oMutex);
+            return m_mMap[key];
+        }
+        const V& operator[](const K& key) const
+        {
+            std::unique_lock<std::mutex> lock(m_oMutex);
+            return m_mMap[key];
+        }
+        void erase(const K& key)
+        {
+            std::unique_lock<std::mutex> lock(m_oMutex);
+            m_mMap.erase(key);
+        }
+        bool containsKey(const K& key)
+        {
+            std::unique_lock<std::mutex> lock(m_oMutex);
+            auto itor = m_mMap.find(key);
+            return itor != m_mMap.end();
+        }
+        size_t size()
+        {
+            std::unique_lock<std::mutex> lock(m_oMutex);
+            return m_mMap.size();
+        }
+        bool empty()
+        {
+            std::unique_lock<std::mutex> lock(m_oMutex);
+            return m_mMap.empty();
+        }
+        void clear()
+        {
+            std::unique_lock<std::mutex> lock(m_oMutex);
+            m_mMap.clear();
+        }
+        void operateUnorderedMap(std::function<void(std::unordered_map<K,V>&)> callback)
+        {
+            std::unique_lock<std::mutex> lock(m_oMutex);
+            callback(m_mMap);
+        }
+    private:
+        // map
+        std::unordered_map<K, V> m_mMap;
         // 互斥锁
         std::mutex m_oMutex;
     };

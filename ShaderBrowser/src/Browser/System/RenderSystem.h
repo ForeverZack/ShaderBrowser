@@ -47,19 +47,24 @@ namespace browser
         
 		REGISTER_PROPERTY_GET_SET(unsigned int, m_uDrawCalls, DrawCalls)
 		REGISTER_PROPERTY_GET_SET(unsigned long, m_uVerticesCount, VerticesCount)
-		REGISTER_PROPERTY_GET_SET(unsigned long, m_uFrameIndex, FrameIndex)
 		REGISTER_PROPERTY_GET_SET(unsigned long, m_uFaceCount, FaceCount)
         
     private:
         // 画出辅助工具
         void renderAssistTools(Camera* camera);
+        // 添加渲染命令
+        void addCurFrameCommand(BaseRenderCommand* command);
+        // 获取渲染命令队列
+        const std::vector<BaseRenderCommand*> getCommands(unsigned long frameIndex);
+        // 删除渲染命令
+        void eraseCommands(unsigned long frameIndex);
 	
 	private:
         // 渲染队列 (渲染线程)
         // 注意：这里没有和GPUOperateSystem一样使用MutexQueue，因为这里的队列只在逻辑线程和渲染线程中使用。它们的复制过程只允许发生在逻辑线程一帧结束，并且渲染线程刚刚开始时，这里逻辑线程会被锁住，只有渲染线程在跑
         std::vector<BaseRenderCommand*> m_vRenderCommands;
         // 渲染队列队列 (逻辑线程)
-        std::vector<BaseRenderCommand*> m_vWaitRenderCommands;
+        MutexUnorderedMap<unsigned long, std::vector<BaseRenderCommand*>> m_mWaitRenderCommands;
         
         // 绘制所用的draw call次数
         unsigned int m_uDrawCalls;
@@ -67,8 +72,7 @@ namespace browser
 		unsigned long m_uVerticesCount;
 		// 面数量
 		unsigned long m_uFaceCount;
-		// 当前帧
-		unsigned long m_uFrameIndex;
+		
         
         // 坐标轴模型
         Mesh* m_oAxisMesh;

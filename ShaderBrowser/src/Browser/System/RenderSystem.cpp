@@ -10,6 +10,8 @@
 #include "GL/GPUResource/Shader/Pass.h"
 #include "Common/System/Cache/GLProgramCache.h"
 #include "GL/GLStateCache.h"
+#include "Core/LogicCore.h"
+#include "Core/RenderCore.h"
 #include <chrono>
 #include <stdio.h>
 #ifdef  _WIN32
@@ -58,7 +60,6 @@ namespace browser
 	RenderSystem::RenderSystem()
 		: m_uDrawCalls(0)
 		, m_uVerticesCount(0)
-		, m_uFrameIndex(0)
 	{
 		m_iPriority = 0;
 		m_eSystemType = common::SystemType::RenderSystem;
@@ -72,7 +73,6 @@ namespace browser
 	void RenderSystem::init()
 	{
         m_vRenderCommands.clear();
-        m_vWaitRenderCommands.clear();
        
 
         // 生成坐标轴模型
@@ -138,15 +138,13 @@ namespace browser
         
         // 渲染主相机场景
         renderScene(CameraSystem::getInstance()->getMainCamera(), deltaTime);
-
-        // 当前第几帧
-        ++m_uFrameIndex;
     }
     
 	void RenderSystem::update(float deltaTime)
 	{
-        m_vRenderCommands = m_vWaitRenderCommands;
-        m_vWaitRenderCommands.clear();
+        unsigned long frameIndex = core::RenderCore::getInstance()->getFrameIndex();
+        m_vRenderCommands = getCommands(frameIndex);
+        eraseCommands(frameIndex);
 	}
     
     void RenderSystem::afterUpdate(float deltaTime)
@@ -170,7 +168,6 @@ namespace browser
         if (camera)
         {
             // 清空渲染队列
-            m_vWaitRenderCommands.clear();
             
             switch(camera->getRenderPathType())
             {
@@ -333,6 +330,21 @@ namespace browser
         }
     }
     
+    void RenderSystem::addCurFrameCommand(BaseRenderCommand* command)
+    {
+        m_mWaitRenderCommands[core::LogicCore::getInstance()->getFrameIndex()].push_back(command);
+    }
+    
+    const std::vector<BaseRenderCommand*> RenderSystem::getCommands(unsigned long frameIndex)
+    {
+        return m_mWaitRenderCommands[frameIndex];
+    }
+    
+    void RenderSystem::eraseCommands(unsigned long frameIndex)
+    {
+        m_mWaitRenderCommands.erase(frameIndex);
+    }
+    
     void RenderSystem::forwardRenderScene(Camera* camera, float deltaTime)
     {
 #ifdef _SHADER_BROWSER_RENDER_SYSTEM_DEBUG
@@ -418,7 +430,7 @@ namespace browser
                         }
                         break;
                 }
-                m_vWaitRenderCommands.push_back(command);
+                addCurFrameCommand(command);
                 
                 // 增加1次draw call
                 ++m_uDrawCalls;

@@ -63,6 +63,7 @@ namespace core
 	RenderCore::RenderCore()
         : m_pWindow(nullptr)
         , m_eRenderState(RenderCoreState::RCS_End)
+        , m_uFrameIndex(1)
     {
         
     }
@@ -191,6 +192,7 @@ namespace core
 //		glfwPollEvents();
         
         m_eRenderState = RenderCoreState::RCS_End;
+        ++m_uFrameIndex;
     }
     
     GLFWwindow* RenderCore::initWindow()

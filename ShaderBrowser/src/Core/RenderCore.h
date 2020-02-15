@@ -71,6 +71,7 @@ namespace core
         void recTime(const std::string& log);
         
         REGISTER_PROPERTY_GET(GLFWwindow*, m_pWindow, Window)
+        REGISTER_PROPERTY_GET(unsigned long, m_uFrameIndex, FrameIndex)
         RenderCoreState getRenderState()
         {
             return m_eRenderState.getValue();
@@ -88,5 +89,8 @@ namespace core
         
         // 记录时刻
         std::chrono::steady_clock::time_point m_oLastUpdate;
+        // 当前帧
+        unsigned long m_uFrameIndex;
+        
     };
 }
