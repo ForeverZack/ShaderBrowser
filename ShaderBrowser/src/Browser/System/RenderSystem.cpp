@@ -257,8 +257,11 @@ namespace browser
                     
                     // 4.绘制
                     linesProgram->useProgram();
-                    linesProgram->setUniformWithMat4(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_VIEW_MATRIX], camera->getViewMatrix());
-                    linesProgram->setUniformWithMat4(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_PROJECTION_MATRIX], camera->getProjectionMatrix());
+					if (camera)
+					{
+						linesProgram->setUniformWithMat4(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_VIEW_MATRIX], camera->getViewMatrix());
+						linesProgram->setUniformWithMat4(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_PROJECTION_MATRIX], camera->getProjectionMatrix());
+					}
                     glBindVertexArray(vao);
                     glDrawArrays(GL_LINES, 0, (int)vertCount);
                     glBindVertexArray(0);
@@ -315,8 +318,11 @@ namespace browser
                     
                     // 4.绘制
                     linesProgram->useProgram();
-                    linesProgram->setUniformWithMat4(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_VIEW_MATRIX], camera->getViewMatrix());
-                    linesProgram->setUniformWithMat4(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_PROJECTION_MATRIX], camera->getProjectionMatrix());
+					if (camera)
+					{
+						linesProgram->setUniformWithMat4(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_VIEW_MATRIX], camera->getViewMatrix());
+						linesProgram->setUniformWithMat4(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_PROJECTION_MATRIX], camera->getProjectionMatrix());
+					}
                     glBindVertexArray(vao);
                     //typedef void (APIENTRYP PFNGLDRAWELEMENTSPROC)(GLenum mode, GLsizei count, GLenum type, const void *indices);
                     glDrawArrays(GL_LINES, 0, vertCount);
@@ -416,20 +422,21 @@ namespace browser
                 
                 // 生成渲染命令
                 switch(render->getRendererType())
-                {
-                    case BaseRender::RendererType::Base:
-                        {
-                            command = new BaseRenderCommand();
-                            command->init(material, mesh, transform, camera);
-                        }
-                        break;
-                        
+                {                       
                     case BaseRender::RendererType::Skinned:
                         {
                             command = new SkinnedRenderCommand();
                             static_cast<SkinnedRenderCommand*>(command)->init(entity, material, mesh, transform, camera);
                         }
                         break;
+
+					case BaseRender::RendererType::Base:
+					default:
+						{
+							command = new BaseRenderCommand();
+							command->init(material, mesh, transform, camera);
+						}
+						break;
                 }
                 addCurFrameCommand(command);
                 

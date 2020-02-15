@@ -164,7 +164,7 @@ namespace core
         while(LogicCore::getInstance()->getLogicState(m_uFrameIndex) != LogicCore::LogicCoreState::LCS_Finish);
         LogicCore::getInstance()->eraseLogicState(m_uFrameIndex);
         m_eRenderState = RenderCoreState::RCS_Start;
-        recTime("========render wait=======" + std::to_string(m_uFrameIndex) + "===");
+        //recTime("========render wait=======" + std::to_string(m_uFrameIndex) + "===");
         
         float deltaTime = Application::CurrentApplication->getDeltaTime();
         

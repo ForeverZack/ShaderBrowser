@@ -73,9 +73,9 @@ namespace core
         m_fDeltaTime = deltaTime;
         _lastUpdate = now;
         
-        timePoint = std::chrono::steady_clock::now();
+        //timePoint = std::chrono::steady_clock::now();
         while(LogicCore::getInstance()->getLogicStatesSize() > LOGIC_RENDER_CORE_FRAME_INTERVAL);
-		recTime("========logic wait=======" + std::to_string(LogicCore::getInstance()->getFrameIndex()) + "===");
+		//recTime("========logic wait=======" + std::to_string(LogicCore::getInstance()->getFrameIndex()) + "===");
         
 		LogicCore::getInstance()->logicLoop(deltaTime);
         
