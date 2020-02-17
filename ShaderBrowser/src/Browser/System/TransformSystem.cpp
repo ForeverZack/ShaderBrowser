@@ -45,7 +45,8 @@ namespace browser
 
 	void TransformSystem::update(float deltaTime)
 	{
-		m_pThread->addTask(std::bind(&TransformSystem::updateScene, this));
+		updateScene();
+		//m_pThread->addTask(std::bind(&TransformSystem::updateScene, this));
 	}
 
     void TransformSystem::updateScene()

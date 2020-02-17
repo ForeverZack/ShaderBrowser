@@ -62,7 +62,6 @@ namespace core
     
 	RenderCore::RenderCore()
         : m_pWindow(nullptr)
-        , m_eRenderState(RenderCoreState::RCS_End)
         , m_uFrameIndex(1)
     {
         
@@ -158,14 +157,9 @@ namespace core
     
     void RenderCore::renderLoop()
     {
-        m_oLastUpdate = std::chrono::steady_clock::now();
-        
         // wait
-        while(LogicCore::getInstance()->getLogicState(m_uFrameIndex) != LogicCore::LogicCoreState::LCS_Finish);
-        LogicCore::getInstance()->eraseLogicState(m_uFrameIndex);
-        m_eRenderState = RenderCoreState::RCS_Start;
-        //recTime("========render wait=======" + std::to_string(m_uFrameIndex) + "===");
-        
+		while(LogicCore::getInstance()->getFinishedFrameCount() < m_uFrameIndex) ;
+
         float deltaTime = Application::CurrentApplication->getDeltaTime();
         
         // 从逻辑线程拷贝渲染命令队列
@@ -191,8 +185,10 @@ namespace core
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         glfwSwapBuffers(m_pWindow);
 //		glfwPollEvents();
-        
-        m_eRenderState = RenderCoreState::RCS_End;
+
+
+		recTime(std::to_string(m_uFrameIndex) + "=====Render=======");
+
         ++m_uFrameIndex;
     }
     

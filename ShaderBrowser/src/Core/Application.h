@@ -12,7 +12,7 @@ namespace core
     class Application
     {
      // 定义逻辑线程最大领先渲染线程几帧
-     #define LOGIC_RENDER_CORE_FRAME_INTERVAL 3
+     #define LOGIC_RENDER_CORE_FRAME_INTERVAL 5
     
     public:
         // 方便访问当前应用指针

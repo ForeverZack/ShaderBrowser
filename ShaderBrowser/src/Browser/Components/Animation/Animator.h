@@ -144,8 +144,6 @@ namespace browser
         bool m_bUseGPU;
         // 是否允许根节点的运动
         bool m_bApplyRootMotion;
-        // 骨骼变换是否计算完成（计算完才可以开始下一步的Transform计算）
-		MutexVariable<bool> m_bComputeBonesFinish;
         
         // 记录所有骨骼
         std::vector<Transform*> m_vAllBones;
@@ -155,10 +153,6 @@ namespace browser
         std::vector<glm::mat4> m_vBonesMatrix;
         // 是否需要重新获取骨骼矩阵
         bool m_bDirty;
-        // TODO: 骨骼节点的变换后的位置,需要传给transform
-        std::unordered_map<unsigned int, glm::vec3> m_mBonesPosition;
-        std::unordered_map<unsigned int, glm::quat> m_mBonesRotation;
-        std::unordered_map<unsigned int, glm::vec3> m_mBonesScale;
     };
 }
 

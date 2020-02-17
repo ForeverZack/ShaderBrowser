@@ -8,6 +8,7 @@
 #include "Common/Tools/Utils.h"
 #include "GL/GPUResource/Model/Mesh.h"
 #include "Browser/Components/Mesh/MeshFilter.h"
+#include "Browser/Components/Transform/Transform.h"
 #include "GL/GPUResource/Texture/Texture2D.h"
 #include "Common/System/Cache/TextureCache.h"
 #include "GL/GPUResource/Shader/GLProgram.h"
@@ -153,9 +154,9 @@ namespace customGL
 		// 计算模型动画
 		// interpolateAnimation：是否插值动画（false使用前一帧, true在两帧间插值）
         // applyRootMotion: 是否允许根节点移动（参考unity）
-        void computeBonesTransform(aiAnimation* animation, float elapsedTime, std::unordered_map<unsigned int, glm::vec3>& bonesPosition, std::unordered_map<unsigned int, glm::quat>& bonesRotation, std::unordered_map<unsigned int, glm::vec3>& bonesScale, bool interpolateAnimation = true, bool applyRootMotion = false);
+        void computeBonesTransform(aiAnimation* animation, float elapsedTime, const std::vector<browser::Transform*>& allBones, bool interpolateAnimation = true, bool applyRootMotion = false);
         // 混合模型动画
-        void blendBonesTransform(aiAnimation* befAnimation, float befElapsed, bool befInterpolate, aiAnimation* animation, float elapsedTime, bool interpolate, float blendWeight, std::unordered_map<unsigned int, glm::vec3>& bonesPosition, std::unordered_map<unsigned int, glm::quat>& bonesRotation, std::unordered_map<unsigned int, glm::vec3>& bonesScale, bool applyRootMotion = false);
+        void blendBonesTransform(aiAnimation* befAnimation, float befElapsed, bool befInterpolate, aiAnimation* animation, float elapsedTime, bool interpolate, float blendWeight, const std::vector<browser::Transform*>& allBones, bool applyRootMotion = false);
 		void traverseNodeToComputeBonesTransform(aiNode* node, const aiMatrix4x4 parentMatrix, std::unordered_map<aiNode*, aiMatrix4x4>& nodeTrans, std::vector<glm::mat4>& bonesMatrix);
         GLuint getGpuAnimSamplerBuffer(ModelGpuAnimationData::ModelGpuAnimBufferType type);
         const std::vector<int>& getContainsBones(aiAnimation* animation);

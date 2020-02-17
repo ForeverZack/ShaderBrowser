@@ -1038,14 +1038,14 @@ namespace customGL
 		}
 	}
 
-	void Model::computeBonesTransform(aiAnimation* animation, float elapsedTime, std::unordered_map<unsigned int, glm::vec3>& bonesPosition, std::unordered_map<unsigned int, glm::quat>& bonesRotation, std::unordered_map<unsigned int, glm::vec3>& bonesScale, bool interpolateAnimation /*= true*/, bool applyRootMotion /*= false*/)
+	void Model::computeBonesTransform(aiAnimation* animation, float elapsedTime, const std::vector<browser::Transform*>& allBones, bool interpolateAnimation /*= true*/, bool applyRootMotion /*= false*/)
 	{
         auto itor = m_mSkeletonAnimations.find(animation);
         BROWSER_ASSERT(itor!=m_mSkeletonAnimations.end(), "Cannot compute bones transform because there is no SkeletonAnimation data in Model, please check your program in function Model::computeBonesTransform");
         
         SkeletonAnimation* skeletonAnimation = itor->second;
 //        skeletonAnimation->getBonesTransform(elapsedTime, bonesPosition, bonesRotation, bonesScale, interpolateAnimation);    // 播放序列帧
-        skeletonAnimation->computeBonesTransform(m_oRootNode, m_oSkeleton, elapsedTime, bonesPosition, bonesRotation, bonesScale, interpolateAnimation, applyRootMotion);    // 正常计算骨骼
+        skeletonAnimation->computeBonesTransform(m_oRootNode, m_oSkeleton, elapsedTime, allBones, interpolateAnimation, applyRootMotion);    // 正常计算骨骼
         
 //        // 将采样范围变换到 [0, 1]
 //        float animSample = static_cast<float>(animation->mTicksPerSecond / animation->mDuration) * elapsedTime;
@@ -1091,7 +1091,7 @@ namespace customGL
         
 	}
     
-    void Model::blendBonesTransform(aiAnimation* befAnimation, float befElapsed, bool befInterpolate, aiAnimation* animation, float elapsedTime, bool interpolate, float blendWeight, std::unordered_map<unsigned int, glm::vec3>& bonesPosition, std::unordered_map<unsigned int, glm::quat>& bonesRotation, std::unordered_map<unsigned int, glm::vec3>& bonesScale, bool applyRootMotion /*= false*/)
+    void Model::blendBonesTransform(aiAnimation* befAnimation, float befElapsed, bool befInterpolate, aiAnimation* animation, float elapsedTime, bool interpolate, float blendWeight, const std::vector<browser::Transform*>& allBones, bool applyRootMotion /*= false*/)
     {
         // 记录所有变换的node信息<位移, 旋转, 缩放>
         std::unordered_map<aiNode*, aiVector3D> translateVec;
@@ -1100,7 +1100,15 @@ namespace customGL
         //const std::unordered_map<std::string, unsigned int>& bonesIdMap = m_oSkeleton->getBonesIdMap();
         //std::unordered_map<std::string, unsigned int>::const_iterator itor;
         unsigned int boneId;
-        
+
+		// 临时记录骨骼transform数据
+		std::unordered_map<unsigned int, aiVector3D> bonesPosition;
+		std::unordered_map<unsigned int, aiQuaternion> bonesRotation;
+		std::unordered_map<unsigned int, aiVector3D> bonesScale;
+		bonesPosition.reserve(allBones.size());
+		bonesRotation.reserve(allBones.size());
+		bonesScale.reserve(allBones.size());
+
         // 遍历记录beforeAnimation骨骼变换信息
         {
             float animSample = static_cast<float>(befAnimation->mTicksPerSecond / befAnimation->mDuration) * befElapsed;
@@ -1130,9 +1138,12 @@ namespace customGL
                 
                 if(m_oSkeleton->isBone(channel->mNodeName.C_Str(), boneId))
                 {
-                    bonesPosition[boneId] = std::move(Assimp::ConvertToGLM(translation));
-                    bonesRotation[boneId] = std::move(Assimp::ConvertToGLM(rotation));
-                    bonesScale[boneId] = std::move(Assimp::ConvertToGLM(scale));
+                    //bonesPosition[boneId] = std::move(Assimp::ConvertToGLM(translation));
+                    //bonesRotation[boneId] = std::move(Assimp::ConvertToGLM(rotation));
+                    //bonesScale[boneId] = std::move(Assimp::ConvertToGLM(scale));
+					bonesPosition[boneId] = std::move(translation);
+					bonesRotation[boneId] = std::move(rotation);
+					bonesScale[boneId] = std::move(scale);
                 }
             }
         }
@@ -1140,9 +1151,9 @@ namespace customGL
         // 
         {
             // 插值函数
-            const auto ipVect = Assimp::Interpolator<glm::vec3>();
-            const auto ipQuat = Assimp::Interpolator<glm::quat>();
-            const auto ipScale = Assimp::Interpolator<glm::vec3>();
+            const auto ipVect = Assimp::Interpolator<aiVector3D>();
+            const auto ipQuat = Assimp::Interpolator<aiQuaternion>();
+            const auto ipScale = Assimp::Interpolator<aiVector3D>();
             
             float animSample = static_cast<float>(animation->mTicksPerSecond / animation->mDuration) * befElapsed;
             animSample = std::min(animSample, 1.0f);
@@ -1153,6 +1164,7 @@ namespace customGL
             
             aiNodeAnim* channel = nullptr;
             aiNode* node = nullptr;
+			browser::Transform* bone = nullptr;
             for (unsigned int i = 0; i < animation->mNumChannels; ++i)
             {
                 channel = animation->mChannels[i];
@@ -1174,19 +1186,30 @@ namespace customGL
                     if(bonesPosition.find(boneId) != bonesPosition.end())
                     {
                         // 如果前一个动画存在相同的骨骼有变化，则对他们进行插值
-                        ipVect(bonesPosition[boneId], bonesPosition[boneId], Assimp::ConvertToGLM(translation), blendWeight);
-                        ipQuat(bonesRotation[boneId], bonesRotation[boneId], Assimp::ConvertToGLM(rotation), blendWeight);
-                        ipScale(bonesScale[boneId], bonesScale[boneId], Assimp::ConvertToGLM(scale), blendWeight);
+						//ipVect(bonesPosition[boneId], bonesPosition[boneId], Assimp::ConvertToGLM(translation), blendWeight);
+						//ipQuat(bonesRotation[boneId], bonesRotation[boneId], Assimp::ConvertToGLM(rotation), blendWeight);
+						//ipScale(bonesScale[boneId], bonesScale[boneId], Assimp::ConvertToGLM(scale), blendWeight);
+						ipVect(translation, bonesPosition[boneId], translation, blendWeight);
+						ipQuat(rotation, bonesRotation[boneId], rotation, blendWeight);
+						ipScale(scale, bonesScale[boneId], scale, blendWeight);
                     }
-                    else
-                    {
-                        bonesPosition[boneId] = std::move(Assimp::ConvertToGLM(translation));
-                        bonesRotation[boneId] = std::move(Assimp::ConvertToGLM(rotation));
-                        bonesScale[boneId] = std::move(Assimp::ConvertToGLM(scale));
-                    }
+      //              else
+      //              {
+      //                  //bonesPosition[boneId] = std::move(Assimp::ConvertToGLM(translation));
+      //                  //bonesRotation[boneId] = std::move(Assimp::ConvertToGLM(rotation));
+      //                  //bonesScale[boneId] = std::move(Assimp::ConvertToGLM(scale));
+						//bonesPosition[boneId] = std::move(translation);
+						//bonesRotation[boneId] = std::move(rotation);
+						//bonesScale[boneId] = std::move(scale);
+      //              }
+
+					bone = allBones[boneId];
+					bone->setPosition(translation.x, translation.y, translation.z);
+					bone->setQuaternion(rotation.x, rotation.y, rotation.z, rotation.w);
+					bone->setScale(scale.x, scale.y, scale.z);
                 }
                 
-
+				
 
             }
         }

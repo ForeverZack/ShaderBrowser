@@ -3,6 +3,8 @@
 #include "GL/Assimp.h"
 #include "GL/AssimpConvert.h"
 #include "GL/Rescale.h"
+#include "Browser/Components/Transform/Transform.h"
+#include <chrono>
 
 using namespace common;
 
@@ -150,7 +152,7 @@ namespace customGL
         }
     }
     
-    void SkeletonAnimation::computeBonesTransform(aiNode* rootNode, Skeleton* skeleton, float elapsedTime, std::unordered_map<unsigned int, glm::vec3>& bonesPosition, std::unordered_map<unsigned int, glm::quat>& bonesRotation, std::unordered_map<unsigned int, glm::vec3>& bonesScale, bool interpolateAnimation/* = true*/, bool applyRootMotion /*= false*/)
+    void SkeletonAnimation::computeBonesTransform(aiNode* rootNode, Skeleton* skeleton, float elapsedTime, const std::vector<browser::Transform*>& allBones, bool interpolateAnimation/* = true*/, bool applyRootMotion /*= false*/)
     {
         // 将采样范围变换到 [0, 1]
         aiAnimation* animation = m_pAniamtion;
@@ -162,11 +164,12 @@ namespace customGL
         const float sampleUnscaled = rescaler.Unscale(animSample);  // 采样帧数位置(例如，第2.52帧)
         unsigned int boneId;
 
-//        BROWSER_LOG(sampleUnscaled)
+		//        BROWSER_LOG(sampleUnscaled)
         // 遍历骨骼变换信息，生成父节点坐标系下自身的变换矩阵
         {
             aiNodeAnim* channel = nullptr;
             aiNode* node = nullptr;
+			browser::Transform* bone = nullptr;
             // 遍历发生变换的骨骼节点的变换信息
             for (unsigned int i = 0; i < animation->mNumChannels; ++i)
             {
@@ -181,15 +184,22 @@ namespace customGL
                     translation = aiVector3D(0, 0, 0);
                 }
                 // 旋转
-                auto rotation = Assimp::InterpolationGet<aiQuaternion>(sampleUnscaled, channel->mRotationKeys, channel->mNumRotationKeys, interpolateAnimation);
-                // 缩放
+				auto rotation = Assimp::InterpolationGet<aiQuaternion>(sampleUnscaled, channel->mRotationKeys, channel->mNumRotationKeys, interpolateAnimation);
+				// 缩放
                 auto scale = Assimp::InterpolationGet<aiVector3D>(sampleUnscaled, channel->mScalingKeys, channel->mNumScalingKeys, interpolateAnimation);
-                // 记录骨骼变换
-                if(skeleton->isBone(channel->mNodeName.C_Str(), boneId))
+				// 记录骨骼变换
+				if (skeleton->isBone(channel->mNodeName.C_Str(), boneId))
                 {
-                    bonesPosition[boneId] = std::move(Assimp::ConvertToGLM(translation));
-                    bonesRotation[boneId] = std::move(Assimp::ConvertToGLM(rotation));
-                    bonesScale[boneId] = std::move(Assimp::ConvertToGLM(scale));
+                    //bonesPosition[boneId] = std::move(Assimp::ConvertToGLM(translation));
+                    //bonesRotation[boneId] = std::move(Assimp::ConvertToGLM(rotation));
+                    //bonesScale[boneId] = std::move(Assimp::ConvertToGLM(scale));
+					//bonesPosition[boneId] = std::move(translation);
+					//bonesRotation[boneId] = std::move(rotation);
+					//bonesScale[boneId] = std::move(scale);
+					bone = allBones[boneId];
+					bone->setPosition(translation.x, translation.y, translation.z);
+					bone->setQuaternion(rotation.x, rotation.y, rotation.z, rotation.w);
+					bone->setScale(scale.x, scale.y, scale.z);
                 }
 
             }

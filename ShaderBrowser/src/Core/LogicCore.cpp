@@ -20,6 +20,7 @@ namespace core
 {
 	LogicCore::LogicCore()
         : m_uFrameIndex(1)
+		, m_uFinishedFrameCount(0)
 	{
 	}
 
@@ -73,8 +74,8 @@ namespace core
 		ECSManager::getInstance()->updateSystem(SystemType::Animation, deltaTime);
 		recTime("====SystemType::Animation=====");
 
-        // Transform系统必须更新完
-		while (!ECSManager::getInstance()->isSystemFinish(SystemType::Transform));
+  //      // Transform系统必须更新完
+		//while (!ECSManager::getInstance()->isSystemFinish(SystemType::Transform));
 
         // 更新camera
 		ECSManager::getInstance()->updateSystem(SystemType::Camera, deltaTime);
@@ -97,7 +98,7 @@ namespace core
         
         // end
         // 设置当前帧逻辑完成状态
-        setCurFrameLogicState(LogicCoreState::LCS_Finish);
+		m_uFinishedFrameCount = m_uFinishedFrameCount.getValue() + 1;
         // frame index
         ++m_uFrameIndex;
 	}
@@ -109,38 +110,8 @@ namespace core
 		auto now = std::chrono::steady_clock::now();
 		float deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(now - m_oLastUpdate).count() / 1000.0f;
 		m_oLastUpdate = now;
-		BROWSER_LOG(log + std::to_string(deltaTime) + "ms");
+		BROWSER_LOG(std::to_string(m_uFrameIndex)+ log + std::to_string(deltaTime) + "ms");
 	}
-    
-    void LogicCore::setCurFrameLogicState(LogicCoreState state)
-    {
-        setLogicState(m_uFrameIndex, state);
-    }
-    
-    void LogicCore::setLogicState(unsigned long frameIndex, LogicCoreState state)
-    {
-        m_mLogicStates[frameIndex] = state;
-    }
-    
-    LogicCore::LogicCoreState LogicCore::getLogicState(unsigned long frameIndex)
-    {
-        if(m_mLogicStates.containsKey(frameIndex))
-        {
-            return m_mLogicStates[frameIndex];
-        }
-        else
-        {
-            return LogicCoreState::LCS_None;
-        }
-    }
-    
-    void LogicCore::eraseLogicState(unsigned long frameIndex)
-    {
-        if(m_mLogicStates.containsKey(frameIndex))
-        {
-            m_mLogicStates.erase(frameIndex);
-        }
-    }
     
     //    BaseComputeProgram* _computeProgram = nullptr;
     //

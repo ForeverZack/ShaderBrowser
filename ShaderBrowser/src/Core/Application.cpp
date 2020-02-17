@@ -74,13 +74,16 @@ namespace core
         _lastUpdate = now;
         
         //timePoint = std::chrono::steady_clock::now();
-        while(LogicCore::getInstance()->getLogicStatesSize() > LOGIC_RENDER_CORE_FRAME_INTERVAL);
+		unsigned long finishedFrameCount = LogicCore::getInstance()->getFinishedFrameCount();
+		while(finishedFrameCount > RenderCore::getInstance()->getFrameIndex()+LOGIC_RENDER_CORE_FRAME_INTERVAL) ;
 		//recTime("========logic wait=======" + std::to_string(LogicCore::getInstance()->getFrameIndex()) + "===");
         
 		LogicCore::getInstance()->logicLoop(deltaTime);
         
         glfwPollEvents();   // 负责更新窗口和事件
         
+		recTime(std::to_string(LogicCore::getInstance()->getFrameIndex()-1) + "=====Logic=======");
+
         
 //		RenderCore::getInstance()->renderLoop(deltaTime);
 //		recTime("=====Render=======");

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <chrono>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <imgui.h>
@@ -19,7 +20,6 @@
 
 #include "Common/Tools/Utils.h"
 #include "Common/Tools/BaseSingleton.h"
-#include "Common/Tools/Thread/BaseThread.h"
 
 using namespace customGL;
 using namespace common;
@@ -72,20 +72,10 @@ namespace core
         
         REGISTER_PROPERTY_GET(GLFWwindow*, m_pWindow, Window)
         REGISTER_PROPERTY_GET(unsigned long, m_uFrameIndex, FrameIndex)
-        RenderCoreState getRenderState()
-        {
-            return m_eRenderState.getValue();
-        }
-        void setRenderState(RenderCoreState state)
-        {
-            m_eRenderState = state;
-        }
         
     private:
         // window
         GLFWwindow* m_pWindow;
-        // 渲染状态
-        MutexVariable<RenderCoreState> m_eRenderState;
         
         // 记录时刻
         std::chrono::steady_clock::time_point m_oLastUpdate;

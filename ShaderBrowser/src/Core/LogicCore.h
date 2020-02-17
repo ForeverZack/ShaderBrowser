@@ -43,24 +43,17 @@ namespace core
         void setCurFrameLogicState(LogicCoreState state);
         
     public:
-        REGISTER_PROPERTY_GET(unsigned long, m_uFrameIndex, FrameIndex)
-        // 设置逻辑状态
-        void setLogicState(unsigned long frameIndex, LogicCoreState state);
-        // 获取逻辑状态
-        LogicCoreState getLogicState(unsigned long frameIndex);
-        // 清除逻辑状态
-        void eraseLogicState(unsigned long frameIndex);
-        // 逻辑状态数量
-        size_t getLogicStatesSize()
-        {
-            return m_mLogicStates.size();
-        }
+		unsigned long getFinishedFrameCount()
+		{
+			return m_uFinishedFrameCount.getValue();
+		}
+		REGISTER_PROPERTY_GET(unsigned long, m_uFrameIndex, FrameIndex)
         
 	private:
 		// 记录时刻
 		std::chrono::steady_clock::time_point m_oLastUpdate;
-        // 逻辑线程当前状态
-        MutexUnorderedMap<unsigned long, LogicCoreState> m_mLogicStates;
+		// 逻辑线程完成到第几帧
+		MutexVariable<unsigned long> m_uFinishedFrameCount;
         // 当前帧
         unsigned long m_uFrameIndex;
         
