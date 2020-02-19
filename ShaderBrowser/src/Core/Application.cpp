@@ -58,6 +58,8 @@ namespace core
 	auto timePoint = std::chrono::steady_clock::now();
 	void Application::recTime(const std::string& log)
 	{
+		return;
+
 		auto now = std::chrono::steady_clock::now();
 		float deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(now - timePoint).count() / 1000.0f;
 		timePoint = now;

@@ -373,16 +373,18 @@ void ImGui_ImplGlfwGL3_NewFrame()
 
     // Setup inputs
     // (we already got mouse wheel, keyboard keys & characters from glfw callbacks polled in glfwPollEvents())
-    if (glfwGetWindowAttrib(g_Window, GLFW_FOCUSED))
+
+	// ShaderBrowser TIPS：由于现在将逻辑线程(主线程)和渲染线程分离，imgui这里的glfwGetWindowAttrib(g_Window, GLFW_FOCUSED)条件始终返回false，所以注释掉（TODO: 还需要观察有没有啥影响）
+    //if (glfwGetWindowAttrib(g_Window, GLFW_FOCUSED))
     {
         double mouse_x, mouse_y;
         glfwGetCursorPos(g_Window, &mouse_x, &mouse_y);
         io.MousePos = ImVec2((float)mouse_x, (float)mouse_y);   // Mouse position in screen coordinates (set to -1,-1 if no mouse / on another screen, etc.)
     }
-    else
-    {
-        io.MousePos = ImVec2(-1,-1);
-    }
+    //else
+    //{
+    //    io.MousePos = ImVec2(-1,-1);
+    //}
 
     for (int i = 0; i < 3; i++)
     {

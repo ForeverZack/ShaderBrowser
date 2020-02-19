@@ -147,7 +147,7 @@ namespace core
     
     void RenderCore::recTime(const std::string& log)
     {
-//        return;
+        return;
 
         auto now = std::chrono::steady_clock::now();
         float deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(now - m_oLastUpdate).count() / 1000.0f;
