@@ -138,18 +138,18 @@ namespace customGL
 		}
 	}
 
-	void GLProgram::initProgram(const char* vertSrc, const char* fragSrc, bool saveSource /*= true*/)
+	void GLProgram::initProgram(const char* vertPath, const char* fragPath, bool saveSource /*= true*/)
 	{
-		if (!vertSrc || strlen(vertSrc) == 0 || !fragSrc || strlen(fragSrc) == 0)
+		if (!vertPath || strlen(vertPath) == 0 || !fragPath || strlen(fragPath) == 0)
 		{
 			return;
 		}
         
         // 创建GPU资源
         m_eResouceState = GRS_DataLoaded;
-		m_sVertFilePath = vertSrc;
-		m_sFragFilePath = fragSrc;
-        createGPUResource(vertSrc, fragSrc);
+		m_sVertFilePath = vertPath;
+		m_sFragFilePath = fragPath;
+        createGPUResource(vertPath, fragPath);
 	}
     
     bool GLProgram::cloneProgram(GLProgram* srcGLProgram)
@@ -160,19 +160,19 @@ namespace customGL
         return true;
     }
 
-	bool GLProgram::createShader(GLenum type, GLuint& shader, const char* shaderSrc)
+	bool GLProgram::createShader(GLenum type, GLuint& shader, const char* shaderPath)
 	{
 		// 读取着色器内容
-		GLchar* source = common::Utils::readFile(shaderSrc);
-		if (source == NULL)
+		std::string source = std::move(common::Utils::readFile(shaderPath));
+		if (source == "")
 		{
-			std::cerr << "shader src is empty: " << shaderSrc << std::endl;
+			std::cerr << "shader src is empty: " << shaderPath << std::endl;
 			return false;
 		}
+		// 转换shader中的include文件内容
+		convertSourceCodeInclude(source);
 
-        bool successFlag = createShaderBySource(type, shader, source);
-
-		delete[] source;
+        bool successFlag = createShaderBySource(type, shader, source.c_str());
 
         return successFlag;
 	}
@@ -266,6 +266,28 @@ namespace customGL
         
         return true;
     }
+
+	std::string&  GLProgram::convertSourceCodeInclude(std::string& source)
+	{
+		int startIdx, endIdx;
+
+		startIdx = source.find("#include \"");	// int find(str);	-1:没找到	
+		while (startIdx != -1)
+		{
+			endIdx = source.find("\"", startIdx + 10);	// int find(str, startPos);
+
+			BROWSER_ASSERT(endIdx != -1, "The #include \"XXX\" in your shader program miss the symbol \"");
+
+			std::string filename = source.substr(startIdx + 10, endIdx - startIdx - 10);	// std::string substr(pos, length)
+			// 读取include文件源码
+
+			source.replace(startIdx, endIdx - startIdx + 1, "this is replace code");	// std::string& replace(pos, length, str);
+
+			startIdx = source.find("#include \"");
+		}
+
+		return source;
+	}
     
 	string& GLProgram::getSourceSavePointer(GLenum type)
     {

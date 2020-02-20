@@ -19,7 +19,7 @@ namespace common
         }
     }
 
-	GLchar* Utils::readFile(const char* filename)
+	std::string Utils::readFile(const char* filename)
 	{
 #ifdef _WIN32
         // WIN32
@@ -41,12 +41,9 @@ namespace common
 		int len = ftell(infile);
 		fseek(infile, 0, SEEK_SET);
 
-		GLchar* source = new GLchar[len + 1];
-
-		fread(source, 1, len, infile);
+		std::string source(len, '\0');
+		fread(&source[0], 1, len, infile);
 		fclose(infile);
-
-		source[len] = 0;
 
 		return source;
 	}

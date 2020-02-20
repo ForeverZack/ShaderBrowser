@@ -157,11 +157,13 @@ namespace customGL
         virtual void deleteGPUResource();
         
 	protected:
+		// 将shader源码中的include替换成对应代码
+		std::string&  convertSourceCodeInclude(std::string& source);
 		// 初始化着色器程序
-		void initProgram(const char* vertSrc, const char* fragSrc, bool saveSource = true);
+		void initProgram(const char* vertPath, const char* fragPath, bool saveSource = true);
         bool cloneProgram(GLProgram* srcGLProgram);
 		// 创建着色器
-		bool createShader(GLenum type, GLuint& shader, const char* shaderSrc);
+		bool createShader(GLenum type, GLuint& shader, const char* shaderPath);
         bool createShaderBySource(GLenum type, GLuint& shader, const char* shaderSource);
 		// 绑定预定义的顶点属性变量位置
 		void bindPredefinedVertexAttribs();
