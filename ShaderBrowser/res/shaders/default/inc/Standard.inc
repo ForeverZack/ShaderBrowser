@@ -9,6 +9,5 @@ uniform mat4 CGL_MODEL_MATRIX;
 uniform mat4 CGL_VIEW_MATRIX;
 uniform mat4 CGL_PROJECTION_MATRIX;
 uniform vec4 CGL_ALBEDO_COLOR = vec4(1.0f, 1.0f, 1.0f, 1.0f);
-uniform DirectionalLight CGL_DIRECTIONAL_LIGHT;
 uniform samplerBuffer CGL_BONES_MATRIX;
 uniform mat4 CGL_DYNAMIC_BATCH_MODEL_MATRIX[MAX_DYNAMIC_BATCH_COUNT];

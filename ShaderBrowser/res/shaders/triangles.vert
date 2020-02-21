@@ -3,6 +3,7 @@ layout (location=1) in vec4 a_color;
 layout (location=2) in vec2 a_coord;
 
 #include "Standard.inc"
+#include "Standard.inc"
 
 //out vec4 v2f_color;
 //out vec2 outCoord;

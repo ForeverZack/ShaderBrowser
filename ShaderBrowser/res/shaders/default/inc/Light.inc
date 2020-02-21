@@ -5,3 +5,5 @@ struct DirectionalLight
     float intensity;
     vec4 color;
 };
+
+uniform DirectionalLight CGL_DIRECTIONAL_LIGHT;
