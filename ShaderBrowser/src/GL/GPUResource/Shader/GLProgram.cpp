@@ -29,24 +29,25 @@ namespace customGL
 	const char* GLProgram::ATTRIBUTE_NAME_BONE_IDS = "a_boneIds";
 	const char* GLProgram::ATTRIBUTE_NAME_BONE_WEIGHTS = "a_boneWeights";
 
-	//  预定义的uniform变量
-	// 创建shader时写入shader文件头的uniform字符串
-	const char* SHADER_UNIFORMS =
-		// 定义一些基本的数据结构
-		"struct DirectionalLight { vec3 direction; float intensity; vec4 color; };\n"
-		"const int MAX_BONES = 100;\n"
-        "const int MAX_DYNAMIC_BATCH_COUNT = 1000;\n"
-
-		// shader中可以使用的内置的uniform变量名字(不一定会有值,看具体怎么使用)
-		"uniform sampler2D CGL_TEXTURE0;\n"
-		"uniform sampler2D CGL_TEXTURE1;\n"
-		"uniform mat4 CGL_MODEL_MATRIX;\n"
-		"uniform mat4 CGL_VIEW_MATRIX;\n"
-		"uniform mat4 CGL_PROJECTION_MATRIX;\n"
-		"uniform vec4 CGL_ALBEDO_COLOR = vec4(1.0f, 1.0f, 1.0f, 1.0f);\n"
-		"uniform DirectionalLight CGL_DIRECTIONAL_LIGHT;\n"
-		"uniform samplerBuffer CGL_BONES_MATRIX;\n"
-        "uniform mat4 CGL_DYNAMIC_BATCH_MODEL_MATRIX[MAX_DYNAMIC_BATCH_COUNT];\n";
+//	//  预定义的uniform变量   (已移入#include "standard.inc")
+//	// 创建shader时写入shader文件头的uniform字符串
+//	const char* SHADER_UNIFORMS =
+//		// 定义一些基本的数据结构
+//		"struct DirectionalLight { vec3 direction; float intensity; vec4 color; };\n"
+//		"const int MAX_BONES = 100;\n"
+//        "const int MAX_DYNAMIC_BATCH_COUNT = 1000;\n"
+//
+//		// shader中可以使用的内置的uniform变量名字(不一定会有值,看具体怎么使用)
+//		"uniform sampler2D CGL_TEXTURE0;\n"
+//		"uniform sampler2D CGL_TEXTURE1;\n"
+//		"uniform mat4 CGL_MODEL_MATRIX;\n"
+//		"uniform mat4 CGL_VIEW_MATRIX;\n"
+//		"uniform mat4 CGL_PROJECTION_MATRIX;\n"
+//		"uniform vec4 CGL_ALBEDO_COLOR = vec4(1.0f, 1.0f, 1.0f, 1.0f);\n"
+//		"uniform DirectionalLight CGL_DIRECTIONAL_LIGHT;\n"
+//		"uniform samplerBuffer CGL_BONES_MATRIX;\n"
+//        "uniform mat4 CGL_DYNAMIC_BATCH_MODEL_MATRIX[MAX_DYNAMIC_BATCH_COUNT];\n";
+    
     // uniform变量名称
 	const char* GLProgram::SHADER_UNIFORMS_ARRAY[] =
 	{
@@ -163,7 +164,7 @@ namespace customGL
 	bool GLProgram::createShader(GLenum type, GLuint& shader, const char* shaderPath)
 	{
 		// 读取着色器内容
-		std::string source = std::move(common::Utils::readFile(shaderPath));
+		std::string source = std::move(common::Utils::readAbsolutePathFile(shaderPath));
 		if (source == "")
 		{
 			std::cerr << "shader src is empty: " << shaderPath << std::endl;
@@ -199,7 +200,6 @@ namespace customGL
 					const GLchar *sources[] =
 					{
 						"#version 330 core\n",    // 头
-						SHADER_UNIFORMS,    // 预定义uniform
 						additionCode.c_str(), //附加代码
 						shaderSource // 源码
 					};
@@ -214,7 +214,6 @@ namespace customGL
 					const GLchar *sources[] =
 					{
 						"#version 330 core\n",    // 头
-						SHADER_UNIFORMS,    // 预定义uniform
 						additionCode.c_str(), //附加代码
 						shaderSource // 源码
 					};
@@ -267,7 +266,7 @@ namespace customGL
         return true;
     }
 
-	std::string&  GLProgram::convertSourceCodeInclude(std::string& source)
+	std::string& GLProgram::convertSourceCodeInclude(std::string& source)
 	{
 		int startIdx, endIdx;
 
@@ -277,11 +276,14 @@ namespace customGL
 			endIdx = source.find("\"", startIdx + 10);	// int find(str, startPos);
 
 			BROWSER_ASSERT(endIdx != -1, "The #include \"XXX\" in your shader program miss the symbol \"");
-
-			std::string filename = source.substr(startIdx + 10, endIdx - startIdx - 10);	// std::string substr(pos, length)
+			
+            // include文件名
+            std::string inc_filename = source.substr(startIdx + 10, endIdx - startIdx - 10);	// std::string substr(pos, length)
 			// 读取include文件源码
-
-			source.replace(startIdx, endIdx - startIdx + 1, "this is replace code");	// std::string& replace(pos, length, str);
+            std::string inc_source = common::Utils::readFile(inc_filename.c_str());
+            BROWSER_ASSERT(inc_source!="", "The inc file in your shader is empty");
+            
+			source.replace(startIdx, endIdx - startIdx + 1, inc_source);	// std::string& replace(pos, length, str);
 
 			startIdx = source.find("#include \"");
 		}

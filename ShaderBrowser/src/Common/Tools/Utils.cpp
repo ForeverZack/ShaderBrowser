@@ -1,4 +1,5 @@
 #include "Utils.h"
+#include "Common/Tools/FileUtils.h"
 
 namespace common
 {
@@ -19,20 +20,20 @@ namespace common
         }
     }
 
-	std::string Utils::readFile(const char* filename)
+	std::string Utils::readAbsolutePathFile(const char* absolutePath)
 	{
 #ifdef _WIN32
         // WIN32
 		FILE* infile;
-		fopen_s(&infile, filename, "rb");
+		fopen_s(&infile, absolutePath, "rb");
 #else
         // macOS
-		FILE* infile = fopen(filename, "rb");
+		FILE* infile = fopen(absolutePath, "rb");
 #endif
 
 		if (!infile) {
 #ifdef _DEBUG
-			std::cerr << "Unable to open file '" << filename << "'" << std::endl;
+			std::cerr << "Unable to open file '" << absolutePath << "'" << std::endl;
 #endif /* DEBUG */
 			return NULL;
 		}
@@ -47,6 +48,12 @@ namespace common
 
 		return source;
 	}
+    
+    std::string Utils::readFile(const char* filepath)
+    {
+        const std::string inc_full_path = FileUtils::getInstance()->getAbsolutePathForFilename(filepath);
+        return readAbsolutePathFile(inc_full_path.c_str());
+    }
     
     VertexAttribDeclaration* Utils::createVertexAttribDeclaration(GLuint location, GLint size, GLenum type, GLboolean normalized, GLsizei stride, VertexDataType dataType /*= VertexDataType::Float*/)
     {

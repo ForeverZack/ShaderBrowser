@@ -95,7 +95,8 @@ namespace common
 	{
 	public:
 		// 读取文件（shader）
-		static std::string readFile(const char* filename);
+		static std::string readAbsolutePathFile(const char* absolutePath);
+        static std::string readFile(const char* filepath);
 
         // 创建VertexAttribDeclaration
         static VertexAttribDeclaration* createVertexAttribDeclaration(GLuint location, GLint size, GLenum type, GLboolean normalized, GLsizei stride, VertexDataType dataType = VertexDataType::Float);

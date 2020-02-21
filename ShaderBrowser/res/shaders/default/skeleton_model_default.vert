@@ -6,6 +6,8 @@ layout (location=4) in vec3 a_tangent;
 layout (location=5) in ivec4 a_boneIds; 
 layout (location=6) in vec4 a_boneWeights;
 
+#include "Standard.inc"
+
 out V2FData
 {
     vec4 color;

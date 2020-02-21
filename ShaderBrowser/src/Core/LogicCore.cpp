@@ -32,6 +32,7 @@ namespace core
 	void LogicCore::initLogic()
 	{
 		// 添加搜索路径
+        FileUtils::getInstance()->addSearchPath("res/shaders/default/inc");
 		FileUtils::getInstance()->addSearchPath(".");
 		FileUtils::getInstance()->addSearchPath("res");
 

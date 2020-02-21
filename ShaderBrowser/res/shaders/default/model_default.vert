@@ -4,6 +4,8 @@ layout (location=2) in vec2 a_coord;
 layout (location=3) in vec3 a_normal;
 layout (location=4) in vec3 a_tangent;
 
+#include "Standard.inc"
+
 //out vec4 v2f_color;
 //out vec2 outCoord;
 out V2FData

@@ -1,6 +1,8 @@
 uniform float cusTest[4];
 uniform mat4 matTest;
 
+#include "Standard.inc"
+
 out vec4 fColor;
 
 //in vec4 v2f_color;

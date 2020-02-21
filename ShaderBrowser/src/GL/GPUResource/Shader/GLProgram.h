@@ -158,7 +158,7 @@ namespace customGL
         
 	protected:
 		// 将shader源码中的include替换成对应代码
-		std::string&  convertSourceCodeInclude(std::string& source);
+		std::string& convertSourceCodeInclude(std::string& source);
 		// 初始化着色器程序
 		void initProgram(const char* vertPath, const char* fragPath, bool saveSource = true);
         bool cloneProgram(GLProgram* srcGLProgram);

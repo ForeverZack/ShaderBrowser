@@ -1,6 +1,6 @@
-
 out vec4 fColor;
 
+#include "Standard.inc"
 //in vec4 v2f_color;
 //in vec2 inCoord;
 
