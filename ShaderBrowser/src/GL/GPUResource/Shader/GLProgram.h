@@ -58,8 +58,10 @@ namespace customGL
         // 预定义的uniform变量枚举
 		enum
 		{
+            // 主相机位置（世界空间）
+            UNIFORM_CGL_MAINCAMERA_WORLDPOS = 0,
 			// 纹理0: 主纹理(漫反射纹理)
-			UNIFORM_CGL_TEXUTRE0 = 0,
+			UNIFORM_CGL_TEXUTRE0,
 			// 纹理1
 			UNIFORM_CGL_TEXUTRE1,
 			// model matrix
@@ -70,14 +72,17 @@ namespace customGL
 			UNIFORM_CGL_PROJECTION_MATRIX,
 			// 漫反射颜色
 			UNIFORM_CGL_ALBEDO_COLOR,
-            // 平行光
-            UNIFORM_CGL_DIRECTIONAL_LIGHT,
-
 			// 骨骼矩阵
             UNIFORM_CGL_BONES_MATRIX,
             // 动态合批用的model矩阵
             UNIFORM_CGL_DYNAMIC_BATCH_MODEL_MATRIX,
             
+            // 环境光颜色
+            UNIFORM_CGL_AMBIENT_COLOR,
+            // 平行光数量
+            UNIFORM_CGL_DIRECTIONAL_LIGHT_NUM,
+            // 平行光数组
+            UNIFORM_CGL_DIRECTIONAL_LIGHTS,
             
             // 预定义Uniform变量个数
             UNIFORM_MAX_COUNT

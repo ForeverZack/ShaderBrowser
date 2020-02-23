@@ -32,7 +32,7 @@ namespace customGL
 		// 初始化材质
 		void init(GLProgram* program);
 		// 使用材质
-		void usePass(bool transformDirty, const glm::mat4& modelMatrix, bool cameraDirty, const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix, std::unordered_map<std::string, UniformValue>& uniforms);
+		void usePass(bool transformDirty, const glm::mat4& modelMatrix, bool cameraDirty, const glm::vec3& cameraGlobalPos, const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix, std::unordered_map<std::string, UniformValue>& uniforms);
 		// GLProgram是否在GPU中加载完成
 		bool isGPUResourceLoaded();
 

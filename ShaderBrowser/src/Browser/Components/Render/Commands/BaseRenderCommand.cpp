@@ -48,6 +48,7 @@ namespace browser
 		if (m_bCameraDirty)
 		{
 			material->setCurCamera(camera);
+            m_oCameraGlobalPosition = camera->getGlobalPosition();
 			m_oViewMatrix = camera->getViewMatrix();
 			m_oProjectionMatrix = camera->getProjectionMatrix();
 		}
@@ -66,7 +67,7 @@ namespace browser
     void BaseRenderCommand::draw()
     {
         GLuint vao = m_oMesh->getVAO();
-        m_oMaterial->useMaterial(m_bTransformDirty, m_oModelMatrix, m_bCameraDirty, m_oViewMatrix, m_oProjectionMatrix, m_mUniforms);
+        m_oMaterial->useMaterial(m_bTransformDirty, m_oModelMatrix, m_bCameraDirty, m_oCameraGlobalPosition, m_oViewMatrix, m_oProjectionMatrix, m_mUniforms);
 
         // 5.绘制
         glBindVertexArray(vao);

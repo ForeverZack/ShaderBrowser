@@ -47,15 +47,19 @@ namespace browser
 	public:
 		// 刷新
 		void updateCamera(float deltaTime);
-
+        
 	protected:
 		// 处理组件事件
 		void handleEvent(ComponentEvent event, BaseComponentMessage* msg);
 
+        // 重载属性面板显示方法
+        virtual void onInspectorGUI(InspectorPanel* inspector);
+        
 		// 刷新projection matrix
 		void updateProjectionMatrix();
 
 
+        REGISTER_PROPERTY_CONSTREF_GET(glm::vec3, m_oGlobalPosition, GlobalPosition)
 		REGISTER_PROPERTY_CONSTREF_GET(glm::mat4, m_oViewMatrix, ViewMatrix)
 		REGISTER_PROPERTY_CONSTREF_GET(glm::mat4, m_oProjectionMatrix, ProjectionMatrix)
         REGISTER_PROPERTY_GET_SET(RenderPathType, m_eRenderPathType, RenderPathType)
@@ -65,6 +69,8 @@ namespace browser
 		// view matrix 相关
 		// view matrix
 		glm::mat4 m_oViewMatrix;
+        // 相机世界位置
+        glm::vec3 m_oGlobalPosition;
         // 本帧是否发生了移动
         bool m_bTransDirty;
         

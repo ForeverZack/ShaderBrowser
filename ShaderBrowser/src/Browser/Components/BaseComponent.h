@@ -65,8 +65,12 @@ namespace browser
 		virtual void onDestroy() {}
         
         // 发送事件
+        // 发送给当前Entity的所有其他组件
         virtual void dispatchEvent(ComponentEvent event, BaseComponentMessage* msg);
+        // 发送给当前Entity下所有子Entity(包括自己)的其他组件
         virtual void dispatchEventToChildren(ComponentEvent event, BaseComponentMessage* msg);
+        // 发送给组件指定的系统
+        virtual void dispatchEventToSystem(SystemType type, ComponentEvent event, BaseComponentMessage* msg);
         
         // 接受事件
         virtual void handleEvent(ComponentEvent event, BaseComponentMessage* msg) {}

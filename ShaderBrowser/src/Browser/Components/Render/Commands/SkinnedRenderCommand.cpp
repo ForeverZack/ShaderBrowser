@@ -64,7 +64,7 @@ namespace browser
         }
         
         // 4.使用材质
-        m_oMaterial->useMaterial(m_bTransformDirty, m_oModelMatrix, m_bCameraDirty, m_oViewMatrix, m_oProjectionMatrix, m_mUniforms);
+        m_oMaterial->useMaterial(m_bTransformDirty, m_oModelMatrix, m_bCameraDirty, m_oCameraGlobalPosition, m_oViewMatrix, m_oProjectionMatrix, m_mUniforms);
         
         // 5.绘制
         glBindVertexArray(vao);

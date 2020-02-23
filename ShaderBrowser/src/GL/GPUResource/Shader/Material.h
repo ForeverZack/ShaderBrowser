@@ -44,7 +44,7 @@ namespace customGL
         void addPass(Pass* pass);
 		// 使用材质的第几个Pass (渲染线程调用)
 		// TODO: 这里实际上应该根据pass的类型来决定，而不是根据index ( 这里的类型也跟渲染队列有关，比方说如果在进行阴影深度贴图的渲染，应该使用对应的简单的pass )
-		void useMaterial(bool transformDirty, const glm::mat4& modelMatrix, bool cameraDirty, const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix, std::unordered_map<std::string, UniformValue>& uniforms, int index = 0);
+		void useMaterial(bool transformDirty, const glm::mat4& modelMatrix, bool cameraDirty, const glm::vec3& cameraGlobalPos, const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix, std::unordered_map<std::string, UniformValue>& uniforms, int index = 0);
 		// GLProgram是否在GPU中加载完成
 		bool isGPUResourceLoaded();
 

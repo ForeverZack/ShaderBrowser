@@ -35,9 +35,9 @@ namespace browser
         void flushRenders();
         // 渲染前（逻辑线程做好渲染准备）
         virtual void beforeUpdate(float deltaTime);
-        // 每帧更新
+        // 每帧更新 (渲染线程拷贝渲染命令队列)
 		void update(float deltaTime);
-        // 渲染场景结束后
+        // 渲染 (渲染线程执行渲染命令)
         void afterUpdate(float deltaTime);
 		// 绘制场景
 		void renderScene(Camera* camera, float deltaTime);

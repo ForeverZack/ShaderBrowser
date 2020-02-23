@@ -1,5 +1,6 @@
 #include "BaseComponent.h"
 #include "Browser/Entitys/BaseEntity.h"
+#include "Common/System/ECSManager.h"
 
 namespace browser
 {
@@ -44,5 +45,13 @@ namespace browser
         }
     }
 
+    void BaseComponent::dispatchEventToSystem(SystemType type, ComponentEvent event, BaseComponentMessage* msg)
+    {
+        BaseSystem* system = ECSManager::getInstance()->getSystem(type);
+        if (system)
+        {
+            system->handleEvent(event, msg);
+        }
+    }
     
 }

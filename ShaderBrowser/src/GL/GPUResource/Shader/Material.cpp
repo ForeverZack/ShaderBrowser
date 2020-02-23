@@ -62,12 +62,12 @@ namespace customGL
         m_vPass.push_back(pass);
     }
     
-	void Material::useMaterial(bool transformDirty, const glm::mat4& modelMatrix, bool cameraDirty, const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix, std::unordered_map<std::string, UniformValue>& uniforms, int index/* = 0*/)
+	void Material::useMaterial(bool transformDirty, const glm::mat4& modelMatrix, bool cameraDirty, const glm::vec3& cameraGlobalPos, const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix, std::unordered_map<std::string, UniformValue>& uniforms, int index/* = 0*/)
 	{
         common::BROWSER_ASSERT(m_vPass.size()>index && m_vPass[index], "cannot found pass in function Material::useMaterial");
         
         // 使用glProgram		TODO: usePass会改变UniformValue的dirty状态，如果是多个pass会出问题的！！
-        m_vPass[index]->usePass(transformDirty, modelMatrix, cameraDirty, viewMatrix, projectionMatrix, uniforms);
+        m_vPass[index]->usePass(transformDirty, modelMatrix, cameraDirty, cameraGlobalPos, viewMatrix, projectionMatrix, uniforms);
 	}
 
 	bool Material::isGPUResourceLoaded()

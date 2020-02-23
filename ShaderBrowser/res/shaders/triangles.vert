@@ -1,7 +1,4 @@
-layout (location=0) in vec4 a_position;
-layout (location=1) in vec4 a_color;
-layout (location=2) in vec2 a_coord;
-
+#include "StandardVertexAttr.inc"
 #include "Standard.inc"
 #include "Standard.inc"
 

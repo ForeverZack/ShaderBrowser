@@ -37,7 +37,7 @@ namespace customGL
 		return m_oGLProgram->getResouceState() == GRS_Loaded;
 	}
 
-	void Pass::usePass(bool transformDirty, const glm::mat4& modelMatrix, bool cameraDirty, const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix, std::unordered_map<std::string, UniformValue>& uniforms)
+	void Pass::usePass(bool transformDirty, const glm::mat4& modelMatrix, bool cameraDirty, const glm::vec3& cameraGlobalPos, const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix, std::unordered_map<std::string, UniformValue>& uniforms)
 	{
         // 注意在更新uniform变量的值之前，要先使用着色器glUseProgram
 		m_oGLProgram->useProgram();
@@ -55,6 +55,7 @@ namespace customGL
 		}
 		if (cameraDirty)
 		{
+            m_oGLProgram->setUniformWithVec3(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_MAINCAMERA_WORLDPOS], cameraGlobalPos.x, cameraGlobalPos.y, cameraGlobalPos.z);
 			m_oGLProgram->setUniformWithMat4(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_VIEW_MATRIX], viewMatrix);
 			m_oGLProgram->setUniformWithMat4(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_PROJECTION_MATRIX], projectionMatrix);
 		}

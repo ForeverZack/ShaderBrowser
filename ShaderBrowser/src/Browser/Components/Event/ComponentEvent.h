@@ -30,6 +30,7 @@ namespace browser
     class BaseBoundBox;
     class Camera;
     class BaseRender;
+    class BaseLight;
     
     // 组件之间通讯的事件
     // 默认规则：AddComponent事件必须传入组件自身（对于有相关依赖的组件来说，需要在自身的AddComponent消息中加入依赖组件信息(可能为空)，并要监听相关依赖组件的AddComponent事件，这样才能不依赖组件添加的顺序）
@@ -66,13 +67,19 @@ namespace browser
         // 添加BoundBox
         BoundBox_AddComponent,
 
-        // Animator组件的时间:
+        // Animator组件的事件:
         // 添加Animator
         Animator_AddComponent,
         // 父级节点添加Animator
         Animator_ParentAddComponent,
         // Animator更新骨骼节点数据
         Animator_UpdateBonesTransform,
+        
+        // Light组件的事件:
+        // 添加Light
+        Light_AddComponent,
+        // 光源属性发生更改
+        Light_UpdateLight,
     };
 
 
@@ -189,5 +196,26 @@ namespace browser
         std::unordered_map<unsigned int, glm::vec3>* m_mBonesScale;
     };
     
+    // Entity添加Light组件事件
+    class LightAddComponentMessage : public BaseComponentMessage
+    {
+    public:
+        LightAddComponentMessage(Transform* transform) : m_oTransform(transform) {}
+        ~LightAddComponentMessage() {}
+        REGISTER_PROPERTY_GET(Transform*, m_oTransform, Transform)
+    protected:
+        Transform* m_oTransform;
+    };
+    
+    // Light属性发生更改事件
+    class UpdateLightMessage : public BaseComponentMessage
+    {
+    public:
+        UpdateLightMessage(BaseLight* light) : m_pBaseLight(light) {}
+        ~UpdateLightMessage() {}
+        REGISTER_PROPERTY_GET(BaseLight*, m_pBaseLight, Light);
+    protected:
+        BaseLight* m_pBaseLight;
+    };
 }
 

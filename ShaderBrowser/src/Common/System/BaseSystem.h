@@ -92,6 +92,9 @@ namespace common
 		virtual void update(float deltaTime) {}
         // 在系统刷新后（用来做一些后处理）
         virtual void afterUpdate(float deltaTime) {}
+        
+        // 接受事件
+        virtual void handleEvent(ComponentEvent event, BaseComponentMessage* msg) {}
 
 		REGISTER_PROPERTY_GET_SET(int, m_iPriority, Priority)
 		REGISTER_PROPERTY_GET_SET(bool, m_bComponentMutex, ComponentMutex)

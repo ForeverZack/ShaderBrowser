@@ -68,6 +68,8 @@ namespace browser
 		glm::mat4 m_oModelMatrix;
 		// Camera脏标记(为true时，view projection矩阵才有意义)
 		bool m_bCameraDirty;
+        // 相机位置
+        glm::vec3 m_oCameraGlobalPosition;
 		// view, projection矩阵
 		glm::mat4 m_oViewMatrix;
 		glm::mat4 m_oProjectionMatrix;

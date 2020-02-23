@@ -52,16 +52,20 @@ namespace customGL
     // uniform变量名称
 	const char* GLProgram::SHADER_UNIFORMS_ARRAY[] =
 	{
+        "CGL_MAINCAMERA_WORLDPOS",
 		"CGL_TEXTURE0",
 		"CGL_TEXTURE1",
 		"CGL_MODEL_MATRIX",
 		"CGL_VIEW_MATRIX",
 		"CGL_PROJECTION_MATRIX",
 		"CGL_ALBEDO_COLOR",
-		"CGL_DIRECTIONAL_LIGHT",
         "CGL_BONES_MATRIX",
-        "CGL_DYNAMIC_BATCH_MODEL_MATRIX[%d]"
-	};
+        "CGL_DYNAMIC_BATCH_MODEL_MATRIX[%d]",
+        
+        "CGL_AMBIENT_COLOR",
+        "CGL_DIRECTIONAL_LIGHT_NUM",
+        "CGL_DIRECTIONAL_LIGHTS",
+    };
 
     GLProgram* GLProgram::create(const char* vertSrc, const char* fragSrc)
     {

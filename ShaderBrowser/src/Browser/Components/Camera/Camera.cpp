@@ -20,6 +20,7 @@ namespace browser
 	Camera::Camera(ProjectionType type, float nearPlane, float farPlane, int viewportWidth, int viewportHeight, float FOV)
 		: BaseComponent("Camera")
         , m_oViewMatrix(GLM_MAT4_UNIT)
+        , m_oGlobalPosition(GLM_VEC3_ZERO)
         , m_bTransDirty(true)
 		, m_eProjectionType(type)
 		, m_fFieldOfView(FOV)
@@ -37,6 +38,7 @@ namespace browser
 	Camera::Camera()
 		: BaseComponent("Camera")
         , m_oViewMatrix(GLM_MAT4_UNIT)
+        , m_oGlobalPosition(GLM_VEC3_ZERO)
         , m_bTransDirty(true)
 		, m_eProjectionType(ProjectionType::Perspective)
 		, m_fFieldOfView(60.0f)
@@ -80,10 +82,22 @@ namespace browser
 		
 			// 计算视矩阵	( glm::LookAt函数需要一个位置、目标和上向量 )
 			m_oViewMatrix = glm::lookAt(camera_position, camera_target, camera_up);
+            m_oGlobalPosition = transform->getGlobalPosition();
 
             m_bTransDirty = transform->getCurFrameDirty();
 		}
 	}
+    
+    void Camera::onInspectorGUI(InspectorPanel* inspector)
+    {
+        // FOV
+        inspector->addPropertyText("Field of view:"+std::to_string(m_fFieldOfView));
+
+//        inspector->addPropertyVector3("Position", &m_oObjectPos, [=](const glm::vec3& value)
+//            {
+//                setPosition(value);
+//            }, false);
+    }
 
 	void Camera::updateProjectionMatrix()
 	{

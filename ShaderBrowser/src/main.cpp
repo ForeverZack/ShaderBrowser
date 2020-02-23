@@ -9,6 +9,7 @@
 #include "GL/GPUResource/Shader/GLProgram.h"
 #include "Browser/Components/Transform/Transform.h"
 #include "Browser/Components/Camera/Camera.h"
+#include "Browser/Components/Light/DirectionalLight.h"
 #include "Browser/Components/Mesh/MeshFilter.h"
 #include "GL/GPUResource/Model/Mesh.h"
 #include "Browser/Components/Render/BaseRender.h"
@@ -143,7 +144,17 @@ void testVal()
 	// 设置主相机
 	CameraSystem::getInstance()->setMainCamera(mainCamera);
 	//=============================创建相机==================================
-
+    
+    //=============================创建平行光==================================
+    BaseEntity* directionalLightEntity = BaseEntity::create("Directional Light");
+    scene->addChild(directionalLightEntity);
+    // 平行光组件
+    DirectionalLight* directionalLight = new DirectionalLight();
+    directionalLightEntity->addComponent(directionalLight);
+    // 设置平行光位置（没啥用）
+    directionalLightEntity->setPosition(100, 100, 100);
+    
+    //=============================创建平行光==================================
 
 
 	// 载入纹理

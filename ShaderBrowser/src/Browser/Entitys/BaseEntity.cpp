@@ -407,6 +407,12 @@ namespace browser
 			deliverComponentMessage(ComponentEvent::Animator_AddComponent, new AnimatorAddComponentMessage(getComponent<Animator>(), m_oModel));
 			deliverComponentMessageToChildren(ComponentEvent::Animator_ParentAddComponent, new AnimatorAddComponentMessage(getComponent<Animator>(), m_oModel));
             break;
+                
+        case SystemType::Light:
+            // 灯光
+            MARK_SPECIAL_COMPONENT(m_oAnimator, component, bEmpty);
+            deliverComponentMessage(ComponentEvent::Light_AddComponent, new LightAddComponentMessage(getComponent<Transform>()));
+            break;
 
 		}
 
