@@ -108,6 +108,418 @@ namespace common
 		return declaration;
 	}
     
+    void Utils::setUniformInt(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, int value)
+    {
+        auto itor = uniforms.find(uniformName);
+        if (itor == uniforms.end())
+        {
+            UniformValue uniformValue;
+            uniformValue.setInt(value);
+            uniforms.emplace(uniformName, std::move(uniformValue));
+        }
+        else
+        {
+            UniformValue& uniformValue = itor->second;
+            uniformValue.setInt(value);
+        }
+    }
+    void Utils::setUniformFloat(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, float value)
+    {
+        auto itor = uniforms.find(uniformName);
+        if (itor == uniforms.end())
+        {
+            UniformValue uniformValue;
+            uniformValue.setFloat(value);
+            uniforms.emplace(uniformName, std::move(uniformValue));
+        }
+        else
+        {
+            UniformValue& uniformValue = itor->second;
+            uniformValue.setFloat(value);
+        }
+    }
+    void Utils::setUniformMat3(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, const glm::mat3& value)
+    {
+        auto itor = uniforms.find(uniformName);
+        if (itor == uniforms.end())
+        {
+            UniformValue uniformValue;
+            uniformValue.setMat3(value);
+            uniforms.emplace(uniformName, std::move(uniformValue));
+        }
+        else
+        {
+            UniformValue& uniformValue = itor->second;
+            uniformValue.setMat3(value);
+        }
+    }
+    void Utils::setUniformMat3x4(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, const glm::mat3x4& value)
+    {
+        auto itor = uniforms.find(uniformName);
+        if (itor == uniforms.end())
+        {
+            UniformValue uniformValue;
+            uniformValue.setMat3x4(value);
+            uniforms.emplace(uniformName, std::move(uniformValue));
+        }
+        else
+        {
+            UniformValue& uniformValue = itor->second;
+            uniformValue.setMat3x4(value);
+        }
+    }
+    void Utils::setUniformMat4(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, const glm::mat4& value)
+    {
+        auto itor = uniforms.find(uniformName);
+        if (itor == uniforms.end())
+        {
+            UniformValue uniformValue;
+            uniformValue.setMat4(value);
+            uniforms.emplace(uniformName, std::move(uniformValue));
+        }
+        else
+        {
+            UniformValue& uniformValue = itor->second;
+            uniformValue.setMat4(value);
+        }
+    }
+    
+    void Utils::setUniformMat4x3(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, const glm::mat4x3& value)
+    {
+        auto itor = uniforms.find(uniformName);
+        if (itor == uniforms.end())
+        {
+            UniformValue uniformValue;
+            uniformValue.setMat4x3(value);
+            uniforms.emplace(uniformName, std::move(uniformValue));
+        }
+        else
+        {
+            UniformValue& uniformValue = itor->second;
+            uniformValue.setMat4x3(value);
+        }
+    }
+    
+    void Utils::setUniformFloatV(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, int size, const float* value)
+    {
+        auto itor = uniforms.find(uniformName);
+        if (itor == uniforms.end())
+        {
+            UniformValue uniformValue;
+            uniformValue.setFloatV(size, value);
+            uniforms.emplace(uniformName, std::move(uniformValue));
+        }
+        else
+        {
+            UniformValue& uniformValue = itor->second;
+            uniformValue.setFloatV(size, value);
+        }
+    }
+    
+    void Utils::setUniformV2f(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, const glm::vec2& value)
+    {
+        auto itor = uniforms.find(uniformName);
+        if (itor == uniforms.end())
+        {
+            UniformValue uniformValue;
+            uniformValue.setVec2(value);
+            uniforms.emplace(uniformName, std::move(uniformValue));
+        }
+        else
+        {
+            UniformValue& uniformValue = itor->second;
+            uniformValue.setVec2(value);
+        }
+    }
+    
+    void Utils::setUniformV3f(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, const glm::vec3& value)
+    {
+        auto itor = uniforms.find(uniformName);
+        if (itor == uniforms.end())
+        {
+            UniformValue uniformValue;
+            uniformValue.setVec3(value);
+            uniforms.emplace(uniformName, std::move(uniformValue));
+        }
+        else
+        {
+            UniformValue& uniformValue = itor->second;
+            uniformValue.setVec3(value);
+        }
+    }
+    
+    void Utils::setUniformV4f(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, const glm::vec4& value)
+    {
+        auto itor = uniforms.find(uniformName);
+        if (itor == uniforms.end())
+        {
+            UniformValue uniformValue;
+            uniformValue.setVec4(value);
+            uniforms.emplace(uniformName, std::move(uniformValue));
+        }
+        else
+        {
+            UniformValue& uniformValue = itor->second;
+            uniformValue.setVec4(value);
+        }
+    }
+    
+    void Utils::setUniformTex2D(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, Texture2D* texture)
+    {
+        auto itor = uniforms.find(uniformName);
+        if (itor == uniforms.end())
+        {
+            UniformValue uniformValue;
+            uniformValue.setTex2D(texture);
+            uniforms.emplace(uniformName, std::move(uniformValue));
+        }
+        else
+        {
+            UniformValue& uniformValue = itor->second;
+            uniformValue.setTex2D(texture);
+        }
+    }
+    
+    void Utils::setUniformSamplerBuffer(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, TextureBuffer* textureBuffer)
+    {
+        auto itor = uniforms.find(uniformName);
+        if (itor == uniforms.end())
+        {
+            UniformValue uniformValue;
+            uniformValue.setSamplerBuffer(textureBuffer);
+            uniforms.emplace(uniformName, std::move(uniformValue));
+        }
+        else
+        {
+            UniformValue& uniformValue = itor->second;
+            uniformValue.setSamplerBuffer(textureBuffer);
+        }
+    }
+
+    void Utils::setUniformIntV(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, int count, const int* value)
+    {
+        auto itor = uniforms.find(uniformName);
+        if (itor == uniforms.end())
+        {
+            UniformValue uniformValue;
+            uniformValue.setIntV(count, value);
+            uniforms.emplace(uniformName, std::move(uniformValue));
+        }
+        else
+        {
+            UniformValue& uniformValue = itor->second;
+            uniformValue.setIntV(count, value);
+        }
+    }
+    
+    void Utils::setUniformIVec2(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, const glm::ivec2& value)
+    {
+        auto itor = uniforms.find(uniformName);
+        if (itor == uniforms.end())
+        {
+            UniformValue uniformValue;
+            uniformValue.setIVec2(value);
+            uniforms.emplace(uniformName, std::move(uniformValue));
+        }
+        else
+        {
+            UniformValue& uniformValue = itor->second;
+            uniformValue.setIVec2(value);
+        }
+    }
+    
+    void Utils::setUniformVec2V(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, int count, const float* value)
+    {
+        auto itor = uniforms.find(uniformName);
+        if (itor == uniforms.end())
+        {
+            UniformValue uniformValue;
+            uniformValue.setVec2V(count, value);
+            uniforms.emplace(uniformName, std::move(uniformValue));
+        }
+        else
+        {
+            UniformValue& uniformValue = itor->second;
+            uniformValue.setVec2V(count, value);
+        }
+    }
+    
+    void Utils::setUniformIVec2V(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, int count, const int* value)
+    {
+        auto itor = uniforms.find(uniformName);
+        if (itor == uniforms.end())
+        {
+            UniformValue uniformValue;
+            uniformValue.setIVec2V(count, value);
+            uniforms.emplace(uniformName, std::move(uniformValue));
+        }
+        else
+        {
+            UniformValue& uniformValue = itor->second;
+            uniformValue.setIVec2V(count, value);
+        }
+    }
+    
+    void Utils::setUniformIVec3(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, const glm::ivec3& value)
+    {
+        auto itor = uniforms.find(uniformName);
+        if (itor == uniforms.end())
+        {
+            UniformValue uniformValue;
+            uniformValue.setIVec3(value);
+            uniforms.emplace(uniformName, std::move(uniformValue));
+        }
+        else
+        {
+            UniformValue& uniformValue = itor->second;
+            uniformValue.setIVec3(value);
+        }
+    }
+    
+    void Utils::setUniformVec3V(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, int count, const float* value)
+    {
+        auto itor = uniforms.find(uniformName);
+        if (itor == uniforms.end())
+        {
+            UniformValue uniformValue;
+            uniformValue.setVec3V(count, value);
+            uniforms.emplace(uniformName, std::move(uniformValue));
+        }
+        else
+        {
+            UniformValue& uniformValue = itor->second;
+            uniformValue.setVec3V(count, value);
+        }
+    }
+    
+    void Utils::setUniformIVec3V(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, int count, const int* value)
+    {
+        auto itor = uniforms.find(uniformName);
+        if (itor == uniforms.end())
+        {
+            UniformValue uniformValue;
+            uniformValue.setIVec3V(count, value);
+            uniforms.emplace(uniformName, std::move(uniformValue));
+        }
+        else
+        {
+            UniformValue& uniformValue = itor->second;
+            uniformValue.setIVec3V(count, value);
+        }
+    }
+    
+    void Utils::setUniformIVec4(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, const glm::ivec4& value)
+    {
+        auto itor = uniforms.find(uniformName);
+        if (itor == uniforms.end())
+        {
+            UniformValue uniformValue;
+            uniformValue.setIVec4(value);
+            uniforms.emplace(uniformName, std::move(uniformValue));
+        }
+        else
+        {
+            UniformValue& uniformValue = itor->second;
+            uniformValue.setIVec4(value);
+        }
+    }
+    
+    void Utils::setUniformVec4V(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, int count, const float* value)
+    {
+        auto itor = uniforms.find(uniformName);
+        if (itor == uniforms.end())
+        {
+            UniformValue uniformValue;
+            uniformValue.setVec4V(count, value);
+            uniforms.emplace(uniformName, std::move(uniformValue));
+        }
+        else
+        {
+            UniformValue& uniformValue = itor->second;
+            uniformValue.setVec4V(count, value);
+        }
+    }
+    
+    void Utils::setUniformIVec4V(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, int count, const int* value)
+    {
+        auto itor = uniforms.find(uniformName);
+        if (itor == uniforms.end())
+        {
+            UniformValue uniformValue;
+            uniformValue.setIVec4V(count, value);
+            uniforms.emplace(uniformName, std::move(uniformValue));
+        }
+        else
+        {
+            UniformValue& uniformValue = itor->second;
+            uniformValue.setIVec4V(count, value);
+        }
+    }
+    
+    void Utils::setUniformMat4V(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, int count, const float* value)
+    {
+        auto itor = uniforms.find(uniformName);
+        if (itor == uniforms.end())
+        {
+            UniformValue uniformValue;
+            uniformValue.setMat4V(count, value);
+            uniforms.emplace(uniformName, std::move(uniformValue));
+        }
+        else
+        {
+            UniformValue& uniformValue = itor->second;
+            uniformValue.setMat4V(count, value);
+        }
+    }
+    
+    void Utils::setUniformMat4x3V(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, int count, const float* value)
+    {
+        auto itor = uniforms.find(uniformName);
+        if (itor == uniforms.end())
+        {
+            UniformValue uniformValue;
+            uniformValue.setMat4x3V(count, value);
+            uniforms.emplace(uniformName, std::move(uniformValue));
+        }
+        else
+        {
+            UniformValue& uniformValue = itor->second;
+            uniformValue.setMat4x3V(count, value);
+        }
+    }
+    
+    void Utils::setUniformMat3V(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, int count, const float* value)
+    {
+        auto itor = uniforms.find(uniformName);
+        if (itor == uniforms.end())
+        {
+            UniformValue uniformValue;
+            uniformValue.setMat3V(count, value);
+            uniforms.emplace(uniformName, std::move(uniformValue));
+        }
+        else
+        {
+            UniformValue& uniformValue = itor->second;
+            uniformValue.setMat3V(count, value);
+        }
+    }
+    
+    void Utils::setUniformMat3x4V(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, int count, const float* value)
+    {
+        auto itor = uniforms.find(uniformName);
+        if (itor == uniforms.end())
+        {
+            UniformValue uniformValue;
+            uniformValue.setMat3x4V(count, value);
+            uniforms.emplace(uniformName, std::move(uniformValue));
+        }
+        else
+        {
+            UniformValue& uniformValue = itor->second;
+            uniformValue.setMat3x4V(count, value);
+        }
+    }
+    
     void Utils::parseMatrix(const glm::mat4& matrix, glm::vec3& position, glm::quat& rotation, glm::vec3& scale)
     {
         /* 假设有列主序矩阵M（其变换顺序为M=Translate*Rotate*Scale=Translate*Scale*Rotate）

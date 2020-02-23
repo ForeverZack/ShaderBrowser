@@ -16,7 +16,7 @@ namespace browser
         // 刷新
         virtual void updateLight();
         // 更新材质的Light数据
-        virtual void updateMaterialLight(const std::unordered_map<std::string, UniformValue>& uniforms, unsigned int index = 0);
+        virtual void updateMaterialLight(std::unordered_map<std::string, UniformValue>& uniforms, unsigned int index = 0);
         // 数据是否发生改变
         virtual bool isLightDirty();
         // 光源系统是否需要更新
@@ -34,7 +34,7 @@ namespace browser
         // 平行光方向
         glm::vec3 m_oLightDirection;
         // 阴影属性等
-        
+    
 	};
 }
 

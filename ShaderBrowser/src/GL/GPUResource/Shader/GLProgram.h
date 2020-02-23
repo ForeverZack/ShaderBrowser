@@ -99,6 +99,8 @@ namespace customGL
 
 		// 预定义的uniform变量	（与前面枚举要对应上！！）
 		static const char* SHADER_UNIFORMS_ARRAY[UNIFORM_MAX_COUNT];
+        // 预定义uniform变量名字的最大长度
+        static const int SHADER_UNIFORM_NAME_MAX_LENGTH;
 
 	public:
 		static GLProgram* create(const char* vertSrc, const char* fragSrc);

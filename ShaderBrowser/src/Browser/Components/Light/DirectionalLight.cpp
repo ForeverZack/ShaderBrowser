@@ -1,4 +1,5 @@
 #include "DirectionalLight.h"
+#include "GL/GPUResource/Shader/GLProgram.h"
 
 using namespace common;
 
@@ -28,11 +29,28 @@ namespace browser
         
     }
     
-    void DirectionalLight::updateMaterialLight(const std::unordered_map<std::string, UniformValue>& uniforms, unsigned int index/* = 0*/)
+    void DirectionalLight::updateMaterialLight(std::unordered_map<std::string, UniformValue>& uniforms, unsigned int index/* = 0*/)
     {
+        // 颜色
         if (BROWSER_GET_BIT(m_uPropertiesDirty, LightPropertyType::LPT_Color))
         {
-//            uniforms[]
+            std::string uniformName(GLProgram::SHADER_UNIFORM_NAME_MAX_LENGTH, '\0');
+            sprintf(&uniformName[0], SHADER_UNIFORM_DIRECTIONAL_COLOR, index);
+            Utils::setUniformV4f(uniforms, uniformName, m_oColor);
+        }
+        // 强度
+        if (BROWSER_GET_BIT(m_uPropertiesDirty, LightPropertyType::LPT_Intensity))
+        {
+            std::string uniformName(GLProgram::SHADER_UNIFORM_NAME_MAX_LENGTH, '\0');
+            sprintf(&uniformName[0], SHADER_UNIFORM_DIRECTIONAL_INTENSITY, index);
+            Utils::setUniformFloat(uniforms, uniformName, m_fIntensity);
+        }
+        // 光照方向
+        if (BROWSER_GET_BIT(m_uPropertiesDirty, LightPropertyType::LPT_LightDirection))
+        {
+            std::string uniformName(GLProgram::SHADER_UNIFORM_NAME_MAX_LENGTH, '\0');
+            sprintf(&uniformName[0], SHADER_UNIFORM_DIRECTIONAL_DIRECTION, index);
+            Utils::setUniformV3f(uniforms, uniformName, m_oLightDirection);
         }
     }
     

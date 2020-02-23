@@ -64,8 +64,10 @@ namespace customGL
         
         "CGL_AMBIENT_COLOR",
         "CGL_DIRECTIONAL_LIGHT_NUM",
-        "CGL_DIRECTIONAL_LIGHTS",
+        "CGL_DIRECTIONAL_LIGHTS[%d]",
     };
+    // 预定义uniform变量名字的最大长度
+    const int GLProgram::SHADER_UNIFORM_NAME_MAX_LENGTH = 100;
 
     GLProgram* GLProgram::create(const char* vertSrc, const char* fragSrc)
     {

@@ -3,6 +3,7 @@
 
 #include <glad/glad.h>
 #include <iostream>
+#include <unordered_map>
 #include "GL/GLDefine.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -107,6 +108,34 @@ namespace common
         
 		// 创建ComputeBufferDeclaration
 		static ComputeBufferDeclaration* createComputeBufferDeclaration(const string& name, GLuint size, GLenum access = GL_READ_ONLY, BufferType type = BufferType::BT_TextureBuffer, GLenum format = GL_RGBA32F);
+        
+        // 添加\设置uniform
+        static void setUniformInt(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, int value);
+        static void setUniformFloat(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, float value);
+        static void setUniformMat3(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, const glm::mat3& value);
+        static void setUniformMat3x4(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, const glm::mat3x4& value);
+        static void setUniformMat4(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, const glm::mat4& value);
+        static void setUniformMat4x3(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, const glm::mat4x3& value);
+        static void setUniformFloatV(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, int size, const float* value);
+        static void setUniformV2f(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, const glm::vec2& value);
+        static void setUniformV3f(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, const glm::vec3& value);
+        static void setUniformV4f(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, const glm::vec4& value);
+        static void setUniformTex2D(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, Texture2D* texture);
+        static void setUniformSamplerBuffer(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, TextureBuffer* textureBuffer);
+        static void setUniformIntV(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, int count, const int* value);
+        static void setUniformIVec2(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, const glm::ivec2& value);
+        static void setUniformVec2V(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, int count, const float* value);
+        static void setUniformIVec2V(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, int count, const int* value);
+        static void setUniformIVec3(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, const glm::ivec3& value);
+        static void setUniformVec3V(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, int count, const float* value);
+        static void setUniformIVec3V(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, int count, const int* value);
+        static void setUniformIVec4(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, const glm::ivec4& value);
+        static void setUniformVec4V(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, int count, const float* value);
+        static void setUniformIVec4V(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, int count, const int* value);
+        static void setUniformMat4V(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, int count, const float* value);
+        static void setUniformMat4x3V(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, int count, const float* value);
+        static void setUniformMat3V(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, int count, const float* value);
+        static void setUniformMat3x4V(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, int count, const float* value);
 
         // 拆解矩阵 （从矩阵中，获取位移、旋转和缩放）
         static void parseMatrix(const glm::mat4& matrix, glm::vec3& position, glm::quat& rotation, glm::vec3& scale);

@@ -84,414 +84,128 @@ namespace customGL
     
     void Material::setUniformInt(const std::string& uniformName, int value)
     {
-        auto itor = m_mUniforms.find(uniformName);
-        if (itor == m_mUniforms.end())
-        {
-            UniformValue uniformValue;
-            uniformValue.setInt(value);
-            m_mUniforms.emplace(uniformName, std::move(uniformValue));
-        }
-        else
-        {
-            UniformValue& uniformValue = itor->second;
-            uniformValue.setInt(value);
-        }
+        Utils::setUniformInt(m_mUniforms, uniformName, value);
     }
     void Material::setUniformFloat(const std::string& uniformName, float value)
     {
-        auto itor = m_mUniforms.find(uniformName);
-        if (itor == m_mUniforms.end())
-        {
-            UniformValue uniformValue;
-            uniformValue.setFloat(value);
-            m_mUniforms.emplace(uniformName, std::move(uniformValue));
-        }
-        else
-        {
-            UniformValue& uniformValue = itor->second;
-            uniformValue.setFloat(value);
-        }
+        Utils::setUniformFloat(m_mUniforms, uniformName, value);
     }
     void Material::setUniformMat3(const std::string& uniformName, const glm::mat3& value)
     {
-        auto itor = m_mUniforms.find(uniformName);
-        if (itor == m_mUniforms.end())
-        {
-            UniformValue uniformValue;
-            uniformValue.setMat3(value);
-            m_mUniforms.emplace(uniformName, std::move(uniformValue));
-        }
-        else
-        {
-            UniformValue& uniformValue = itor->second;
-            uniformValue.setMat3(value);
-        }
+        Utils::setUniformMat3(m_mUniforms, uniformName, value);
     }
     void Material::setUniformMat3x4(const std::string& uniformName, const glm::mat3x4& value)
     {
-        auto itor = m_mUniforms.find(uniformName);
-        if (itor == m_mUniforms.end())
-        {
-            UniformValue uniformValue;
-            uniformValue.setMat3x4(value);
-            m_mUniforms.emplace(uniformName, std::move(uniformValue));
-        }
-        else
-        {
-            UniformValue& uniformValue = itor->second;
-            uniformValue.setMat3x4(value);
-        }
+        Utils::setUniformMat3x4(m_mUniforms, uniformName, value);
     }
     void Material::setUniformMat4(const std::string& uniformName, const glm::mat4& value)
     {
-        auto itor = m_mUniforms.find(uniformName);
-        if (itor == m_mUniforms.end())
-        {
-            UniformValue uniformValue;
-            uniformValue.setMat4(value);
-            m_mUniforms.emplace(uniformName, std::move(uniformValue));
-        }
-        else
-        {
-            UniformValue& uniformValue = itor->second;
-            uniformValue.setMat4(value);
-        }
+        Utils::setUniformMat4(m_mUniforms, uniformName, value);
     }
     
     void Material::setUniformMat4x3(const std::string& uniformName, const glm::mat4x3& value)
     {
-        auto itor = m_mUniforms.find(uniformName);
-        if (itor == m_mUniforms.end())
-        {
-            UniformValue uniformValue;
-            uniformValue.setMat4x3(value);
-            m_mUniforms.emplace(uniformName, std::move(uniformValue));
-        }
-        else
-        {
-            UniformValue& uniformValue = itor->second;
-            uniformValue.setMat4x3(value);
-        }
+        Utils::setUniformMat4x3(m_mUniforms, uniformName, value);
     }
     
     void Material::setUniformFloatV(const std::string& uniformName, int size, const float* value)
     {
-        auto itor = m_mUniforms.find(uniformName);
-        if (itor == m_mUniforms.end())
-        {
-            UniformValue uniformValue;
-            uniformValue.setFloatV(size, value);
-            m_mUniforms.emplace(uniformName, std::move(uniformValue));
-        }
-        else
-        {
-            UniformValue& uniformValue = itor->second;
-            uniformValue.setFloatV(size, value);
-        }
+        Utils::setUniformFloatV(m_mUniforms, uniformName, size, value);
     }
     
     void Material::setUniformV2f(const std::string& uniformName, const glm::vec2& value)
     {
-        auto itor = m_mUniforms.find(uniformName);
-        if (itor == m_mUniforms.end())
-        {
-            UniformValue uniformValue;
-            uniformValue.setVec2(value);
-            m_mUniforms.emplace(uniformName, std::move(uniformValue));
-        }
-        else
-        {
-            UniformValue& uniformValue = itor->second;
-            uniformValue.setVec2(value);
-        }
+        Utils::setUniformV2f(m_mUniforms, uniformName, value);
     }
     
     void Material::setUniformV3f(const std::string& uniformName, const glm::vec3& value)
     {
-        auto itor = m_mUniforms.find(uniformName);
-        if (itor == m_mUniforms.end())
-        {
-            UniformValue uniformValue;
-            uniformValue.setVec3(value);
-            m_mUniforms.emplace(uniformName, std::move(uniformValue));
-        }
-        else
-        {
-            UniformValue& uniformValue = itor->second;
-            uniformValue.setVec3(value);
-        }
+        Utils::setUniformV3f(m_mUniforms, uniformName, value);
     }
     
     void Material::setUniformV4f(const std::string& uniformName, const glm::vec4& value)
     {
-        auto itor = m_mUniforms.find(uniformName);
-        if (itor == m_mUniforms.end())
-        {
-            UniformValue uniformValue;
-            uniformValue.setVec4(value);
-            m_mUniforms.emplace(uniformName, std::move(uniformValue));
-        }
-        else
-        {
-            UniformValue& uniformValue = itor->second;
-            uniformValue.setVec4(value);
-        }
+        Utils::setUniformV4f(m_mUniforms, uniformName, value);
     }
     
     void Material::setUniformTex2D(const std::string& uniformName, Texture2D* texture)
     {
-        auto itor = m_mUniforms.find(uniformName);
-        if (itor == m_mUniforms.end())
-        {
-            UniformValue uniformValue;
-            uniformValue.setTex2D(texture);
-            m_mUniforms.emplace(uniformName, std::move(uniformValue));
-        }
-        else
-        {
-            UniformValue& uniformValue = itor->second;
-            uniformValue.setTex2D(texture);
-        }
+        Utils::setUniformTex2D(m_mUniforms, uniformName, texture);
     }
     
     void Material::setUniformSamplerBuffer(const std::string& uniformName, TextureBuffer* textureBuffer)
     {
-        auto itor = m_mUniforms.find(uniformName);
-        if (itor == m_mUniforms.end())
-        {
-            UniformValue uniformValue;
-            uniformValue.setSamplerBuffer(textureBuffer);
-            m_mUniforms.emplace(uniformName, std::move(uniformValue));
-        }
-        else
-        {
-            UniformValue& uniformValue = itor->second;
-            uniformValue.setSamplerBuffer(textureBuffer);
-        }
+        Utils::setUniformSamplerBuffer(m_mUniforms, uniformName, textureBuffer);
     }
 
     void Material::setUniformIntV(const std::string& uniformName, int count, const int* value)
     {
-        auto itor = m_mUniforms.find(uniformName);
-        if (itor == m_mUniforms.end())
-        {
-            UniformValue uniformValue;
-            uniformValue.setIntV(count, value);
-            m_mUniforms.emplace(uniformName, std::move(uniformValue));
-        }
-        else
-        {
-            UniformValue& uniformValue = itor->second;
-            uniformValue.setIntV(count, value);
-        }
+        Utils::setUniformIntV(m_mUniforms, uniformName, count, value);
     }
     
     void Material::setUniformIVec2(const std::string& uniformName, const glm::ivec2& value)
     {
-        auto itor = m_mUniforms.find(uniformName);
-        if (itor == m_mUniforms.end())
-        {
-            UniformValue uniformValue;
-            uniformValue.setIVec2(value);
-            m_mUniforms.emplace(uniformName, std::move(uniformValue));
-        }
-        else
-        {
-            UniformValue& uniformValue = itor->second;
-            uniformValue.setIVec2(value);
-        }
+        Utils::setUniformIVec2(m_mUniforms, uniformName, value);
     }
     
     void Material::setUniformVec2V(const std::string& uniformName, int count, const float* value)
     {
-        auto itor = m_mUniforms.find(uniformName);
-        if (itor == m_mUniforms.end())
-        {
-            UniformValue uniformValue;
-            uniformValue.setVec2V(count, value);
-            m_mUniforms.emplace(uniformName, std::move(uniformValue));
-        }
-        else
-        {
-            UniformValue& uniformValue = itor->second;
-            uniformValue.setVec2V(count, value);
-        }
+        Utils::setUniformVec2V(m_mUniforms, uniformName, count, value);
     }
     
     void Material::setUniformIVec2V(const std::string& uniformName, int count, const int* value)
     {
-        auto itor = m_mUniforms.find(uniformName);
-        if (itor == m_mUniforms.end())
-        {
-            UniformValue uniformValue;
-            uniformValue.setIVec2V(count, value);
-            m_mUniforms.emplace(uniformName, std::move(uniformValue));
-        }
-        else
-        {
-            UniformValue& uniformValue = itor->second;
-            uniformValue.setIVec2V(count, value);
-        }
+        Utils::setUniformIVec2V(m_mUniforms, uniformName, count, value);
     }
     
     void Material::setUniformIVec3(const std::string& uniformName, const glm::ivec3& value)
     {
-        auto itor = m_mUniforms.find(uniformName);
-        if (itor == m_mUniforms.end())
-        {
-            UniformValue uniformValue;
-            uniformValue.setIVec3(value);
-            m_mUniforms.emplace(uniformName, std::move(uniformValue));
-        }
-        else
-        {
-            UniformValue& uniformValue = itor->second;
-            uniformValue.setIVec3(value);
-        }
+        Utils::setUniformIVec3(m_mUniforms, uniformName, value);
     }
     
     void Material::setUniformVec3V(const std::string& uniformName, int count, const float* value)
     {
-        auto itor = m_mUniforms.find(uniformName);
-        if (itor == m_mUniforms.end())
-        {
-            UniformValue uniformValue;
-            uniformValue.setVec3V(count, value);
-            m_mUniforms.emplace(uniformName, std::move(uniformValue));
-        }
-        else
-        {
-            UniformValue& uniformValue = itor->second;
-            uniformValue.setVec3V(count, value);
-        }
+        Utils::setUniformVec3V(m_mUniforms, uniformName, count, value);
     }
     
     void Material::setUniformIVec3V(const std::string& uniformName, int count, const int* value)
     {
-        auto itor = m_mUniforms.find(uniformName);
-        if (itor == m_mUniforms.end())
-        {
-            UniformValue uniformValue;
-            uniformValue.setIVec3V(count, value);
-            m_mUniforms.emplace(uniformName, std::move(uniformValue));
-        }
-        else
-        {
-            UniformValue& uniformValue = itor->second;
-            uniformValue.setIVec3V(count, value);
-        }
+        Utils::setUniformIVec3V(m_mUniforms, uniformName, count, value);
     }
     
     void Material::setUniformIVec4(const std::string& uniformName, const glm::ivec4& value)
     {
-        auto itor = m_mUniforms.find(uniformName);
-        if (itor == m_mUniforms.end())
-        {
-            UniformValue uniformValue;
-            uniformValue.setIVec4(value);
-            m_mUniforms.emplace(uniformName, std::move(uniformValue));
-        }
-        else
-        {
-            UniformValue& uniformValue = itor->second;
-            uniformValue.setIVec4(value);
-        }
+        Utils::setUniformIVec4(m_mUniforms, uniformName, value);
     }
     
     void Material::setUniformVec4V(const std::string& uniformName, int count, const float* value)
     {
-        auto itor = m_mUniforms.find(uniformName);
-        if (itor == m_mUniforms.end())
-        {
-            UniformValue uniformValue;
-            uniformValue.setVec4V(count, value);
-            m_mUniforms.emplace(uniformName, std::move(uniformValue));
-        }
-        else
-        {
-            UniformValue& uniformValue = itor->second;
-            uniformValue.setVec4V(count, value);
-        }
+        Utils::setUniformVec4V(m_mUniforms, uniformName, count, value);
     }
     
     void Material::setUniformIVec4V(const std::string& uniformName, int count, const int* value)
     {
-        auto itor = m_mUniforms.find(uniformName);
-        if (itor == m_mUniforms.end())
-        {
-            UniformValue uniformValue;
-            uniformValue.setIVec4V(count, value);
-            m_mUniforms.emplace(uniformName, std::move(uniformValue));
-        }
-        else
-        {
-            UniformValue& uniformValue = itor->second;
-            uniformValue.setIVec4V(count, value);
-        }
+        Utils::setUniformIVec4V(m_mUniforms, uniformName, count, value);
     }
     
     void Material::setUniformMat4V(const std::string& uniformName, int count, const float* value)
     {
-        auto itor = m_mUniforms.find(uniformName);
-        if (itor == m_mUniforms.end())
-        {
-            UniformValue uniformValue;
-            uniformValue.setMat4V(count, value);
-            m_mUniforms.emplace(uniformName, std::move(uniformValue));
-        }
-        else
-        {
-            UniformValue& uniformValue = itor->second;
-            uniformValue.setMat4V(count, value);
-        }
+        Utils::setUniformMat4V(m_mUniforms, uniformName, count, value);
     }
     
     void Material::setUniformMat4x3V(const std::string& uniformName, int count, const float* value)
     {
-        auto itor = m_mUniforms.find(uniformName);
-        if (itor == m_mUniforms.end())
-        {
-            UniformValue uniformValue;
-            uniformValue.setMat4x3V(count, value);
-            m_mUniforms.emplace(uniformName, std::move(uniformValue));
-        }
-        else
-        {
-            UniformValue& uniformValue = itor->second;
-            uniformValue.setMat4x3V(count, value);
-        }
+        Utils::setUniformMat4x3V(m_mUniforms, uniformName, count, value);
     }
     
     void Material::setUniformMat3V(const std::string& uniformName, int count, const float* value)
     {
-        auto itor = m_mUniforms.find(uniformName);
-        if (itor == m_mUniforms.end())
-        {
-            UniformValue uniformValue;
-            uniformValue.setMat3V(count, value);
-            m_mUniforms.emplace(uniformName, std::move(uniformValue));
-        }
-        else
-        {
-            UniformValue& uniformValue = itor->second;
-            uniformValue.setMat3V(count, value);
-        }
+        Utils::setUniformMat3V(m_mUniforms, uniformName, count, value);
     }
     
     void Material::setUniformMat3x4V(const std::string& uniformName, int count, const float* value)
     {
-        auto itor = m_mUniforms.find(uniformName);
-        if (itor == m_mUniforms.end())
-        {
-            UniformValue uniformValue;
-            uniformValue.setMat3x4V(count, value);
-            m_mUniforms.emplace(uniformName, std::move(uniformValue));
-        }
-        else
-        {
-            UniformValue& uniformValue = itor->second;
-            uniformValue.setMat3x4V(count, value);
-        }
+        Utils::setUniformMat3x4V(m_mUniforms, uniformName, count, value);
     }
     
     void Material::resetUniformsDirty()

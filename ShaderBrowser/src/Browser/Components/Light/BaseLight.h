@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdio.h>
 #include <vector>
 #include "GL/GLDefine.h"
 #include "Browser/Components/BaseComponent.h"
@@ -58,7 +59,7 @@ namespace browser
         // 刷新
         virtual void updateLight();
         // 更新材质的Light数据
-        virtual void updateMaterialLight(const std::unordered_map<std::string, UniformValue>& uniforms, unsigned int index = 0) {};
+        virtual void updateMaterialLight(std::unordered_map<std::string, UniformValue>& uniforms, unsigned int index = 0) {};
         // 数据是否发生改变
         virtual bool isLightDirty();
         // 光源系统是否需要更新
@@ -80,6 +81,15 @@ namespace browser
         virtual void setDirty(LightPropertyType type);
         
         void setGlobalPosition(const glm::vec3& position);
+        
+    protected:
+        // uniform变量名称
+        // 平行光颜色
+        static const char* SHADER_UNIFORM_DIRECTIONAL_COLOR;
+        // 平行光强度
+        static const char* SHADER_UNIFORM_DIRECTIONAL_INTENSITY;
+        // 平行光方向
+        static const char* SHADER_UNIFORM_DIRECTIONAL_DIRECTION;
         
 	protected:
         // 光源类型

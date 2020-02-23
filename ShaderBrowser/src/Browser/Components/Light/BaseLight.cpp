@@ -3,6 +3,14 @@
 
 namespace browser
 {
+    // uniform变量名称
+    // 平行光颜色
+    const char* BaseLight::SHADER_UNIFORM_DIRECTIONAL_COLOR = "CGL_DIRECTIONAL_LIGHTS[%d].color";
+    // 平行光强度
+    const char* BaseLight::SHADER_UNIFORM_DIRECTIONAL_INTENSITY = "CGL_DIRECTIONAL_LIGHTS[%d].intensity";;
+    // 平行光方向
+    const char* BaseLight::SHADER_UNIFORM_DIRECTIONAL_DIRECTION = "CGL_DIRECTIONAL_LIGHTS[%d].direction";;
+    
 	BaseLight::BaseLight()
         : BaseComponent("Light")
         , m_oColor(GLM_COLOR_WHITE)

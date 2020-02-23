@@ -81,18 +81,16 @@ namespace browser
             // 数量发生变化
             if (BROWSER_GET_BIT(m_uDirectionalDirty, LightChangeType::LCT_NewLight) || BROWSER_GET_BIT(m_uDirectionalDirty, LightChangeType::LCT_DeleteLight))
             {
-                const char* uniformName = GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_BONES_MATRIX];
-                auto itor = uniforms.find(uniformName);
-                if (itor == uniforms.end())
+                Utils::setUniformInt(uniforms, GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_BONES_MATRIX], m_vDirectionalLights.size());
+            }
+            // 数据发生变化
+            BaseLight* directional_light = nullptr;
+            for(int i=0; i<m_vDirectionalLights.size(); ++i)
+            {
+                directional_light = m_vDirectionalLights[i];
+                if (directional_light->isLightDirty())
                 {
-                    UniformValue uniformValue;
-                    uniformValue.setInt(m_vDirectionalLights.size());
-                    uniforms.emplace(uniformName, std::move(uniformValue));
-                }
-                else
-                {
-                    UniformValue& uniformValue = itor->second;
-                    uniformValue.setInt(m_vDirectionalLights.size());
+                    directional_light->updateMaterialLight(uniforms, i);
                 }
             }
         }
