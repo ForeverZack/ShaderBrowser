@@ -131,7 +131,7 @@ namespace browser
             // 数量发生变化
             if (BROWSER_GET_BIT(m_uDirectionalDirty, LightChangeType::LCT_NewLight) || BROWSER_GET_BIT(m_uDirectionalDirty, LightChangeType::LCT_DeleteLight))
             {
-                Utils::setUniformInt(uniforms, GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_BONES_MATRIX], m_vDirectionalLights.size());
+                Utils::setUniformInt(uniforms, GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_DIRECTIONAL_LIGHT_NUM], m_vDirectionalLights.size());
             }
             // 数据发生变化
             BaseLight* directional_light = nullptr;

@@ -77,7 +77,7 @@ namespace core
         
         //timePoint = std::chrono::steady_clock::now();
 		unsigned long finishedFrameCount = LogicCore::getInstance()->getFinishedFrameCount();
-		while(finishedFrameCount > RenderCore::getInstance()->getFrameIndex()+LOGIC_RENDER_CORE_FRAME_INTERVAL) ;
+		while(finishedFrameCount >= RenderCore::getInstance()->getFrameIndex()+LOGIC_RENDER_CORE_FRAME_INTERVAL) ;
 		//recTime("========logic wait=======" + std::to_string(LogicCore::getInstance()->getFrameIndex()) + "===");
         
 		LogicCore::getInstance()->logicLoop(deltaTime);

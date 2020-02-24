@@ -1,4 +1,5 @@
 #include "BaseRenderCommand.h"
+#include "Browser/System/LightSystem.h"
 
 namespace browser
 {
@@ -62,6 +63,8 @@ namespace browser
         {
             m_mUniforms.emplace(itor->first, itor->second);
         }
+        // 光照参数 TODO: 后面可以根据Shader中是否使用到了光照优化一版
+//        LightSystem::getInstance()->updateMaterialLights(m_mUniforms);    // 这里用脏标记来更新shader中的灯光属性，不显示的物体没法更新到（现在的想法是在灯光更新时，对所有Material的灯光进行一次setUniform）
     }
     
     void BaseRenderCommand::draw()
