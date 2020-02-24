@@ -1,6 +1,9 @@
 #pragma once
 
 #include <stdio.h>
+#ifdef  _WIN32
+#pragma warning(disable:4996)
+#endif //  _WIN32
 #include <vector>
 #include "GL/GLDefine.h"
 #include "Browser/Components/BaseComponent.h"

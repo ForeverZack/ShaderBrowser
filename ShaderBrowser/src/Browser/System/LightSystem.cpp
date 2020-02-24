@@ -5,6 +5,8 @@ namespace browser
 {
 	LightSystem::LightSystem()
         : m_uDirectionalDirty(0)
+		, m_uPointDirty(0)
+		, m_uSpotDirty(0)
 	{
 		m_iPriority = 0;
 		m_eSystemType = common::SystemType::Light;
@@ -25,6 +27,22 @@ namespace browser
                     BROWSER_SET_BIT(m_uDirectionalDirty, LightChangeType::LCT_NewLight);
                 }
                 break;
+
+			case BaseLight::LightType::Point:
+				{
+					// 点光源
+					m_vPointLights.push_back(light);
+					BROWSER_SET_BIT(m_uPointDirty, LightChangeType::LCT_NewLight);
+				}
+				break;
+
+			case BaseLight::LightType::Spot:
+				{
+					// 聚光灯
+					m_vSpotLights.push_back(light);
+					BROWSER_SET_BIT(m_uSpotDirty, LightChangeType::LCT_NewLight);
+				}
+				break;
         }
         
         return result;
@@ -49,6 +67,36 @@ namespace browser
                     }
                 }
                 break;
+
+			case BaseLight::LightType::Point:
+				{
+					// 点光源
+					for (auto itor = m_vPointLights.begin(); itor != m_vPointLights.end(); ++itor)
+					{
+						if ((*itor) == light)
+						{
+							m_vPointLights.erase(itor);
+							BROWSER_SET_BIT(m_uPointDirty, LightChangeType::LCT_DeleteLight);
+							break;
+						}
+					}
+				}
+				break;
+
+			case BaseLight::LightType::Spot:
+				{
+					// 聚光灯
+					for (auto itor = m_vSpotLights.begin(); itor != m_vSpotLights.end(); ++itor)
+					{
+						if ((*itor) == light)
+						{
+							m_vSpotLights.erase(itor);
+							BROWSER_SET_BIT(m_uSpotDirty, LightChangeType::LCT_DeleteLight);
+							break;
+						}
+					}
+				}
+				break;
         }
         
         return BaseSystem::removeComponent(entity, component);
@@ -71,6 +119,8 @@ namespace browser
     {
         // 重置脏标记
         m_uDirectionalDirty = 0;
+		m_uPointDirty = 0;
+		m_uSpotDirty = 0;
     }
     
     void LightSystem::updateMaterialLights(std::unordered_map<std::string, UniformValue>& uniforms)
@@ -94,6 +144,8 @@ namespace browser
                 }
             }
         }
+		// TODO: 点光源和聚光灯
+		
     }
     
     void LightSystem::handleEvent(ComponentEvent event, BaseComponentMessage* msg)
@@ -116,6 +168,18 @@ namespace browser
                             BROWSER_SET_BIT(m_uDirectionalDirty, LightChangeType::LCT_Directional);
                         }
                         break;
+
+					case BaseLight::LightType::Point:
+						{
+
+						}
+						break;
+
+					case BaseLight::LightType::Spot:
+						{
+
+						}
+						break;
                 }
                 
             }

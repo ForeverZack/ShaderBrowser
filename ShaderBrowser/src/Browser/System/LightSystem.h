@@ -56,7 +56,11 @@ namespace browser
         unsigned int m_uDirectionalDirty;
         // 点光源列表
         std::vector<BaseLight*> m_vPointLights;
+		// 点光源列表脏标记
+		unsigned int m_uPointDirty;
         // 聚光灯列表
         std::vector<BaseLight*> m_vSpotLights;
+		// 聚光灯列表脏标记
+		unsigned int m_uSpotDirty;
 	};
 }
