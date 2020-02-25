@@ -69,6 +69,37 @@ namespace browser
 		// 重置脏标记
 		resetLightDirty();
     }
+
+	void DirectionalLight::updateAllNewMaterialsLight(unsigned int index/* = 0*/)
+	{
+		// 颜色
+		{
+			std::string uniformName(GLProgram::SHADER_UNIFORM_NAME_MAX_LENGTH, '\0');
+			sprintf(&uniformName[0], SHADER_UNIFORM_DIRECTIONAL_COLOR, index);
+			MaterialCache::getInstance()->operateAllNewMaterials([&](Material* material)  -> void
+			{
+				material->setUniformV4f(uniformName, m_oColor);
+			});
+		}
+		// 强度
+		{
+			std::string uniformName(GLProgram::SHADER_UNIFORM_NAME_MAX_LENGTH, '\0');
+			sprintf(&uniformName[0], SHADER_UNIFORM_DIRECTIONAL_INTENSITY, index);
+			MaterialCache::getInstance()->operateAllNewMaterials([&](Material* material)  -> void
+			{
+				material->setUniformFloat(uniformName, m_fIntensity);
+			});
+		}
+		// 光照方向
+		{
+			std::string uniformName(GLProgram::SHADER_UNIFORM_NAME_MAX_LENGTH, '\0');
+			sprintf(&uniformName[0], SHADER_UNIFORM_DIRECTIONAL_DIRECTION, index);
+			MaterialCache::getInstance()->operateAllNewMaterials([&](Material* material)  -> void
+			{
+				material->setUniformV3f(uniformName, m_oLightDirection);
+			});
+		}
+	}
     
     bool DirectionalLight::isLightDirty()
     {

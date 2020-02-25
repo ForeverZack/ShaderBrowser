@@ -11,6 +11,7 @@
 #include "Browser/System/AnimationSystem.h"
 #include "Common/System/Cache/TextureCache.h"
 #include "Common/System/Cache/ModelCache.h"
+#include "Common/System/Cache/MaterialCache.h"
 #include "Common/System/Cache/GLProgramCache.h"
 #include "GL/System/Input.h"
 #include "Core/RenderCore.h"
@@ -97,6 +98,7 @@ namespace core
 		// temp
 		TextureCache::getInstance()->update(deltaTime);
 		ModelCache::getInstance()->update(deltaTime);
+		MaterialCache::getInstance()->update(deltaTime);
 
 		// auto release
 		AutoReleasePool::getInstance()->update();

@@ -62,8 +62,10 @@ namespace browser
 	public:
         // 刷新
         virtual void updateLight();
-        // 更新所有材质的Light数据
-        virtual void updateAllMaterialsLight(unsigned int index = 0) {};
+        // 更新所有材质的Light数据（只更新改变的属性）
+		virtual void updateAllMaterialsLight(unsigned int index = 0) {};
+		// 更新所有新增材质的Light数据（强制更新所有属性）
+		virtual void updateAllNewMaterialsLight(unsigned int index = 0) {};
         // 数据是否发生改变
         virtual bool isLightDirty();
         // 光源系统是否需要更新

@@ -72,6 +72,11 @@ namespace browser
         glDrawElements(GL_TRIANGLES, m_uIndexCount, GL_UNSIGNED_SHORT, (void*)0);
         //            glDrawArrays(GL_TRIANGLES, 0, vertCount);
         glBindVertexArray(0);
+
+
+		// 渲染线程调用，加到释放队列中去，队列会在逻辑线程中刷新释放
+		AutoReleasePool::getInstance()->addReferenceFromRenderCore(m_oMaterial);
+		AutoReleasePool::getInstance()->addReferenceFromRenderCore(m_oMesh);
     }
 
 }

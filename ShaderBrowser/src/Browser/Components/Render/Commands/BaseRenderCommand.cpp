@@ -1,5 +1,4 @@
 #include "BaseRenderCommand.h"
-#include "Browser/System/LightSystem.h"
 
 namespace browser
 {
@@ -63,9 +62,11 @@ namespace browser
         {
             m_mUniforms.emplace(itor->first, itor->second);
         }
-        // 光照参数 TODO: 后面可以根据Shader中是否使用到了光照优化一版
-//        LightSystem::getInstance()->updateMaterialLights(m_mUniforms);    // 这里用脏标记来更新shader中的灯光属性，不显示的物体没法更新到（现在的想法是在灯光更新时，对所有Material的灯光进行一次setUniform）
-    }
+
+		// 逻辑线程调用，防止autorelease先执行
+		m_oMaterial->retain();
+		m_oMesh->retain();
+	}
     
     void BaseRenderCommand::draw()
     {
@@ -78,6 +79,10 @@ namespace browser
         glDrawElements(GL_TRIANGLES, m_uIndexCount, GL_UNSIGNED_SHORT, (void*)0);
         //            glDrawArrays(GL_TRIANGLES, 0, vertCount);
         glBindVertexArray(0);
+
+		// 渲染线程调用，加到释放队列中去，队列会在逻辑线程中刷新释放
+		AutoReleasePool::getInstance()->addReferenceFromRenderCore(m_oMaterial);
+		AutoReleasePool::getInstance()->addReferenceFromRenderCore(m_oMesh);
     }
     
     

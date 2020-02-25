@@ -116,6 +116,7 @@ namespace browser
 			// 数量发生变化
 			if (BROWSER_GET_BIT(m_uDirectionalDirty, LightChangeType::LCT_NewLight) || BROWSER_GET_BIT(m_uDirectionalDirty, LightChangeType::LCT_DeleteLight))
 			{
+				// 处理已有材质
 				MaterialCache::getInstance()->operateAllMaterials([&](Material* material)  -> void
 				{
 					material->setUniformInt(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_DIRECTIONAL_LIGHT_NUM], m_vDirectionalLights.size());
@@ -134,6 +135,25 @@ namespace browser
 			// 重置脏标记
 			m_uDirectionalDirty = 0;
         }
+		// 处理新增材质
+		{
+			// 数量发生变化
+			{
+				// 处理已有材质
+				MaterialCache::getInstance()->operateAllNewMaterials([&](Material* material)  -> void
+				{
+					material->setUniformInt(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_DIRECTIONAL_LIGHT_NUM], m_vDirectionalLights.size());
+				});
+			}
+			// 数据发生变化
+			BaseLight* directional_light = nullptr;
+			for (int i = 0; i < m_vDirectionalLights.size(); ++i)
+			{
+				directional_light = m_vDirectionalLights[i];
+				directional_light->updateAllNewMaterialsLight(i);
+			}
+		}
+
         // TODO: 点光源和聚光灯
 		// 重置脏标记
 		m_uPointDirty = 0;
