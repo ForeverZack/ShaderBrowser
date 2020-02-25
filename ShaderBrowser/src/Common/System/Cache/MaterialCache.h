@@ -18,13 +18,14 @@ namespace common
         // 初始化
         void init();
         // 添加
-        void addSharedMaterial(Material* material, bool isDefault = false);
-        Material* addSharedMaterial(const std::string& materialName = Material::DEFAULT_MATERIAL_NAME, bool isDefault = false);
+        void addMaterial(Material* material, bool isShared = false, bool isDefault = false);
         // 移除
-        void removeSharedMaterial(Material* material);
-        void removeSharedMaterial(unsigned int materialId);
+        void removeMaterial(Material* material);
+        void removeMaterial(unsigned int materialId);
         // 获取
-        Material* getSharedMaterial(const unsigned int materialId);
+        Material* getMaterial(const unsigned int materialId);
+		// 遍历操作所有Material
+		void operateAllMaterials(std::function<void(Material*)> callback);
         
     private:
         unsigned int generateId()

@@ -1,6 +1,7 @@
 #include "Material.h"
 #include "Common/Tools/Utils.h"
 #include "Common/System/Cache/GLProgramCache.h"
+#include "Common/System/Cache/MaterialCache.h"
 
 namespace customGL
 {
@@ -40,10 +41,16 @@ namespace customGL
         , m_oCurCamera(nullptr)
 	{
         m_vPass.clear();
+	
+		// 新的材质加入MaterialCache
+		MaterialCache::getInstance()->addMaterial(this);
 	}
 
 	Material::~Material()
 	{
+		// 从MaterialCache中移除材质
+		MaterialCache::getInstance()->removeMaterial(this);
+
         for(auto itor=m_vPass.begin(); itor!=m_vPass.end(); ++itor)
         {
             (*itor)->release();

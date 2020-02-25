@@ -7,6 +7,11 @@
 
 using namespace common;
 
+namespace customGL
+{
+	class Material;
+}
+
 namespace browser
 {
     
@@ -38,17 +43,11 @@ namespace browser
         virtual bool removeComponent(BaseEntity* entity, BaseComponent* component);
         // 每帧刷新
         virtual void update(float deltaTime);
-        // 在系统刷新后（用来做一些后处理）
-        virtual void afterUpdate(float deltaTime);
     
-    public:
-        // 更新材质光源属性
-        void updateMaterialLights(std::unordered_map<std::string, UniformValue>& uniforms);
-        
     protected:
         // 接受事件
         virtual void handleEvent(ComponentEvent event, BaseComponentMessage* msg);
-        
+
 	private:
         // 平行光列表
         std::vector<BaseLight*> m_vDirectionalLights;

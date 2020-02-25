@@ -21,6 +21,19 @@ namespace common
 		}
 		virtual ~BaseMapCache() {}
 
+	public:
+		// 注意：！！！
+		// iterator是一个类的成员，而该类依赖于一个模板参数。因此我们必须在返回类型的声明中使用typename来告知编译器，iterator表示一个类型。
+		// std::unordered_map<K, T>::iterator begin()	这样写错误！！！
+		typename std::unordered_map<K, T>::iterator begin()
+		{
+			return m_mContents.begin();
+		}
+		typename std::unordered_map<K, T>::iterator end()
+		{
+			return m_mContents.end();
+		}
+
 	protected:
 		// map操作
 		bool add(K key, T val)
@@ -64,7 +77,6 @@ namespace common
 			auto itor = m_mContents.find(key);
 			if (itor != m_mContents.end())
 			{
-				itor->second->release();
 				m_mContents.erase(itor);
 				return true;
 			}

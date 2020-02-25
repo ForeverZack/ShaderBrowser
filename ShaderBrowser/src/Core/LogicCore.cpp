@@ -89,7 +89,6 @@ namespace core
         // 更新Light
         ECSManager::getInstance()->updateSystem(SystemType::Light, deltaTime);
         recTime("====SystemType::Light=====");
-        ECSManager::getInstance()->afterUpdateSystem(SystemType::Light, deltaTime);
         
         // 更新渲染系统（这里只负责生成渲染命令队列，并不会有任何绘制操作）
         ECSManager::getInstance()->beforeUpdateSystem(SystemType::RenderSystem, deltaTime);

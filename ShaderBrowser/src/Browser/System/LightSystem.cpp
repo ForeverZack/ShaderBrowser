@@ -1,5 +1,6 @@
 #include "LightSystem.h"
 #include "GL/GPUResource/Shader/GLProgram.h"
+#include "Common/System/Cache/MaterialCache.h"
 
 namespace browser
 {
@@ -111,41 +112,32 @@ namespace browser
             std::stable_sort(std::begin(m_vDirectionalLights), std::end(m_vDirectionalLights), [](BaseLight* light1, BaseLight* light2) {
                 return light1->getIntensity() > light2->getIntensity();
             });
+
+			// 数量发生变化
+			if (BROWSER_GET_BIT(m_uDirectionalDirty, LightChangeType::LCT_NewLight) || BROWSER_GET_BIT(m_uDirectionalDirty, LightChangeType::LCT_DeleteLight))
+			{
+				MaterialCache::getInstance()->operateAllMaterials([&](Material* material)  -> void
+				{
+					material->setUniformInt(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_DIRECTIONAL_LIGHT_NUM], m_vDirectionalLights.size());
+				});
+			}
+			// 数据发生变化
+			BaseLight* directional_light = nullptr;
+			for (int i = 0; i < m_vDirectionalLights.size(); ++i)
+			{
+				directional_light = m_vDirectionalLights[i];
+				if (directional_light->isLightDirty())
+				{
+					directional_light->updateAllMaterialsLight(i);
+				}
+			}
+			// 重置脏标记
+			m_uDirectionalDirty = 0;
         }
-        // TODO: 
-    }
-    
-    void LightSystem::afterUpdate(float deltaTime)
-    {
-        // 重置脏标记
-        m_uDirectionalDirty = 0;
+        // TODO: 点光源和聚光灯
+		// 重置脏标记
 		m_uPointDirty = 0;
 		m_uSpotDirty = 0;
-    }
-    
-    void LightSystem::updateMaterialLights(std::unordered_map<std::string, UniformValue>& uniforms)
-    {
-        // 平行光
-        if (m_uDirectionalDirty > 0)
-        {
-            // 数量发生变化
-            if (BROWSER_GET_BIT(m_uDirectionalDirty, LightChangeType::LCT_NewLight) || BROWSER_GET_BIT(m_uDirectionalDirty, LightChangeType::LCT_DeleteLight))
-            {
-                Utils::setUniformInt(uniforms, GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_DIRECTIONAL_LIGHT_NUM], m_vDirectionalLights.size());
-            }
-            // 数据发生变化
-            BaseLight* directional_light = nullptr;
-            for(int i=0; i<m_vDirectionalLights.size(); ++i)
-            {
-                directional_light = m_vDirectionalLights[i];
-                if (directional_light->isLightDirty())
-                {
-                    directional_light->updateMaterialLight(uniforms, i);
-                }
-            }
-        }
-		// TODO: 点光源和聚光灯
-		
     }
     
     void LightSystem::handleEvent(ComponentEvent event, BaseComponentMessage* msg)

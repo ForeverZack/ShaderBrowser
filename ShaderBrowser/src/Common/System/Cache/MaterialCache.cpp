@@ -20,46 +20,47 @@ namespace common
     {
     }
     
-    void MaterialCache::addSharedMaterial(Material* material, bool isDefault /*= false*/)
+	void MaterialCache::addMaterial(Material* material, bool isShared/* = false*/, bool isDefault/* = false*/)
     {
-        BROWSER_ASSERT(material, "Material is not invalid in function MaterialCache::addShareMaterial(Material* material)");
-        BROWSER_WARNING(material->getMaterialId()==0, "Material has been added, please check your program in function MaterialCache::addShareMaterial(Material* material)");
+        BROWSER_ASSERT(material, "Material is not invalid in function MaterialCache::addMaterial(Material* material)");
+        BROWSER_WARNING(material->getMaterialId()==0, "Material has been added, please check your program in function MaterialCache::addMaterial(Material* material)");
 
         material->setMaterialId(generateId());
-        material->setSharedId(material->getMaterialId());
-        material->setDefaultMaterialFlag(isDefault);
-        material->retain();
+		if (isShared)
+		{
+			material->setSharedId(material->getMaterialId());
+			material->setDefaultMaterialFlag(isDefault);
+		}
         add(material->getMaterialId(), material);
     }
     
-    Material* MaterialCache::addSharedMaterial(const std::string& materialName /*= DEFAULT_MATERIAL_NAME*/, bool isDefault /*= false*/)
+    void MaterialCache::removeMaterial(Material* material)
     {
-        Material* material = Material::createMaterial(materialName);
-        addSharedMaterial(material, isDefault);
-        
-        return material;
-    }
-    
-    void MaterialCache::removeSharedMaterial(Material* material)
-    {
-        material->release();
         remove(material->getMaterialId());
     }
     
-    void MaterialCache::removeSharedMaterial(unsigned int materialId)
+    void MaterialCache::removeMaterial(unsigned int materialId)
     {
         Material* material = get(materialId);
         BROWSER_ASSERT(material, "Material is not invalid in function MaterialCache::removeSharedMaterial");
-        material->release();
         remove(materialId);
     }
     
-    Material* MaterialCache::getSharedMaterial(const unsigned int materialId)
+    Material* MaterialCache::getMaterial(const unsigned int materialId)
     {
         Material* material = get(materialId);
         BROWSER_ASSERT(material, "Material is not invalid in function MaterialCache::getShareMaterial");
         return material;
     }
     
+	void MaterialCache::operateAllMaterials(std::function<void(Material*)> callback)
+	{
+		Material* material = nullptr;
+		for (auto itor = m_mContents.begin(); itor!= m_mContents.end(); ++itor)
+		{
+			material = itor->second;
+			callback(material);
+		}
+	}
     
 }
