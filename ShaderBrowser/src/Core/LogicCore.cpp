@@ -64,6 +64,10 @@ namespace core
 	{
         // input
         processInput();
+
+		// cache放在最前面更新，这样可以保证回调函数中创建材质的时候，新材质可以被LightSystem操作到
+		TextureCache::getInstance()->update(deltaTime);
+		ModelCache::getInstance()->update(deltaTime);
 		
 		m_oLastUpdate = std::chrono::steady_clock::now();
         
@@ -95,9 +99,7 @@ namespace core
         ECSManager::getInstance()->beforeUpdateSystem(SystemType::RenderSystem, deltaTime);
         recTime("====SystemType::Render=====");
 
-		// temp
-		TextureCache::getInstance()->update(deltaTime);
-		ModelCache::getInstance()->update(deltaTime);
+		// 材质cache刷新目前只有个重置本帧新增材质，所以放到最后执行
 		MaterialCache::getInstance()->update(deltaTime);
 
 		// auto release
