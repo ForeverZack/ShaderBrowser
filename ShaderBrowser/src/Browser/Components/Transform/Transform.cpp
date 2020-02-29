@@ -636,6 +636,10 @@ namespace browser
         // 自身是骨骼，要计算骨骼矩阵
         if (m_iBoneId != -1)
         {
+            // m_oBindposeMatrix: bindpose记录了"模型空间->当前骨骼的骨骼空间"的变换信息，这个矩阵是不会改变的;  (网格的顶点位置乘上它之后被变换到当前骨骼节点下)
+            // m_oModelMatrix: 记录了"当前骨骼的骨骼空间->世界空间"的变换信息，骨骼的变换都是在这里进行(Animator中对当前骨骼的Transform进行了设置);  (顶点再被变换到世界空间下)
+            // m_oBoneRoot->m_oBoneRootSpaceMatrix: 记录了"世界空间->骨骼根结点(模型空间)"的变换信息。网格的顶点乘上骨骼矩阵的结果，应该仍然在模型空间内，而SkinnedMeshRenderer也被放在模型的根结点上，
+            //                                      所以在进行完骨骼变换之后，矩阵最终要还原到骨骼根结点下(也就是以模型根结点为原点)； (顶点再被变换到模型空间中)
             m_oBoneMatrix = m_oBoneRoot->m_oBoneRootSpaceMatrix * m_oModelMatrix * m_oBindposeMatrix;
         }
 

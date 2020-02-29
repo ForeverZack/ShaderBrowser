@@ -11,7 +11,9 @@ namespace browser
         m_sComponentName = "Directional Light";
         // 设置光源类型
         m_eType = LightType::Directional;
-
+        // 设置光源颜色
+        m_oColor = glm::vec4(1, 0.9569f, 0.8392f, 1);
+        
 		// 设置脏标记
 		m_uPropertiesDirty = LPT_Color | LPT_Intensity | LPT_LightDirection;
 		dispatchEventToSystem(SystemType::Light, ComponentEvent::Light_UpdateLight, new UpdateLightMessage(this));
@@ -93,17 +95,17 @@ namespace browser
         return BROWSER_GET_BIT(m_uPropertiesDirty, LightPropertyType::LPT_Intensity);
     }
     
-    void DirectionalLight::setLightDirection(const glm::vec3& dir)
+    void DirectionalLight::setDirection(const glm::vec3& dir)
     {
-        m_oGlobalPosition = dir;
-        setDirty(LightPropertyType::LPT_LightDirection);
+        setDirection(dir.x, dir.y, dir.z);
     }
     
-    void DirectionalLight::setLightDirection(float x, float y, float z)
+    void DirectionalLight::setDirection(float x, float y, float z)
     {
-        m_oGlobalPosition.x = x;
-        m_oGlobalPosition.y = y;
-        m_oGlobalPosition.z = z;
+        m_oLightDirection.x = x;
+        m_oLightDirection.y = y;
+        m_oLightDirection.z = z;
+        glm::normalize(m_oGlobalPosition);  // 标准化
         setDirty(LightPropertyType::LPT_LightDirection);
     }
     

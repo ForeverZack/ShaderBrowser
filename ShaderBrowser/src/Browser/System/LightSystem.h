@@ -54,6 +54,8 @@ namespace browser
         virtual void handleEvent(ComponentEvent event, BaseComponentMessage* msg);
 
 	private:
+        // 环境光
+        glm::vec4 m_oAmbientColor;
         // 平行光列表
         std::vector<BaseLight*> m_vDirectionalLights;
         // 平行光列表脏标记

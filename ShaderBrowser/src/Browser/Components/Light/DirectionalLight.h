@@ -23,8 +23,8 @@ namespace browser
         virtual bool isLightSystemDirty();
         
         // 设置平行光方向
-        void setLightDirection(const glm::vec3& dir);
-        void setLightDirection(float x, float y, float z);
+        void setDirection(const glm::vec3& dir);
+        void setDirection(float x, float y, float z);
   
     private:
         // 重载属性面板显示方法

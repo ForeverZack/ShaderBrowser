@@ -153,6 +153,10 @@ void testVal()
     directionalLightEntity->addComponent(directionalLight);
     // 设置平行光位置（没啥用）
     directionalLightEntity->setPosition(100, 100, 100);
+    // 平行光方向
+    directionalLight->setDirection(-1, -1, 1);
+    // 平行光强度
+    directionalLight->setIntensity(0.5f);
     
     //=============================创建平行光==================================
 
@@ -209,6 +213,7 @@ void testVal()
     BaseEntity* modelEntity = m_oModel->createNewEntity("namizhuang");
     modelEntity->setScale(0.2f, 0.2f, 0.2f);
     modelEntity->setEulerAngle(0, 180, 0);
+    modelEntity->setEulerAngle(0, 0, 0);
 //    modelEntity->getTransform()->setQuaternion(0.144154,0.155388,0.259979,0.942064);
     modelEntity->setPosition(0, 1, 0);
     scene->addChild(modelEntity);
