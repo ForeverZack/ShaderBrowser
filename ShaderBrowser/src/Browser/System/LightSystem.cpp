@@ -1,6 +1,5 @@
 #include "LightSystem.h"
 #include "GL/GPUResource/Shader/GLProgram.h"
-#include "Common/System/Cache/MaterialCache.h"
 
 namespace browser
 {
@@ -119,10 +118,12 @@ namespace browser
 				if (BROWSER_GET_BIT(m_uDirectionalDirty, LightChangeType::LCT_NewLight) || BROWSER_GET_BIT(m_uDirectionalDirty, LightChangeType::LCT_DeleteLight))
 				{
 					// 处理已有材质
-					MaterialCache::getInstance()->operateAllMaterials([&](Material* material)  -> void
+                    Material* material = nullptr;
+                    for (auto itor = m_mAllLightMaterials.begin(); itor != m_mAllLightMaterials.end(); ++itor)
 					{
+                        material = itor->second;
 						material->setUniformInt(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_DIRECTIONAL_LIGHT_NUM], m_vDirectionalLights.size());
-					});
+					};
 				}
 				// 数据发生变化
 				BaseLight* directional_light = nullptr;
@@ -131,7 +132,7 @@ namespace browser
 					directional_light = m_vDirectionalLights[i];
 					if (directional_light->isLightDirty())
 					{
-						directional_light->updateMaterialsLight(MaterialCache::getInstance()->getAllMaterials(), i);
+						directional_light->updateMaterialsLight(m_mAllLightMaterials, i);
 					}
 				}
 				// 重置脏标记
@@ -174,6 +175,10 @@ namespace browser
 		}
 
 		// 清空待处理光照材质队列
+        for (auto itor=m_mPreLightMaterials.begin(); itor!=m_mPreLightMaterials.end(); ++itor)
+        {
+            m_mAllLightMaterials[itor->first] = itor->second;
+        }
 		m_mPreLightMaterials.clear();
     }
 

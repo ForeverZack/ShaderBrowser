@@ -7,16 +7,32 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "86928728-CE82-4685-B057-4509D27F2B43"
+            uuid = "A98F4397-AB57-4709-AC7A-1DC159E61082"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ShaderBrowser/src/Browser/System/LightSystem.cpp"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "132"
-            endingLineNumber = "132"
-            landmarkName = "LightSystem::updateMaterialLights(uniforms)"
+            startingLineNumber = "122"
+            endingLineNumber = "122"
+            landmarkName = "LightSystem::update(deltaTime)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "E9BF0DD9-52A2-45A2-8FCF-2B264BE0C172"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ShaderBrowser/src/Browser/System/LightSystem.cpp"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "158"
+            endingLineNumber = "158"
+            landmarkName = "LightSystem::update(deltaTime)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

@@ -67,7 +67,8 @@ namespace browser
 		// 聚光灯列表脏标记
 		unsigned int m_uSpotDirty;
 		
-
+        // 光照材质队列 (待处理材质队列不包含在其中，仅在光照系统处理完成之后才会放进去)
+        std::unordered_map<unsigned int, Material*> m_mAllLightMaterials;
 		// 待处理材质队列
 		std::unordered_map<unsigned int, Material*> m_mPreLightMaterials;
 	};
