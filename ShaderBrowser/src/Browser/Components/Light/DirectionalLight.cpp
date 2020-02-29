@@ -33,74 +33,47 @@ namespace browser
         
     }
     
-    void DirectionalLight::updateAllMaterialsLight(unsigned int index/* = 0*/)
+    void DirectionalLight::updateMaterialsLight(const std::unordered_map<unsigned int, Material*>& materials, unsigned int index/* = 0*/, bool forceUpdate/* = false*/)
     {
+		Material* material = nullptr;
         // 颜色
-        if (BROWSER_GET_BIT(m_uPropertiesDirty, LightPropertyType::LPT_Color))
+        if (forceUpdate || BROWSER_GET_BIT(m_uPropertiesDirty, LightPropertyType::LPT_Color))
         {
             std::string uniformName(GLProgram::SHADER_UNIFORM_NAME_MAX_LENGTH, '\0');
             sprintf(&uniformName[0], SHADER_UNIFORM_DIRECTIONAL_COLOR, index);
-			MaterialCache::getInstance()->operateAllMaterials([&](Material* material)  -> void
+			for (auto itor = materials.begin(); itor != materials.end(); ++itor)
 			{
+				material = itor->second;
 				material->setUniformV4f(uniformName, m_oColor);
-			});
+			}
         }
         // 强度
-        if (BROWSER_GET_BIT(m_uPropertiesDirty, LightPropertyType::LPT_Intensity))
+        if (forceUpdate || BROWSER_GET_BIT(m_uPropertiesDirty, LightPropertyType::LPT_Intensity))
         {
             std::string uniformName(GLProgram::SHADER_UNIFORM_NAME_MAX_LENGTH, '\0');
             sprintf(&uniformName[0], SHADER_UNIFORM_DIRECTIONAL_INTENSITY, index);
-			MaterialCache::getInstance()->operateAllMaterials([&](Material* material)  -> void
+			for (auto itor = materials.begin(); itor != materials.end(); ++itor)
 			{
+				material = itor->second;
 				material->setUniformFloat(uniformName, m_fIntensity);
-			});
+			}
         }
         // 光照方向
-        if (BROWSER_GET_BIT(m_uPropertiesDirty, LightPropertyType::LPT_LightDirection))
+        if (forceUpdate || BROWSER_GET_BIT(m_uPropertiesDirty, LightPropertyType::LPT_LightDirection))
         {
-            std::string uniformName(GLProgram::SHADER_UNIFORM_NAME_MAX_LENGTH, '\0');
-            sprintf(&uniformName[0], SHADER_UNIFORM_DIRECTIONAL_DIRECTION, index);
-			MaterialCache::getInstance()->operateAllMaterials([&](Material* material)  -> void
+			std::string uniformName(GLProgram::SHADER_UNIFORM_NAME_MAX_LENGTH, '\0');
+			sprintf(&uniformName[0], SHADER_UNIFORM_DIRECTIONAL_DIRECTION, index);
+			for (auto itor = materials.begin(); itor != materials.end(); ++itor)
 			{
+				material = itor->second;
 				material->setUniformV3f(uniformName, m_oLightDirection);
-			});
+			}
         }
 
 		// 重置脏标记
 		resetLightDirty();
     }
 
-	void DirectionalLight::updateAllNewMaterialsLight(unsigned int index/* = 0*/)
-	{
-		// 颜色
-		{
-			std::string uniformName(GLProgram::SHADER_UNIFORM_NAME_MAX_LENGTH, '\0');
-			sprintf(&uniformName[0], SHADER_UNIFORM_DIRECTIONAL_COLOR, index);
-			MaterialCache::getInstance()->operateAllNewMaterials([&](Material* material)  -> void
-			{
-				material->setUniformV4f(uniformName, m_oColor);
-			});
-		}
-		// 强度
-		{
-			std::string uniformName(GLProgram::SHADER_UNIFORM_NAME_MAX_LENGTH, '\0');
-			sprintf(&uniformName[0], SHADER_UNIFORM_DIRECTIONAL_INTENSITY, index);
-			MaterialCache::getInstance()->operateAllNewMaterials([&](Material* material)  -> void
-			{
-				material->setUniformFloat(uniformName, m_fIntensity);
-			});
-		}
-		// 光照方向
-		{
-			std::string uniformName(GLProgram::SHADER_UNIFORM_NAME_MAX_LENGTH, '\0');
-			sprintf(&uniformName[0], SHADER_UNIFORM_DIRECTIONAL_DIRECTION, index);
-			MaterialCache::getInstance()->operateAllNewMaterials([&](Material* material)  -> void
-			{
-				material->setUniformV3f(uniformName, m_oLightDirection);
-			});
-		}
-	}
-    
     bool DirectionalLight::isLightDirty()
     {
         if (BROWSER_GET_BIT(m_uPropertiesDirty, LightPropertyType::LPT_Color)

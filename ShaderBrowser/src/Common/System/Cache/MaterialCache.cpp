@@ -32,9 +32,6 @@ namespace common
 			material->setDefaultMaterialFlag(isDefault);
 		}
         add(material->getMaterialId(), material);
-
-		// 记录新材质
-		recordNewMaterial(material);
     }
     
     void MaterialCache::removeMaterial(Material* material)
@@ -66,30 +63,11 @@ namespace common
 		}
 	}
 
-	void MaterialCache::operateAllNewMaterials(std::function<void(Material*)> callback)
-	{
-		Material* material = nullptr;
-		for (auto itor = m_vNewMaterials.begin(); itor!=m_vNewMaterials.end(); ++itor)
-		{
-			material = *itor;
-			callback(material);
-		}
-	}
-
 	void MaterialCache::update(float dt)
 	{
-		// 重置本帧新增材质
-		resetAllNewMaterials();
+
 	}
 
-	void MaterialCache::resetAllNewMaterials()
-	{
-		m_vNewMaterials.clear();
-	}
 
-	void MaterialCache::recordNewMaterial(Material* material)
-	{
-		m_vNewMaterials.push_back(material);
-	}
 
 }

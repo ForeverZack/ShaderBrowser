@@ -105,60 +105,91 @@ namespace browser
     
     void LightSystem::update(float deltaTime)
     {
-        // 平行光
-        if(m_uDirectionalDirty > 0)
-        {
-            // 平行光的重要性根据它的强度(Intensity)来重新排序
-            std::stable_sort(std::begin(m_vDirectionalLights), std::end(m_vDirectionalLights), [](BaseLight* light1, BaseLight* light2) {
-                return light1->getIntensity() > light2->getIntensity();
-            });
-
-			// 数量发生变化
-			if (BROWSER_GET_BIT(m_uDirectionalDirty, LightChangeType::LCT_NewLight) || BROWSER_GET_BIT(m_uDirectionalDirty, LightChangeType::LCT_DeleteLight))
-			{
-				// 处理已有材质
-				MaterialCache::getInstance()->operateAllMaterials([&](Material* material)  -> void
-				{
-					material->setUniformInt(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_DIRECTIONAL_LIGHT_NUM], m_vDirectionalLights.size());
-				});
-			}
-			// 数据发生变化
-			BaseLight* directional_light = nullptr;
-			for (int i = 0; i < m_vDirectionalLights.size(); ++i)
-			{
-				directional_light = m_vDirectionalLights[i];
-				if (directional_light->isLightDirty())
-				{
-					directional_light->updateAllMaterialsLight(i);
-				}
-			}
-			// 重置脏标记
-			m_uDirectionalDirty = 0;
-        }
-		// 处理新增材质
+		// 处理已有材质：这部分材质只需要更新dirty的数据
 		{
-			// 数量发生变化
+			// 平行光
+			if (m_uDirectionalDirty > 0)
 			{
-				// 处理已有材质
-				MaterialCache::getInstance()->operateAllNewMaterials([&](Material* material)  -> void
-				{
-					material->setUniformInt(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_DIRECTIONAL_LIGHT_NUM], m_vDirectionalLights.size());
+				// 平行光的重要性根据它的强度(Intensity)来重新排序
+				std::stable_sort(std::begin(m_vDirectionalLights), std::end(m_vDirectionalLights), [](BaseLight* light1, BaseLight* light2) {
+					return light1->getIntensity() > light2->getIntensity();
 				});
+
+				// 数量发生变化
+				if (BROWSER_GET_BIT(m_uDirectionalDirty, LightChangeType::LCT_NewLight) || BROWSER_GET_BIT(m_uDirectionalDirty, LightChangeType::LCT_DeleteLight))
+				{
+					// 处理已有材质
+					MaterialCache::getInstance()->operateAllMaterials([&](Material* material)  -> void
+					{
+						material->setUniformInt(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_DIRECTIONAL_LIGHT_NUM], m_vDirectionalLights.size());
+					});
+				}
+				// 数据发生变化
+				BaseLight* directional_light = nullptr;
+				for (int i = 0; i < m_vDirectionalLights.size(); ++i)
+				{
+					directional_light = m_vDirectionalLights[i];
+					if (directional_light->isLightDirty())
+					{
+						directional_light->updateMaterialsLight(MaterialCache::getInstance()->getAllMaterials(), i);
+					}
+				}
+				// 重置脏标记
+				m_uDirectionalDirty = 0;
 			}
-			// 数据发生变化
-			BaseLight* directional_light = nullptr;
-			for (int i = 0; i < m_vDirectionalLights.size(); ++i)
-			{
-				directional_light = m_vDirectionalLights[i];
-				directional_light->updateAllNewMaterialsLight(i);
-			}
+
+			// TODO: 点光源
+			// 重置脏标记
+			m_uPointDirty = 0;
+
+			// TODO: 聚光灯
+			// 重置脏标记
+			m_uSpotDirty = 0;
 		}
 
-        // TODO: 点光源和聚光灯
-		// 重置脏标记
-		m_uPointDirty = 0;
-		m_uSpotDirty = 0;
+		// 处理新增材质：这部分材质要更新所有数据
+		if(m_mPreLightMaterials.size() > 0)
+		{
+			// 平行光
+			{
+				// 数量发生变化
+				{
+					Material* material = nullptr;
+					for (auto itor = m_mPreLightMaterials.begin(); itor != m_mPreLightMaterials.end(); ++itor)
+					{
+						material = itor->second;
+						material->setUniformInt(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_DIRECTIONAL_LIGHT_NUM], m_vDirectionalLights.size());
+					};
+				}
+				// 数据发生变化
+				BaseLight* directional_light = nullptr;
+				for (int i = 0; i < m_vDirectionalLights.size(); ++i)
+				{
+					directional_light = m_vDirectionalLights[i];
+					directional_light->updateMaterialsLight(m_mPreLightMaterials, i, true);
+				}
+			}
+
+			// TODO: 点光源和聚光灯
+		}
+
+		// 清空待处理光照材质队列
+		m_mPreLightMaterials.clear();
     }
+
+	void LightSystem::addPrepareLightMaterial(Material* material)
+	{
+		m_mPreLightMaterials[material->getMaterialId()] = material;
+	}
+
+	void LightSystem::removePrepareLightMaterial(Material* material)
+	{
+		auto itor = m_mPreLightMaterials.find(material->getMaterialId());
+		if (itor != m_mPreLightMaterials.end())
+		{
+			m_mPreLightMaterials.erase(itor);
+		}
+	}
     
     void LightSystem::handleEvent(ComponentEvent event, BaseComponentMessage* msg)
     {

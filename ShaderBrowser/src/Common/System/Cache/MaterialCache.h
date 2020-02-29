@@ -26,9 +26,11 @@ namespace common
         Material* getMaterial(const unsigned int materialId);
 		// 遍历操作所有Material
 		void operateAllMaterials(std::function<void(Material*)> callback);
-		// 遍历操作本帧新增的Material
-		void operateAllNewMaterials(std::function<void(Material*)> callback);
-
+		// 获取所有Matieral
+		std::unordered_map<unsigned int, Material*>& getAllMaterials()
+		{
+			return m_mContents;
+		}
 
 		void update(float dt);
 
@@ -38,17 +40,11 @@ namespace common
         {
             return ++m_uIdGenerator;
         }
-		// 记录本帧新增材质
-		void recordNewMaterial(Material* material);
-		// 重置本帧新增材质
-		void resetAllNewMaterials();
 
     private:
         // id生成器
         unsigned int m_uIdGenerator;
 
-		// 本帧新增的材质
-		std::vector<Material*> m_vNewMaterials;
         
 	};
 }

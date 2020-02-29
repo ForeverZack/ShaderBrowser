@@ -43,7 +43,12 @@ namespace browser
         virtual bool removeComponent(BaseEntity* entity, BaseComponent* component);
         // 每帧刷新
         virtual void update(float deltaTime);
-    
+
+		// 添加待处理光照的材质
+		void addPrepareLightMaterial(Material* material);
+		// 移除待处理光照的材质
+		void removePrepareLightMaterial(Material* material);
+
     protected:
         // 接受事件
         virtual void handleEvent(ComponentEvent event, BaseComponentMessage* msg);
@@ -61,5 +66,9 @@ namespace browser
         std::vector<BaseLight*> m_vSpotLights;
 		// 聚光灯列表脏标记
 		unsigned int m_uSpotDirty;
+		
+
+		// 待处理材质队列
+		std::unordered_map<unsigned int, Material*> m_mPreLightMaterials;
 	};
 }

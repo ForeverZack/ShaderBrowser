@@ -8,12 +8,13 @@
 #include "GL/GLDefine.h"
 #include "Browser/Components/BaseComponent.h"
 #include "Browser/Components/Transform/Transform.h"
+#include "GL/GPUResource/Shader/Material.h"
 #include "Common/Tools/Utils.h"
-#include "Common/System/Cache/MaterialCache.h"
 
 #include <glm/glm.hpp>
 
 using namespace common;
+using namespace customGL;
 
 namespace browser
 {
@@ -62,10 +63,8 @@ namespace browser
 	public:
         // 刷新
         virtual void updateLight();
-        // 更新所有材质的Light数据（只更新改变的属性）
-		virtual void updateAllMaterialsLight(unsigned int index = 0) {};
-		// 更新所有新增材质的Light数据（强制更新所有属性）
-		virtual void updateAllNewMaterialsLight(unsigned int index = 0) {};
+        // 更新所有材质的Light数据
+		virtual void updateMaterialsLight(const std::unordered_map<unsigned int, Material*>& materials, unsigned int index = 0, bool forceUpdate = false) {};
         // 数据是否发生改变
         virtual bool isLightDirty();
         // 光源系统是否需要更新

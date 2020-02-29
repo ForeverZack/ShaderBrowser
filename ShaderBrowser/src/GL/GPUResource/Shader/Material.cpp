@@ -2,6 +2,7 @@
 #include "Common/Tools/Utils.h"
 #include "Common/System/Cache/GLProgramCache.h"
 #include "Common/System/Cache/MaterialCache.h"
+#include "Browser/System/LightSystem.h"
 
 namespace customGL
 {
@@ -44,6 +45,8 @@ namespace customGL
 	
 		// 新的材质加入MaterialCache
 		MaterialCache::getInstance()->addMaterial(this);
+		// 加入待处理的光照材质
+		LightSystem::getInstance()->addPrepareLightMaterial(this);
 	}
 
 	Material::~Material()
@@ -55,6 +58,11 @@ namespace customGL
         {
             (*itor)->release();
         }
+
+		// 从待处理的光照材质移除
+		LightSystem::getInstance()->removePrepareLightMaterial(this);
+		// 从MaterialCache移除
+		MaterialCache::getInstance()->removeMaterial(this);
 	}
 
 	void Material::init()
