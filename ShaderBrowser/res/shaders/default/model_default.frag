@@ -1,17 +1,8 @@
-out vec4 fColor;
-
 #include "Standard.inc"
 #include "Light.inc"
 
-//in vec4 v2f_color;
-//in vec2 inCoord;
-
-in V2FData
-{
-    vec4 color;
-    vec2 coord;
-    vec3 normal;    // world-space
-} v2f;
+#define FragInStruct_Standard
+#include "CommonStruct.inc"
 
 void main()
 {

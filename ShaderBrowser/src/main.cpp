@@ -213,7 +213,6 @@ void testVal()
     BaseEntity* modelEntity = m_oModel->createNewEntity("namizhuang");
     modelEntity->setScale(0.2f, 0.2f, 0.2f);
     modelEntity->setEulerAngle(0, 180, 0);
-    modelEntity->setEulerAngle(0, 0, 0);
 //    modelEntity->getTransform()->setQuaternion(0.144154,0.155388,0.259979,0.942064);
     modelEntity->setPosition(0, 1, 0);
     scene->addChild(modelEntity);

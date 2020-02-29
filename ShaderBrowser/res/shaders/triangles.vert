@@ -2,13 +2,8 @@
 #include "Standard.inc"
 #include "Standard.inc"
 
-//out vec4 v2f_color;
-//out vec2 outCoord;
-out V2FData
-{
-    vec4 color;
-    vec2 coord;
-} v2f;
+#define VertOutStruct_Standard
+#include "CommonStruct.inc"
 
 void main() 
 { 

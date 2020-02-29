@@ -3,6 +3,10 @@
 ## StandardVertexAttr.inc<br>
 包含所有顶点属性，顶点着色器必须包含。<br>
 
+## CommonStruct.inc<br>
+封装了一些通用的顶点着色器和片段着色器的输入输出结构体，帮助简洁代码。比较蛋疼的是，
+define XXX必须放在#include "CommonStruct.inc"之前，不然shader编译不会创建这些结构体。<br>
+
 ## Standard.inc<br>
 包含引擎内部的所有标准uniform参数，必须包含。<br>
 

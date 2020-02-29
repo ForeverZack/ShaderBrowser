@@ -2,14 +2,9 @@
 #include "Standard.inc"
 #include "Math.inc"
 
-//out vec4 v2f_color;
-//out vec2 outCoord;
-out V2FData
-{
-    vec4 color;
-    vec2 coord;
-    vec3 normal;
-} v2f;
+// 要使用Standard.inc中定义的结构体，必须要在include之前define，这点比较蛋疼
+#define VertOutStruct_Standard
+#include "CommonStruct.inc"
 
 void main() 
 { 

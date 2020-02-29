@@ -3,16 +3,8 @@ uniform mat4 matTest;
 
 #include "Standard.inc"
 
-out vec4 fColor;
-
-//in vec4 v2f_color;
-//in vec2 inCoord;
-
-in V2FData
-{
-    vec4 color;
-    vec2 coord;
-} v2f;
+#define FragInStruct_Standard
+#include "CommonStruct.inc"
 
 void main()
 {

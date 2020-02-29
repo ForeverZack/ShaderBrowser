@@ -1,12 +1,10 @@
 #include "StandardVertexAttr.inc"
 #include "Standard.inc"
 #include "SkeletonAnimation.inc"
+#include "Math.inc"
 
-out V2FData
-{
-    vec4 color;
-    vec2 coord;
-} v2f;
+#define VertOutStruct_Standard
+#include "CommonStruct.inc"
 
 void main() 
 { 
@@ -18,4 +16,5 @@ void main()
     // v2f.color = a_color;
 	v2f.color = a_color;
     v2f.coord = a_coord;
+    v2f.normal = ObjectToWorldNormal(mat3(skinning) * a_normal);
 }

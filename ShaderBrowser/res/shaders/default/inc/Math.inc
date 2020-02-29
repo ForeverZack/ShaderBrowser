@@ -1,3 +1,5 @@
+// in out inout
+
 // 输入世界空间的顶点位置，返回世界空间中从该点到摄像机的观察方向
 vec3 WorldSpaceViewDir(vec3 v)
 {
