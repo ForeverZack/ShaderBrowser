@@ -4,7 +4,8 @@
 namespace browser
 {
 	LightSystem::LightSystem()
-        : m_uDirectionalDirty(0)
+        : m_bAmbientDirty(false)
+        , m_uDirectionalDirty(0)
 		, m_uPointDirty(0)
 		, m_uSpotDirty(0)
 	{
@@ -106,6 +107,19 @@ namespace browser
     {
 		// 处理已有材质：这部分材质只需要更新dirty的数据
 		{
+            // 环境光
+            if (m_bAmbientDirty)
+            {
+                // 处理已有材质
+                Material* material = nullptr;
+                for (auto itor = m_mAllLightMaterials.begin(); itor != m_mAllLightMaterials.end(); ++itor)
+                {
+                    material = itor->second;
+                    material->setUniformV4f(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_AMBIENT_COLOR], m_oAmbientColor);
+                };
+            
+                m_bAmbientDirty = false;
+            }
 			// 平行光
 			if (m_uDirectionalDirty > 0)
 			{
@@ -151,6 +165,15 @@ namespace browser
 		// 处理新增材质：这部分材质要更新所有数据
 		if(m_mPreLightMaterials.size() > 0)
 		{
+            // 环境光
+            {
+                Material* material = nullptr;
+                for (auto itor = m_mPreLightMaterials.begin(); itor != m_mPreLightMaterials.end(); ++itor)
+                {
+                    material = itor->second;
+                    material->setUniformV4f(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_AMBIENT_COLOR], m_oAmbientColor);
+                };
+            }
 			// 平行光
 			{
 				// 数量发生变化
@@ -195,6 +218,20 @@ namespace browser
 			m_mPreLightMaterials.erase(itor);
 		}
 	}
+    
+    void LightSystem::setAmbientColor(const glm::vec4& color)
+    {
+        setAmbientColor(color.r, color.g, color.b, color.a);
+    }
+    
+    void LightSystem::setAmbientColor(float r, float g, float b, float a)
+    {
+        m_oAmbientColor.r = r;
+        m_oAmbientColor.g = g;
+        m_oAmbientColor.b = b;
+        m_oAmbientColor.a = a;
+        m_bAmbientDirty = true;
+    }
     
     void LightSystem::handleEvent(ComponentEvent event, BaseComponentMessage* msg)
     {

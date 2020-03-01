@@ -13,6 +13,7 @@
         vec4 color;
         vec2 coord;
         vec3 normal;
+        vec3 world_position;
     } v2f;
 #endif
 
@@ -23,5 +24,6 @@
         vec4 color;
         vec2 coord;
         vec3 normal;
+        vec3 world_position;
     } v2f;
 #endif

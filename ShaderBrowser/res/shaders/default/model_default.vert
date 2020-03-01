@@ -7,9 +7,11 @@
 #include "CommonStruct.inc"
 
 void main() 
-{ 
-    gl_Position = CGL_PROJECTION_MATRIX * CGL_VIEW_MATRIX * CGL_MODEL_MATRIX * a_position;
+{
+    vec4 worldPos = ObjectToWorldPosition(a_position);
+    gl_Position = CGL_PROJECTION_MATRIX * CGL_VIEW_MATRIX * worldPos;
     v2f.color = a_color;
     v2f.coord = a_coord;
     v2f.normal = ObjectToWorldNormal(a_normal);
+    v2f.world_position = vec3(worldPos);
 }

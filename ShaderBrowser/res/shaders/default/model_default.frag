@@ -1,8 +1,12 @@
 #include "Standard.inc"
 #include "Light.inc"
+#include "Math.inc"
 
 #define FragInStruct_Standard
 #include "CommonStruct.inc"
+
+const vec4 specColor = vec4(1, 1, 1, 1);
+const float gloss = 8;
 
 void main()
 {
@@ -11,14 +15,13 @@ void main()
     vec4 lightColor;
     float lightIntensity;
     vec3 lightDir;
-//    for (int i=0; i<CGL_DIRECTIONAL_LIGHT_NUM; ++i)
-//    {
-//        getDirectionalLightInfo(i, lightColor, lightIntensity, lightDir);
-//        albedo = HalfLambertLight(albedo, v2f.normal, lightColor, lightIntensity, lightDir);
-//    }
-    // test
-    getDirectionalLightInfo(0, lightColor, lightIntensity, lightDir);
-    albedo = HalfLambertLight(albedo, v2f.normal, lightColor, lightIntensity, lightDir);
+    vec3 result = vec3(0, 0, 0);
+    // 平行光
+    for (int i=0; i<CGL_DIRECTIONAL_LIGHT_NUM; ++i)
+    {
+        getDirectionalLightInfo(i, lightColor, lightIntensity, lightDir);
+        result = result + vec3(BlinnPhongLight(albedo, v2f.normal, WorldSpaceViewDir(v2f.world_position), lightColor, lightDir, specColor, gloss))*lightIntensity;
+    }
 
-    fColor = albedo;
+    fColor = vec4(result.xyz, albedo.a);
 }

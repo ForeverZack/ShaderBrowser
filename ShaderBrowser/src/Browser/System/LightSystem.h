@@ -52,10 +52,16 @@ namespace browser
     protected:
         // 接受事件
         virtual void handleEvent(ComponentEvent event, BaseComponentMessage* msg);
+        
+        REGISTER_PROPERTY_CONSTREF_GET(glm::vec4, m_oAmbientColor, AmbientColor)
+        void setAmbientColor(const glm::vec4& color);
+        void setAmbientColor(float r, float g, float b, float a);
 
 	private:
         // 环境光
         glm::vec4 m_oAmbientColor;
+        // 环境光脏标记
+        bool m_bAmbientDirty;
         // 平行光列表
         std::vector<BaseLight*> m_vDirectionalLights;
         // 平行光列表脏标记

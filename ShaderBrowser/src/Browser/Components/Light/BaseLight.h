@@ -77,6 +77,7 @@ namespace browser
         REGISTER_PROPERTY_GET(float, m_fIntensity, Intensity)
         REGISTER_PROPERTY_CONSTREF_GET(glm::vec3, m_oGlobalPosition, GlobalPosition)
         void setColor(const glm::vec4& color);
+        void setColor(float r, float g, float b, float a);
         void setIntensity(float intensity);
         
     protected:

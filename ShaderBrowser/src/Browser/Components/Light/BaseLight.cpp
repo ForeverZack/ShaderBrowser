@@ -56,7 +56,15 @@ namespace browser
     
     void BaseLight::setColor(const glm::vec4& color)
     {
-        m_oColor = color;
+        setColor(color.r, color.g, color.b, color.a);
+    }
+    
+    void BaseLight::setColor(float r, float g, float b, float a)
+    {
+        m_oColor.r = r;
+        m_oColor.g = g;
+        m_oColor.b = b;
+        m_oColor.a = a;
         setDirty(LightPropertyType::LPT_Color);
     }
     

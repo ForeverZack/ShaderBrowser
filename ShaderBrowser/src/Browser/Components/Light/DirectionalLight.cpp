@@ -37,6 +37,11 @@ namespace browser
     
     void DirectionalLight::updateMaterialsLight(const std::unordered_map<unsigned int, Material*>& materials, unsigned int index/* = 0*/, bool forceUpdate/* = false*/)
     {
+        if (materials.size() <= 0)
+        {
+            return;
+        }
+        
 		Material* material = nullptr;
         // 颜色
         if (forceUpdate || BROWSER_GET_BIT(m_uPropertiesDirty, LightPropertyType::LPT_Color))

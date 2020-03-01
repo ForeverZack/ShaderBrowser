@@ -265,6 +265,11 @@ namespace customGL
             delete[] log;
             //#endif /* DEBUG */
             
+            switch(type)
+            {
+                case GL_VERTEX_SHADER: BROWSER_LOG(m_sVertexSource); break;
+                case GL_FRAGMENT_SHADER: BROWSER_LOG(m_sFragSource); break;
+            }
             common::BROWSER_ASSERT(compiled, "shader program compiled error in function GLProgram::createShader");
             
             return false;
