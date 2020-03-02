@@ -24,7 +24,7 @@ void getDirectionalLightInfo(int idx, out vec4 col, out float intensity, out vec
     DirectionalLight light = CGL_DIRECTIONAL_LIGHTS[idx];
     col = light.color;
     intensity = light.intensity;
-    dir = light.direction;
+    dir = -light.direction;	// 注意：平行光的光源方向和平行光方向是相反的
 }
 #endif
 

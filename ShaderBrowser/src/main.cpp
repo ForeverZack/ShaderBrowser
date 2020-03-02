@@ -154,7 +154,7 @@ void testVal()
     // 设置平行光位置（没啥用）
     directionalLightEntity->setPosition(100, 100, 100);
     // 平行光方向
-    directionalLight->setDirection(-1, -1, 1);
+    directionalLight->setDirection(-1, -1, -1);
     // 平行光强度
     directionalLight->setIntensity(0.5f);
     // 平行光颜色
