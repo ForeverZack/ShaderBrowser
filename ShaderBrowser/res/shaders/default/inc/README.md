@@ -1,4 +1,8 @@
 # shader库说明<br>
+1.可以使用关键字#include "XXX"来在shader中使用后缀为inc的库(理论上支持任何后缀的文本)；<br>
+2.被包含进来的库会在FileUtils的SearchPath列表中搜索；<br>
+3.包含库文件之后，如果库文件中存在#ifdef或#ifndef，必须要先定义这些宏；<br>
+
 
 ## StandardVertexAttr.inc<br>
 包含所有顶点属性，顶点着色器必须包含。<br>

@@ -112,7 +112,7 @@ namespace customGL
         void setUVs(void* data);
         // 顶点颜色
         void setColors(void* data);
-        // 法线
+        // 法线: 并没有标准化
         void setNormals(void* data);
         // 切线
         void setTangents(void* data);
@@ -186,7 +186,7 @@ namespace customGL
         std::vector<glm::vec4> m_vColors;
         // uv
         std::vector<glm::vec4> m_vTexcoords1;
-        // 法线
+        // 法线: 没有normalize
         std::vector<glm::vec3> m_vNormals;
         // 切线
         std::vector<glm::vec3> m_vTangents;

@@ -156,7 +156,7 @@ void testVal()
     // 平行光方向
     directionalLight->setDirection(-1, -1, -1);
     // 平行光强度
-    directionalLight->setIntensity(0.5f);
+    directionalLight->setIntensity(1);
     // 平行光颜色
 //    directionalLight->setColor(0, 0, 1, 1);
     

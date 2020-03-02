@@ -88,14 +88,14 @@ vec4 HalfLambertLight(vec4 albedo, vec3 normal, vec4 lightColor, vec3 lightDir, 
 // specColor: 高光反射颜色
 // gloss: shininess
 vec4 BlinnPhongLight(vec4 albedo, vec3 normal, vec3 viewDir, vec4 lightColor, vec3 lightDir, vec4 specColor, float gloss)
-{
+{	
     // diff
     vec4 diffuse = LambertLight(albedo, normal, lightColor, lightDir);
 
     // specular
-    vec3 h = normalize(normalize(lightDir) + normalize(viewDir));
+    vec3 h = normalize(lightDir + viewDir);
     vec4 specular = lightColor * specColor * pow(max(0, dot(normal, h)), gloss);
-    
+
     // combine
     vec4 c = diffuse + specular;
     c.a = albedo.a;

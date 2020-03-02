@@ -870,7 +870,7 @@ namespace customGL
             {
                 mesh->setUVs(aiMesh->mTextureCoords[0]);
             }
-            // 法线
+            // 法线: 注意这里的发现并没有标准化
             mesh->setNormals(aiMesh->mNormals);
             // 切线
             mesh->setTangents(aiMesh->mTangents);

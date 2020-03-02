@@ -12,6 +12,9 @@ namespace browser
 		m_iPriority = 0;
 		m_eSystemType = common::SystemType::Light;
 		m_bComponentMutex = true;
+
+		// 环境光颜色
+		m_oAmbientColor = glm::vec4(54/255.f, 58/255.f, 66/255.f, 1);
 	}
     
     bool LightSystem::addComponent(BaseEntity* entity, BaseComponent* component)
