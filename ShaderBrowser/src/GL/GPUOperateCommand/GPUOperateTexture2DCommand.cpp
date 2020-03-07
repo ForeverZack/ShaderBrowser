@@ -97,7 +97,7 @@ namespace customGL
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_pImage->getWidth(), m_pImage->getHeight(), 0, m_pImage->getType(), GL_UNSIGNED_BYTE, m_pImage->getData());
 
         // 为当前绑定的纹理自动生成所有需要的多级渐远纹理
-        glGenerateMipmap(GL_TEXTURE_2D);
+        //glGenerateMipmap(GL_TEXTURE_2D);
 
         // 资源加载完成
         m_pTexture->m_eResouceState = GRS_Loaded;
