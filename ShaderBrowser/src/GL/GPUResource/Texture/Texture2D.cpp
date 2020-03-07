@@ -34,8 +34,8 @@ namespace customGL
 		, m_oImage(nullptr)
         , m_eWrapTypeS(GL_CLAMP_TO_EDGE)
         , m_eWrapTypeT(GL_CLAMP_TO_EDGE)
+        //, m_eFilterMin(GL_LINEAR_MIPMAP_LINEAR)
         , m_eFilterMin(GL_LINEAR)
-//        , m_eFilterMin(GL_LINEAR)
         , m_eFilterMag(GL_LINEAR)
 	{
         m_eResourceType = GPUResourceType::GRT_Texture2D;
