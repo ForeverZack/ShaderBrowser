@@ -6,8 +6,13 @@ using namespace common;
 
 namespace browser
 {
+	class BaseEntity;
+
 	class DirectionalLight : public BaseLight
 	{
+	public:
+		static DirectionalLight* create(const std::string& name, BaseEntity* parent = nullptr);
+
 	public:
 		DirectionalLight();
 		~DirectionalLight();
@@ -21,18 +26,13 @@ namespace browser
         virtual bool isLightDirty();
         // 光源系统是否需要更新
         virtual bool isLightSystemDirty();
-        
-        // 设置平行光方向
-        void setDirection(const glm::vec3& dir);
-        void setDirection(float x, float y, float z);
+       
   
     private:
         // 重载属性面板显示方法
         virtual void onInspectorGUI(InspectorPanel* inspector);
         
 	protected:
-        // 平行光方向
-        glm::vec3 m_oLightDirection;
         // 阴影属性等
     
 	};

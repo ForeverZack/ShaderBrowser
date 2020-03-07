@@ -14,6 +14,7 @@ namespace browser
 	BaseLight::BaseLight()
         : BaseComponent("Light")
         , m_oColor(GLM_COLOR_WHITE)
+		, m_oLightDirection(GLM_AXIS_X)
         , m_fIntensity(1.0f)
         , m_uPropertiesDirty(0)
     {
@@ -28,15 +29,20 @@ namespace browser
     
     void BaseLight::updateLight()
     {
-        Transform* transform = m_oBelongEntity ? m_oBelongEntity->getComponent<Transform>() : nullptr;
-        if (transform)
-        {
-            const glm::vec3 globalPosition = transform->getGlobalPosition();
-            if (m_oGlobalPosition != globalPosition)
-            {
-                setGlobalPosition(globalPosition);
-            }
-        }
+		Transform* transform = m_oBelongEntity ? m_oBelongEntity->getComponent<Transform>() : nullptr;
+		if (transform)
+		{
+			const glm::vec3& globalPosition = transform->getGlobalPosition();
+			if (m_oGlobalPosition != globalPosition)
+			{
+				recordGlobalPosition(globalPosition);
+			}
+			const glm::vec3& forward = transform->getForward();
+			if (m_oLightDirection != forward)
+			{
+				recordDirection(forward);
+			}
+		}
     }
     
     bool BaseLight::isLightDirty()
@@ -74,17 +80,43 @@ namespace browser
         setDirty(LightPropertyType::LPT_Intensity);
     }
     
-    void BaseLight::setGlobalPosition(const glm::vec3& position)
+    void BaseLight::recordGlobalPosition(const glm::vec3& position)
     {
         m_oGlobalPosition = position;
         setDirty(LightPropertyType::LPT_GlobalPosition);
     }
+
+	void BaseLight::recordDirection(const glm::vec3& direction)
+	{
+		m_oLightDirection = glm::normalize(direction);  // 标准化
+		setDirty(LightPropertyType::LPT_LightDirection);
+	}
 
     void BaseLight::setDirty(LightPropertyType type)
     {
         BROWSER_SET_BIT(m_uPropertiesDirty, type);
         dispatchEventToSystem(SystemType::Light, ComponentEvent::Light_UpdateLight, new UpdateLightMessage(this));
     }
+
+	void BaseLight::setPosition(float x, float y, float z)
+	{
+		Transform* transform = m_oBelongEntity ? m_oBelongEntity->getComponent<Transform>() : nullptr;
+		if (transform)
+		{
+			transform->setPosition(x, y, z);
+			recordGlobalPosition(transform->getGlobalPosition());
+		}
+	}
+	
+	void BaseLight::setEulerAngle(float x, float y, float z)
+	{
+		Transform* transform = m_oBelongEntity ? m_oBelongEntity->getComponent<Transform>() : nullptr;
+		if (transform)
+		{
+			transform->setEulerAngle(x, y, z);
+			recordDirection(transform->getForward());
+		}
+	}
     
 	void BaseLight::handleEvent(ComponentEvent event, BaseComponentMessage* msg)
 	{

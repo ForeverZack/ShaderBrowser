@@ -41,8 +41,8 @@ namespace browser
             LPT_Intensity = 1,
             // 世界位置
             LPT_GlobalPosition = 2,
-            // 平行光方向
-            LPT_LightDirection = 2,
+            // 方向 (平行光、聚光灯)
+            LPT_LightDirection = 3,
         };
         
         // 阴影类型
@@ -79,6 +79,8 @@ namespace browser
         void setColor(const glm::vec4& color);
         void setColor(float r, float g, float b, float a);
         void setIntensity(float intensity);
+		void setPosition(float x, float y, float z);
+		void setEulerAngle(float x, float y, float z);
         
     protected:
         // 处理组件事件
@@ -86,8 +88,9 @@ namespace browser
         // 设置脏标记
         virtual void setDirty(LightPropertyType type);
         
-        void setGlobalPosition(const glm::vec3& position);
-        
+		void recordDirection(const glm::vec3& direction);
+        void recordGlobalPosition(const glm::vec3& position);
+
     protected:
         // uniform变量名称
         // 平行光颜色
@@ -107,6 +110,8 @@ namespace browser
         glm::vec4 m_oColor;
         // 强度
         float m_fIntensity;
+		// 方向
+		glm::vec3 m_oLightDirection;
         // 世界位置
         glm::vec3 m_oGlobalPosition;
         

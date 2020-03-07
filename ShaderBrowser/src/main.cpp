@@ -146,33 +146,23 @@ void testVal()
 	//=============================创建相机==================================
     
     //=============================创建平行光==================================
-    BaseEntity* directionalLightEntity = BaseEntity::create("Directional Light");
-    scene->addChild(directionalLightEntity);
-    // 平行光组件
-    DirectionalLight* directionalLight = new DirectionalLight();
-    directionalLightEntity->addComponent(directionalLight);
-    // 设置平行光位置（没啥用）
-    directionalLightEntity->setPosition(100, 100, 100);
+    // 平行光
+    DirectionalLight* directionalLight = DirectionalLight::create("Directional Light");
     // 平行光方向
-    directionalLight->setDirection(-1, -1, -1);
+    directionalLight->setEulerAngle(-135, -45, 0);
     // 平行光强度
     directionalLight->setIntensity(1);
     // 平行光颜色
 //    directionalLight->setColor(0, 0, 1, 1);
     
-//    directionalLightEntity = BaseEntity::create("Directional Light2");
-//    scene->addChild(directionalLightEntity);
-//    // 平行光组件
-//    directionalLight = new DirectionalLight();
-//    directionalLightEntity->addComponent(directionalLight);
-//    // 设置平行光位置（没啥用）
-//    directionalLightEntity->setPosition(100, 100, 100);
-//    // 平行光方向
-//    directionalLight->setDirection(1, -1, 1);
-//    // 平行光强度
-//    directionalLight->setIntensity(0.5f);
-//    // 平行光颜色
-//    directionalLight->setColor(1, 0, 0, 1);
+    //// 平行光2
+    //directionalLight = DirectionalLight::create("Directional Light2");;
+    //// 平行光方向
+    //directionalLight->setEulerAngle(135, -45, 0);
+    //// 平行光强度
+    //directionalLight->setIntensity(0.5f);
+    //// 平行光颜色
+    //directionalLight->setColor(1, 0, 0, 1);
     
     //=============================创建平行光==================================
 

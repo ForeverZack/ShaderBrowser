@@ -1,12 +1,31 @@
 #include "DirectionalLight.h"
 #include "GL/GPUResource/Shader/GLProgram.h"
+#include "Browser/Entitys/BaseEntity.h"
+#include "Browser/System/TransformSystem.h"
 
 using namespace common;
 
 namespace browser
 {
+	DirectionalLight* DirectionalLight::create(const std::string& name, BaseEntity* parent/* = nullptr*/)
+	{
+		if (!parent)
+		{
+			// 没有父节点就绑定到场景节点上
+			parent = TransformSystem::getInstance()->getScene();
+		}
+
+		// entity
+		BaseEntity* directionalLightEntity = BaseEntity::create(name);
+		parent->addChild(directionalLightEntity);
+		// 平行光组件
+		DirectionalLight* directionalLight = new DirectionalLight();
+		directionalLightEntity->addComponent(directionalLight);
+
+		return directionalLight;
+	}
+
 	DirectionalLight::DirectionalLight()
-        : m_oLightDirection(GLM_AXIS_X)
     {
         m_sComponentName = "Directional Light";
         // 设置光源类型
@@ -32,7 +51,17 @@ namespace browser
     
     void DirectionalLight::updateLight()
     {
-        
+		//BaseLight::updateLight();
+
+		Transform* transform = m_oBelongEntity ? m_oBelongEntity->getComponent<Transform>() : nullptr;
+		if (transform)
+		{
+			const glm::vec3& forward = transform->getForward();
+			if (m_oLightDirection != forward)
+			{
+				recordDirection(forward);
+			}
+		}
     }
     
     void DirectionalLight::updateMaterialsLight(const std::unordered_map<unsigned int, Material*>& materials, unsigned int index/* = 0*/, bool forceUpdate/* = false*/)
@@ -98,20 +127,6 @@ namespace browser
     bool DirectionalLight::isLightSystemDirty()
     {
         return BROWSER_GET_BIT(m_uPropertiesDirty, LightPropertyType::LPT_Intensity);
-    }
-    
-    void DirectionalLight::setDirection(const glm::vec3& dir)
-    {
-        setDirection(dir.x, dir.y, dir.z);
-    }
-    
-    void DirectionalLight::setDirection(float x, float y, float z)
-    {
-        m_oLightDirection.x = x;
-        m_oLightDirection.y = y;
-        m_oLightDirection.z = z;
-        glm::normalize(m_oGlobalPosition);  // 标准化
-        setDirty(LightPropertyType::LPT_LightDirection);
     }
     
 }

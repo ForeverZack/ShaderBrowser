@@ -108,6 +108,17 @@ namespace browser
     
     void LightSystem::update(float deltaTime)
     {
+		{
+			BaseLight* light = nullptr;
+			for (auto itor = m_mComponentsList.begin(); itor != m_mComponentsList.end(); ++itor)
+			{
+				const std::list<BaseComponent*>& list = itor->second;
+				light = static_cast<BaseLight*>(*(list.begin()));
+				light->updateLight();
+			}
+		}
+
+
 		// 处理已有材质：这部分材质只需要更新dirty的数据
 		{
             // 环境光
