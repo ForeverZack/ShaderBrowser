@@ -13,6 +13,7 @@ struct DirectionalLight
     vec4 color;
     float intensity;
     vec3 direction; // world-space (normalized)
+	mat4 lightMatrix;	// world-space -> light-space
 };
 // 平行光数量
 uniform int CGL_DIRECTIONAL_LIGHT_NUM;

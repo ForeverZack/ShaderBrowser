@@ -38,11 +38,13 @@ namespace browser
             // 光源颜色
             LPT_Color = 0,
             // 强度
-            LPT_Intensity = 1,
+            LPT_Intensity,
             // 世界位置
-            LPT_GlobalPosition = 2,
+            LPT_GlobalPosition,
             // 方向 (平行光、聚光灯)
-            LPT_LightDirection = 3,
+            LPT_LightDirection,
+			// 光源空间矩阵（世界空间->光源空间）
+			LPT_LightMatrix,
         };
         
         // 阴影类型
@@ -99,6 +101,8 @@ namespace browser
         static const char* SHADER_UNIFORM_DIRECTIONAL_INTENSITY;
         // 平行光方向
         static const char* SHADER_UNIFORM_DIRECTIONAL_DIRECTION;
+		// 平行光光源矩阵
+		static const char* SHADER_UNIFORM_DIRECTIONAL_LIGHTMATRIX;
         
 	protected:
         // 光源类型
@@ -114,6 +118,8 @@ namespace browser
 		glm::vec3 m_oLightDirection;
         // 世界位置
         glm::vec3 m_oGlobalPosition;
+		// 光源空间矩阵
+		glm::mat4 m_oLightMatrix;
         
         // 阴影类型
         ShadowType m_eShadowType;

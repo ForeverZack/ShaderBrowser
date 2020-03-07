@@ -10,13 +10,16 @@ namespace browser
     const char* BaseLight::SHADER_UNIFORM_DIRECTIONAL_INTENSITY = "CGL_DIRECTIONAL_LIGHTS[%d].intensity";;
     // 平行光方向
     const char* BaseLight::SHADER_UNIFORM_DIRECTIONAL_DIRECTION = "CGL_DIRECTIONAL_LIGHTS[%d].direction";;
-    
+    // 平行光光源矩阵
+	const char* BaseLight::SHADER_UNIFORM_DIRECTIONAL_LIGHTMATRIX = "CGL_DIRECTIONAL_LIGHTS[%d].lightMatrix";;
+
 	BaseLight::BaseLight()
         : BaseComponent("Light")
         , m_oColor(GLM_COLOR_WHITE)
-		, m_oLightDirection(GLM_AXIS_X)
         , m_fIntensity(1.0f)
-        , m_uPropertiesDirty(0)
+		, m_oLightDirection(GLM_AXIS_X)
+		, m_oLightMatrix(GLM_MAT4_UNIT)
+		, m_uPropertiesDirty(0)
     {
 		// 组件所属系统
 		m_eBelongSystem = SystemType::Light;
@@ -84,12 +87,14 @@ namespace browser
     {
         m_oGlobalPosition = position;
         setDirty(LightPropertyType::LPT_GlobalPosition);
+		setDirty(LightPropertyType::LPT_LightMatrix);
     }
 
 	void BaseLight::recordDirection(const glm::vec3& direction)
 	{
 		m_oLightDirection = glm::normalize(direction);  // 标准化
 		setDirty(LightPropertyType::LPT_LightDirection);
+		setDirty(LightPropertyType::LPT_LightMatrix);
 	}
 
     void BaseLight::setDirty(LightPropertyType type)

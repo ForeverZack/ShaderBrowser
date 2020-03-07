@@ -34,7 +34,7 @@ namespace browser
         m_oColor = glm::vec4(1, 0.9569f, 0.8392f, 1);
         
 		// 设置脏标记
-		m_uPropertiesDirty = LPT_Color | LPT_Intensity | LPT_LightDirection;
+		m_uPropertiesDirty = LPT_Color | LPT_Intensity | LPT_LightDirection | LPT_LightMatrix;
 		dispatchEventToSystem(SystemType::Light, ComponentEvent::Light_UpdateLight, new UpdateLightMessage(this));
 	}
 
@@ -60,6 +60,12 @@ namespace browser
 			if (m_oLightDirection != forward)
 			{
 				recordDirection(forward);
+			}
+
+			if (BROWSER_GET_BIT(m_uPropertiesDirty, LightPropertyType::LPT_LightMatrix))
+			{
+				// 更新光源矩阵
+				m_oLightMatrix = glm::inverse(transform->getModelMatrix());
 			}
 		}
     }
@@ -105,6 +111,17 @@ namespace browser
 				material->setUniformV3f(uniformName, m_oLightDirection);
 			}
         }
+		// 光源矩阵
+		if (forceUpdate || BROWSER_GET_BIT(m_uPropertiesDirty, LightPropertyType::LPT_LightMatrix))
+		{
+			std::string uniformName(GLProgram::SHADER_UNIFORM_NAME_MAX_LENGTH, '\0');
+			sprintf(&uniformName[0], SHADER_UNIFORM_DIRECTIONAL_LIGHTMATRIX, index);
+			for (auto itor = materials.begin(); itor != materials.end(); ++itor)
+			{
+				material = itor->second;
+				material->setUniformMat4(uniformName, m_oLightMatrix);
+			}
+		}
 
 		// 重置脏标记
 		resetLightDirty();
@@ -126,6 +143,7 @@ namespace browser
     
     bool DirectionalLight::isLightSystemDirty()
     {
+		// 对于平行光来说，光源系统只关心它的强度
         return BROWSER_GET_BIT(m_uPropertiesDirty, LightPropertyType::LPT_Intensity);
     }
     

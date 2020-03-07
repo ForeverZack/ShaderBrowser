@@ -27,8 +27,7 @@ namespace browser
             LCT_DeleteLight,
             // 光源强度发生改变
             LCT_Intensity,
-         
-            // 平行光数据发生改变
+            // 光源强度发生改变
             LCT_Directional,
         };
         
