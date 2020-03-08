@@ -10,6 +10,7 @@
 #include "Browser/Components/Transform/Transform.h"
 #include "GL/GPUResource/Shader/Material.h"
 #include "Common/Tools/Utils.h"
+#include "Browser/Entitys/BaseEntity.h"
 
 #include <glm/glm.hpp>
 
@@ -42,7 +43,7 @@ namespace browser
             // 世界位置
             LPT_GlobalPosition,
             // 方向 (平行光、聚光灯)
-            LPT_LightDirection,
+            LPT_Direction,
 			// 光源空间矩阵（世界空间->光源空间）
 			LPT_LightMatrix,
         };
@@ -95,6 +96,7 @@ namespace browser
 
     protected:
         // uniform变量名称
+        // 平行光
         // 平行光颜色
         static const char* SHADER_UNIFORM_DIRECTIONAL_COLOR;
         // 平行光强度
@@ -103,6 +105,15 @@ namespace browser
         static const char* SHADER_UNIFORM_DIRECTIONAL_DIRECTION;
 		// 平行光光源矩阵
 		static const char* SHADER_UNIFORM_DIRECTIONAL_LIGHTMATRIX;
+        // 点光源
+        // 点光源颜色
+        static const char* SHADER_UNIFORM_POINT_COLOR;
+        // 点光源强度
+        static const char* SHADER_UNIFORM_POINT_INTENSITY;
+        // 点光源位置
+        static const char* SHADER_UNIFORM_POINT_POSITION;
+        // 点光源光源矩阵
+        static const char* SHADER_UNIFORM_POINT_LIGHTMATRIX;
         
 	protected:
         // 光源类型

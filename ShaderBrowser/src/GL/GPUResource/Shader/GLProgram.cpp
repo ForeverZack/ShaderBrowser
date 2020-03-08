@@ -61,10 +61,13 @@ namespace customGL
 		"CGL_ALBEDO_COLOR",
         "CGL_BONES_MATRIX",
         "CGL_DYNAMIC_BATCH_MODEL_MATRIX[%d]",
+        "CGL_LIGHT_TEXTURE0",
         
         "CGL_AMBIENT_COLOR",
         "CGL_DIRECTIONAL_LIGHT_NUM",
         "CGL_DIRECTIONAL_LIGHTS[%d]",
+        "CGL_POINT_LIGHT_NUM",
+        "CGL_POINT_LIGHTS[%d]",
     };
     // 预定义uniform变量名字的最大长度
     const int GLProgram::SHADER_UNIFORM_NAME_MAX_LENGTH = 100;

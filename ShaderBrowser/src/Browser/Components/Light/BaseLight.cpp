@@ -4,15 +4,25 @@
 namespace browser
 {
     // uniform变量名称
+    // 平行光
     // 平行光颜色
     const char* BaseLight::SHADER_UNIFORM_DIRECTIONAL_COLOR = "CGL_DIRECTIONAL_LIGHTS[%d].color";
     // 平行光强度
-    const char* BaseLight::SHADER_UNIFORM_DIRECTIONAL_INTENSITY = "CGL_DIRECTIONAL_LIGHTS[%d].intensity";;
+    const char* BaseLight::SHADER_UNIFORM_DIRECTIONAL_INTENSITY = "CGL_DIRECTIONAL_LIGHTS[%d].intensity";
     // 平行光方向
-    const char* BaseLight::SHADER_UNIFORM_DIRECTIONAL_DIRECTION = "CGL_DIRECTIONAL_LIGHTS[%d].direction";;
+    const char* BaseLight::SHADER_UNIFORM_DIRECTIONAL_DIRECTION = "CGL_DIRECTIONAL_LIGHTS[%d].direction";
     // 平行光光源矩阵
-	const char* BaseLight::SHADER_UNIFORM_DIRECTIONAL_LIGHTMATRIX = "CGL_DIRECTIONAL_LIGHTS[%d].lightMatrix";;
-
+	const char* BaseLight::SHADER_UNIFORM_DIRECTIONAL_LIGHTMATRIX = "CGL_DIRECTIONAL_LIGHTS[%d].lightMatrix";
+    // 点光源
+    // 点光源颜色
+    const char* BaseLight::SHADER_UNIFORM_POINT_COLOR = "CGL_POINT_LIGHTS[%d].color";
+    // 点光源强度
+    const char* BaseLight::SHADER_UNIFORM_POINT_INTENSITY = "CGL_POINT_LIGHTS[%d].intensity";
+    // 点光源位置
+    const char* BaseLight::SHADER_UNIFORM_POINT_POSITION = "CGL_POINT_LIGHTS[%d].position";
+    // 点光源光源矩阵
+    const char* BaseLight::SHADER_UNIFORM_POINT_LIGHTMATRIX = "CGL_POINT_LIGHTS[%d].lightMatrix";
+    
 	BaseLight::BaseLight()
         : BaseComponent("Light")
         , m_oColor(GLM_COLOR_WHITE)
@@ -93,7 +103,7 @@ namespace browser
 	void BaseLight::recordDirection(const glm::vec3& direction)
 	{
 		m_oLightDirection = glm::normalize(direction);  // 标准化
-		setDirty(LightPropertyType::LPT_LightDirection);
+		setDirty(LightPropertyType::LPT_Direction);
 		setDirty(LightPropertyType::LPT_LightMatrix);
 	}
 

@@ -43,6 +43,7 @@ namespace core
         
         // 加载缓存
         GLProgramCache::getInstance()->init();  // 着色器缓存
+        TextureCache::getInstance()->init();    // 纹理缓存
 
 		// 注册基本系统
 		ECSManager::getInstance()->registerSystem(browser::TransformSystem::getInstance()); // Transform

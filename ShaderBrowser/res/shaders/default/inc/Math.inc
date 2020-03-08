@@ -31,3 +31,9 @@ vec3 WorldToObjectDir(out vec3 dir)
 {
     return normalize(mat3(inverse(CGL_MODEL_MATRIX)) * dir);
 }
+
+// 输入起点和终点，输出从起点到终点的方向 (注意使用相同的空间)
+vec3 CalculateDirection(vec3 from, vec3 to)
+{
+    return normalize(to - from);
+}

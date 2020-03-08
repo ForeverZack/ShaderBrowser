@@ -27,6 +27,61 @@ void getDirectionalLightInfo(int idx, out vec4 col, out float intensity, out vec
     intensity = light.intensity;
     dir = -light.direction;	// 注意：平行光的光源方向和平行光方向是相反的
 }
+void getDirectionalLightInfo(int idx, out vec4 col, out float intensity, out vec3 dir, out mat4 mat)
+{
+    DirectionalLight light = CGL_DIRECTIONAL_LIGHTS[idx];
+    col = light.color;
+    intensity = light.intensity;
+    dir = -light.direction;    // 注意：平行光的光源方向和平行光方向是相反的
+    mat = light.lightMatrix;
+}
+#endif
+
+// 点光源
+#ifndef CLOSE_POINT_LIGHT
+// 点光源最大支持数量
+const int MAX_POINT_LIGHT_COUNT = 4;
+// 点光源数据结构
+struct PointLight
+{
+    vec4 color;
+    float intensity;
+    vec3 position;  // world-space
+    mat4 lightMatrix;   // world-space -> light-space
+};
+// 点光源数量
+uniform int CGL_POINT_LIGHT_NUM;
+// 点光源数据
+uniform PointLight CGL_POINT_LIGHTS[MAX_POINT_LIGHT_COUNT];
+//// 光源衰减纹理  standard.inc中
+//uniform sampler2D CGL_LIGHT_TEXTURE0;
+// 获取点光源数据
+void getPointLightInfo(int idx, out vec4 col, out float intensity, out vec3 pos)
+{
+    PointLight light = CGL_POINT_LIGHTS[idx];
+    col = light.color;
+    intensity = light.intensity;
+    pos = light.position;
+}
+void getPointLightInfo(int idx, out vec4 col, out float intensity, out vec3 pos, out mat4 mat)
+{
+    PointLight light = CGL_POINT_LIGHTS[idx];
+    col = light.color;
+    intensity = light.intensity;
+    pos = light.position;
+    mat = light.lightMatrix;
+}
+// 计算点光源衰减度
+float PointLightAtten(vec3 worldPos, in mat4 lightMatrix)
+{
+    // 把点坐标转换到点光源的坐标空间中，lightMatrix由引擎代码计算后传递到shader中，这里包含了对点光源范围的计算，具体可参考Unity引擎源码。经过lightMatrix变换后，在点光源中心处lightCoord为(0, 0, 0)，在点光源的范围边缘处lightCoord模为1
+    vec3 lightCoord = vec3(lightMatrix * vec4(worldPos, 1));
+    // 使用点到光源中心距离的平方dot(lightCoord, lightCoord)构成二维采样坐标，对衰减纹理CGL_LIGHT_TEXTURE0采样。对它的采样都是使用光源空间到点到光源中心的距离平方来作为采样坐标
+    float coord = dot(lightCoord, lightCoord);
+    float atten = texture(CGL_LIGHT_TEXTURE0, vec2(coord, coord)).a;
+    
+    return atten;
+}
 #endif
 
 // Lambert光照模型

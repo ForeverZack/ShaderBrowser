@@ -27,8 +27,12 @@ namespace browser
             LCT_DeleteLight,
             // 光源强度发生改变
             LCT_Intensity,
-            // 光源强度发生改变
+            // 平行光数据发生改变
             LCT_Directional,
+            // 点光源数据发生改变
+            LCT_Point,
+            // 聚光灯数据发生改变
+            LCT_Spot,
         };
         
 	public:
@@ -40,6 +44,8 @@ namespace browser
         virtual bool addComponent(BaseEntity* entity, BaseComponent* component);
         // 移除组件
         virtual bool removeComponent(BaseEntity* entity, BaseComponent* component);
+        // 初始化
+        virtual void init();
         // 每帧刷新
         virtual void update(float deltaTime);
 

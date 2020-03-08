@@ -1,4 +1,5 @@
 #include "LightSystem.h"
+#include "Common/System/Cache/TextureCache.h"
 #include "GL/GPUResource/Shader/GLProgram.h"
 
 namespace browser
@@ -106,8 +107,18 @@ namespace browser
         return BaseSystem::removeComponent(entity, component);
     }
     
+    void LightSystem::init()
+    {
+        // 衰减纹理
+        Texture2D* lightTexture0 = TextureCache::getInstance()->getTexture("texture/default/light_atten_distance.png");
+        lightTexture0->setTexParameters(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_LINEAR, GL_LINEAR);
+        Texture2D* lightTextureB0 = TextureCache::getInstance()->getTexture("texture/default/light_atten_field.png");
+        lightTextureB0->setTexParameters(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_LINEAR, GL_LINEAR);
+    }
+    
     void LightSystem::update(float deltaTime)
     {
+        // 更新光源的transform等信息
 		{
 			BaseLight* light = nullptr;
 			for (auto itor = m_mComponentsList.begin(); itor != m_mComponentsList.end(); ++itor)
@@ -167,9 +178,33 @@ namespace browser
 				m_uDirectionalDirty = 0;
 			}
 
-			// TODO: 点光源
-			// 重置脏标记
-			m_uPointDirty = 0;
+			// 点光源
+            if (m_uPointDirty)
+            {
+                // 数量发生变化
+                if (BROWSER_GET_BIT(m_uPointDirty, LightChangeType::LCT_NewLight) || BROWSER_GET_BIT(m_uPointDirty, LightChangeType::LCT_DeleteLight))
+                {
+                    // 处理已有材质
+                    Material* material = nullptr;
+                    for (auto itor = m_mAllLightMaterials.begin(); itor != m_mAllLightMaterials.end(); ++itor)
+                    {
+                        material = itor->second;
+                        material->setUniformInt(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_POINT_LIGHT_NUM], m_vPointLights.size());
+                    };
+                }
+                // 数据发生变化
+                BaseLight* point_light = nullptr;
+                for (int i = 0; i < m_vPointLights.size(); ++i)
+                {
+                    point_light = m_vPointLights[i];
+                    if (point_light->isLightDirty())
+                    {
+                        point_light->updateMaterialsLight(m_mAllLightMaterials, i);
+                    }
+                }
+                // 重置脏标记
+                m_uPointDirty = 0;
+            }
 
 			// TODO: 聚光灯
 			// 重置脏标记
@@ -207,8 +242,27 @@ namespace browser
 					directional_light->updateMaterialsLight(m_mPreLightMaterials, i, true);
 				}
 			}
+            // 点光源
+            {
+                // 数量发生变化
+                {
+                    Material* material = nullptr;
+                    for (auto itor = m_mPreLightMaterials.begin(); itor != m_mPreLightMaterials.end(); ++itor)
+                    {
+                        material = itor->second;
+                        material->setUniformInt(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_POINT_LIGHT_NUM], m_vPointLights.size());
+                    };
+                }
+                // 数据发生变化
+                BaseLight* point_light = nullptr;
+                for (int i = 0; i < m_vPointLights.size(); ++i)
+                {
+                    point_light = m_vPointLights[i];
+                    point_light->updateMaterialsLight(m_mPreLightMaterials, i, true);
+                }
+            }
 
-			// TODO: 点光源和聚光灯
+			// TODO: 聚光灯
 		}
 
 		// 清空待处理光照材质队列
@@ -270,13 +324,13 @@ namespace browser
 
 					case BaseLight::LightType::Point:
 						{
-
+                            BROWSER_SET_BIT(m_uPointDirty, LightChangeType::LCT_Point);
 						}
 						break;
 
 					case BaseLight::LightType::Spot:
 						{
-
+                            BROWSER_SET_BIT(m_uSpotDirty, LightChangeType::LCT_Spot);
 						}
 						break;
                 }

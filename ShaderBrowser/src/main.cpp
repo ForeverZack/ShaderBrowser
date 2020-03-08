@@ -10,6 +10,7 @@
 #include "Browser/Components/Transform/Transform.h"
 #include "Browser/Components/Camera/Camera.h"
 #include "Browser/Components/Light/DirectionalLight.h"
+#include "Browser/Components/Light/PointLight.h"
 #include "Browser/Components/Mesh/MeshFilter.h"
 #include "GL/GPUResource/Model/Mesh.h"
 #include "Browser/Components/Render/BaseRender.h"
@@ -165,6 +166,13 @@ void testVal()
     //directionalLight->setColor(1, 0, 0, 1);
     
     //=============================创建平行光==================================
+    
+    //=============================创建点光源==================================
+    // 点光源
+    PointLight* pointLight = PointLight::create("Point Light");
+    pointLight->setPosition(2, 2, 0);
+    pointLight->setColor(1, 0, 0, 1);
+    //=============================创建点光源==================================
 
 
 	// 载入纹理
@@ -333,31 +341,34 @@ int main()
 {
 	Application* app = new Application();
 
-    TextureCache::getInstance()->addTexturesAsync({ "texture/awesomeface.png", "texture/HelloWorld.png", "models/Fighter/Fighter.png" }, [&](Texture2D* texture) {
+    TextureCache::getInstance()->addTexturesAsync({ "texture/awesomeface.png", "texture/HelloWorld.png", "models/Fighter/Fighter.png" }, [&](Texture2D* texture)
+        {
             ++_curLoadedNum;
             common::GUIFramework::getInstance()->getGameStatusPanel()->setLoadPercent(_curLoadedNum/(float)_totalLoadNum);
             if (_curLoadedNum == _totalLoadNum)
             {
                 testVal();
             }
-        });
+        }
+    );
         
-        int modelIdx = 0;
-    //    m_oModel = Model::createAlone("models/nanosuit/nanosuit.obj", [&](Model* mo)     //"models/Fighter/fighterChar.FBX"
-    //    ModelCache::getInstance()->addModel("models/nanosuit/nanosuit.obj", [&](Model* mo)
-        ModelCache::getInstance()->addModelsAsync(
-            { "models/Fighter/fighterChar.FBX", "models/nanosuit/nanosuit.obj", "models/man/model.dae", "models/RawMocap/DefaultAvatar.fbx", "models/YBot/ybot.fbx" },
-              { {}, {}, {}, {"models/RawMocap/Animations/Walking/WalkFWD.fbx", "models/RawMocap/Animations/Idle/Idle_Ready.fbx", "models/RawMocap/Animations/Walking/WalkAvoid_ToLeft_Both.fbx"}, {"models/YBot/Localmotion/walking.fbx", "models/YBot/Localmotion/running.fbx"} }, [&](Model* mo)
-                 {
-                        m_mModels.insert(make_pair(mo->getFullPath(), mo));
-                        ++modelIdx;
-                        ++_curLoadedNum;
-                        common::GUIFramework::getInstance()->getGameStatusPanel()->setLoadPercent(_curLoadedNum / (float)_totalLoadNum);
-                        if (_curLoadedNum == _totalLoadNum)
-                        {
-                            testVal();
-                        }
-                 });
+    int modelIdx = 0;
+//    m_oModel = Model::createAlone("models/nanosuit/nanosuit.obj", [&](Model* mo)     //"models/Fighter/fighterChar.FBX"
+//    ModelCache::getInstance()->addModel("models/nanosuit/nanosuit.obj", [&](Model* mo)
+    ModelCache::getInstance()->addModelsAsync(
+        { "models/Fighter/fighterChar.FBX", "models/nanosuit/nanosuit.obj", "models/man/model.dae", "models/RawMocap/DefaultAvatar.fbx", "models/YBot/ybot.fbx" },
+          { {}, {}, {}, {"models/RawMocap/Animations/Walking/WalkFWD.fbx", "models/RawMocap/Animations/Idle/Idle_Ready.fbx", "models/RawMocap/Animations/Walking/WalkAvoid_ToLeft_Both.fbx"}, {"models/YBot/Localmotion/walking.fbx", "models/YBot/Localmotion/running.fbx"} }, [&](Model* mo)
+             {
+                    m_mModels.insert(make_pair(mo->getFullPath(), mo));
+                    ++modelIdx;
+                    ++_curLoadedNum;
+                    common::GUIFramework::getInstance()->getGameStatusPanel()->setLoadPercent(_curLoadedNum / (float)_totalLoadNum);
+                    if (_curLoadedNum == _totalLoadNum)
+                    {
+                        testVal();
+                    }
+             }
+    );
 
 	// run
 	app->run();

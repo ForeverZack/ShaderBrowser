@@ -15,6 +15,13 @@ namespace common
     {
     }
     
+    void TextureCache::init()
+    {
+        // 光照衰减纹理 (WrapType: GL_CLAMP_TO_EDGE)
+        addTexture("texture/default/light_atten_distance.png");
+        addTexture("texture/default/light_atten_field.png");
+    }
+    
 	void TextureCache::addTexture(std::string filepath)
 	{
 		const std::string full_path = FileUtils::getInstance()->getAbsolutePathForFilename(filepath);

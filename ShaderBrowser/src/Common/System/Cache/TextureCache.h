@@ -18,6 +18,8 @@ namespace common
 		~TextureCache();
         
     public:
+        // 初始化
+        void init();
         // 添加纹理
         void addTexture(std::string filepath);
 		// 异步添加单个纹理

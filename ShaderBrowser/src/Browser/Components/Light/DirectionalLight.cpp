@@ -1,6 +1,4 @@
 #include "DirectionalLight.h"
-#include "GL/GPUResource/Shader/GLProgram.h"
-#include "Browser/Entitys/BaseEntity.h"
 #include "Browser/System/TransformSystem.h"
 
 using namespace common;
@@ -16,13 +14,13 @@ namespace browser
 		}
 
 		// entity
-		BaseEntity* directionalLightEntity = BaseEntity::create(name);
-		parent->addChild(directionalLightEntity);
+		BaseEntity* entity = BaseEntity::create(name);
+		parent->addChild(entity);
 		// 平行光组件
-		DirectionalLight* directionalLight = new DirectionalLight();
-		directionalLightEntity->addComponent(directionalLight);
+		DirectionalLight* light = new DirectionalLight();
+		entity->addComponent(light);
 
-		return directionalLight;
+		return light;
 	}
 
 	DirectionalLight::DirectionalLight()
@@ -34,7 +32,7 @@ namespace browser
         m_oColor = glm::vec4(1, 0.9569f, 0.8392f, 1);
         
 		// 设置脏标记
-		m_uPropertiesDirty = LPT_Color | LPT_Intensity | LPT_LightDirection | LPT_LightMatrix;
+		m_uPropertiesDirty = LPT_Color | LPT_Intensity | LPT_Direction | LPT_LightMatrix;
 		dispatchEventToSystem(SystemType::Light, ComponentEvent::Light_UpdateLight, new UpdateLightMessage(this));
 	}
 
@@ -101,7 +99,7 @@ namespace browser
 			}
         }
         // 光照方向
-        if (forceUpdate || BROWSER_GET_BIT(m_uPropertiesDirty, LightPropertyType::LPT_LightDirection))
+        if (forceUpdate || BROWSER_GET_BIT(m_uPropertiesDirty, LightPropertyType::LPT_Direction))
         {
 			std::string uniformName(GLProgram::SHADER_UNIFORM_NAME_MAX_LENGTH, '\0');
 			sprintf(&uniformName[0], SHADER_UNIFORM_DIRECTIONAL_DIRECTION, index);
@@ -131,7 +129,8 @@ namespace browser
     {
         if (BROWSER_GET_BIT(m_uPropertiesDirty, LightPropertyType::LPT_Color)
             || BROWSER_GET_BIT(m_uPropertiesDirty, LightPropertyType::LPT_Intensity)
-            || BROWSER_GET_BIT(m_uPropertiesDirty, LightPropertyType::LPT_LightDirection))
+            || BROWSER_GET_BIT(m_uPropertiesDirty, LightPropertyType::LPT_Direction)
+            || BROWSER_GET_BIT(m_uPropertiesDirty, LightPropertyType::LPT_LightMatrix))
         {
             return true;
         }

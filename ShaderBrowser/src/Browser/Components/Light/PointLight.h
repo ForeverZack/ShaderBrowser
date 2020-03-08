@@ -2,12 +2,16 @@
 
 #include <vector>
 #include "Browser/Components/Light/BaseLight.h"
+#include "GL/GPUResource/Texture/Texture2D.h"
 using namespace common;
 
 namespace browser
 {
 	class PointLight : public BaseLight
 	{
+    public:
+        static PointLight* create(const std::string& name, BaseEntity* parent = nullptr);
+        
 	public:
 		PointLight();
 		~PointLight();
@@ -22,8 +26,17 @@ namespace browser
 		// 光源系统是否需要更新
 		virtual bool isLightSystemDirty();
         
+    public:
+        REGISTER_PROPERTY_GET(float, m_fRange, Range)
+        // 设置光照范围
+        void setRange(float range);
+        
 	protected:
-       // 阴影属性等
+        // 光照范围
+        float m_fRange;
+        // 光照衰减纹理
+        customGL::Texture2D* m_pLightTexture0;
+        // 阴影属性等
         
 	};
 }
