@@ -14,6 +14,8 @@ namespace customGL
     
     void GPUOperateCommandPool::pushCommand(BaseGPUOperateCommand* cmd)
     {
+		std::unique_lock<std::mutex> lock(m_oMutex);
+
         GPUOperateCommandType type = cmd->getCommandType();
         if (m_mCommandsPool.find(type) == m_mCommandsPool.end())
         {

@@ -1,7 +1,8 @@
 #pragma once
 
-#include <unordered_map>
 #include <list>
+#include <unordered_map>
+#include <mutex>
 #include "Common/Tools/BaseSingleton.h"
 #include "GL/GPUOperateCommand/BaseGPUOperateCommand.h"
 #include "Common/Tools/Utils.h"
@@ -22,6 +23,8 @@ namespace customGL
         template <typename T>
         T* popCommand(GPUOperateCommandType type)
         {
+			std::unique_lock<std::mutex> lock(m_oMutex);
+
             if (m_mCommandsPool.find(type) == m_mCommandsPool.end())
             {
                 std::list<BaseGPUOperateCommand*> pool;
@@ -47,6 +50,8 @@ namespace customGL
         void pushCommand(BaseGPUOperateCommand* cmd);
         
     protected:
+		// 互斥锁
+		std::mutex m_oMutex;
         // 命令池
         std::unordered_map<GPUOperateCommandType, std::list<BaseGPUOperateCommand*>> m_mCommandsPool;
     };
