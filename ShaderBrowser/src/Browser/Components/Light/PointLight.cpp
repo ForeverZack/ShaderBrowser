@@ -116,7 +116,11 @@ namespace browser
             }
         }
         // 衰减纹理
-        material->setUniformTex2D(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_LIGHT_TEXTURE0], m_pLightTexture0);
+		for (auto itor = materials.begin(); itor != materials.end(); ++itor)
+		{
+			material = itor->second;
+			material->setUniformTex2D(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_LIGHT_TEXTURE0], m_pLightTexture0);
+		}
 
 		// 重置脏标记
 		resetLightDirty();

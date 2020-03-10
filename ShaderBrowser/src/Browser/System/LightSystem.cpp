@@ -110,8 +110,12 @@ namespace browser
     void LightSystem::init()
     {
         // 衰减纹理
+		// 距离
+		TextureCache::getInstance()->addTexture("texture/default/light_atten_distance.png");
         Texture2D* lightTexture0 = TextureCache::getInstance()->getTexture("texture/default/light_atten_distance.png");
         lightTexture0->setTexParameters(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_LINEAR, GL_LINEAR);
+		// 广角
+		TextureCache::getInstance()->addTexture("texture/default/light_atten_field.png");
         Texture2D* lightTextureB0 = TextureCache::getInstance()->getTexture("texture/default/light_atten_field.png");
         lightTextureB0->setTexParameters(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_LINEAR, GL_LINEAR);
     }
