@@ -62,6 +62,7 @@ namespace customGL
         "CGL_BONES_MATRIX",
         "CGL_DYNAMIC_BATCH_MODEL_MATRIX[%d]",
         "CGL_LIGHT_TEXTURE0",
+		"CGL_LIGHT_TEXTUREB0",
         
         "CGL_AMBIENT_COLOR",
         "CGL_DIRECTIONAL_LIGHT_NUM",

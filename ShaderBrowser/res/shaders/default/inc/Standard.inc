@@ -10,4 +10,5 @@ uniform mat4 CGL_PROJECTION_MATRIX; // projection矩阵
 uniform vec4 CGL_ALBEDO_COLOR = vec4(1.0f, 1.0f, 1.0f, 1.0f);  // 材质颜色
 uniform samplerBuffer CGL_BONES_MATRIX; // 骨骼矩阵纹理
 uniform mat4 CGL_DYNAMIC_BATCH_MODEL_MATRIX[MAX_DYNAMIC_BATCH_COUNT];   // 自动合并模型model矩阵
-uniform sampler2D CGL_LIGHT_TEXTURE0; // 光源衰减纹理
+uniform sampler2D CGL_LIGHT_TEXTURE0; // 光源衰减纹理(基于距离)
+uniform sampler2D CGL_LIGHT_TEXTUREB0; // 光源衰减纹理(基于广角)

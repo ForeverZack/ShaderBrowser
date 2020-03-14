@@ -76,9 +76,11 @@ namespace customGL
             UNIFORM_CGL_BONES_MATRIX,
             // 动态合批用的model矩阵
             UNIFORM_CGL_DYNAMIC_BATCH_MODEL_MATRIX,
-            // 光照衰减贴图
+            // 光照衰减贴图 (基于距离)
             UNIFORM_CGL_LIGHT_TEXTURE0,
-            
+			// 光照衰减贴图 (基于广角)
+			UNIFORM_CGL_LIGHT_TEXTUREB0,
+
             // 环境光颜色
             UNIFORM_CGL_AMBIENT_COLOR,
             // 平行光数量
