@@ -22,6 +22,15 @@ namespace browser
     const char* BaseLight::SHADER_UNIFORM_POINT_POSITION = "CGL_POINT_LIGHTS[%d].position";
     // 点光源光源矩阵
     const char* BaseLight::SHADER_UNIFORM_POINT_LIGHTMATRIX = "CGL_POINT_LIGHTS[%d].lightMatrix";
+	// 聚光灯
+	// 聚光灯颜色
+	const char* BaseLight::SHADER_UNIFORM_SPOT_COLOR = "CGL_SPOT_LIGHTS[%d].color";
+	// 聚光灯强度
+	const char* BaseLight::SHADER_UNIFORM_SPOT_INTENSITY = "CGL_SPOT_LIGHTS[%d].intensity";
+	// 聚光灯位置
+	const char* BaseLight::SHADER_UNIFORM_SPOT_POSITION = "CGL_SPOT_LIGHTS[%d].position";
+	// 聚光灯光源矩阵
+	const char* BaseLight::SHADER_UNIFORM_SPOT_LIGHTMATRIX = "CGL_SPOT_LIGHTS[%d].lightMatrix";
     
 	BaseLight::BaseLight()
         : BaseComponent("Light")

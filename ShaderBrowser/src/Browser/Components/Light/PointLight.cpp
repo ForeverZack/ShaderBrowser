@@ -57,6 +57,7 @@ namespace browser
                                    0, s, 0, 0,
                                    0, 0, s, 0,
                                    0, 0, 0, 1);
+				// scaleMat * object2Light
                 m_oLightMatrix = scaleMat * glm::inverse(transform->getModelMatrix());
                 BROWSER_LOG_MAT4(m_oLightMatrix);
             }

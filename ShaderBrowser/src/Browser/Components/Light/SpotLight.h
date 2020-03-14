@@ -13,16 +13,31 @@ namespace browser
 		~SpotLight();
 
 	public:
-		
-        
+		// 刷新
+		virtual void updateLight();
+		// 更新材质的Light数据
+		virtual void updateMaterialsLight(const std::unordered_map<unsigned int, Material*>& materials, unsigned int index = 0, bool forceUpdate = false);
+		// 数据是否发生改变
+		virtual bool isLightDirty();
+		// 光源系统是否需要更新
+		virtual bool isLightSystemDirty();
+
+	public:
+		REGISTER_PROPERTY_GET(float, m_fRange, Range)
+		REGISTER_PROPERTY_GET(float, m_fSpotAngle, SpotAngle)
+		// 设置光照范围
+		void setRange(float range);
+		// 设置光照广角
+		void setSpotAngle(float angle);
+
 	protected:
 		// 光照范围
 		float m_fRange;
-		// 光照角度 (<180度)
+		// 光照广角 (<180度)
 		float m_fSpotAngle;
-		// 光照衰减纹理 (基于距离)
+		// 光照衰减纹理 (基于广角)
 		customGL::Texture2D* m_pLightTexture0;
-		// 光照衰减纹理2 (基于广角)
+		// 光照衰减纹理2 (基于距离)
 		customGL::Texture2D* m_pLightTextureB0;
 
        // 阴影属性等

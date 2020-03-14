@@ -114,6 +114,15 @@ namespace browser
         static const char* SHADER_UNIFORM_POINT_POSITION;
         // 点光源光源矩阵
         static const char* SHADER_UNIFORM_POINT_LIGHTMATRIX;
+		// 聚光灯
+		// 聚光灯颜色
+		static const char* SHADER_UNIFORM_SPOT_COLOR;
+		// 聚光灯强度
+		static const char* SHADER_UNIFORM_SPOT_INTENSITY;
+		// 聚光灯位置
+		static const char* SHADER_UNIFORM_SPOT_POSITION;
+		// 聚光灯光源矩阵
+		static const char* SHADER_UNIFORM_SPOT_LIGHTMATRIX;
         
 	protected:
         // 光源类型
