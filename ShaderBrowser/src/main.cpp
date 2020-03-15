@@ -178,6 +178,7 @@ void testVal()
     //=============================创建聚光灯==================================
     // 聚光灯
     SpotLight* spotLight = SpotLight::create("Spot Light");
+    spotLight->setEulerAngle(90, 0, 0);
     spotLight->setPosition(0, 5, 0);
     spotLight->setColor(0, 1, 0, 1);
     //=============================创建聚光灯==================================

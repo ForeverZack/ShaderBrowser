@@ -127,9 +127,9 @@ float SpotLightAtten(vec3 worldPos, in mat4 lightMatrix)
     // 与点光源不同，由于聚光灯有更多的角度等要求，因此为了得到衰减值，除了需要对衰减纹理采样外，还需要对聚光灯的范围、张角和方向进行判断
     // 此时衰减纹理存储到了_LightTexture0中，这张纹理和点光源中的_LightTexture0是等价的
     // 聚光灯的_LightTextureB0存储的不再是基于距离的衰减纹理，而是一张基于张角范围的衰减纹理
-    int fDirection = int(lightCoord.z > 0);
+    int fDirection = int(lightCoord.z > 0.00001); // 这里直接判断>0会出现在临界区(和聚光灯位置重合且聚光灯朝向垂直于该平面)
     float coord = dot(lightCoord, lightCoord);
-    float atten = texture(CGL_LIGHT_TEXTUREB0, lightCoord.xy / lightCoord.w + 0.5).a * texture(CGL_LIGHT_TEXTURE0, vec2(coord, coord)).r;
+    float atten = fDirection * texture(CGL_LIGHT_TEXTUREB0, lightCoord.xy / lightCoord.w + 0.5).r * texture(CGL_LIGHT_TEXTURE0, vec2(coord, coord)).r;
     
     return atten;
 }
