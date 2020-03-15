@@ -76,9 +76,9 @@ namespace customGL
             UNIFORM_CGL_BONES_MATRIX,
             // 动态合批用的model矩阵
             UNIFORM_CGL_DYNAMIC_BATCH_MODEL_MATRIX,
-            // 光照衰减贴图 (点光源：基于距离， 聚光灯：基于广角)
+            // 光照衰减贴图 (基于距离)
             UNIFORM_CGL_LIGHT_TEXTURE0,
-			// 光照衰减贴图 (聚光灯：基于距离)
+			// 光照衰减贴图 (基于广角)
 			UNIFORM_CGL_LIGHT_TEXTUREB0,
 
             // 环境光颜色
@@ -91,6 +91,10 @@ namespace customGL
             UNIFORM_CGL_POINT_LIGHT_NUM,
             // 点光源数组
             UNIFORM_CGL_POINT_LIGHTS,
+            // 聚光灯数量
+            UNIFORM_CGL_SPOT_LIGHT_NUM,
+            // 聚光灯数组
+            UNIFORM_CGL_SPOT_LIGHTS,
             
             // 预定义Uniform变量个数
             UNIFORM_MAX_COUNT

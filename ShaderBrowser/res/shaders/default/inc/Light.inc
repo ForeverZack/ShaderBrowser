@@ -84,6 +84,57 @@ float PointLightAtten(vec3 worldPos, in mat4 lightMatrix)
 }
 #endif
 
+// 聚光灯
+#ifndef CLOSE_SPOT_LIGHT
+// 聚光灯最大支持数量
+const int MAX_SPOT_LIGHT_COUNT = 4;
+// 聚光灯数据结构
+struct SpotLight
+{
+    vec4 color;
+    float intensity;
+    vec3 position;  // world-space
+    mat4 lightMatrix;   // world-space -> light-space
+};
+// 点光源数量
+uniform int CGL_SPOT_LIGHT_NUM;
+// 点光源数据
+uniform SpotLight CGL_SPOT_LIGHTS[MAX_SPOT_LIGHT_COUNT];
+//// 光源衰减纹理  standard.inc中
+//uniform sampler2D CGL_LIGHT_TEXTURE0;
+//uniform sampler2D CGL_LIGHT_TEXTUREB0;
+// 获取聚光灯数据
+void getSpotLightInfo(int idx, out vec4 col, out float intensity, out vec3 pos)
+{
+    SpotLight light = CGL_SPOT_LIGHTS[idx];
+    col = light.color;
+    intensity = light.intensity;
+    pos = light.position;
+}
+void getSpotLightInfo(int idx, out vec4 col, out float intensity, out vec3 pos, out mat4 mat)
+{
+    SpotLight light = CGL_SPOT_LIGHTS[idx];
+    col = light.color;
+    intensity = light.intensity;
+    pos = light.position;
+    mat = light.lightMatrix;
+}
+// 计算点光源衰减度
+float SpotLightAtten(vec3 worldPos, in mat4 lightMatrix)
+{
+    // 把点坐标转换到聚光灯的坐标空间中，_LightMatrix0由引擎代码计算后传递到shader中，这里面包含了对聚光灯的范围、角度的计算，具体可参考Unity引擎源码。经过_LightMatrix0变换后，在聚光灯光源中心处或聚光灯范围外的lightCoord为(0, 0, 0)，在点光源的范围边缘处lightCoord模为1
+    vec4 lightCoord = lightMatrix * vec4(worldPos, 1);
+    // 与点光源不同，由于聚光灯有更多的角度等要求，因此为了得到衰减值，除了需要对衰减纹理采样外，还需要对聚光灯的范围、张角和方向进行判断
+    // 此时衰减纹理存储到了_LightTexture0中，这张纹理和点光源中的_LightTexture0是等价的
+    // 聚光灯的_LightTextureB0存储的不再是基于距离的衰减纹理，而是一张基于张角范围的衰减纹理
+    int fDirection = int(lightCoord.z > 0);
+    float coord = dot(lightCoord, lightCoord);
+    float atten = texture(CGL_LIGHT_TEXTUREB0, lightCoord.xy / lightCoord.w + 0.5).a * texture(CGL_LIGHT_TEXTURE0, vec2(coord, coord)).r;
+    
+    return atten;
+}
+#endif
+
 // Lambert光照模型
 // albedo: 片段自身颜色
 // normal: 世界空间下的片段的法线

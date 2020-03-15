@@ -33,6 +33,14 @@ void main()
         lightDir = CalculateDirection(v2f.world_position, lightPosition);
         result = result + vec3(BlinnPhongLight(albedo, v2f.normal, WorldSpaceViewDir(v2f.world_position), lightColor, lightDir, specColor, gloss))*lightIntensity*atten;
     }
+    // 聚光灯
+    for (int i=0; i<CGL_SPOT_LIGHT_NUM; ++i)
+    {
+        getSpotLightInfo(i, lightColor, lightIntensity, lightPosition, lightMatrix);
+        atten = SpotLightAtten(v2f.world_position, lightMatrix);
+        lightDir = CalculateDirection(v2f.world_position, lightPosition);
+        result = result + vec3(BlinnPhongLight(albedo, v2f.normal, WorldSpaceViewDir(v2f.world_position), lightColor, lightDir, specColor, gloss))*lightIntensity*atten;
+    }
 	
 	// 环境光 (ambient)
 	result += vec3(CGL_AMBIENT_COLOR * albedo);

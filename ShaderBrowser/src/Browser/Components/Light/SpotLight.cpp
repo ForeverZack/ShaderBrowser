@@ -4,6 +4,24 @@
 
 namespace browser
 {
+    SpotLight* SpotLight::create(const std::string& name, BaseEntity* parent/* = nullptr*/)
+    {
+        if (!parent)
+        {
+            // 没有父节点就绑定到场景节点上
+            parent = TransformSystem::getInstance()->getScene();
+        }
+
+        // entity
+        BaseEntity* entity = BaseEntity::create(name);
+        parent->addChild(entity);
+        // 聚光灯组件
+        SpotLight* spotLight = new SpotLight();
+        entity->addComponent(spotLight);
+
+        return spotLight;
+    }
+    
 	SpotLight::SpotLight()
 		: m_fRange(10)
 		, m_fSpotAngle(30)
@@ -11,10 +29,10 @@ namespace browser
         // 设置光源类型
         m_eType = LightType::Spot;
 
-		// 光照衰减纹理 (基于广角)
-		m_pLightTexture0 = TextureCache::getInstance()->getTexture("texture/default/light_atten_field.png");
 		// 光照衰减纹理 (基于距离)
-		m_pLightTextureB0 = TextureCache::getInstance()->getTexture("texture/default/light_atten_distance.png");
+		m_pLightTexture0 = TextureCache::getInstance()->getTexture("texture/default/light_atten_distance.png");
+		// 光照衰减纹理 (基于广角)
+		m_pLightTextureB0 = TextureCache::getInstance()->getTexture("texture/default/light_atten_field.png");
 	}
 
 	SpotLight::~SpotLight()

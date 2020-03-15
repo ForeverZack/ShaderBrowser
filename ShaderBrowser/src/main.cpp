@@ -11,6 +11,7 @@
 #include "Browser/Components/Camera/Camera.h"
 #include "Browser/Components/Light/DirectionalLight.h"
 #include "Browser/Components/Light/PointLight.h"
+#include "Browser/Components/Light/SpotLight.h"
 #include "Browser/Components/Mesh/MeshFilter.h"
 #include "GL/GPUResource/Model/Mesh.h"
 #include "Browser/Components/Render/BaseRender.h"
@@ -173,6 +174,13 @@ void testVal()
     pointLight->setPosition(2, 2, 0);
     pointLight->setColor(1, 0, 0, 1);
     //=============================创建点光源==================================
+    
+    //=============================创建聚光灯==================================
+    // 聚光灯
+    SpotLight* spotLight = SpotLight::create("Spot Light");
+    spotLight->setPosition(0, 5, 0);
+    spotLight->setColor(0, 1, 0, 1);
+    //=============================创建聚光灯==================================
 
 
 	// 载入纹理

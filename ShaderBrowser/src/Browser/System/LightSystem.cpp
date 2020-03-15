@@ -183,7 +183,7 @@ namespace browser
 			}
 
 			// 点光源
-            if (m_uPointDirty)
+            if (m_uPointDirty > 0)
             {
                 // 数量发生变化
                 if (BROWSER_GET_BIT(m_uPointDirty, LightChangeType::LCT_NewLight) || BROWSER_GET_BIT(m_uPointDirty, LightChangeType::LCT_DeleteLight))
@@ -210,9 +210,33 @@ namespace browser
                 m_uPointDirty = 0;
             }
 
-			// TODO: 聚光灯
-			// 重置脏标记
-			m_uSpotDirty = 0;
+			// 聚光灯
+            if (m_uSpotDirty > 0)
+            {
+                // 数量发生变化
+                if (BROWSER_GET_BIT(m_uSpotDirty, LightChangeType::LCT_NewLight) || BROWSER_GET_BIT(m_uSpotDirty, LightChangeType::LCT_DeleteLight))
+                {
+                    // 处理已有材质
+                    Material* material = nullptr;
+                    for (auto itor = m_mAllLightMaterials.begin(); itor != m_mAllLightMaterials.end(); ++itor)
+                    {
+                        material = itor->second;
+                        material->setUniformInt(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_SPOT_LIGHT_NUM], m_vSpotLights.size());
+                    };
+                }
+                // 数据发生变化
+                BaseLight* spot_light = nullptr;
+                for (int i = 0; i < m_vSpotLights.size(); ++i)
+                {
+                    spot_light = m_vSpotLights[i];
+                    if (spot_light->isLightDirty())
+                    {
+                        spot_light->updateMaterialsLight(m_mAllLightMaterials, i);
+                    }
+                }
+                // 重置脏标记
+                m_uSpotDirty = 0;
+            }
 		}
 
 		// 处理新增材质：这部分材质要更新所有数据
@@ -266,7 +290,25 @@ namespace browser
                 }
             }
 
-			// TODO: 聚光灯
+			// 聚光灯
+            {
+                // 数量发生变化
+                {
+                    Material* material = nullptr;
+                    for (auto itor = m_mPreLightMaterials.begin(); itor != m_mPreLightMaterials.end(); ++itor)
+                    {
+                        material = itor->second;
+                        material->setUniformInt(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_SPOT_LIGHT_NUM], m_vSpotLights.size());
+                    };
+                }
+                // 数据发生变化
+                BaseLight* spot_light = nullptr;
+                for (int i = 0; i < m_vSpotLights.size(); ++i)
+                {
+                    spot_light = m_vSpotLights[i];
+                    spot_light->updateMaterialsLight(m_mPreLightMaterials, i, true);
+                }
+            }
 		}
 
 		// 清空待处理光照材质队列

@@ -15,7 +15,7 @@ namespace browser
         // entity
         BaseEntity* entity = BaseEntity::create(name);
         parent->addChild(entity);
-        // 平行光组件
+        // 点光源组件
         PointLight* pointLight = new PointLight();
         entity->addComponent(pointLight);
 

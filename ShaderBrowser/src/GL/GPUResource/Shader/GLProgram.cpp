@@ -69,6 +69,8 @@ namespace customGL
         "CGL_DIRECTIONAL_LIGHTS[%d]",
         "CGL_POINT_LIGHT_NUM",
         "CGL_POINT_LIGHTS[%d]",
+        "CGL_SPOT_LIGHT_NUM",
+        "CGL_SPOT_LIGHTS[%d]",
     };
     // 预定义uniform变量名字的最大长度
     const int GLProgram::SHADER_UNIFORM_NAME_MAX_LENGTH = 100;

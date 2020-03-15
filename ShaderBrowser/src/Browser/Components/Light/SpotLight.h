@@ -8,6 +8,9 @@ namespace browser
 {
 	class SpotLight : public BaseLight
 	{
+    public:
+        static SpotLight* create(const std::string& name, BaseEntity* parent = nullptr);
+        
 	public:
 		SpotLight();
 		~SpotLight();
@@ -35,9 +38,9 @@ namespace browser
 		float m_fRange;
 		// 光照广角 (<180度)
 		float m_fSpotAngle;
-		// 光照衰减纹理 (基于广角)
+		// 光照衰减纹理 (基于距离)
 		customGL::Texture2D* m_pLightTexture0;
-		// 光照衰减纹理2 (基于距离)
+		// 光照衰减纹理2 (基于广角)
 		customGL::Texture2D* m_pLightTextureB0;
 
        // 阴影属性等
