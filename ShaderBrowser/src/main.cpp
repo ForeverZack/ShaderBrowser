@@ -63,43 +63,29 @@ int _totalLoadNum = 8;
 //test
 // vertices
 glm::vec3 vertices[] = {
-	// first triangle
-    glm::vec3(-0.9f, -0.5f, 0.0f),  // left
-	glm::vec3(-0.0f, -0.5f, 0.0f), // right
-	glm::vec3(-0.45f, 0.5f, 0.0f),// top
-	// second triangle
-	glm::vec3(0.0f, -0.5f, 0.0f),  // left
-	glm::vec3(0.9f, -0.5f, 0.0f),  // right
-	glm::vec3(0.45f, 0.5f, 0.0f)   // top
+    glm::vec3(-10, 0, -10),  // lt
+	glm::vec3(-10, 0, 10), // lb
+	glm::vec3(10, 0, 10),// rb
+	glm::vec3(10, 0, -10)   // rt
 };
-// colors
-glm::vec4 colors[] = {
-    // first triangle
-    glm::vec4(0.9f, 0.0f, 0.0f, 1.0f),  // left
-    glm::vec4(0.0f, 0.5f, 0.0f, 1.0f), // right
-    glm::vec4(0.45f, 0.5f, 0.0f, 1.0f),// top
-    // second triangle
-    glm::vec4(0.0f, 0.5f, 0.0f, 1.0f),  // left
-    glm::vec4(0.9f, 0.5f, 0.0f, 1.0f),  // right
-    glm::vec4(0.45f, 0.5f, 0.0f, 1.0f)   // top
+// normals
+glm::vec3 normals[] = {
+	glm::vec3(0, 1, 0),
+	glm::vec3(0, 1, 0),
+	glm::vec3(0, 1, 0),
+	glm::vec3(0, 1, 0)
 };
 // coords
 glm::vec3 coords[] = {
-    // first triangle
-    glm::vec3(0.0f, 0.0f, 0.0f),
-    glm::vec3(1.0f, 0.0f, 0.0f),
-    glm::vec3(0.5f, 1.0f, 0.0f),
-    // second triangle
-    glm::vec3(0.0f, 0.0f, 0.0f),
-    glm::vec3(1.0f, 0.0f, 0.0f),
-    glm::vec3(0.5f, 1.0f, 0.0f)
+	glm::vec3(0, 0, 0),  // lt
+	glm::vec3(0, 1, 0), // lb
+	glm::vec3(1, 1, 0),// rb
+	glm::vec3(1, 0, 0)   // rt
 };
 // indices
 GLushort indices[] = {
-    // first triangle
     0, 1, 2,
-    // second triangle
-    3, 4, 5
+    0, 2, 3
 };
 
 Model* m_oModel = nullptr;	//纳米装
@@ -141,8 +127,8 @@ void testVal()
 	browser::Camera* mainCamera = Camera::create(Camera::ProjectionType::Perspective, 0.3f, 1000.0f, SCR_WIDTH, SCR_HEIGHT, 60.0f);
 	mainCameraEntity->addComponent(mainCamera);
 	// 设置相机位置
-	mainCameraEntity->setPosition(0, 1.5, 30);
-    mainCameraEntity->setEulerAngle(0, 180, 0);
+	mainCameraEntity->setPosition(0, 10, 10);
+    mainCameraEntity->setEulerAngle(45, 180, 0);
 	// 设置主相机
 	CameraSystem::getInstance()->setMainCamera(mainCamera);
 	//=============================创建相机==================================
@@ -151,7 +137,7 @@ void testVal()
     // 平行光
     DirectionalLight* directionalLight = DirectionalLight::create("Directional Light");
     // 平行光方向
-    directionalLight->setEulerAngle(-135, -45, 0);
+    directionalLight->setEulerAngle(45, -135, 0);
     // 平行光强度
     directionalLight->setIntensity(1);
     // 平行光颜色
@@ -181,6 +167,7 @@ void testVal()
     spotLight->setEulerAngle(90, 0, 0);
     spotLight->setPosition(0, 5, 0);
     spotLight->setColor(0, 1, 0, 1);
+	spotLight->setIntensity(5);
     //=============================创建聚光灯==================================
 
 
@@ -190,10 +177,10 @@ void testVal()
 
     // MeshFilter
     // (GLuint location, GLint size, GLenum type, GLboolean normalized, GLsizei stride, void* data)
-    Mesh* mesh = Mesh::create(6);
+    Mesh* mesh = Mesh::create(4);
     mesh->setVertices(vertices);
-    mesh->setColors(colors);
-    mesh->setUVs(coords);
+	mesh->setUVs(coords);
+	mesh->setNormals(normals);
     mesh->setIndices(indices, 6);
     //mesh->addTexture("CGL_TEXTURE0", texture1);
     //mesh->addTexture("CGL_TEXTURE1", texture2);
@@ -206,16 +193,13 @@ void testVal()
 
 
     // 将组件加入渲染系统队列
-    BaseEntity* entity = BaseEntity::create("Triangle");
+    BaseEntity* entity = BaseEntity::create("Plane");
     scene->addChild(entity);
-    entity->setEulerAngle(0, 45, 0);
-    entity->setScale(2, 1, 1);
-    entity->setPosition(0, 1, 0);
     // 组件：渲染组件
     BaseRender* renderCom = BaseRender::createBaseRender();
     Material* mat = renderCom->changeMaterial(0, mesh->getMaterialName(), "Triangles");   // 修改mesh的材质对应的shader
 	mat->setUniformTex2D("CGL_TEXTURE0", texture1);
-	mat->setUniformTex2D("CGL_TEXTURE1", texture2);
+	mat->setUniformV4f("CGL_ALBEDO_COLOR", glm::vec4(0, 0, 0, 1));
     entity->addComponent(renderCom);
     // 包围盒
     entity->addComponent(new AABBBoundBox());
@@ -235,9 +219,9 @@ void testVal()
     // 渲染模型0
     BaseEntity* modelEntity = m_oModel->createNewEntity("namizhuang");
     modelEntity->setScale(0.2f, 0.2f, 0.2f);
-    modelEntity->setEulerAngle(0, 180, 0);
+    modelEntity->setEulerAngle(0, 0, 0);
 //    modelEntity->getTransform()->setQuaternion(0.144154,0.155388,0.259979,0.942064);
-    modelEntity->setPosition(0, 1, 0);
+    modelEntity->setPosition(0, 0, 0);
     scene->addChild(modelEntity);
 
     // 渲染模型2    fighter => aabb Min:-20, 0, -13  Max:20, 80, 15
