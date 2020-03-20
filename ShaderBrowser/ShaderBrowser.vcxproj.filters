@@ -593,5 +593,17 @@
     <ClInclude Include="src\GL\System\Input.h">
       <Filter>src\GL\System</Filter>
     </ClInclude>
+    <ClInclude Include="src\Plugins\imgui\imgui_impl_glfw_gl3.h">
+      <Filter>src\Plugins\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Plugins\imgui\imgui_internal.h">
+      <Filter>src\Plugins\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Plugins\imgui\imconfig.h">
+      <Filter>src\Plugins\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Plugins\imgui\imgui.h">
+      <Filter>src\Plugins\imgui</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

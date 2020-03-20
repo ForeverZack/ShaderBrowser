@@ -430,7 +430,7 @@ namespace common
                         
                     case ShowGUIData::ShowGUIType::Property_Checkbox:
                         {
-                            if (ImGui::Checkbox(data.value.checkbox.show_name.c_str(), data.value.checkbox.show_name.c_str(), &data.value.checkbox.isEnable))
+                            if (ImGui::Checkbox(data.value.checkbox.show_name.c_str(), &data.value.checkbox.isEnable))
                             {
                                 if (data.callback_checkbox)
                                 {

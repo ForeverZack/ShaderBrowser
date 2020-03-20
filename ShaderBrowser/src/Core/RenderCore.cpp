@@ -134,7 +134,7 @@ namespace core
         //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         
         ImGui_ImplGlfwGL3_Init(m_pWindow, true);
-        ImGui::StyleColorsDark();
+        //ImGui::StyleColorsDark();
         
 		// 注册渲染系统
 		ECSManager::getInstance()->registerSystem(browser::RenderSystem::getInstance());

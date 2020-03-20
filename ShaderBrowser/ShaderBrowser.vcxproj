@@ -182,6 +182,10 @@
     <ClInclude Include="src\GL\Rescale.h" />
     <ClInclude Include="src\GL\System\GPUOperateSystem.h" />
     <ClInclude Include="src\GL\System\Input.h" />
+    <ClInclude Include="src\Plugins\imgui\imconfig.h" />
+    <ClInclude Include="src\Plugins\imgui\imgui.h" />
+    <ClInclude Include="src\Plugins\imgui\imgui_impl_glfw_gl3.h" />
+    <ClInclude Include="src\Plugins\imgui\imgui_internal.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{E77D317D-60E5-4CB6-9ED6-61AE661DD35A}</ProjectGuid>
