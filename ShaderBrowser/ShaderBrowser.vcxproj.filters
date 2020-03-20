@@ -614,5 +614,14 @@
     <ClInclude Include="src\Plugins\imgui\imgui_internal.h">
       <Filter>src\Plugins\imgui</Filter>
     </ClInclude>
+    <ClInclude Include="src\Plugins\imgui\imstb_textedit.h">
+      <Filter>src\Plugins\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Plugins\imgui\imstb_truetype.h">
+      <Filter>src\Plugins\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Plugins\imgui\imstb_rectpack.h">
+      <Filter>src\Plugins\imgui</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
