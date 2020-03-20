@@ -1,4 +1,3 @@
-// svn测试
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 

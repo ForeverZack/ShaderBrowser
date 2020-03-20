@@ -355,7 +355,7 @@ namespace common
 				//}
 				//ImGui::SameLine();
 
-				data.value.title.isExpand = ImGui::CollapsingHeader(data.value.title.show_name.c_str(), 0, true, data.value.title.isExpand);
+				data.value.title.isExpand = ImGui::CollapsingHeader(data.value.title.show_name.c_str(), ImGuiTreeNodeFlags_DefaultOpen);
 				expandTitle = &data;
             }
             else
@@ -372,21 +372,30 @@ namespace common
                     case ShowGUIData::ShowGUIType::Property_Vector2:
                         {
                             data.value.vec2.show_value = (*data.value.vec2.pointer);
-                            _createInputFloatText(data, ImGui::InputFloat2, data.value.vec2.show_name, data.value.vec2.show_value, data.callback_vec2);
+							// 注意！！！：重载的函数指针编译器无法判断使用哪个，所以要自己手动拿到函数指针
+							bool (*createFunc)(const char*, float[2], int, ImGuiInputTextFlags) = ImGui::InputFloat2;
+							//_createInputFloatText(data, ImGui::InputFloat2, data.value.vec2.show_name, data.value.vec2.show_value, data.callback_vec2);	// 错误
+							_createInputFloatText(data, createFunc, data.value.vec2.show_name, data.value.vec2.show_value, data.callback_vec2);	// 正确
                         }
                         break;
                         
                     case ShowGUIData::ShowGUIType::Property_Vector3:
                         {
                             data.value.vec3.show_value = (*data.value.vec3.pointer);
-                            _createInputFloatText(data, ImGui::InputFloat3, data.value.vec3.show_name, data.value.vec3.show_value, data.callback_vec3);
+							// 注意！！！：重载的函数指针编译器无法判断使用哪个，所以要自己手动拿到函数指针
+							bool(*createFunc)(const char*, float[3], int, ImGuiInputTextFlags) = ImGui::InputFloat3;
+							//_createInputFloatText(data, ImGui::InputFloat3, data.value.vec3.show_name, data.value.vec3.show_value, data.callback_vec3);	// 错误
+							_createInputFloatText(data, createFunc, data.value.vec3.show_name, data.value.vec3.show_value, data.callback_vec3);	// 正确
                         }
                         break;
                         
                     case ShowGUIData::ShowGUIType::Property_Vector4:
                         {
                             data.value.vec4.show_value = (*data.value.vec4.pointer);
-                            _createInputFloatText(data, ImGui::InputFloat4, data.value.vec4.show_name, data.value.vec4.show_value, data.callback_vec4);
+							// 注意！！！：重载的函数指针编译器无法判断使用哪个，所以要自己手动拿到函数指针
+							bool(*createFunc)(const char*, float[4], int, ImGuiInputTextFlags) = ImGui::InputFloat4;
+							//_createInputFloatText(data, ImGui::InputFloat4, data.value.vec4.show_name, data.value.vec4.show_value, data.callback_vec4);	// 错误
+							_createInputFloatText(data, createFunc, data.value.vec4.show_name, data.value.vec4.show_value, data.callback_vec4);	// 正确
                         }
                         break;
                         

@@ -41,9 +41,6 @@ namespace common
 
 	void GUIFramework::update(float deltaTime)
 	{
-		// 创建新的GUI帧缓存
-		ImGui_ImplGlfwGL3_NewFrame();
-
 		// 刷新所有GUI面板
 		for (auto itor = m_vPanels.cbegin(); itor != m_vPanels.cend(); ++itor)
 		{

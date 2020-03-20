@@ -90,7 +90,7 @@ namespace core
     void RenderCore::destoryWindow()
     {
         // glfw: terminate, clearing all previously allocated GLFW resources.
-        ImGui_ImplGlfwGL3_Shutdown();
+		ImGui_ImplGlfw_Shutdown();
     }
 
 	void RenderCore::initRender()
@@ -134,7 +134,8 @@ namespace core
         //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         
 		ImGui::CreateContext();	// imgui 1.60 必须要手动创建ImGuiContext，以前版本会有一个static DefaultImGuiContext
-        ImGui_ImplGlfwGL3_Init(m_pWindow, true, "#version 330");
+		ImGui_ImplGlfw_InitForOpenGL(m_pWindow, true);
+		ImGui_ImplOpenGL3_Init("#version 330");
         ImGui::StyleColorsDark();
         
 		// 注册渲染系统
@@ -174,13 +175,17 @@ namespace core
         // 渲染场景结束后
         ECSManager::getInstance()->afterUpdateSystem(SystemType::RenderSystem, deltaTime);
 
+		// 创建新的GUI帧缓存
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
         // 更新调试信息
         common::GUIFramework::getInstance()->getGameStatusPanel()->setDeltaTime(deltaTime);
         // 更新调试GUI框架
         common::GUIFramework::getInstance()->update(deltaTime);
         // ImGui rendering
         ImGui::Render();
-		ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());	// imgui 1.60必须要调用这个函数才会绘制
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());	// imgui 1.60必须要调用这个函数才会绘制
 
 
 

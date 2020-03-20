@@ -210,9 +210,6 @@
     <ClCompile Include="src\Common\Tools\UI\BaseGUIPanel.cpp">
       <Filter>src\Common\Tools\UI</Filter>
     </ClCompile>
-    <ClCompile Include="src\Plugins\imgui\imgui_impl_glfw_gl3.cpp">
-      <Filter>src\Plugins\imgui</Filter>
-    </ClCompile>
     <ClCompile Include="src\Common\Tools\UI\InspectorPanel.cpp">
       <Filter>src\Common\Tools\UI</Filter>
     </ClCompile>
@@ -344,6 +341,15 @@
     </ClCompile>
     <ClCompile Include="src\GL\System\Input.cpp">
       <Filter>src\GL\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Plugins\imgui\imgui_impl_glfw.cpp">
+      <Filter>src\Plugins\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Plugins\imgui\imgui_impl_opengl3.cpp">
+      <Filter>src\Plugins\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Plugins\imgui\imgui_widgets.cpp">
+      <Filter>src\Plugins\imgui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -592,6 +598,21 @@
     </ClInclude>
     <ClInclude Include="src\GL\System\Input.h">
       <Filter>src\GL\System</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Plugins\imgui\imconfig.h">
+      <Filter>src\Plugins\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Plugins\imgui\imgui.h">
+      <Filter>src\Plugins\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Plugins\imgui\imgui_impl_glfw.h">
+      <Filter>src\Plugins\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Plugins\imgui\imgui_impl_opengl3.h">
+      <Filter>src\Plugins\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Plugins\imgui\imgui_internal.h">
+      <Filter>src\Plugins\imgui</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
