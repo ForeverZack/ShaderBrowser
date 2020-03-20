@@ -133,8 +133,9 @@ namespace core
         // uncomment this call to draw in wireframe polygons.
         //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         
-        ImGui_ImplGlfwGL3_Init(m_pWindow, true);
-        //ImGui::StyleColorsDark();
+		ImGui::CreateContext();	// imgui 1.60 必须要手动创建ImGuiContext，以前版本会有一个static DefaultImGuiContext
+        ImGui_ImplGlfwGL3_Init(m_pWindow, true, "#version 330");
+        ImGui::StyleColorsDark();
         
 		// 注册渲染系统
 		ECSManager::getInstance()->registerSystem(browser::RenderSystem::getInstance());
@@ -179,6 +180,8 @@ namespace core
         common::GUIFramework::getInstance()->update(deltaTime);
         // ImGui rendering
         ImGui::Render();
+		ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());	// imgui 1.60必须要调用这个函数才会绘制
+
 
 
 
