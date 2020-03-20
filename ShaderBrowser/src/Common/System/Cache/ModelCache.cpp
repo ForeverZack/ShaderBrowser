@@ -14,17 +14,17 @@ namespace common
     {
     }
     
-	void ModelCache::addModel(std::string filepath, std::vector<std::string> animFilePaths, std::function<void(Model*)> callback)
+	void ModelCache::addModel(const std::string& filepath, const std::vector<std::string>& animFilePaths, std::function<void(Model*)> callback)
 	{
 		const std::string full_path = FileUtils::getInstance()->getAbsolutePathForFilename(filepath);
 	
-		Model* model = Model::createAlone(full_path.c_str(), {}, callback);
+		Model* model = Model::createAlone(full_path.c_str(), animFilePaths, callback);
         model->retain();
         
 		add(full_path, model);
 	}
 
-	Model* ModelCache::getModel(std::string filepath)
+	Model* ModelCache::getModel(const std::string& filepath)
 	{
 		const std::string full_path = FileUtils::getInstance()->getAbsolutePathForFilename(filepath);
 		return get(full_path);
@@ -124,7 +124,7 @@ namespace common
 
 	}
 
-	void ModelCache::removeModel(std::string filepath)
+	void ModelCache::removeModel(const std::string& filepath)
 	{
 		const std::string full_path = FileUtils::getInstance()->getAbsolutePathForFilename(filepath);
         

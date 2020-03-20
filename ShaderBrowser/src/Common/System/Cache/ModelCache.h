@@ -21,16 +21,16 @@ namespace common
         
     public:
         // 添加模型
-        void addModel(std::string filepath, std::vector<std::string> animFilePaths, std::function<void(Model*)> callback);
+        void addModel(const std::string& filepath, const std::vector<std::string>& animFilePaths, std::function<void(Model*)> callback);
 		// 异步添加单个纹理
 		void addModelAsync(std::string filepath, std::vector<std::string> animFilePaths, std::function<void(Model*)> callback);
 		// 异步添加多个纹理		eg:  addTexturesAsync({"xxx.png", "xxx2.png"}, callback)
 		void addModelsAsync(std::vector<std::string> filepaths, std::vector<std::vector<std::string>> animFilePathsVec, std::function<void(Model*)> callback);
         // 获取
-        Model* getModel(std::string name);
+        Model* getModel(const std::string& name);
 
 		// 移除纹理资源
-		void removeModel(std::string name);
+		void removeModel(const std::string& name);
         void removeModel(Model* model);
         void removeFromCache(Model* model);
 

@@ -44,8 +44,7 @@ namespace common
 		for(auto itor=m_vReleaseReferences.begin(); itor!=m_vReleaseReferences.end(); ++itor)
 		{
 			reference = *itor;
-			reference->release();
-			reference = nullptr;
+			BROWSER_SAFE_RELEASE_REFERENCE(reference);
 		}
 		m_vReleaseReferences.clear();
 	}

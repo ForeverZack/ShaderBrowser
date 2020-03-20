@@ -319,6 +319,7 @@ namespace customGL
             return nullptr;
         }
 		model->initWithScenes();
+		model->loadTextures(model->getDirectory());
         model->autorelease();
         
         return model;
@@ -521,12 +522,6 @@ namespace customGL
 		// 搜寻骨骼根节点
 		findModelRootBondNode(m_oRootNode);
 		m_oSkeleton->setRootBoneNode(m_oRootBoneNode);
-
-		// 加载创建纹理
-		if (m_oSuccessCallback)
-		{
-			loadTextures(m_sDirectory);
-		}
 
 		// 记录骨骼初始变换
 		recordBonesInitialTransform();
@@ -1309,8 +1304,15 @@ namespace customGL
     void Model::loadTextures(const std::string& directory)
     {
         int textureCount = m_vMeshTextureData.size();
+
+		// 没有纹理资源
+		if (textureCount==0 && m_oSuccessCallback)
+		{
+			m_oSuccessCallback(this);
+			return;
+		}
         
-        for(int i=0; i<m_vMeshTextureData.size(); ++i)
+        for(int i=0; i< textureCount; ++i)
         {
             const MeshTextureData& textureData = m_vMeshTextureData[i];
             // 纹理路径

@@ -76,6 +76,13 @@ namespace common
             delete[] pointerName; \
             pointerName = nullptr;  \
         }
+	// 安全Release Reference
+	#define BROWSER_SAFE_RELEASE_REFERENCE(ref) \
+		if (ref)	\
+		{	\
+			ref->release();	\
+			ref = nullptr;	\
+		}
     
     // 置位：将某一位设为1
     #define BROWSER_SET_BIT(var, n) var|=1<<n;
