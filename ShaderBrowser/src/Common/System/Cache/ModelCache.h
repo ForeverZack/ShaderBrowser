@@ -23,9 +23,9 @@ namespace common
         // 添加模型
         void addModel(const std::string& filepath, const std::vector<std::string>& animFilePaths, std::function<void(Model*)> callback);
 		// 异步添加单个纹理
-		void addModelAsync(std::string filepath, std::vector<std::string> animFilePaths, std::function<void(Model*)> callback);
+		void addModelAsync(const std::string& filepath, std::vector<std::string> animFilePaths, std::function<void(Model*)> callback);
 		// 异步添加多个纹理		eg:  addTexturesAsync({"xxx.png", "xxx2.png"}, callback)
-		void addModelsAsync(std::vector<std::string> filepaths, std::vector<std::vector<std::string>> animFilePathsVec, std::function<void(Model*)> callback);
+		void addModelsAsync(const std::vector<std::string>& filepaths, std::vector<std::vector<std::string>> animFilePathsVec, std::function<void(Model*)> callback);
         // 获取
         Model* getModel(const std::string& name);
 

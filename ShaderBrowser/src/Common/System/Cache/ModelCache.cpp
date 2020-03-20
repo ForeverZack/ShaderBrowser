@@ -30,7 +30,7 @@ namespace common
 		return get(full_path);
 	}
 
-	void ModelCache::addModelAsync(std::string filepath, std::vector<std::string> animFilePaths, std::function<void(Model*)> callback)
+	void ModelCache::addModelAsync(const std::string& filepath, std::vector<std::string> animFilePaths, std::function<void(Model*)> callback)
 	{
 		const std::string full_path = FileUtils::getInstance()->getAbsolutePathForFilename(filepath);
 
@@ -65,7 +65,7 @@ namespace common
 		loadResourceAsync(full_path, callback, make_shared<std::vector<std::string>>(animFilePaths));
 	}
 
-	void ModelCache::addModelsAsync(std::vector<std::string> filepaths, std::vector<std::vector<std::string>> animFilePathsVec, std::function<void(Model*)> callback)
+	void ModelCache::addModelsAsync(const std::vector<std::string>& filepaths, std::vector<std::vector<std::string>> animFilePathsVec, std::function<void(Model*)> callback)
 	{
 		for (int i = 0; i < filepaths.size(); ++i)
 		{
