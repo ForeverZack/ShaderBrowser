@@ -26,6 +26,7 @@ namespace common
 
 		// 回收imgui上下文 (渲染线程)
 		void pushImGUIContext(unsigned long frameIndex);
+		void pushImGUIContext(ImGuiContext* context);
 		// 获取某帧对应的imgui上下文 (渲染线程)
 		ImGuiContext* getImGUIContext(unsigned long frameIndex);
 
@@ -36,7 +37,7 @@ namespace common
 
 	protected:
 		// 获取空闲的imgui上下文
-		ImGuiContext* popImGUIContext();
+		ImGuiContext* popImGuiContext();
 		// 设置当前帧imgui上下文
 		void newFrameContext(unsigned long frameIndex);
 

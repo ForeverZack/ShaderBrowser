@@ -59,21 +59,15 @@ namespace common
 		ImGui::Render();
 	}
 
-	ImGuiContext* GUIFramework::popImGUIContext()
+	ImGuiContext* GUIFramework::popImGuiContext()
 	{
-		if (m_qFreeImGUIContexts.empty())
-		{
-			return ImGui::CreateContext();
-		}
-		else
-		{
-			return m_qFreeImGUIContexts.pop();
-		}
+		BROWSER_ASSERT(!m_qFreeImGUIContexts.empty(), "ImGuiContext queue is empty, check your program in function GUIFramework::popImGuiContext()");
+		return m_qFreeImGUIContexts.pop();
 	}
 
 	void GUIFramework::newFrameContext(unsigned long frameIndex)
 	{
-		ImGuiContext* context = popImGUIContext();
+		ImGuiContext* context = popImGuiContext();
 		m_mImGUIContexts[frameIndex] = context;
 		ImGui::SetCurrentContext(context);
 	}
@@ -82,6 +76,11 @@ namespace common
 	{
 		ImGuiContext* context = m_mImGUIContexts[frameIndex];
 		m_mImGUIContexts.erase(frameIndex);
+		m_qFreeImGUIContexts.push(context);
+	}
+
+	void GUIFramework::pushImGUIContext(ImGuiContext* context)
+	{
 		m_qFreeImGUIContexts.push(context);
 	}
 
