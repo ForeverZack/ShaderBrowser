@@ -1,6 +1,8 @@
 #include "LogicCore.h"
 #include "Common/Tools/FileUtils.h"
 #include "Common/Tools/BinaryFileUtils.h"
+#include "Common/Tools/UI/GUIFramework.h"
+#include "Common/Tools/UI/GameStatusPanel.h"
 #include "Common/System/ECSManager.h"
 #include "Common/System/AutoReleasePool.h"
 #include "Browser/System/TransformSystem.h"
@@ -100,6 +102,12 @@ namespace core
 		TextureCache::getInstance()->update(deltaTime);
 		ModelCache::getInstance()->update(deltaTime);
 		MaterialCache::getInstance()->update(deltaTime);
+
+		// 更新调试信息
+		common::GUIFramework::getInstance()->getGameStatusPanel()->setDeltaTime(deltaTime);
+		// 更新调试GUI框架
+		common::GUIFramework::getInstance()->update(deltaTime);
+
 
 		// auto release
 		AutoReleasePool::getInstance()->update();

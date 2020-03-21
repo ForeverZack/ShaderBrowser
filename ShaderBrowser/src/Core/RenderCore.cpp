@@ -1,13 +1,13 @@
 #include "RenderCore.h"
 #include "Common/System/ECSManager.h"
 #include "Common/Tools/UI/GUIFramework.h"
-#include "Common/Tools/UI/InspectorPanel.h"
 #include "Common/Tools/UI/GameStatusPanel.h"
 #include "Browser/System/RenderSystem.h"
 #include "GL/GLStateCache.h"
 #include "GL/System/GPUOperateSystem.h"
 #include "Core/LogicCore.h"
 #include "Core/Application.h"
+#include <imgui_internal.h>
 
 namespace core
 {
@@ -137,7 +137,8 @@ namespace core
 		ImGui_ImplGlfw_InitForOpenGL(m_pWindow, true);
 		ImGui_ImplOpenGL3_Init("#version 330");
         ImGui::StyleColorsDark();
-        
+		ImGui_ImplOpenGL3_NewFrame();
+
 		// 注册渲染系统
 		ECSManager::getInstance()->registerSystem(browser::RenderSystem::getInstance());
         // 初始化渲染系统
@@ -175,20 +176,24 @@ namespace core
         // 渲染场景结束后
         ECSManager::getInstance()->afterUpdateSystem(SystemType::RenderSystem, deltaTime);
 
-		// 创建新的GUI帧缓存
-		ImGui_ImplOpenGL3_NewFrame();
-		ImGui_ImplGlfw_NewFrame();
-		ImGui::NewFrame();
-        // 更新调试信息
-        common::GUIFramework::getInstance()->getGameStatusPanel()->setDeltaTime(deltaTime);
-        // 更新调试GUI框架
-        common::GUIFramework::getInstance()->update(deltaTime);
-        // ImGui rendering
-        ImGui::Render();
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());	// imgui 1.60必须要调用这个函数才会绘制
+		//// 创建新的GUI帧缓存
+		//ImGui_ImplOpenGL3_NewFrame();
+		//ImGui_ImplGlfw_NewFrame();
+		//ImGui::NewFrame();
+        //// 更新调试信息
+        //common::GUIFramework::getInstance()->getGameStatusPanel()->setDeltaTime(deltaTime);
+        //// 更新调试GUI框架
+        //common::GUIFramework::getInstance()->update(deltaTime);
+        //// ImGui rendering
+        //ImGui::Render();
 
-
-
+		// 绘制imgui
+		ImGuiContext* context = GUIFramework::getInstance()->getImGUIContext(m_uFrameIndex);
+		ImGui_ImplOpenGL3_Init("#version 330");
+		//ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());	// imgui 1.60必须要调用这个函数才会绘制
+		ImGui_ImplOpenGL3_RenderDrawData(context->DrawData.Valid ? &context->DrawData : nullptr);	// imgui 1.60必须要调用这个函数才会绘制
+		// 回收imgui上下文
+		common::GUIFramework::getInstance()->pushImGUIContext(m_uFrameIndex);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         glfwSwapBuffers(m_pWindow);

@@ -287,6 +287,8 @@ namespace common
 			}
 		}
 		// 第二个参数将显示一个关闭按钮，如果点击了关闭按钮，则第二个参数将被置为false
+		ImGui::SetNextWindowSize(m_oSize, ImGuiCond_Appearing);
+		ImGui::SetNextWindowBgAlpha(m_fBgAlpha);
 		if (m_bShowClose)
 		{
 			ImGui::Begin(m_sTitle, &m_bOpen, m_iWindowFlag);
@@ -295,8 +297,6 @@ namespace common
 		{
 			ImGui::Begin(m_sTitle, nullptr, m_iWindowFlag);
 		}
-		ImGui::SetNextWindowSize(m_oSize, ImGuiCond_Appearing);
-		ImGui::SetNextWindowBgAlpha(m_fBgAlpha);
 
 		ImGui::SetWindowPos(m_oPosition);
 
