@@ -31,6 +31,9 @@
 		1428BDEB2349D711000D13E2 /* BaseThread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1428BDE92349D711000D13E2 /* BaseThread.cpp */; };
 		143995D7238158B700323A90 /* Application.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 143995D3238158B700323A90 /* Application.cpp */; };
 		143995D8238158B700323A90 /* LogicCore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 143995D4238158B700323A90 /* LogicCore.cpp */; };
+		143C5A152427607700E74A80 /* imgui_widgets.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 143C5A142427607700E74A80 /* imgui_widgets.cpp */; };
+		143C5A172427608600E74A80 /* imgui_impl_glfw.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 143C5A162427608600E74A80 /* imgui_impl_glfw.cpp */; };
+		143C5A192427608C00E74A80 /* imgui_impl_opengl3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 143C5A182427608C00E74A80 /* imgui_impl_opengl3.cpp */; };
 		143E55B923E018D8003287C3 /* Input.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 143E55B723E018D8003287C3 /* Input.cpp */; };
 		1469977F220F14B600F4C802 /* BaseLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1469977E220F14B600F4C802 /* BaseLight.cpp */; };
 		147BBAF9222277EF00B3079B /* HierarchyPanel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 147BBAF8222277EE00B3079B /* HierarchyPanel.cpp */; };
@@ -85,7 +88,6 @@
 		14E1431A22084724001A2EB1 /* ModelCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14E1431822084723001A2EB1 /* ModelCache.cpp */; };
 		14E349D421C658CA00EB5785 /* GLDefine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14E349D321C658CA00EB5785 /* GLDefine.cpp */; };
 		14E723E621E8C31E002A8A89 /* MeshFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14E723E421E8C31E002A8A89 /* MeshFilter.cpp */; };
-		14EB11822220184D00D3C29D /* imgui_impl_glfw_gl3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14EB11802220184D00D3C29D /* imgui_impl_glfw_gl3.cpp */; };
 		14EB11832220184D00D3C29D /* imgui_draw.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14EB11812220184D00D3C29D /* imgui_draw.cpp */; };
 		14EB11852220185800D3C29D /* imgui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14EB11842220185800D3C29D /* imgui.cpp */; };
 		14EB1187222019C000D3C29D /* GUIFramework.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14EB1186222019C000D3C29D /* GUIFramework.cpp */; };
@@ -157,6 +159,9 @@
 		143995D4238158B700323A90 /* LogicCore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LogicCore.cpp; sourceTree = "<group>"; };
 		143995D5238158B700323A90 /* Application.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Application.h; sourceTree = "<group>"; };
 		143995D6238158B700323A90 /* LogicCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LogicCore.h; sourceTree = "<group>"; };
+		143C5A142427607700E74A80 /* imgui_widgets.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = imgui_widgets.cpp; sourceTree = "<group>"; };
+		143C5A162427608600E74A80 /* imgui_impl_glfw.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = imgui_impl_glfw.cpp; sourceTree = "<group>"; };
+		143C5A182427608C00E74A80 /* imgui_impl_opengl3.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = imgui_impl_opengl3.cpp; sourceTree = "<group>"; };
 		143E55B723E018D8003287C3 /* Input.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Input.cpp; sourceTree = "<group>"; };
 		143E55B823E018D8003287C3 /* Input.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Input.h; sourceTree = "<group>"; };
 		1469977D220F14B600F4C802 /* BaseLight.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseLight.h; sourceTree = "<group>"; };
@@ -268,7 +273,6 @@
 		14EAC0B8221EEBB700981AF7 /* libAntTweakBar.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libAntTweakBar.dylib; path = ShaderBrowser/src/Plugins/AntTweakBar/lib/mac/libAntTweakBar.dylib; sourceTree = "<group>"; };
 		14EB11742220172700D3C29D /* GUIFramework.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GUIFramework.h; sourceTree = "<group>"; };
 		14EB11752220172700D3C29D /* BaseGUIPanel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BaseGUIPanel.h; sourceTree = "<group>"; };
-		14EB11802220184D00D3C29D /* imgui_impl_glfw_gl3.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = imgui_impl_glfw_gl3.cpp; sourceTree = "<group>"; };
 		14EB11812220184D00D3C29D /* imgui_draw.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = imgui_draw.cpp; sourceTree = "<group>"; };
 		14EB11842220185800D3C29D /* imgui.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = imgui.cpp; sourceTree = "<group>"; };
 		14EB1186222019C000D3C29D /* GUIFramework.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIFramework.cpp; sourceTree = "<group>"; };
@@ -793,8 +797,10 @@
 			isa = PBXGroup;
 			children = (
 				14EB11842220185800D3C29D /* imgui.cpp */,
+				143C5A182427608C00E74A80 /* imgui_impl_opengl3.cpp */,
+				143C5A162427608600E74A80 /* imgui_impl_glfw.cpp */,
 				14EB11812220184D00D3C29D /* imgui_draw.cpp */,
-				14EB11802220184D00D3C29D /* imgui_impl_glfw_gl3.cpp */,
+				143C5A142427607700E74A80 /* imgui_widgets.cpp */,
 			);
 			path = imgui;
 			sourceTree = "<group>";
@@ -874,7 +880,7 @@
 			files = (
 				148177B621D8A86D0037E11D /* Transform.cpp in Sources */,
 				14F240B922D2E54B008A67F4 /* AnimatorFeedback.cpp in Sources */,
-				14EB11822220184D00D3C29D /* imgui_impl_glfw_gl3.cpp in Sources */,
+				143C5A152427607700E74A80 /* imgui_widgets.cpp in Sources */,
 				141098ED22D0C5F800C9F982 /* FeedbackSystem.cpp in Sources */,
 				143995D7238158B700323A90 /* Application.cpp in Sources */,
 				14E723E621E8C31E002A8A89 /* MeshFilter.cpp in Sources */,
@@ -897,6 +903,7 @@
 				14B9068721BABC8F00554B0B /* AutoReleasePool.cpp in Sources */,
 				14B1AA832258AD99000AB04E /* SkinnedMeshRenderer.cpp in Sources */,
 				14EB1187222019C000D3C29D /* GUIFramework.cpp in Sources */,
+				143C5A192427608C00E74A80 /* imgui_impl_opengl3.cpp in Sources */,
 				14EB11852220185800D3C29D /* imgui.cpp in Sources */,
 				14C29E8D220FFB9E00A514BE /* PointLight.cpp in Sources */,
 				14B9068421BABC8F00554B0B /* BaseRender.cpp in Sources */,
@@ -935,6 +942,7 @@
 				147BBAF9222277EF00B3079B /* HierarchyPanel.cpp in Sources */,
 				14232A5C239BCFE80023C85C /* Skeleton.cpp in Sources */,
 				14B9A03D239A8B3400B9F169 /* GPUOperateTexture2DCommand.cpp in Sources */,
+				143C5A172427608600E74A80 /* imgui_impl_glfw.cpp in Sources */,
 				14B8C7FB232532960052B571 /* AssimpConvert.cpp in Sources */,
 				14B9A047239AAC2D00B9F169 /* Texture2D.cpp in Sources */,
 				14BE47A62201EE6600EFE57C /* CameraSystem.cpp in Sources */,
