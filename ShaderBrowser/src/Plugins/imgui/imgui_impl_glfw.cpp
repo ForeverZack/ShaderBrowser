@@ -269,8 +269,7 @@ static void ImGui_ImplGlfw_UpdateMousePosAndButtons()
 #else
     const bool focused = glfwGetWindowAttrib(g_Window, GLFW_FOCUSED) != 0;
 #endif
-	// ShaderBrowser TIPS：由于现在将逻辑线程(主线程)和渲染线程分离，imgui这里的glfwGetWindowAttrib(g_Window, GLFW_FOCUSED)条件始终返回false，所以注释掉（TODO: 还需要观察有没有啥影响）
-    //if (focused)
+    if (focused)
     {
         if (io.WantSetMousePos)
         {
