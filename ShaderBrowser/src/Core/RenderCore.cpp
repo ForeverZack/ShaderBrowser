@@ -133,23 +133,10 @@ namespace core
         // uncomment this call to draw in wireframe polygons.
         //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         
-		//ImGui::CreateContext();	// imgui 1.60之后 必须要手动创建ImGuiContext，以前版本会有一个static DefaultImGuiContext
-		ImGuiContext* context = nullptr;
-		for (int i = 0; i < LOGIC_RENDER_CORE_FRAME_INTERVAL + 1; ++i)
-		{
-			context = ImGui::CreateContext();
-			ImGui::SetCurrentContext(context);
-			ImGui_ImplOpenGL3_Init("#version 330");
-
-			// 实际上只需要调用一次ImGui_ImplOpenGL3_NewFrame即可，不过第一个之后的ImGuiContext的Font没有被创建(ImGui_ImplOpenGL3_NewFrame中用g_ShaderHandle判断的)，所以这里重复调用了ImGui_ImplOpenGL3_CreateFontsTexture
-			ImGui_ImplOpenGL3_NewFrame();
-			ImGui_ImplOpenGL3_CreateFontsTexture();
-
-			// 存储ImGuiContext，供逻辑线程使用
-			GUIFramework::getInstance()->pushImGuiContext(context);
-		}
+		ImGui::CreateContext();	// imgui 1.60之后 必须要手动创建ImGuiContext，以前版本会有一个static DefaultImGuiContext
+		ImGui_ImplOpenGL3_Init("#version 330");
+        ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_InitForOpenGL(m_pWindow, true);
-        ImGui::StyleColorsDark();
 
 		// 注册渲染系统
 		ECSManager::getInstance()->registerSystem(browser::RenderSystem::getInstance());
@@ -188,12 +175,12 @@ namespace core
         // 渲染场景结束后
         ECSManager::getInstance()->afterUpdateSystem(SystemType::RenderSystem, deltaTime);
 
-		// 绘制imgui
-		ImGuiContext* context = GUIFramework::getInstance()->getImGuiContext(m_uFrameIndex);
-		//ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());	// imgui 1.60必须要调用这个函数才会绘制
-		ImGui_ImplOpenGL3_RenderDrawData(context->DrawData.Valid ? &context->DrawData : nullptr);	// imgui 1.60必须要调用这个函数才会绘制
-		// 回收imgui上下文，重复使用
-		common::GUIFramework::getInstance()->pushImGuiContext(m_uFrameIndex);
+        // 等待imgui数据完成 (因为逻辑线程和渲染线程共享一个imgui上下文，所以这里会等待逻辑线程完成运算，防止闪烁)
+        while(GUIFramework::getInstance()->getImGuiUseState() != GUIFramework::ImGuiUseState::IGUS_LogicFinish) ;
+        // 绘制imgui
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());    // imgui 1.60必须要调用这个函数才会绘制
+        GUIFramework::getInstance()->setImGuiUseState(GUIFramework::ImGuiUseState::IGUS_RenderFinish);
+        
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         glfwSwapBuffers(m_pWindow);

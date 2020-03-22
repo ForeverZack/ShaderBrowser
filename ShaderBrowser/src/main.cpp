@@ -136,7 +136,7 @@ void testVal()
     // 平行光
     DirectionalLight* directionalLight = DirectionalLight::create("Directional Light");
     // 平行光方向
-    directionalLight->setEulerAngle(45, -135, 0);
+    directionalLight->setEulerAngle(45, 45, 0);
     // 平行光强度
     directionalLight->setIntensity(1);
     // 平行光颜色
