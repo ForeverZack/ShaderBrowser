@@ -37,6 +37,25 @@ namespace browser
 		BROWSER_LOG("~PointLight");
 	}
 
+	void PointLight::onInspectorGUI(InspectorPanel* inspector)
+	{
+		inspector->addPropertyText("Light Type: Point");
+
+		inspector->addPropertyInputFloat("Intensity", &m_fIntensity, [=](float intensity)
+		{
+			setIntensity(intensity);
+		}, false);
+
+		inspector->addPropertyColor4("Color", &m_oColor, [=](const glm::vec4& color)
+		{
+			setColor(color);
+		}, false);
+
+		inspector->addPropertyInputFloat("Range", &m_fRange, [=](float range)
+			{
+				setRange(range);
+			}, false);
+	}
 
 	void PointLight::updateLight()
 	{

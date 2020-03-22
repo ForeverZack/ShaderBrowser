@@ -40,6 +40,31 @@ namespace browser
 		BROWSER_LOG("~SpotLight");
 	}
 
+	void SpotLight::onInspectorGUI(InspectorPanel* inspector)
+	{
+		inspector->addPropertyText("Light Type: Spot");
+
+		inspector->addPropertyInputFloat("Intensity", &m_fIntensity, [=](float intensity)
+			{
+				setIntensity(intensity);
+			}, false);
+
+		inspector->addPropertyColor4("Color", &m_oColor, [=](const glm::vec4& color)
+			{
+				setColor(color);
+			}, false);
+
+		inspector->addPropertyInputFloat("Range", &m_fRange, [=](float range)
+			{
+				setRange(range);
+			}, false);
+
+		inspector->addPropertySliderFloat("Spot Angle", &m_fSpotAngle, 0, 180, [=](float angle)
+			{
+				setSpotAngle(angle);
+			}, false);
+	}
+
 	void SpotLight::updateLight()
 	{
 		Transform* transform = m_oBelongEntity ? m_oBelongEntity->getComponent<Transform>() : nullptr;

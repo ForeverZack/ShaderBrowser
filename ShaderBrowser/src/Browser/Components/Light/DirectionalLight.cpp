@@ -43,8 +43,17 @@ namespace browser
 
     void DirectionalLight::onInspectorGUI(InspectorPanel* inspector)
     {
-        //
-        inspector->addPropertyText("Intensity: " + std::to_string(m_fIntensity));
+		inspector->addPropertyText("Light Type: Directional");
+
+		inspector->addPropertyInputFloat("Intensity", &m_fIntensity, [=](float intensity)
+			{
+				setIntensity(intensity);
+			}, false);
+
+		inspector->addPropertyColor4("Color", &m_oColor, [=](const glm::vec4& color)
+		{
+			setColor(color);
+		}, false);
     }
     
     void DirectionalLight::updateLight()

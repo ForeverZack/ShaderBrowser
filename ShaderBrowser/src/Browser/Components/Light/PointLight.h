@@ -26,6 +26,10 @@ namespace browser
 		// 光源系统是否需要更新
 		virtual bool isLightSystemDirty();
         
+	private:
+		// 重载属性面板显示方法
+		virtual void onInspectorGUI(InspectorPanel* inspector);
+
     public:
         REGISTER_PROPERTY_GET(float, m_fRange, Range)
         // 设置光照范围

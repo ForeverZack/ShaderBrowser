@@ -14,25 +14,38 @@
 namespace common
 {
     // imgui的InputFloatText组件小数精确到第几位
-    #define ImGui_InputFloatText_Decimal_Precision 2
+	#define ImGui_InputFloatText_Decimal_Precision 2
+	#define ImGui_InputFloatText_Decimal_Precision_STR "%.2f"
     
     // GUI显示结构体
     class ShowGUIData
     {
     public:
         // GUI显示的枚举
-        enum ShowGUIType
-        {
-            // 折叠标签
-            ExpandTitle = 0,
-            // 树状图节点
-            TreeNode,
-            // 属性
-            Property_Vector2,
-            Property_Vector3,
-            Property_Vector4,
-            Property_Text,
-            Property_Checkbox,
+		enum ShowGUIType
+		{
+			// 折叠标签 :
+			ExpandTitle = 0,
+			// 树状图节点 :
+			TreeNode,
+			// 属性 : 
+			// float
+			Property_InputFloat,
+			Property_Vector2,
+			Property_Vector3,
+			Property_Vector4,
+			// text
+			Property_Text,
+			// checkbox
+			Property_Checkbox,
+			// color
+			Property_Color3,
+			Property_Color4,
+			// slider
+			Property_SliderFloat,
+			Property_SliderFloat2,
+			Property_SliderFloat3,
+			Property_SliderFloat4,
             
             //特殊处理Transform的欧拉角属性
             Property_TransformEulerAngle,
@@ -42,12 +55,19 @@ namespace common
         };
         
         // 回调函数类型
-        typedef std::function<void(const glm::vec2&)> ValueChangeFunc_vec2;
+		typedef std::function<void(float)> ValueChangeFunc_inputFloat;
+		typedef std::function<void(const glm::vec2&)> ValueChangeFunc_vec2;
         typedef std::function<void(const glm::vec3&)> ValueChangeFunc_vec3;
         typedef std::function<void(const glm::vec4&)> ValueChangeFunc_vec4;
-        typedef std::function<void(bool isEnable)> ValueChangeFunc_checkbox;
+        typedef std::function<void(bool)> ValueChangeFunc_checkbox;
         typedef std::function<void(ShowGUIData&)> ClickFunc_TreeNode;
-        
+		typedef std::function<void(const glm::vec3&)> ValueChangeFunc_color3;
+		typedef std::function<void(const glm::vec4&)> ValueChangeFunc_color4;
+		typedef std::function<void(float)> ValueChangeFunc_sliderFloat;
+		typedef std::function<void(const glm::vec2&)> ValueChangeFunc_sliderFloat2;
+		typedef std::function<void(const glm::vec3&)> ValueChangeFunc_sliderFloat3;
+		typedef std::function<void(const glm::vec4&)> ValueChangeFunc_sliderFloat4;
+
     public:
         ShowGUIData();
         ShowGUIData(bool readOnly, bool expand = true);
@@ -58,12 +78,19 @@ namespace common
     public:
         void setTitle(const std::string& title, bool expand = false, bool enable = true);
         void setText(const std::string& text);
-        void setVec2(const std::string& showName, glm::vec2* vec2, ValueChangeFunc_vec2 callback = nullptr);
+		void setInputFloat(const std::string& showName, float* val, ValueChangeFunc_inputFloat callback = nullptr);
+		void setVec2(const std::string& showName, glm::vec2* vec2, ValueChangeFunc_vec2 callback = nullptr);
         void setVec3(const std::string& showName, glm::vec3* vec3, ValueChangeFunc_vec3 callback = nullptr);
-        void setVec4(const std::string& showName, glm::vec4* vec3, ValueChangeFunc_vec4 callback = nullptr);
+        void setVec4(const std::string& showName, glm::vec4* vec4, ValueChangeFunc_vec4 callback = nullptr);
         void setTransformEulerAngle(const std::string& showName, glm::vec3* vec3, ValueChangeFunc_vec3 callback = nullptr);
         void setCheckbox(const std::string& showName, bool enable, ValueChangeFunc_checkbox callback = nullptr);
         void setTreeNode(const std::string& showName, unsigned long nodeID, bool selected = false, bool expand = false, bool hasChildren = false, ClickFunc_TreeNode callback = nullptr);
+		void setColor3(const std::string& showName, glm::vec3* color, ValueChangeFunc_color3 callback = nullptr);
+		void setColor4(const std::string& showName, glm::vec4* color, ValueChangeFunc_color4 callback = nullptr);
+		void setSliderFloat(const std::string& showName, float* val, float min, float max, ValueChangeFunc_sliderFloat callback = nullptr);
+		void setSliderFloat2(const std::string& showName, glm::vec2* vec2, float min, float max, ValueChangeFunc_sliderFloat2 callback = nullptr);
+		void setSliderFloat3(const std::string& showName, glm::vec3* vec3, float min, float max, ValueChangeFunc_sliderFloat3 callback = nullptr);
+		void setSliderFloat4(const std::string& showName, glm::vec4* vec4, float min, float max, ValueChangeFunc_sliderFloat4 callback = nullptr);
 		void setSeparator();
 
         bool isValueChange();
@@ -98,6 +125,12 @@ namespace common
             {
                 std::string show_name;
             } text;
+			struct
+			{
+				std::string show_name;
+				float* pointer;
+				float show_value;
+			} input_float;
             struct
             {
                 std::string show_name;
@@ -109,19 +142,50 @@ namespace common
                 std::string show_name;
                 glm::vec3* pointer;
                 glm::vec3 show_value;
-            } vec3;
+            } vec3, color3;
             struct
             {
                 std::string show_name;
                 glm::vec4* pointer;
                 glm::vec4 show_value;
-            } vec4;
+            } vec4, color4;
             struct
             {
                 std::string show_name;
                 bool isEnable;
             } checkbox;
-
+			struct
+			{
+				std::string show_name;
+				float* pointer;
+				float show_value;
+				float min;
+				float max;
+			} sliderFloat;
+			struct
+			{
+				std::string show_name;
+				glm::vec2* pointer;
+				glm::vec2 show_value;
+				float min;
+				float max;
+			} sliderFloat2;
+			struct
+			{
+				std::string show_name;
+				glm::vec3* pointer;
+				glm::vec3 show_value;
+				float min;
+				float max;
+			} sliderFloat3;
+			struct
+			{
+				std::string show_name;
+				glm::vec4* pointer;
+				glm::vec4 show_value;
+				float min;
+				float max;
+			} sliderFloat4;
             
             // 这一段一定要加，暂时还不理解为什么，不然不能使用构造函数和析构函数
             U() { memset(this, 0, sizeof(*this)); }
@@ -134,12 +198,19 @@ namespace common
                         
         } value;
         
-        ValueChangeFunc_vec2 callback_vec2;
+		ValueChangeFunc_inputFloat callback_inputFloat;
+		ValueChangeFunc_vec2 callback_vec2;
         ValueChangeFunc_vec3 callback_vec3;
         ValueChangeFunc_vec4 callback_vec4;
         ValueChangeFunc_vec3 callback_tsEulerAngle;
         ValueChangeFunc_checkbox callback_checkbox;
         ClickFunc_TreeNode callback_treeNode;
+		ValueChangeFunc_color3 callback_color3;
+		ValueChangeFunc_color4 callback_color4;
+		ValueChangeFunc_sliderFloat callback_sliderFloat;
+		ValueChangeFunc_sliderFloat2 callback_sliderFloat2;
+		ValueChangeFunc_sliderFloat3 callback_sliderFloat3;
+		ValueChangeFunc_sliderFloat4 callback_sliderFloat4;
     };
     
 	class BaseGUIPanel
@@ -157,11 +228,18 @@ namespace common
         void addTreeNode(const ShowGUIData& nodeData);
         // 添加属性
         void addPropertyText(const std::string& text, bool readOnly = true, bool expand = true);
+		void addPropertyInputFloat(const std::string& title, float* val, ShowGUIData::ValueChangeFunc_inputFloat callback = nullptr, bool readOnly = true, bool expand = true);
         void addPropertyVector2(const std::string& title, glm::vec2* vec2, ShowGUIData::ValueChangeFunc_vec2 callback = nullptr, bool readOnly = true, bool expand = true);
         void addPropertyVector3(const std::string& title, glm::vec3* vec3, ShowGUIData::ValueChangeFunc_vec3 callback = nullptr, bool readOnly = true, bool expand = true);
         void addPropertyVector4(const std::string& title, glm::vec4* vec4, ShowGUIData::ValueChangeFunc_vec4 callback = nullptr, bool readOnly = true, bool expand = true);
         void addPropertyTransformEulerAngle(const std::string& title, glm::vec3* vec3, ShowGUIData::ValueChangeFunc_vec3 callback = nullptr, bool readOnly = true, bool expand = true);
         void addPropertyCheckbox(const std::string& title, bool enable, ShowGUIData::ValueChangeFunc_checkbox callback = nullptr, bool readOnly = true, bool expand = true);
+		void addPropertyColor3(const std::string& title, glm::vec3* color, ShowGUIData::ValueChangeFunc_color3 callback = nullptr, bool readOnly = true, bool expand = true);
+		void addPropertyColor4(const std::string& title, glm::vec4* color, ShowGUIData::ValueChangeFunc_color4 callback = nullptr, bool readOnly = true, bool expand = true);
+		void addPropertySliderFloat(const std::string& title, float* val, float min, float max, ShowGUIData::ValueChangeFunc_inputFloat callback = nullptr, bool readOnly = true, bool expand = true);
+		void addPropertySliderFloat2(const std::string& title, glm::vec2* vec2, float min, float max, ShowGUIData::ValueChangeFunc_vec2 callback = nullptr, bool readOnly = true, bool expand = true);
+		void addPropertySliderFloat3(const std::string& title, glm::vec3* vec3, float min, float max, ShowGUIData::ValueChangeFunc_vec3 callback = nullptr, bool readOnly = true, bool expand = true);
+		void addPropertySliderFloat4(const std::string& title, glm::vec4* vec4, float min, float max, ShowGUIData::ValueChangeFunc_vec4 callback = nullptr, bool readOnly = true, bool expand = true);
 		void addSeparator();
 
 	public:
@@ -206,6 +284,49 @@ namespace common
                 }
             }
         }
+		// 插入ColorEdit组件
+		template<typename T, typename CreateFunc, typename CallbackFunc>
+		void _createColorEdit(ShowGUIData& data, CreateFunc createFunc, const std::string& title, T& showValue, CallbackFunc callback)
+		{
+			if (data.isReadOnly)
+			{
+				// 只读数据
+				createFunc(title.c_str(), &showValue[0], 0);
+			}
+			else
+			{
+				// 可写数据
+				if (createFunc(title.c_str(), &showValue[0], 0))
+				{
+					if (callback && data.isValueChange())
+					{
+						BROWSER_LOG("value change ====" + title)
+						callback(showValue);
+					}
+				}
+			}
+		}
+		// 插入SliderFloat组件
+		template<typename T, typename CreateFunc, typename CallbackFunc>
+		void _createSliderFloat(ShowGUIData& data, CreateFunc createFunc, const std::string& title, T& showValue, float min, float max, CallbackFunc callback)
+		{
+			if (data.isReadOnly)
+			{
+				// 只读数据
+				createFunc(title.c_str(), &showValue[0], min, max, ImGui_InputFloatText_Decimal_Precision_STR, 1);
+			}
+			else
+			{
+				// 可写数据
+				if (createFunc(title.c_str(), &showValue[0], min, max, ImGui_InputFloatText_Decimal_Precision_STR, 1))
+				{
+					if (callback && data.isValueChange())
+					{
+						callback(showValue);
+					}
+				}
+			}
+		}
         
         // 生成唯一ID
         unsigned long generateTreeNodeID()
