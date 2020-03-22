@@ -2910,6 +2910,7 @@ bool ImGui::InputScalar(const char* label, ImGuiDataType data_type, void* p_data
         format = DataTypeGetInfo(data_type)->PrintFmt;
 
     char buf[64];
+	float aa = ((float*)p_data)[0];
     DataTypeFormatString(buf, IM_ARRAYSIZE(buf), data_type, p_data, format);
 
     bool value_changed = false;

@@ -3,6 +3,7 @@
 #include "Common/Tools/UI/HierarchyPanel.h"
 #include "Common/Tools/UI/GameStatusPanel.h"
 #include "Core/LogicCore.h"
+#include <imgui_internal.h>
 
 namespace common
 {
@@ -10,6 +11,7 @@ namespace common
 		: m_oInspectorPanel(nullptr)
         , m_oHierarchyPanel(nullptr)
 		, m_oGameStatusPanel(nullptr)
+		, m_pLastImGuiContext(nullptr)
 	{
 		// 清理
 		m_vPanels.clear();
@@ -61,33 +63,41 @@ namespace common
 
 	ImGuiContext* GUIFramework::popImGuiContext()
 	{
-		BROWSER_ASSERT(!m_qFreeImGUIContexts.empty(), "ImGuiContext queue is empty, check your program in function GUIFramework::popImGuiContext()");
-		return m_qFreeImGUIContexts.pop();
+		BROWSER_ASSERT(!m_qFreeImGuiContexts.empty(), "ImGuiContext queue is empty, check your program in function GUIFramework::popImGuiContext()");
+		ImGuiContext* context = m_qFreeImGuiContexts.pop();
+		if (m_pLastImGuiContext)
+		{
+			// 注意！！！：为了在多个imgui上下文之间保持输入状态的延续，这里每帧都会将上一帧的InputTextState传递下去，后面可能还会有更多的输入事件产生的数据结构
+			// 也许这样做会出问题
+			context->InputTextState = m_pLastImGuiContext->InputTextState;
+		}
+		m_pLastImGuiContext = context;
+		return context;
 	}
 
 	void GUIFramework::newFrameContext(unsigned long frameIndex)
 	{
 		ImGuiContext* context = popImGuiContext();
-		m_mImGUIContexts[frameIndex] = context;
+		m_mImGuiContexts[frameIndex] = context;
 		ImGui::SetCurrentContext(context);
 	}
 
-	void GUIFramework::pushImGUIContext(unsigned long frameIndex)
+	void GUIFramework::pushImGuiContext(unsigned long frameIndex)
 	{
-		ImGuiContext* context = m_mImGUIContexts[frameIndex];
-		m_mImGUIContexts.erase(frameIndex);
-		m_qFreeImGUIContexts.push(context);
+		ImGuiContext* context = m_mImGuiContexts[frameIndex];
+		m_mImGuiContexts.erase(frameIndex);
+		m_qFreeImGuiContexts.push(context);
 	}
 
-	void GUIFramework::pushImGUIContext(ImGuiContext* context)
+	void GUIFramework::pushImGuiContext(ImGuiContext* context)
 	{
-		m_qFreeImGUIContexts.push(context);
+		m_qFreeImGuiContexts.push(context);
 	}
 
-	ImGuiContext* GUIFramework::getImGUIContext(unsigned long frameIndex)
+	ImGuiContext* GUIFramework::getImGuiContext(unsigned long frameIndex)
 	{
-		BROWSER_ASSERT(m_mImGUIContexts.containsKey(frameIndex), "Cannot find the imgui context by frameIndex in function GUIFramework::getImGUIContext");
-		return m_mImGUIContexts[frameIndex];
+		BROWSER_ASSERT(m_mImGuiContexts.containsKey(frameIndex), "Cannot find the imgui context by frameIndex in function GUIFramework::getImGUIContext");
+		return m_mImGuiContexts[frameIndex];
 	}
 
 

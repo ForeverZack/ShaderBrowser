@@ -146,7 +146,7 @@ namespace core
 			ImGui_ImplOpenGL3_CreateFontsTexture();
 
 			// 存储ImGuiContext，供逻辑线程使用
-			GUIFramework::getInstance()->pushImGUIContext(context);
+			GUIFramework::getInstance()->pushImGuiContext(context);
 		}
 		ImGui_ImplGlfw_InitForOpenGL(m_pWindow, true);
         ImGui::StyleColorsDark();
@@ -172,7 +172,7 @@ namespace core
     
     void RenderCore::renderLoop()
     {
-        // wait
+        // 等待当前逻辑帧完成
 		while(LogicCore::getInstance()->getFinishedFrameCount() < m_uFrameIndex) ;
 
         float deltaTime = Application::CurrentApplication->getDeltaTime();
@@ -188,27 +188,15 @@ namespace core
         // 渲染场景结束后
         ECSManager::getInstance()->afterUpdateSystem(SystemType::RenderSystem, deltaTime);
 
-		//// 创建新的GUI帧缓存
-		//ImGui_ImplOpenGL3_NewFrame();
-		//ImGui_ImplGlfw_NewFrame();
-		//ImGui::NewFrame();
-        //// 更新调试信息
-        //common::GUIFramework::getInstance()->getGameStatusPanel()->setDeltaTime(deltaTime);
-        //// 更新调试GUI框架
-        //common::GUIFramework::getInstance()->update(deltaTime);
-        //// ImGui rendering
-        //ImGui::Render();
-
 		// 绘制imgui
-		ImGuiContext* context = GUIFramework::getInstance()->getImGUIContext(m_uFrameIndex);
+		ImGuiContext* context = GUIFramework::getInstance()->getImGuiContext(m_uFrameIndex);
 		//ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());	// imgui 1.60必须要调用这个函数才会绘制
 		ImGui_ImplOpenGL3_RenderDrawData(context->DrawData.Valid ? &context->DrawData : nullptr);	// imgui 1.60必须要调用这个函数才会绘制
-		// 回收imgui上下文
-		common::GUIFramework::getInstance()->pushImGUIContext(m_uFrameIndex);
+		// 回收imgui上下文，重复使用
+		common::GUIFramework::getInstance()->pushImGuiContext(m_uFrameIndex);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         glfwSwapBuffers(m_pWindow);
-//		glfwPollEvents();
 
 
 		recTime(std::to_string(m_uFrameIndex) + "=====Render=======");

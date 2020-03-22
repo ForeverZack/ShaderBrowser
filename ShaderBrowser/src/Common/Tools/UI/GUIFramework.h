@@ -25,10 +25,10 @@ namespace common
 		void update(float deltaTime);
 
 		// 回收imgui上下文 (渲染线程)
-		void pushImGUIContext(unsigned long frameIndex);
-		void pushImGUIContext(ImGuiContext* context);
+		void pushImGuiContext(unsigned long frameIndex);
+		void pushImGuiContext(ImGuiContext* context);
 		// 获取某帧对应的imgui上下文 (渲染线程)
-		ImGuiContext* getImGUIContext(unsigned long frameIndex);
+		ImGuiContext* getImGuiContext(unsigned long frameIndex);
 
 
         REGISTER_PROPERTY_GET(std::shared_ptr<InspectorPanel>, m_oInspectorPanel, InspectorPanel)
@@ -43,9 +43,11 @@ namespace common
 
 	protected:
 		// 每帧对应的imgui上下文 (逻辑线程写入，渲染线程读取)
-		MutexUnorderedMap<unsigned long, ImGuiContext*> m_mImGUIContexts;
+		MutexUnorderedMap<unsigned long, ImGuiContext*> m_mImGuiContexts;
 		// 空闲的imgui上下文队列 (逻辑线程pop，渲染线程push)
-		MutexQueue<ImGuiContext*> m_qFreeImGUIContexts;
+		MutexQueue<ImGuiContext*> m_qFreeImGuiContexts;
+		// 上一帧使用的imgui上下文(用来复制之前imgui的一些状态，例如输入状态)
+		ImGuiContext* m_pLastImGuiContext;
 
 		// 面板队列
 		std::vector<std::shared_ptr<BaseGUIPanel>> m_vPanels;

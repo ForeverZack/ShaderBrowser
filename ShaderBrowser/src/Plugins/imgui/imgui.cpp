@@ -4540,6 +4540,12 @@ bool ImGui::IsItemFocused()
 
 bool ImGui::IsItemClicked(ImGuiMouseButton mouse_button)
 {
+	bool clicked = IsMouseClicked(mouse_button);
+	bool hovered = IsItemHovered(ImGuiHoveredFlags_None);
+	if (clicked && hovered)
+	{
+		int aaa = 0;
+	}
     return IsMouseClicked(mouse_button) && IsItemHovered(ImGuiHoveredFlags_None);
 }
 
