@@ -46,6 +46,9 @@ namespace common
 			Property_SliderFloat2,
 			Property_SliderFloat3,
 			Property_SliderFloat4,
+			// inputText
+			Property_InputText,
+			Property_InputTextMultiline,
             
             //特殊处理Transform的欧拉角属性
             Property_TransformEulerAngle,
@@ -67,6 +70,7 @@ namespace common
 		typedef std::function<void(const glm::vec2&)> ValueChangeFunc_sliderFloat2;
 		typedef std::function<void(const glm::vec3&)> ValueChangeFunc_sliderFloat3;
 		typedef std::function<void(const glm::vec4&)> ValueChangeFunc_sliderFloat4;
+		typedef std::function<void(const std::string&)> ValueChangeFunc_inputText;
 
     public:
         ShowGUIData();
@@ -91,6 +95,8 @@ namespace common
 		void setSliderFloat2(const std::string& showName, glm::vec2* vec2, float min, float max, ValueChangeFunc_sliderFloat2 callback = nullptr);
 		void setSliderFloat3(const std::string& showName, glm::vec3* vec3, float min, float max, ValueChangeFunc_sliderFloat3 callback = nullptr);
 		void setSliderFloat4(const std::string& showName, glm::vec4* vec4, float min, float max, ValueChangeFunc_sliderFloat4 callback = nullptr);
+		void setInputText(const std::string& showName, std::string* val, ValueChangeFunc_inputText callback = nullptr);
+		void setInputTextMultiline(const std::string& showName, std::string* val, ValueChangeFunc_inputText callback = nullptr);
 		void setSeparator();
 
         bool isValueChange();
@@ -103,6 +109,8 @@ namespace common
         bool canExpand;
         // 是否只读
         bool isReadOnly;
+		// 帮助
+		std::string helpMarker;
         // 值
         union U
         {
@@ -186,6 +194,12 @@ namespace common
 				float min;
 				float max;
 			} sliderFloat4;
+			struct  
+			{
+				std::string show_name;
+				std::string* pointer;
+				std::string show_value;
+			} inputText;
             
             // 这一段一定要加，暂时还不理解为什么，不然不能使用构造函数和析构函数
             U() { memset(this, 0, sizeof(*this)); }
@@ -211,6 +225,7 @@ namespace common
 		ValueChangeFunc_sliderFloat2 callback_sliderFloat2;
 		ValueChangeFunc_sliderFloat3 callback_sliderFloat3;
 		ValueChangeFunc_sliderFloat4 callback_sliderFloat4;
+		ValueChangeFunc_inputText callback_inputText;
     };
     
 	class BaseGUIPanel
@@ -222,25 +237,27 @@ namespace common
     
     public:
         // 添加折叠标签页
-        void addCollapsingHeader(const std::string& title, bool expand = false, bool enable = true);
+		ShowGUIData& addCollapsingHeader(const std::string& title, bool expand = false, bool enable = true);
         // 添加树节点
-        void addTreeNode(const std::string& title, unsigned long nodeID, bool selected = false, bool expand = false, bool hasChildren = false, ShowGUIData::ClickFunc_TreeNode callback = nullptr);
-        void addTreeNode(const ShowGUIData& nodeData);
+		ShowGUIData& addTreeNode(const std::string& title, unsigned long nodeID, bool selected = false, bool expand = false, bool hasChildren = false, ShowGUIData::ClickFunc_TreeNode callback = nullptr);
+		ShowGUIData& addTreeNode(ShowGUIData& nodeData);
         // 添加属性
-        void addPropertyText(const std::string& text, bool readOnly = true, bool expand = true);
-		void addPropertyInputFloat(const std::string& title, float* val, ShowGUIData::ValueChangeFunc_inputFloat callback = nullptr, bool readOnly = true, bool expand = true);
-        void addPropertyVector2(const std::string& title, glm::vec2* vec2, ShowGUIData::ValueChangeFunc_vec2 callback = nullptr, bool readOnly = true, bool expand = true);
-        void addPropertyVector3(const std::string& title, glm::vec3* vec3, ShowGUIData::ValueChangeFunc_vec3 callback = nullptr, bool readOnly = true, bool expand = true);
-        void addPropertyVector4(const std::string& title, glm::vec4* vec4, ShowGUIData::ValueChangeFunc_vec4 callback = nullptr, bool readOnly = true, bool expand = true);
-        void addPropertyTransformEulerAngle(const std::string& title, glm::vec3* vec3, ShowGUIData::ValueChangeFunc_vec3 callback = nullptr, bool readOnly = true, bool expand = true);
-        void addPropertyCheckbox(const std::string& title, bool enable, ShowGUIData::ValueChangeFunc_checkbox callback = nullptr, bool readOnly = true, bool expand = true);
-		void addPropertyColor3(const std::string& title, glm::vec3* color, ShowGUIData::ValueChangeFunc_color3 callback = nullptr, bool readOnly = true, bool expand = true);
-		void addPropertyColor4(const std::string& title, glm::vec4* color, ShowGUIData::ValueChangeFunc_color4 callback = nullptr, bool readOnly = true, bool expand = true);
-		void addPropertySliderFloat(const std::string& title, float* val, float min, float max, ShowGUIData::ValueChangeFunc_inputFloat callback = nullptr, bool readOnly = true, bool expand = true);
-		void addPropertySliderFloat2(const std::string& title, glm::vec2* vec2, float min, float max, ShowGUIData::ValueChangeFunc_vec2 callback = nullptr, bool readOnly = true, bool expand = true);
-		void addPropertySliderFloat3(const std::string& title, glm::vec3* vec3, float min, float max, ShowGUIData::ValueChangeFunc_vec3 callback = nullptr, bool readOnly = true, bool expand = true);
-		void addPropertySliderFloat4(const std::string& title, glm::vec4* vec4, float min, float max, ShowGUIData::ValueChangeFunc_vec4 callback = nullptr, bool readOnly = true, bool expand = true);
-		void addSeparator();
+		ShowGUIData& addPropertyText(const std::string& text, bool readOnly = true, bool expand = true);
+		ShowGUIData& addPropertyInputFloat(const std::string& title, float* val, ShowGUIData::ValueChangeFunc_inputFloat callback = nullptr, bool readOnly = true, bool expand = true);
+		ShowGUIData& addPropertyVector2(const std::string& title, glm::vec2* vec2, ShowGUIData::ValueChangeFunc_vec2 callback = nullptr, bool readOnly = true, bool expand = true);
+		ShowGUIData& addPropertyVector3(const std::string& title, glm::vec3* vec3, ShowGUIData::ValueChangeFunc_vec3 callback = nullptr, bool readOnly = true, bool expand = true);
+		ShowGUIData& addPropertyVector4(const std::string& title, glm::vec4* vec4, ShowGUIData::ValueChangeFunc_vec4 callback = nullptr, bool readOnly = true, bool expand = true);
+		ShowGUIData& addPropertyTransformEulerAngle(const std::string& title, glm::vec3* vec3, ShowGUIData::ValueChangeFunc_vec3 callback = nullptr, bool readOnly = true, bool expand = true);
+		ShowGUIData& addPropertyCheckbox(const std::string& title, bool enable, ShowGUIData::ValueChangeFunc_checkbox callback = nullptr, bool readOnly = true, bool expand = true);
+		ShowGUIData& addPropertyColor3(const std::string& title, glm::vec3* color, ShowGUIData::ValueChangeFunc_color3 callback = nullptr, bool readOnly = true, bool expand = true);
+		ShowGUIData& addPropertyColor4(const std::string& title, glm::vec4* color, ShowGUIData::ValueChangeFunc_color4 callback = nullptr, bool readOnly = true, bool expand = true);
+		ShowGUIData& addPropertySliderFloat(const std::string& title, float* val, float min, float max, ShowGUIData::ValueChangeFunc_inputFloat callback = nullptr, bool readOnly = true, bool expand = true);
+		ShowGUIData& addPropertySliderFloat2(const std::string& title, glm::vec2* vec2, float min, float max, ShowGUIData::ValueChangeFunc_vec2 callback = nullptr, bool readOnly = true, bool expand = true);
+		ShowGUIData& addPropertySliderFloat3(const std::string& title, glm::vec3* vec3, float min, float max, ShowGUIData::ValueChangeFunc_vec3 callback = nullptr, bool readOnly = true, bool expand = true);
+		ShowGUIData& addPropertySliderFloat4(const std::string& title, glm::vec4* vec4, float min, float max, ShowGUIData::ValueChangeFunc_vec4 callback = nullptr, bool readOnly = true, bool expand = true);
+		ShowGUIData& addPropertyInputText(const std::string& title, std::string* val, ShowGUIData::ValueChangeFunc_inputText callback = nullptr, bool readOnly = true, bool expand = true);
+		ShowGUIData& addPropertyInputTextMultiline(const std::string& title, std::string* val, ShowGUIData::ValueChangeFunc_inputText callback = nullptr, bool readOnly = true, bool expand = true);
+		ShowGUIData& addSeparator();
 
 	public:
 		// 设置窗口样式颜色
@@ -258,10 +275,19 @@ namespace common
         
         
     protected:
-        
+		// 创建提示气泡
+		static void _createHelpMarker(const char* desc);
+		// 自定义InputText，可使用std::string
+		// 文本缓冲大小修改回调
+		static int customInputTextResizeCallback(ImGuiInputTextCallbackData* data);
+		// 多行inputText
+		static bool _createCustomInputTextMultiline(const char* label, std::string* my_str, const ImVec2& size = ImVec2(0, 0), ImGuiInputTextFlags flags = 0);
+		// 单行inputText
+		static bool _createCustomInputText(const char* label, std::string* my_str, ImGuiInputTextFlags flags = 0);
+
         // 插入InputFloatText组件
         template<typename T, typename CreateFunc, typename CallbackFunc>
-        void _createInputFloatText(ShowGUIData& data, CreateFunc createFunc, const std::string& title, T& showValue, CallbackFunc callback)
+        static void _createInputFloatText(ShowGUIData& data, CreateFunc createFunc, const std::string& title, T& showValue, CallbackFunc callback)
         {
             static ImGuiInputTextFlags readOnlyInputTextFlag = ImGuiInputTextFlags_ReadOnly;
             static ImGuiInputTextFlags writableInputTextFlag = ImGuiInputTextFlags_CharsDecimal | ImGuiInputTextFlags_AutoSelectAll;
@@ -286,7 +312,7 @@ namespace common
         }
 		// 插入ColorEdit组件
 		template<typename T, typename CreateFunc, typename CallbackFunc>
-		void _createColorEdit(ShowGUIData& data, CreateFunc createFunc, const std::string& title, T& showValue, CallbackFunc callback)
+		static void _createColorEdit(ShowGUIData& data, CreateFunc createFunc, const std::string& title, T& showValue, CallbackFunc callback)
 		{
 			if (data.isReadOnly)
 			{
@@ -308,7 +334,7 @@ namespace common
 		}
 		// 插入SliderFloat组件
 		template<typename T, typename CreateFunc, typename CallbackFunc>
-		void _createSliderFloat(ShowGUIData& data, CreateFunc createFunc, const std::string& title, T& showValue, float min, float max, CallbackFunc callback)
+		static void _createSliderFloat(ShowGUIData& data, CreateFunc createFunc, const std::string& title, T& showValue, float min, float max, CallbackFunc callback)
 		{
 			if (data.isReadOnly)
 			{

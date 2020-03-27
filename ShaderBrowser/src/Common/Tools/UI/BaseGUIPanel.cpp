@@ -8,6 +8,7 @@ namespace common
     ShowGUIData::ShowGUIData()
         : isReadOnly(true)
         , canExpand(true)
+		, helpMarker("")
 		, callback_inputFloat(nullptr)
         , callback_vec2(nullptr)
         , callback_vec3(nullptr)
@@ -21,12 +22,14 @@ namespace common
 		, callback_sliderFloat2(nullptr)
 		, callback_sliderFloat3(nullptr)
 		, callback_sliderFloat4(nullptr)
+		, callback_inputText(nullptr)
     {
     }
     
     ShowGUIData::ShowGUIData(bool readOnly, bool expand /*= true*/)
         : isReadOnly(readOnly)
         , canExpand(expand)
+		, helpMarker("")
         , callback_vec2(nullptr)
         , callback_vec3(nullptr)
         , callback_vec4(nullptr)
@@ -39,6 +42,7 @@ namespace common
 		, callback_sliderFloat2(nullptr)
 		, callback_sliderFloat3(nullptr)
 		, callback_sliderFloat4(nullptr)
+		, callback_inputText(nullptr)
     {
         
     }
@@ -47,6 +51,7 @@ namespace common
         : m_eType(data.m_eType)
         , canExpand(data.canExpand)
         , isReadOnly(data.isReadOnly)
+		, helpMarker("")
 		, callback_inputFloat(data.callback_inputFloat)
         , callback_vec2(data.callback_vec2)
         , callback_vec3(data.callback_vec3)
@@ -60,6 +65,7 @@ namespace common
 		, callback_sliderFloat2(data.callback_sliderFloat2)
 		, callback_sliderFloat3(data.callback_sliderFloat3)
 		, callback_sliderFloat4(data.callback_sliderFloat4)
+		, callback_inputText(data.callback_inputText)
     {
         value = data.value;
     }
@@ -70,6 +76,7 @@ namespace common
         value = data.value;
         canExpand = data.canExpand;
         isReadOnly = data.isReadOnly;
+		helpMarker = data.helpMarker;
 		callback_inputFloat = data.callback_inputFloat;
         callback_vec2 = data.callback_vec2;
         callback_vec3 = data.callback_vec3;
@@ -83,6 +90,7 @@ namespace common
 		callback_sliderFloat2 = data.callback_sliderFloat2;
 		callback_sliderFloat3 = data.callback_sliderFloat3;
 		callback_sliderFloat4 = data.callback_sliderFloat4;
+		callback_inputText = data.callback_inputText;
     }
     
     ShowGUIData::~ShowGUIData()
@@ -155,6 +163,13 @@ namespace common
 			case ShowGUIType::Property_SliderFloat4:
 				{
 					return (*value.sliderFloat4.pointer) != value.sliderFloat4.show_value;
+				}
+				break;
+
+			case ShowGUIType::Property_InputText:
+			case ShowGUIType::Property_InputTextMultiline:
+				{
+					return (*value.inputText.pointer) != value.inputText.show_value;
 				}
 				break;
                 
@@ -299,6 +314,21 @@ namespace common
         callback_checkbox = callback;
     }
     
+	void ShowGUIData::setInputText(const std::string& showName, std::string* val, ValueChangeFunc_inputText callback/* = nullptr*/)
+	{
+		m_eType = ShowGUIType::Property_InputText;
+		value.inputText.show_name = showName;
+		value.inputText.pointer = val;
+		callback_inputText = callback;
+	}
+
+	void ShowGUIData::setInputTextMultiline(const std::string& showName, std::string* val, ValueChangeFunc_inputText callback/* = nullptr*/)
+	{
+		m_eType = ShowGUIType::Property_InputTextMultiline;
+		value.inputText.show_name = showName;
+		value.inputText.pointer = val;
+		callback_inputText = callback;
+	}
     
     
     
@@ -326,138 +356,155 @@ namespace common
 
 	}
     
-    void BaseGUIPanel::addCollapsingHeader(const std::string& title, bool expand /*= false*/, bool enable /*= true*/)
+	ShowGUIData& BaseGUIPanel::addCollapsingHeader(const std::string& title, bool expand /*= false*/, bool enable /*= true*/)
     {
         ShowGUIData data;
         data.setTitle(title, expand, enable);
-        
         m_vContents.push_back(std::move(data));
+		return m_vContents.back();
     }
     
-    void BaseGUIPanel::addTreeNode(const std::string& title, unsigned long nodeID, bool selected /*= false*/, bool expand /*= false*/, bool hasChildren /*= false*/, ShowGUIData::ClickFunc_TreeNode callback /*= nullptr*/)
+	ShowGUIData& BaseGUIPanel::addTreeNode(const std::string& title, unsigned long nodeID, bool selected /*= false*/, bool expand /*= false*/, bool hasChildren /*= false*/, ShowGUIData::ClickFunc_TreeNode callback /*= nullptr*/)
     {
         ShowGUIData data(true);
-        data.setTreeNode(title, nodeID, selected, expand, hasChildren, callback);
-        
+        data.setTreeNode(title, nodeID, selected, expand, hasChildren, callback);        
         m_vContents.push_back(std::move(data));
+		return m_vContents.back();
     }
     
-    void BaseGUIPanel::addTreeNode(const ShowGUIData& nodeData)
+	ShowGUIData& BaseGUIPanel::addTreeNode(ShowGUIData& nodeData)
     {
         m_vContents.push_back(nodeData);
+		return m_vContents.back();
     }
     
-    void BaseGUIPanel::addPropertyText(const std::string& text, bool readOnly /*= true*/, bool expand /*= true*/)
+	ShowGUIData& BaseGUIPanel::addPropertyText(const std::string& text, bool readOnly /*= true*/, bool expand /*= true*/)
     {
         ShowGUIData data(readOnly, expand);
         data.setText(text);
-        
         m_vContents.push_back(std::move(data));
+		return m_vContents.back();
     }
 
-	void BaseGUIPanel::addSeparator()
+	ShowGUIData& BaseGUIPanel::addSeparator()
 	{
 		ShowGUIData data(true);
 		data.setSeparator();
-
 		m_vContents.push_back(std::move(data));
+		return m_vContents.back();
 	}
     
-	void BaseGUIPanel::addPropertyInputFloat(const std::string& title, float* val, ShowGUIData::ValueChangeFunc_inputFloat callback/* = nullptr*/, bool readOnly/* = true*/, bool expand/* = true*/)
+	ShowGUIData& BaseGUIPanel::addPropertyInputFloat(const std::string& title, float* val, ShowGUIData::ValueChangeFunc_inputFloat callback/* = nullptr*/, bool readOnly/* = true*/, bool expand/* = true*/)
 	{
 		ShowGUIData data(readOnly, expand);
 		data.setInputFloat(title, val, callback);
-
 		m_vContents.push_back(std::move(data));
+		return m_vContents.back();
 	}
 
-    void BaseGUIPanel::addPropertyVector2(const std::string& title, glm::vec2* vec2, ShowGUIData::ValueChangeFunc_vec2 callback /*= nullptr*/, bool readOnly /*= true*/, bool expand /*= true*/)
+	ShowGUIData& BaseGUIPanel::addPropertyVector2(const std::string& title, glm::vec2* vec2, ShowGUIData::ValueChangeFunc_vec2 callback /*= nullptr*/, bool readOnly /*= true*/, bool expand /*= true*/)
     {
         ShowGUIData data(readOnly, expand);
         data.setVec2(title, vec2, callback);
-        
         m_vContents.push_back(std::move(data));
+		return m_vContents.back();
     }
     
-    void BaseGUIPanel::addPropertyVector3(const std::string& title, glm::vec3* vec3, ShowGUIData::ValueChangeFunc_vec3 callback /*= nullptr*/, bool readOnly /*= true*/, bool expand /*= true*/)
+	ShowGUIData& BaseGUIPanel::addPropertyVector3(const std::string& title, glm::vec3* vec3, ShowGUIData::ValueChangeFunc_vec3 callback /*= nullptr*/, bool readOnly /*= true*/, bool expand /*= true*/)
     {
         ShowGUIData data(readOnly, expand);
         data.setVec3(title, vec3, callback);
-        
         m_vContents.push_back(std::move(data));
-    }
+		return m_vContents.back();
+	}
     
-    void BaseGUIPanel::addPropertyVector4(const std::string& title, glm::vec4* vec4, ShowGUIData::ValueChangeFunc_vec4 callback /*= nullptr*/, bool readOnly /*= true*/, bool expand /*= true*/)
+	ShowGUIData& BaseGUIPanel::addPropertyVector4(const std::string& title, glm::vec4* vec4, ShowGUIData::ValueChangeFunc_vec4 callback /*= nullptr*/, bool readOnly /*= true*/, bool expand /*= true*/)
     {
         ShowGUIData data(readOnly, expand);
         data.setVec4(title, vec4, callback);
-        
         m_vContents.push_back(std::move(data));
+		return m_vContents.back();
     }
 
-	void BaseGUIPanel::addPropertyColor3(const std::string& title, glm::vec3* color, ShowGUIData::ValueChangeFunc_color3 callback /*= nullptr*/, bool readOnly /*= true*/, bool expand /*= true*/)
+	ShowGUIData& BaseGUIPanel::addPropertyColor3(const std::string& title, glm::vec3* color, ShowGUIData::ValueChangeFunc_color3 callback /*= nullptr*/, bool readOnly /*= true*/, bool expand /*= true*/)
 	{
 		ShowGUIData data(readOnly, expand);
 		data.setColor3(title, color, callback);
-
 		m_vContents.push_back(std::move(data));
+		return m_vContents.back();
 	}
 
-	void BaseGUIPanel::addPropertyColor4(const std::string& title, glm::vec4* color, ShowGUIData::ValueChangeFunc_color4 callback /*= nullptr*/, bool readOnly /*= true*/, bool expand /*= true*/)
+	ShowGUIData& BaseGUIPanel::addPropertyColor4(const std::string& title, glm::vec4* color, ShowGUIData::ValueChangeFunc_color4 callback /*= nullptr*/, bool readOnly /*= true*/, bool expand /*= true*/)
 	{
 		ShowGUIData data(readOnly, expand);
 		data.setColor4(title, color, callback);
-
 		m_vContents.push_back(std::move(data));
+		return m_vContents.back();
 	}
 
-    void BaseGUIPanel::addPropertyTransformEulerAngle(const std::string& title, glm::vec3* vec3, ShowGUIData::ValueChangeFunc_vec3 callback /*= nullptr*/, bool readOnly /*= true*/, bool expand /*= true*/)
+	ShowGUIData& BaseGUIPanel::addPropertyTransformEulerAngle(const std::string& title, glm::vec3* vec3, ShowGUIData::ValueChangeFunc_vec3 callback /*= nullptr*/, bool readOnly /*= true*/, bool expand /*= true*/)
     {
         ShowGUIData data(readOnly, expand);
         data.setTransformEulerAngle(title, vec3, callback);
-        
         m_vContents.push_back(std::move(data));
+		return m_vContents.back();
     }
 
-	void BaseGUIPanel::addPropertySliderFloat(const std::string& title, float* val, float min, float max, ShowGUIData::ValueChangeFunc_inputFloat callback/* = nullptr*/, bool readOnly/* = true*/, bool expand/* = true*/)
+	ShowGUIData& BaseGUIPanel::addPropertySliderFloat(const std::string& title, float* val, float min, float max, ShowGUIData::ValueChangeFunc_inputFloat callback/* = nullptr*/, bool readOnly/* = true*/, bool expand/* = true*/)
 	{
 		ShowGUIData data(readOnly, expand);
 		data.setSliderFloat(title, val, min, max, callback);
-
 		m_vContents.push_back(std::move(data));
+		return m_vContents.back();
 	}
 
-    void BaseGUIPanel::addPropertySliderFloat2(const std::string& title, glm::vec2* vec2, float min, float max, ShowGUIData::ValueChangeFunc_vec2 callback /*= nullptr*/, bool readOnly /*= true*/, bool expand /*= true*/)
+	ShowGUIData& BaseGUIPanel::addPropertySliderFloat2(const std::string& title, glm::vec2* vec2, float min, float max, ShowGUIData::ValueChangeFunc_vec2 callback /*= nullptr*/, bool readOnly /*= true*/, bool expand /*= true*/)
     {
         ShowGUIData data(readOnly, expand);
         data.setSliderFloat2(title, vec2, min, max, callback);
-        
         m_vContents.push_back(std::move(data));
+		return m_vContents.back();
     }
     
-    void BaseGUIPanel::addPropertySliderFloat3(const std::string& title, glm::vec3* vec3, float min, float max, ShowGUIData::ValueChangeFunc_vec3 callback /*= nullptr*/, bool readOnly /*= true*/, bool expand /*= true*/)
+	ShowGUIData& BaseGUIPanel::addPropertySliderFloat3(const std::string& title, glm::vec3* vec3, float min, float max, ShowGUIData::ValueChangeFunc_vec3 callback /*= nullptr*/, bool readOnly /*= true*/, bool expand /*= true*/)
     {
         ShowGUIData data(readOnly, expand);
         data.setSliderFloat3(title, vec3, min, max, callback);
-        
         m_vContents.push_back(std::move(data));
+		return m_vContents.back();
     }
     
-    void BaseGUIPanel::addPropertySliderFloat4(const std::string& title, glm::vec4* vec4, float min, float max, ShowGUIData::ValueChangeFunc_vec4 callback /*= nullptr*/, bool readOnly /*= true*/, bool expand /*= true*/)
+	ShowGUIData& BaseGUIPanel::addPropertySliderFloat4(const std::string& title, glm::vec4* vec4, float min, float max, ShowGUIData::ValueChangeFunc_vec4 callback /*= nullptr*/, bool readOnly /*= true*/, bool expand /*= true*/)
     {
         ShowGUIData data(readOnly, expand);
         data.setSliderFloat4(title, vec4, min, max, callback);
-        
         m_vContents.push_back(std::move(data));
+		return m_vContents.back();
     }
     
-    void BaseGUIPanel::addPropertyCheckbox(const std::string& title, bool enable, ShowGUIData::ValueChangeFunc_checkbox callback /*= nullptr*/, bool readOnly /*= true*/, bool expand /*= true*/)
+	ShowGUIData& BaseGUIPanel::addPropertyCheckbox(const std::string& title, bool enable, ShowGUIData::ValueChangeFunc_checkbox callback /*= nullptr*/, bool readOnly /*= true*/, bool expand /*= true*/)
     {
         ShowGUIData data(readOnly, expand);
         data.setCheckbox(title, enable, callback);
-        
         m_vContents.push_back(std::move(data));
+		return m_vContents.back();
     }
+
+	ShowGUIData& BaseGUIPanel::addPropertyInputText(const std::string& title, std::string* val, ShowGUIData::ValueChangeFunc_inputText callback/* = nullptr*/, bool readOnly/* = true*/, bool expand/* = true*/)
+	{
+		ShowGUIData data(readOnly, expand);
+		data.setInputText(title, val, callback);
+		m_vContents.push_back(std::move(data));
+		return m_vContents.back();
+	}
+
+	ShowGUIData& BaseGUIPanel::addPropertyInputTextMultiline(const std::string& title, std::string* val, ShowGUIData::ValueChangeFunc_inputText callback/* = nullptr*/, bool readOnly/* = true*/, bool expand/* = true*/)
+	{
+		ShowGUIData data(readOnly, expand);
+		data.setInputText(title, val, callback);
+		m_vContents.push_back(std::move(data));
+		return m_vContents.back();
+	}
     
 	void BaseGUIPanel::update(float deltaTime)
 	{
@@ -763,11 +810,53 @@ namespace common
 //                        break;
                 }
             }
+
+			if (data.helpMarker != "")
+			{
+				_createHelpMarker(data.helpMarker.c_str());
+			}
             
             ++itor;
         }
     }
     
+	void BaseGUIPanel::_createHelpMarker(const char* desc)
+	{
+		ImGui::SameLine();
+		ImGui::TextDisabled("[?]");
+		if (ImGui::IsItemHovered())
+		{
+			ImGui::BeginTooltip();
+			ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
+			ImGui::TextUnformatted(desc);
+			ImGui::PopTextWrapPos();
+			ImGui::EndTooltip();
+		}
+	}
+
+	int BaseGUIPanel::customInputTextResizeCallback(ImGuiInputTextCallbackData* data)
+	{
+		if (data->EventFlag == ImGuiInputTextFlags_CallbackResize)
+		{
+			std::string* my_str = (std::string*)data->UserData;
+			IM_ASSERT(&((*my_str)[0]) == data->Buf);
+			my_str->resize(data->BufSize);  // NB: On resizing calls, generally data->BufSize == data->BufTextLen + 1
+			data->Buf = &((*my_str)[0]);
+		}
+		return 0;
+	}
+
+	bool BaseGUIPanel::_createCustomInputTextMultiline(const char* label, std::string* my_str, const ImVec2& size/* = ImVec2(0, 0)*/, ImGuiInputTextFlags flags/* = 0*/)
+	{
+		IM_ASSERT((flags & ImGuiInputTextFlags_CallbackResize) == 0);
+		return ImGui::InputTextMultiline(label, &(*my_str)[0], (size_t)my_str->size(), size, flags | ImGuiInputTextFlags_CallbackResize, BaseGUIPanel::customInputTextResizeCallback, (void*)my_str);
+	}
+
+	bool BaseGUIPanel::_createCustomInputText(const char* label, std::string* my_str, ImGuiInputTextFlags flags/* = 0*/)
+	{
+		IM_ASSERT((flags & ImGuiInputTextFlags_CallbackResize) == 0);
+		return ImGui::InputText(label, &(*my_str)[0], (size_t)my_str->size(), flags | ImGuiInputTextFlags_CallbackResize, BaseGUIPanel::customInputTextResizeCallback, (void*)my_str);
+	}
     
 
 }
