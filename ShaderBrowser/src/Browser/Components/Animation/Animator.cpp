@@ -94,10 +94,11 @@ namespace browser
         if(m_oSrcModel)
         {
             // 是否允许根节点的运动
-            inspector->addPropertyCheckbox("Apply Root Motion", m_bApplyRootMotion, [=](bool isEnable)
+			ShowGUIData& data = inspector->addPropertyCheckbox("Apply Root Motion", m_bApplyRootMotion, [=](bool isEnable)
                {
                    m_bApplyRootMotion = isEnable;
                });
+			data.helpMarker = "Whether apply model's root motion when play animation";
             
             // 动画列表
             const std::vector<std::string>& animationNames = m_oSrcModel->getAnimationNames();

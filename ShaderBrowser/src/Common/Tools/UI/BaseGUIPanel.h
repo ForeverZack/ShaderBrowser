@@ -96,7 +96,7 @@ namespace common
 		void setSliderFloat3(const std::string& showName, glm::vec3* vec3, float min, float max, ValueChangeFunc_sliderFloat3 callback = nullptr);
 		void setSliderFloat4(const std::string& showName, glm::vec4* vec4, float min, float max, ValueChangeFunc_sliderFloat4 callback = nullptr);
 		void setInputText(const std::string& showName, std::string* val, ValueChangeFunc_inputText callback = nullptr);
-		void setInputTextMultiline(const std::string& showName, std::string* val, ValueChangeFunc_inputText callback = nullptr);
+		void setInputTextMultiline(const std::string& showName, std::string* val, float width=0, float height=0, ValueChangeFunc_inputText callback = nullptr);
 		void setSeparator();
 
         bool isValueChange();
@@ -199,6 +199,8 @@ namespace common
 				std::string show_name;
 				std::string* pointer;
 				std::string show_value;
+				float width;
+				float height;
 			} inputText;
             
             // 这一段一定要加，暂时还不理解为什么，不然不能使用构造函数和析构函数
@@ -256,7 +258,7 @@ namespace common
 		ShowGUIData& addPropertySliderFloat3(const std::string& title, glm::vec3* vec3, float min, float max, ShowGUIData::ValueChangeFunc_vec3 callback = nullptr, bool readOnly = true, bool expand = true);
 		ShowGUIData& addPropertySliderFloat4(const std::string& title, glm::vec4* vec4, float min, float max, ShowGUIData::ValueChangeFunc_vec4 callback = nullptr, bool readOnly = true, bool expand = true);
 		ShowGUIData& addPropertyInputText(const std::string& title, std::string* val, ShowGUIData::ValueChangeFunc_inputText callback = nullptr, bool readOnly = true, bool expand = true);
-		ShowGUIData& addPropertyInputTextMultiline(const std::string& title, std::string* val, ShowGUIData::ValueChangeFunc_inputText callback = nullptr, bool readOnly = true, bool expand = true);
+		ShowGUIData& addPropertyInputTextMultiline(const std::string& title, std::string* val, float width = 0, float height = 0, ShowGUIData::ValueChangeFunc_inputText callback = nullptr, bool readOnly = true, bool expand = true);
 		ShowGUIData& addSeparator();
 
 	public:

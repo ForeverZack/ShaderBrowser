@@ -50,11 +50,17 @@ namespace browser
 				setIntensity(intensity);
 			}, false);
 
-		ShowGUIData& data = inspector->addPropertyColor4("Color", &m_oColor, [=](const glm::vec4& color)
+		inspector->addPropertyColor4("Color", &m_oColor, [=](const glm::vec4& color)
 		{
 			setColor(color);
 		}, false);
-		data.helpMarker = "xxxxx";
+
+		//static string aaa;
+		//inspector->addPropertyInputText("xxxx", &aaa, [=](const std::string& color)
+		//{
+		//	aaa = color;
+		//	BROWSER_LOG(color);
+		//}, false);
 	}
     
     void DirectionalLight::updateLight()

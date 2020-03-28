@@ -54,15 +54,17 @@ namespace browser
 				setColor(color);
 			}, false);
 
-		inspector->addPropertyInputFloat("Range", &m_fRange, [=](float range)
+		ShowGUIData& range_data = inspector->addPropertyInputFloat("Range", &m_fRange, [=](float range)
 			{
 				setRange(range);
 			}, false);
+		range_data.helpMarker = "Spot light's attenuation range";
 
-		inspector->addPropertySliderFloat("Spot Angle", &m_fSpotAngle, 0, 180, [=](float angle)
+		ShowGUIData& angle_data = inspector->addPropertySliderFloat("Spot Angle", &m_fSpotAngle, 0, 180, [=](float angle)
 			{
 				setSpotAngle(angle);
 			}, false);
+		angle_data.helpMarker = "Control spot light's field angle, it limits in [0, 180]";
 	}
 
 	void SpotLight::updateLight()

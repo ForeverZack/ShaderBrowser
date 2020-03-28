@@ -250,7 +250,7 @@ namespace common
 		callback_color3 = callback;
 	}
 
-	void ShowGUIData::setColor4(const std::string& showName, glm::vec4* color, ValueChangeFunc_vec4 callback /*= nullptr*/)
+	void ShowGUIData::setColor4(const std::string& showName, glm::vec4* color, ValueChangeFunc_color4 callback /*= nullptr*/)
 	{
 		m_eType = ShowGUIType::Property_Color4;
 		value.color4.show_name = showName;
@@ -322,7 +322,7 @@ namespace common
 		callback_inputText = callback;
 	}
 
-	void ShowGUIData::setInputTextMultiline(const std::string& showName, std::string* val, ValueChangeFunc_inputText callback/* = nullptr*/)
+	void ShowGUIData::setInputTextMultiline(const std::string& showName, std::string* val, float width/* = 0*/, float height/* = 0*/, ValueChangeFunc_inputText callback/* = nullptr*/)
 	{
 		m_eType = ShowGUIType::Property_InputTextMultiline;
 		value.inputText.show_name = showName;
@@ -498,10 +498,10 @@ namespace common
 		return m_vContents.back();
 	}
 
-	ShowGUIData& BaseGUIPanel::addPropertyInputTextMultiline(const std::string& title, std::string* val, ShowGUIData::ValueChangeFunc_inputText callback/* = nullptr*/, bool readOnly/* = true*/, bool expand/* = true*/)
+	ShowGUIData& BaseGUIPanel::addPropertyInputTextMultiline(const std::string& title, std::string* val, float width/* = 0*/, float height/* = 0*/, ShowGUIData::ValueChangeFunc_inputText callback/* = nullptr*/, bool readOnly/* = true*/, bool expand/* = true*/)
 	{
 		ShowGUIData data(readOnly, expand);
-		data.setInputText(title, val, callback);
+		data.setInputTextMultiline(title, val, width, height, callback);
 		m_vContents.push_back(std::move(data));
 		return m_vContents.back();
 	}
@@ -776,6 +776,32 @@ namespace common
 							// 注意！！！：重载的函数指针编译器无法判断使用哪个，所以要自己手动拿到函数指针
 							bool(*createFunc)(const char*, float[3], float, float, const char*, float) = ImGui::SliderFloat4;
 							_createSliderFloat(data, createFunc, data.value.sliderFloat4.show_name, data.value.sliderFloat4.show_value, data.value.sliderFloat4.min, data.value.sliderFloat4.max, data.callback_sliderFloat4);	// 正确
+						}
+						break;
+
+					case ShowGUIData::ShowGUIType::Property_InputText:
+						{
+							data.value.inputText.show_value = *data.value.inputText.pointer;
+							if (_createCustomInputText(data.value.inputText.show_name.c_str(), &data.value.inputText.show_value))
+							{
+								if (data.callback_inputText && data.isValueChange())
+								{
+									data.callback_inputText(data.value.inputText.show_value);
+								}
+							}
+						}
+						break;
+
+					case ShowGUIData::ShowGUIType::Property_InputTextMultiline:
+						{
+							data.value.inputText.show_value = *data.value.inputText.pointer;
+							if (_createCustomInputTextMultiline(data.value.inputText.show_name.c_str(), &data.value.inputText.show_value, ImVec2(data.value.inputText.width, data.value.inputText.height)))
+							{
+								if (data.callback_inputText && data.isValueChange())
+								{
+									data.callback_inputText(data.value.inputText.show_value);
+								}
+							}
 						}
 						break;
 

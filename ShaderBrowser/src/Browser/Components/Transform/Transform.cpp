@@ -72,13 +72,14 @@ namespace browser
         
         // 显示欧拉角
         // 注意万向锁：由于使用了yaw-pitch-roll，所以这里x轴旋转必须控制在-90~90度的范围内，否则会出现万向锁
-        inspector->addPropertyTransformEulerAngle("Rotation", &m_oInspectorEuler, [=](const glm::vec3& value)
+		ShowGUIData& data = inspector->addPropertyTransformEulerAngle("Euler", &m_oInspectorEuler, [=](const glm::vec3& value)
             {
                 m_oInspectorEuler = value;
                 m_bUpdateInspectorEuler = false;
                 
                 setEulerAngle(value);
             }, false);
+		data.helpMarker = "Transform's Euler uses \"yaw-pitch-roll\", and to avoid the Gimbal Lock, y will be limited in (-90, 90)";
 
         // 显示缩放
         inspector->addPropertyVector3("Scale", &m_oScale, [=](const glm::vec3& value)
