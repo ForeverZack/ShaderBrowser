@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1405E8A321F432FF00FBDD71 /* ComponentEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1405E8A221F432FF00FBDD71 /* ComponentEvent.cpp */; };
+		14098F5B243097AA0047DC03 /* MaterialParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14098F5A243097AA0047DC03 /* MaterialParser.cpp */; };
 		141098ED22D0C5F800C9F982 /* FeedbackSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 141098EC22D0C5F800C9F982 /* FeedbackSystem.cpp */; };
 		141098F022D0CE4900C9F982 /* GLFeedback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 141098EF22D0CE4900C9F982 /* GLFeedback.cpp */; };
 		141098F222D0E28700C9F982 /* BaseFeedback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 141098F122D0E28700C9F982 /* BaseFeedback.cpp */; };
@@ -112,6 +113,8 @@
 /* Begin PBXFileReference section */
 		1405E8A121F432FF00FBDD71 /* ComponentEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ComponentEvent.h; sourceTree = "<group>"; };
 		1405E8A221F432FF00FBDD71 /* ComponentEvent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ComponentEvent.cpp; sourceTree = "<group>"; };
+		14098F59243097A90047DC03 /* MaterialParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MaterialParser.h; sourceTree = "<group>"; };
+		14098F5A243097AA0047DC03 /* MaterialParser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MaterialParser.cpp; sourceTree = "<group>"; };
 		141098EB22D0C5F800C9F982 /* FeedbackSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeedbackSystem.h; sourceTree = "<group>"; };
 		141098EC22D0C5F800C9F982 /* FeedbackSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FeedbackSystem.cpp; sourceTree = "<group>"; };
 		141098EE22D0CE4900C9F982 /* GLFeedback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLFeedback.h; sourceTree = "<group>"; };
@@ -353,6 +356,8 @@
 				14232A46239BCA510023C85C /* GLProgram.cpp */,
 				14232A49239BCAEA0023C85C /* Material.h */,
 				14232A4A239BCAEF0023C85C /* Material.cpp */,
+				14098F59243097A90047DC03 /* MaterialParser.h */,
+				14098F5A243097AA0047DC03 /* MaterialParser.cpp */,
 				14232A48239BCAEA0023C85C /* Pass.h */,
 				14232A4B239BCAEF0023C85C /* Pass.cpp */,
 			);
@@ -925,6 +930,7 @@
 				1422CEDF23ABBDE600B61E28 /* GPUOperateMeshCommand.cpp in Sources */,
 				149C01FF21F4AF910011DAE2 /* GLProgramCache.cpp in Sources */,
 				14A08F5D22FE9787009D7D71 /* AnimatorComputeProgram.cpp in Sources */,
+				14098F5B243097AA0047DC03 /* MaterialParser.cpp in Sources */,
 				14EB118922201A8B00D3C29D /* BaseGUIPanel.cpp in Sources */,
 				14B3F7F022F7CE2F008C0AE6 /* BaseComputeProgram.cpp in Sources */,
 				14B45A24220C25AD00FE5777 /* AABBBoundBox.cpp in Sources */,
@@ -1088,6 +1094,7 @@
 					"\"$(SRCROOT)/ShaderBrowser/src\"",
 					"\"$(SRCROOT)/ShaderBrowser/src/Plugins/stb\"",
 					"\"$(SRCROOT)/ShaderBrowser/src/Plugins/imgui\"",
+					"\"$(SRCROOT)/ShaderBrowser/src/Plugins/\trapidjson\"",
 					"\"$(SRCROOT)/ShaderBrowser/src/Plugins/flatbuffer/include\"",
 					"\"$(SRCROOT)/ShaderBrowser/src/Plugins/flatbuffer/generated_header\"",
 				);

@@ -30,6 +30,7 @@
 #include "Common/Tools/UI/GUIFramework.h"
 #include "Common/Tools/UI/InspectorPanel.h"
 #include "Common/Tools/UI/GameStatusPanel.h"
+//#include "Plugins/rapidjson/document.h"
 
 
 using namespace customGL;
@@ -271,7 +272,21 @@ void testVal()
 //    modelEntity->changeAllMeshesMaterial(GLProgram::DEFAULT_SKELETON_GLPROGRAM_NAME);
     m_YBotEntity = modelEntity;
 
-    
+//    std::string json = "{\"vert\": \"xxxx\",     \"frag\": \"yyyy\",     \"uniforms\": {         \"CGL_TEXTURE0\": {             \"type\": \"texture\",             \"value\": \"res/texture\"         },         \"CGL_COLOR\": {             \"type\": \"vec3\",             \"value\": [1,1,1]         }     } }";
+//    rapidjson::Document d;
+//    d.Parse(json.c_str());
+//
+//    bool has = d.HasMember("bbb");
+//    bool has2 = d.HasMember("vert");
+//    rapidjson::Value& val = d["vert"];
+//    bool isStr = val.IsString();
+//    string aaa = val.GetString();
+//    rapidjson::Value& obj = d["uniforms"];
+//    bool isStr2 = obj.IsObject();
+//    bool isArry = obj["CGL_COLOR"]["value"].IsArray();
+//    rapidjson::Array& array = obj["CGL_COLOR"]["value"].GetArray();
+////    d
+//    int aa = 0;
     
 	// 性能测试
 	//for (int i = 0; i < 20; ++i)
