@@ -351,6 +351,9 @@
     <ClCompile Include="src\Plugins\imgui\imgui_widgets.cpp">
       <Filter>src\Plugins\imgui</Filter>
     </ClCompile>
+    <ClCompile Include="src\GL\GPUResource\Shader\MaterialParser.cpp">
+      <Filter>src\GL\GPUResource\Shader</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\GL\GLDefine.h">
@@ -622,6 +625,9 @@
     </ClInclude>
     <ClInclude Include="src\Plugins\imgui\imstb_rectpack.h">
       <Filter>src\Plugins\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GL\GPUResource\Shader\MaterialParser.h">
+      <Filter>src\GL\GPUResource\Shader</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -87,6 +87,7 @@
     <ClCompile Include="src\GL\GPUResource\Model\SkeletonAnimation.cpp" />
     <ClCompile Include="src\GL\GPUResource\Shader\GLProgram.cpp" />
     <ClCompile Include="src\GL\GPUResource\Shader\Material.cpp" />
+    <ClCompile Include="src\GL\GPUResource\Shader\MaterialParser.cpp" />
     <ClCompile Include="src\GL\GPUResource\Shader\Pass.cpp" />
     <ClCompile Include="src\GL\GPUResource\Texture\Image.cpp" />
     <ClCompile Include="src\GL\GPUResource\Texture\Texture2D.cpp" />
@@ -177,6 +178,7 @@
     <ClInclude Include="src\GL\GPUResource\Model\SkeletonAnimation.h" />
     <ClInclude Include="src\GL\GPUResource\Shader\GLProgram.h" />
     <ClInclude Include="src\GL\GPUResource\Shader\Material.h" />
+    <ClInclude Include="src\GL\GPUResource\Shader\MaterialParser.h" />
     <ClInclude Include="src\GL\GPUResource\Shader\Pass.h" />
     <ClInclude Include="src\GL\GPUResource\Texture\Image.h" />
     <ClInclude Include="src\GL\GPUResource\Texture\Texture2D.h" />
@@ -246,7 +248,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)\ShaderBrowser\src;$(SolutionDir)\ShaderBrowser\src\Plugins\GLFW\include;$(SolutionDir)\ShaderBrowser\src\Plugins\glm\include;$(SolutionDir)\ShaderBrowser\src\Plugins\glad\include;$(SolutionDir)\ShaderBrowser\src\Plugins\assimp\include;$(SolutionDir)ShaderBrowser\src\Plugins\imgui;$(SolutionDir)ShaderBrowser\src\Plugins\stb;$(SolutionDir)ShaderBrowser\src\Plugins\flatbuffer\include;$(SolutionDir)ShaderBrowser\src\Plugins\flatbuffer\generated_header;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\ShaderBrowser\src;$(SolutionDir)\ShaderBrowser\src\Plugins\GLFW\include;$(SolutionDir)\ShaderBrowser\src\Plugins\glm\include;$(SolutionDir)\ShaderBrowser\src\Plugins\glad\include;$(SolutionDir)\ShaderBrowser\src\Plugins\assimp\include;$(SolutionDir)ShaderBrowser\src\Plugins\imgui;$(SolutionDir)ShaderBrowser\src\Plugins\stb;$(SolutionDir)ShaderBrowser\src\Plugins\rapidjson;$(SolutionDir)ShaderBrowser\src\Plugins\flatbuffer\include;$(SolutionDir)ShaderBrowser\src\Plugins\flatbuffer\generated_header;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)ShaderBrowser\src\Plugins\GLFW\lib\win32\Debug;$(SolutionDir)ShaderBrowser\src\Plugins\assimp\lib\win32;$(SolutionDir)ShaderBrowser\src\Plugins\flatbuffer\lib\win32\Debug;$(LibraryPath)</LibraryPath>
     <LibraryWPath>$(LibraryWPath)</LibraryWPath>
   </PropertyGroup>

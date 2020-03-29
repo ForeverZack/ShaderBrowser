@@ -20,7 +20,7 @@ namespace common
 		addTexture("texture/default/default_white.png");
     }
     
-	void TextureCache::addTexture(std::string filepath)
+	void TextureCache::addTexture(const std::string& filepath)
 	{
 		const std::string full_path = FileUtils::getInstance()->getAbsolutePathForFilename(filepath);
 	
@@ -30,13 +30,13 @@ namespace common
 		add(full_path, texture);
 	}
 
-	Texture2D* TextureCache::getTexture(std::string filepath)
+	Texture2D* TextureCache::getTexture(const std::string& filepath)
 	{
 		const std::string full_path = FileUtils::getInstance()->getAbsolutePathForFilename(filepath);
 		return get(full_path);
 	}
 
-	void TextureCache::addTextureAsync(std::string filepath, std::function<void(Texture2D*)> callback)
+	void TextureCache::addTextureAsync(const std::string& filepath, std::function<void(Texture2D*)> callback)
 	{
 		const std::string full_path = FileUtils::getInstance()->getAbsolutePathForFilename(filepath);
 
@@ -65,7 +65,7 @@ namespace common
 		loadResourceAsync(full_path, callback);
 	}
 
-	void TextureCache::addTexturesAsync(std::vector<std::string> filepaths, std::function<void(Texture2D*)> callback)
+	void TextureCache::addTexturesAsync(const std::vector<std::string>& filepaths, std::function<void(Texture2D*)> callback)
 	{
 		for (int i = 0; i < filepaths.size(); ++i)
 		{
@@ -107,7 +107,7 @@ namespace common
 
 	}
 
-	void TextureCache::removeTexture(std::string filepath)
+	void TextureCache::removeTexture(const std::string& filepath)
 	{
 		const std::string full_path = FileUtils::getInstance()->getAbsolutePathForFilename(filepath);
         
