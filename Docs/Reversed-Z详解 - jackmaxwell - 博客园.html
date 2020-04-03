@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<!-- saved from url=(0050)https://www.cnblogs.com/jackmaxwell/p/6851728.html -->
+<html lang="zh-cn"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="origin">
+    <meta property="og:description" content="在3D渲染管线中，Z这个家伙几乎无处不在，如Z-Buffer，Early-Z，Z-Cull，Z-Test，Z-Write等等，稍有接触图形学的人都会对这些术语有所耳闻。 那么Z到底是什么呢？首先Z当然">
+    <meta http-equiv="Cache-Control" content="no-transform">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Reversed-Z详解 - jackmaxwell - 博客园</title>
+    
+    <link rel="stylesheet" href="./Reversed-Z详解 - jackmaxwell - 博客园_files/blog-common.min.css">
+    <link id="MainCss" rel="stylesheet" href="./Reversed-Z详解 - jackmaxwell - 博客园_files/bundle-lessismoreright.min.css">
+    
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="./Reversed-Z详解 - jackmaxwell - 博客园_files/bundle-lessismoreright-mobile.min.css">
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/jackmaxwell/rss">
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/jackmaxwell/rsd.xml">
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/jackmaxwell/wlwmanifest.xml">
+    <script src="./Reversed-Z详解 - jackmaxwell - 博客园_files/amp4ads-host-v0.js.下载"></script><script src="./Reversed-Z详解 - jackmaxwell - 博客园_files/pubads_impl_rendering_2020032401.js.下载"></script><script async="" src="./Reversed-Z详解 - jackmaxwell - 博客园_files/analytics.js.下载"></script><script src="./Reversed-Z详解 - jackmaxwell - 博客园_files/jquery-2.2.0.min.js.下载"></script>
+    <script src="./Reversed-Z详解 - jackmaxwell - 博客园_files/blog-common.min.js.下载"></script>
+    <script>
+        var currentBlogId = 116063;
+        var currentBlogApp = 'jackmaxwell';
+        var cb_enable_mathjax = false;
+        var isLogined = false;
+        var skinName = 'LessIsMoreRight';
+    </script>
+    
+    
+    
+<link rel="preload" href="./Reversed-Z详解 - jackmaxwell - 博客园_files/f.txt" as="script"><script type="text/javascript" src="./Reversed-Z详解 - jackmaxwell - 博客园_files/f.txt"></script><script src="./Reversed-Z详解 - jackmaxwell - 博客园_files/pubads_impl_2020032401.js.下载" async=""></script><script src="./Reversed-Z详解 - jackmaxwell - 博客园_files/MathJax.js.下载" id=""></script><link rel="prefetch" href="https://tpc.googlesyndication.com/safeframe/1-0-37/html/container.html"><style type="text/css">.MathJax_Hover_Frame {border-radius: .25em; -webkit-border-radius: .25em; -moz-border-radius: .25em; -khtml-border-radius: .25em; box-shadow: 0px 0px 15px #83A; -webkit-box-shadow: 0px 0px 15px #83A; -moz-box-shadow: 0px 0px 15px #83A; -khtml-box-shadow: 0px 0px 15px #83A; border: 1px solid #A6D ! important; display: inline-block; position: absolute}
+.MathJax_Menu_Button .MathJax_Hover_Arrow {position: absolute; cursor: pointer; display: inline-block; border: 2px solid #AAA; border-radius: 4px; -webkit-border-radius: 4px; -moz-border-radius: 4px; -khtml-border-radius: 4px; font-family: 'Courier New',Courier; font-size: 9px; color: #F0F0F0}
+.MathJax_Menu_Button .MathJax_Hover_Arrow span {display: block; background-color: #AAA; border: 1px solid; border-radius: 3px; line-height: 0; padding: 4px}
+.MathJax_Hover_Arrow:hover {color: white!important; border: 2px solid #CCC!important}
+.MathJax_Hover_Arrow:hover span {background-color: #CCC!important}
+</style><style type="text/css">#MathJax_About {position: fixed; left: 50%; width: auto; text-align: center; border: 3px outset; padding: 1em 2em; background-color: #DDDDDD; color: black; cursor: default; font-family: message-box; font-size: 120%; font-style: normal; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; border-radius: 15px; -webkit-border-radius: 15px; -moz-border-radius: 15px; -khtml-border-radius: 15px; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_About.MathJax_MousePost {outline: none}
+.MathJax_Menu {position: absolute; background-color: white; color: black; width: auto; padding: 2px; border: 1px solid #CCCCCC; margin: 0; cursor: default; font: menu; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+.MathJax_MenuItem {padding: 2px 2em; background: transparent}
+.MathJax_MenuArrow {position: absolute; right: .5em; padding-top: .25em; color: #666666; font-size: .75em}
+.MathJax_MenuActive .MathJax_MenuArrow {color: white}
+.MathJax_MenuArrow.RTL {left: .5em; right: auto}
+.MathJax_MenuCheck {position: absolute; left: .7em}
+.MathJax_MenuCheck.RTL {right: .7em; left: auto}
+.MathJax_MenuRadioCheck {position: absolute; left: 1em}
+.MathJax_MenuRadioCheck.RTL {right: 1em; left: auto}
+.MathJax_MenuLabel {padding: 2px 2em 4px 1.33em; font-style: italic}
+.MathJax_MenuRule {border-top: 1px solid #CCCCCC; margin: 4px 1px 0px}
+.MathJax_MenuDisabled {color: GrayText}
+.MathJax_MenuActive {background-color: Highlight; color: HighlightText}
+.MathJax_MenuDisabled:focus, .MathJax_MenuLabel:focus {background-color: #E8E8E8}
+.MathJax_ContextMenu:focus {outline: none}
+.MathJax_ContextMenu .MathJax_MenuItem:focus {outline: none}
+#MathJax_AboutClose {top: .2em; right: .2em}
+.MathJax_Menu .MathJax_MenuClose {top: -10px; left: -10px}
+.MathJax_MenuClose {position: absolute; cursor: pointer; display: inline-block; border: 2px solid #AAA; border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px; -khtml-border-radius: 18px; font-family: 'Courier New',Courier; font-size: 24px; color: #F0F0F0}
+.MathJax_MenuClose span {display: block; background-color: #AAA; border: 1.5px solid; border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px; -khtml-border-radius: 18px; line-height: 0; padding: 8px 0 6px}
+.MathJax_MenuClose:hover {color: white!important; border: 2px solid #CCC!important}
+.MathJax_MenuClose:hover span {background-color: #CCC!important}
+.MathJax_MenuClose:hover:focus {outline: none}
+</style><style type="text/css">.MathJax_Preview .MJXf-math {color: inherit!important}
+</style><style type="text/css">.MJX_Assistive_MathML {position: absolute!important; top: 0; left: 0; clip: rect(1px, 1px, 1px, 1px); padding: 1px 0 0 0!important; border: 0!important; height: 1px!important; width: 1px!important; overflow: hidden!important; display: block!important; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none}
+.MJX_Assistive_MathML.MJX_Assistive_MathML_Block {width: 100%!important}
+</style><style type="text/css">#MathJax_Zoom {position: absolute; background-color: #F0F0F0; overflow: auto; display: block; z-index: 301; padding: .5em; border: 1px solid black; margin: 0; font-weight: normal; font-style: normal; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; -webkit-box-sizing: content-box; -moz-box-sizing: content-box; box-sizing: content-box; box-shadow: 5px 5px 15px #AAAAAA; -webkit-box-shadow: 5px 5px 15px #AAAAAA; -moz-box-shadow: 5px 5px 15px #AAAAAA; -khtml-box-shadow: 5px 5px 15px #AAAAAA; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_ZoomOverlay {position: absolute; left: 0; top: 0; z-index: 300; display: inline-block; width: 100%; height: 100%; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+#MathJax_ZoomFrame {position: relative; display: inline-block; height: 0; width: 0}
+#MathJax_ZoomEventTrap {position: absolute; left: 0; top: 0; z-index: 302; display: inline-block; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+</style><style type="text/css">.MathJax_Preview {color: #888}
+#MathJax_Message {position: fixed; left: 1em; bottom: 1.5em; background-color: #E6E6E6; border: 1px solid #959595; margin: 0px; padding: 2px 8px; z-index: 102; color: black; font-size: 80%; width: auto; white-space: nowrap}
+#MathJax_MSIE_Frame {position: absolute; top: 0; left: 0; width: 0px; z-index: 101; border: 0px; margin: 0px; padding: 0px}
+.MathJax_Error {color: #CC0000; font-style: italic}
+</style><style type="text/css">.MJXp-script {font-size: .8em}
+.MJXp-right {-webkit-transform-origin: right; -moz-transform-origin: right; -ms-transform-origin: right; -o-transform-origin: right; transform-origin: right}
+.MJXp-bold {font-weight: bold}
+.MJXp-italic {font-style: italic}
+.MJXp-scr {font-family: MathJax_Script,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-frak {font-family: MathJax_Fraktur,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-sf {font-family: MathJax_SansSerif,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-cal {font-family: MathJax_Caligraphic,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-mono {font-family: MathJax_Typewriter,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-largeop {font-size: 150%}
+.MJXp-largeop.MJXp-int {vertical-align: -.2em}
+.MJXp-math {display: inline-block; line-height: 1.2; text-indent: 0; font-family: 'Times New Roman',Times,STIXGeneral,serif; white-space: nowrap; border-collapse: collapse}
+.MJXp-display {display: block; text-align: center; margin: 1em 0}
+.MJXp-math span {display: inline-block}
+.MJXp-box {display: block!important; text-align: center}
+.MJXp-box:after {content: " "}
+.MJXp-rule {display: block!important; margin-top: .1em}
+.MJXp-char {display: block!important}
+.MJXp-mo {margin: 0 .15em}
+.MJXp-mfrac {margin: 0 .125em; vertical-align: .25em}
+.MJXp-denom {display: inline-table!important; width: 100%}
+.MJXp-denom > * {display: table-row!important}
+.MJXp-surd {vertical-align: top}
+.MJXp-surd > * {display: block!important}
+.MJXp-script-box > *  {display: table!important; height: 50%}
+.MJXp-script-box > * > * {display: table-cell!important; vertical-align: top}
+.MJXp-script-box > *:last-child > * {vertical-align: bottom}
+.MJXp-script-box > * > * > * {display: block!important}
+.MJXp-mphantom {visibility: hidden}
+.MJXp-munderover {display: inline-table!important}
+.MJXp-over {display: inline-block!important; text-align: center}
+.MJXp-over > * {display: block!important}
+.MJXp-munderover > * {display: table-row!important}
+.MJXp-mtable {vertical-align: .25em; margin: 0 .125em}
+.MJXp-mtable > * {display: inline-table!important; vertical-align: middle}
+.MJXp-mtr {display: table-row!important}
+.MJXp-mtd {display: table-cell!important; text-align: center; padding: .5em 0 0 .5em}
+.MJXp-mtr > .MJXp-mtd:first-child {padding-left: 0}
+.MJXp-mtr:first-child > .MJXp-mtd {padding-top: 0}
+.MJXp-mlabeledtr {display: table-row!important}
+.MJXp-mlabeledtr > .MJXp-mtd:first-child {padding-left: 0}
+.MJXp-mlabeledtr:first-child > .MJXp-mtd {padding-top: 0}
+.MJXp-merror {background-color: #FFFF88; color: #CC0000; border: 1px solid #CC0000; padding: 1px 3px; font-style: normal; font-size: 90%}
+.MJXp-scale0 {-webkit-transform: scaleX(.0); -moz-transform: scaleX(.0); -ms-transform: scaleX(.0); -o-transform: scaleX(.0); transform: scaleX(.0)}
+.MJXp-scale1 {-webkit-transform: scaleX(.1); -moz-transform: scaleX(.1); -ms-transform: scaleX(.1); -o-transform: scaleX(.1); transform: scaleX(.1)}
+.MJXp-scale2 {-webkit-transform: scaleX(.2); -moz-transform: scaleX(.2); -ms-transform: scaleX(.2); -o-transform: scaleX(.2); transform: scaleX(.2)}
+.MJXp-scale3 {-webkit-transform: scaleX(.3); -moz-transform: scaleX(.3); -ms-transform: scaleX(.3); -o-transform: scaleX(.3); transform: scaleX(.3)}
+.MJXp-scale4 {-webkit-transform: scaleX(.4); -moz-transform: scaleX(.4); -ms-transform: scaleX(.4); -o-transform: scaleX(.4); transform: scaleX(.4)}
+.MJXp-scale5 {-webkit-transform: scaleX(.5); -moz-transform: scaleX(.5); -ms-transform: scaleX(.5); -o-transform: scaleX(.5); transform: scaleX(.5)}
+.MJXp-scale6 {-webkit-transform: scaleX(.6); -moz-transform: scaleX(.6); -ms-transform: scaleX(.6); -o-transform: scaleX(.6); transform: scaleX(.6)}
+.MJXp-scale7 {-webkit-transform: scaleX(.7); -moz-transform: scaleX(.7); -ms-transform: scaleX(.7); -o-transform: scaleX(.7); transform: scaleX(.7)}
+.MJXp-scale8 {-webkit-transform: scaleX(.8); -moz-transform: scaleX(.8); -ms-transform: scaleX(.8); -o-transform: scaleX(.8); transform: scaleX(.8)}
+.MJXp-scale9 {-webkit-transform: scaleX(.9); -moz-transform: scaleX(.9); -ms-transform: scaleX(.9); -o-transform: scaleX(.9); transform: scaleX(.9)}
+.MathJax_PHTML .noError {vertical-align: ; font-size: 90%; text-align: left; color: black; padding: 1px 3px; border: 1px solid}
+</style><style type="text/css">.MathJax_Display {text-align: center; margin: 1em 0em; position: relative; display: block!important; text-indent: 0; max-width: none; max-height: none; min-width: 0; min-height: 0; width: 100%}
+.MathJax .merror {background-color: #FFFF88; color: #CC0000; border: 1px solid #CC0000; padding: 1px 3px; font-style: normal; font-size: 90%}
+.MathJax .MJX-monospace {font-family: monospace}
+.MathJax .MJX-sans-serif {font-family: sans-serif}
+#MathJax_Tooltip {background-color: InfoBackground; color: InfoText; border: 1px solid black; box-shadow: 2px 2px 5px #AAAAAA; -webkit-box-shadow: 2px 2px 5px #AAAAAA; -moz-box-shadow: 2px 2px 5px #AAAAAA; -khtml-box-shadow: 2px 2px 5px #AAAAAA; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true'); padding: 3px 4px; z-index: 401; position: absolute; left: 0; top: 0; width: auto; height: auto; display: none}
+.MathJax {display: inline; font-style: normal; font-weight: normal; line-height: normal; font-size: 100%; font-size-adjust: none; text-indent: 0; text-align: left; text-transform: none; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; direction: ltr; max-width: none; max-height: none; min-width: 0; min-height: 0; border: 0; padding: 0; margin: 0}
+.MathJax:focus, body :focus .MathJax {display: inline-table}
+.MathJax.MathJax_FullWidth {text-align: center; display: table-cell!important; width: 10000em!important}
+.MathJax img, .MathJax nobr, .MathJax a {border: 0; padding: 0; margin: 0; max-width: none; max-height: none; min-width: 0; min-height: 0; vertical-align: 0; line-height: normal; text-decoration: none}
+img.MathJax_strut {border: 0!important; padding: 0!important; margin: 0!important; vertical-align: 0!important}
+.MathJax span {display: inline; position: static; border: 0; padding: 0; margin: 0; vertical-align: 0; line-height: normal; text-decoration: none}
+.MathJax nobr {white-space: nowrap!important}
+.MathJax img {display: inline!important; float: none!important}
+.MathJax * {transition: none; -webkit-transition: none; -moz-transition: none; -ms-transition: none; -o-transition: none}
+.MathJax_Processing {visibility: hidden; position: fixed; width: 0; height: 0; overflow: hidden}
+.MathJax_Processed {display: none!important}
+.MathJax_ExBox {display: block!important; overflow: hidden; width: 1px; height: 60ex; min-height: 0; max-height: none}
+.MathJax .MathJax_EmBox {display: block!important; overflow: hidden; width: 1px; height: 60em; min-height: 0; max-height: none}
+.MathJax_LineBox {display: table!important}
+.MathJax_LineBox span {display: table-cell!important; width: 10000em!important; min-width: 0; max-width: none; padding: 0; border: 0; margin: 0}
+.MathJax .MathJax_HitBox {cursor: text; background: white; opacity: 0; filter: alpha(opacity=0)}
+.MathJax .MathJax_HitBox * {filter: none; opacity: 1; background: transparent}
+#MathJax_Tooltip * {filter: none; opacity: 1; background: transparent}
+@font-face {font-family: MathJax_Main; src: url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/fonts/HTML-CSS/TeX/woff/MathJax_Main-Regular.woff?V=2.7.1') format('woff'), url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/fonts/HTML-CSS/TeX/otf/MathJax_Main-Regular.otf?V=2.7.1') format('opentype')}
+@font-face {font-family: MathJax_Main-bold; src: url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/fonts/HTML-CSS/TeX/woff/MathJax_Main-Bold.woff?V=2.7.1') format('woff'), url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/fonts/HTML-CSS/TeX/otf/MathJax_Main-Bold.otf?V=2.7.1') format('opentype')}
+@font-face {font-family: MathJax_Main-italic; src: url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/fonts/HTML-CSS/TeX/woff/MathJax_Main-Italic.woff?V=2.7.1') format('woff'), url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/fonts/HTML-CSS/TeX/otf/MathJax_Main-Italic.otf?V=2.7.1') format('opentype')}
+@font-face {font-family: MathJax_Math-italic; src: url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/fonts/HTML-CSS/TeX/woff/MathJax_Math-Italic.woff?V=2.7.1') format('woff'), url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/fonts/HTML-CSS/TeX/otf/MathJax_Math-Italic.otf?V=2.7.1') format('opentype')}
+@font-face {font-family: MathJax_Caligraphic; src: url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/fonts/HTML-CSS/TeX/woff/MathJax_Caligraphic-Regular.woff?V=2.7.1') format('woff'), url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/fonts/HTML-CSS/TeX/otf/MathJax_Caligraphic-Regular.otf?V=2.7.1') format('opentype')}
+@font-face {font-family: MathJax_Size1; src: url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/fonts/HTML-CSS/TeX/woff/MathJax_Size1-Regular.woff?V=2.7.1') format('woff'), url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/fonts/HTML-CSS/TeX/otf/MathJax_Size1-Regular.otf?V=2.7.1') format('opentype')}
+@font-face {font-family: MathJax_Size2; src: url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/fonts/HTML-CSS/TeX/woff/MathJax_Size2-Regular.woff?V=2.7.1') format('woff'), url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/fonts/HTML-CSS/TeX/otf/MathJax_Size2-Regular.otf?V=2.7.1') format('opentype')}
+@font-face {font-family: MathJax_Size3; src: url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/fonts/HTML-CSS/TeX/woff/MathJax_Size3-Regular.woff?V=2.7.1') format('woff'), url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/fonts/HTML-CSS/TeX/otf/MathJax_Size3-Regular.otf?V=2.7.1') format('opentype')}
+@font-face {font-family: MathJax_Size4; src: url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/fonts/HTML-CSS/TeX/woff/MathJax_Size4-Regular.woff?V=2.7.1') format('woff'), url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/fonts/HTML-CSS/TeX/otf/MathJax_Size4-Regular.otf?V=2.7.1') format('opentype')}
+.MathJax .noError {vertical-align: ; font-size: 90%; text-align: left; color: black; padding: 1px 3px; border: 1px solid}
+</style><style type="text/css">@font-face {font-family: MathJax_AMS; src: url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/fonts/HTML-CSS/TeX/woff/MathJax_AMS-Regular.woff?V=2.7.1') format('woff'), url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/fonts/HTML-CSS/TeX/otf/MathJax_AMS-Regular.otf?V=2.7.1') format('opentype')}
+</style></head>
+<body><div style="visibility: hidden; overflow: hidden; position: absolute; top: 0px; height: 1px; width: auto; padding: 0px; border: 0px; margin: 0px; text-align: left; text-indent: 0px; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal;"><div id="MathJax_Hidden"></div></div><div id="MathJax_Message" style="display: none;"></div>
+    <a name="top"></a>
+    <div id="page_begin_html"><script type="text/x-mathjax-config;executed=true">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript">window['__document_write_ajax_callbacks__']['2']();</script><script type="text/javascript">window['__document_write_ajax_callbacks__']['3']();</script><script type="text/javascript" defer="">window['__document_write_ajax_callbacks__']['1']();</script></div>
+    <div id="home">
+    <div id="header">
+        <div id="blogTitle">
+            
+<div class="title"><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/jackmaxwell/">幽玄</a>
+</div>
+<div class="subtitle">
+mathematics and rendering
+</div>
+
+        </div>
+        <div id="navigator">
+            
+<ul id="navList">
+    <li id="nav_sitehome"><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+</li>
+    <li id="nav_myhome">
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/jackmaxwell/">
+首页</a>
+</li>
+    <li id="nav_newpost">
+
+<a id="blog_nav_newpost" class="menu" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">
+新随笔</a>
+</li>
+    <li id="nav_contact">
+<a id="blog_nav_contact" class="menu" href="https://msg.cnblogs.com/send/jackmaxwell">
+联系</a></li>
+    <li id="nav_rss">
+<a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/jackmaxwell/rss/">
+订阅</a></li>
+    <li id="nav_admin">
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+</li>
+</ul>
+
+            <div class="blogStats">
+                
+<span id="stats_post_count">随笔 - 
+8&nbsp;</span>
+<span id="stats_article_count">文章 - 
+0&nbsp;</span>
+<!-- <span id="stats-comment_count"></span> -->
+<span id="stats_comment_count">评论 - 
+3</span>
+            </div>
+        </div>
+    </div>
+    <div id="main">
+        <div id="mainContent">
+            <div class="forFlow">
+                <div id="post_detail">
+    <div id="topics">
+        <div class="post">
+            <h1 class="postTitle">
+                
+<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/jackmaxwell/p/6851728.html">Reversed-Z详解</a>
+
+            </h1>
+            <div class="clear"></div>
+            <div class="postBody">
+                
+<div id="cnblogs_post_body" class="blogpost-body ">
+    <p>　　在3D渲染管线中，Z这个家伙几乎无处不在，如Z-Buffer，Early-Z，Z-Cull，Z-Test，Z-Write等等，稍有接触图形学的人都会对这些术语有所耳闻。</p>
+<p>　　那么Z到底是什么呢？首先Z当然可以是任意坐标系下的z坐标值，但我们这里要说的Z值，就是深度值，上面几个包含Z的术语里面的Z也都是深度值的意思，深度值是物体变换到屏幕空间后的z坐标的值，因为NDC空间转屏幕空间时并不会改变z值，所以也可以说是NDC空间中z坐标的值，有些读者可能认为在屏幕空间中Z值已经不存在了，这也是有道理的，因为屏幕是一个2d空间，没有z轴，但我们在这里不做2d，3d区别，认为都有z轴。在DirectX中，Z值得取值范围是[0,1]，在OpenGL中，其取值范围为[-1,1]，这篇拟在DirectX环境下讨论Z。</p>
+<p>　　Z值的推导请参见：</p>
+<p><a href="http://www.codeguru.com/cpp/misc/misc/graphics/article.php/c10123/Deriving-Projection-Matrices.htm">http://www.codeguru.com/cpp/misc/misc/graphics/article.php/c10123/Deriving-Projection-Matrices.htm</a></p>
+<p>　　这里我们直接用上文中的一个结果（建议没推导过的读者按照这一篇的思路推导一遍，必定会受益匪浅）， 即Z值在透视投影后的结果：<br>
+	</p>
+<p><span class="MathJax_Preview" style="color: inherit; display: none;"></span><div class="MathJax_Display" style="text-align: center;"><span class="MathJax" id="MathJax-Element-1-Frame" tabindex="0" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot; display=&quot;block&quot;&gt;&lt;mi&gt;Z&lt;/mi&gt;&lt;msub&gt;&lt;mi&gt;Z&lt;/mi&gt;&lt;mrow class=&quot;MJX-TeXAtom-ORD&quot;&gt;&lt;mi&gt;c&lt;/mi&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mrow class=&quot;MJX-TeXAtom-ORD&quot;&gt;&lt;mfrac&gt;&lt;mi&gt;f&lt;/mi&gt;&lt;mrow&gt;&lt;mi&gt;f&lt;/mi&gt;&lt;mo&gt;&amp;#x2212;&lt;/mo&gt;&lt;mi&gt;n&lt;/mi&gt;&lt;/mrow&gt;&lt;/mfrac&gt;&lt;msub&gt;&lt;mi&gt;Z&lt;/mi&gt;&lt;mrow class=&quot;MJX-TeXAtom-ORD&quot;&gt;&lt;mi&gt;c&lt;/mi&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;mo&gt;&amp;#x2212;&lt;/mo&gt;&lt;mrow class=&quot;MJX-TeXAtom-ORD&quot;&gt;&lt;mfrac&gt;&lt;mrow&gt;&lt;mi&gt;f&lt;/mi&gt;&lt;mi&gt;n&lt;/mi&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;mi&gt;f&lt;/mi&gt;&lt;mo&gt;&amp;#x2212;&lt;/mo&gt;&lt;mi&gt;n&lt;/mi&gt;&lt;/mrow&gt;&lt;/mfrac&gt;&lt;/mrow&gt;&lt;/math&gt;" role="presentation" style="text-align: center; position: relative;"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-1" style="width: 14.045em; display: inline-block;"><span style="display: inline-block; position: relative; width: 11.114em; height: 0px; font-size: 126%;"><span style="position: absolute; clip: rect(0.614em, 1011.11em, 3.3em, -999.997em); top: -2.195em; left: 0em;"><span class="mrow" id="MathJax-Span-2"><span class="mi" id="MathJax-Span-3" style="font-family: MathJax_Math-italic;">Z<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.064em;"></span></span><span class="msubsup" id="MathJax-Span-4"><span style="display: inline-block; position: relative; width: 1.041em; height: 0px;"><span style="position: absolute; clip: rect(3.178em, 1000.74em, 4.216em, -999.997em); top: -4.026em; left: 0em;"><span class="mi" id="MathJax-Span-5" style="font-family: MathJax_Math-italic;">Z<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.064em;"></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span><span style="position: absolute; top: -3.904em; left: 0.675em;"><span class="texatom" id="MathJax-Span-6"><span class="mrow" id="MathJax-Span-7"><span class="mi" id="MathJax-Span-8" style="font-size: 70.7%; font-family: MathJax_Math-italic;">c</span></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span></span></span><span class="mo" id="MathJax-Span-9" style="font-family: MathJax_Main; padding-left: 0.308em;">=</span><span class="texatom" id="MathJax-Span-10" style="padding-left: 0.308em;"><span class="mrow" id="MathJax-Span-11"><span class="mfrac" id="MathJax-Span-12"><span style="display: inline-block; position: relative; width: 2.567em; height: 0px; margin-right: 0.125em; margin-left: 0.125em;"><span style="position: absolute; clip: rect(3.117em, 1000.55em, 4.399em, -999.997em); top: -4.698em; left: 50%; margin-left: -0.302em;"><span class="mi" id="MathJax-Span-13" style="font-family: MathJax_Math-italic;">f<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.064em;"></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span><span style="position: absolute; clip: rect(3.117em, 1002.38em, 4.399em, -999.997em); top: -3.355em; left: 50%; margin-left: -1.218em;"><span class="mrow" id="MathJax-Span-14"><span class="mi" id="MathJax-Span-15" style="font-family: MathJax_Math-italic;">f<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.064em;"></span></span><span class="mo" id="MathJax-Span-16" style="font-family: MathJax_Main; padding-left: 0.247em;">−</span><span class="mi" id="MathJax-Span-17" style="font-family: MathJax_Math-italic; padding-left: 0.247em;">n</span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span><span style="position: absolute; clip: rect(0.858em, 1002.57em, 1.285em, -999.997em); top: -1.34em; left: 0em;"><span style="display: inline-block; overflow: hidden; vertical-align: 0em; border-top: 1.3px solid; width: 2.567em; height: 0px;"></span><span style="display: inline-block; width: 0px; height: 1.102em;"></span></span></span></span><span class="msubsup" id="MathJax-Span-18"><span style="display: inline-block; position: relative; width: 1.041em; height: 0px;"><span style="position: absolute; clip: rect(3.178em, 1000.74em, 4.216em, -999.997em); top: -4.026em; left: 0em;"><span class="mi" id="MathJax-Span-19" style="font-family: MathJax_Math-italic;">Z<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.064em;"></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span><span style="position: absolute; top: -3.904em; left: 0.675em;"><span class="texatom" id="MathJax-Span-20"><span class="mrow" id="MathJax-Span-21"><span class="mi" id="MathJax-Span-22" style="font-size: 70.7%; font-family: MathJax_Math-italic;">c</span></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span></span></span></span></span><span class="mo" id="MathJax-Span-23" style="font-family: MathJax_Main; padding-left: 0.247em;">−</span><span class="texatom" id="MathJax-Span-24" style="padding-left: 0.247em;"><span class="mrow" id="MathJax-Span-25"><span class="mfrac" id="MathJax-Span-26"><span style="display: inline-block; position: relative; width: 2.567em; height: 0px; margin-right: 0.125em; margin-left: 0.125em;"><span style="position: absolute; clip: rect(3.117em, 1001.16em, 4.399em, -999.997em); top: -4.698em; left: 50%; margin-left: -0.546em;"><span class="mrow" id="MathJax-Span-27"><span class="mi" id="MathJax-Span-28" style="font-family: MathJax_Math-italic;">f<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.064em;"></span></span><span class="mi" id="MathJax-Span-29" style="font-family: MathJax_Math-italic;">n</span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span><span style="position: absolute; clip: rect(3.117em, 1002.38em, 4.399em, -999.997em); top: -3.355em; left: 50%; margin-left: -1.218em;"><span class="mrow" id="MathJax-Span-30"><span class="mi" id="MathJax-Span-31" style="font-family: MathJax_Math-italic;">f<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.064em;"></span></span><span class="mo" id="MathJax-Span-32" style="font-family: MathJax_Main; padding-left: 0.247em;">−</span><span class="mi" id="MathJax-Span-33" style="font-family: MathJax_Math-italic; padding-left: 0.247em;">n</span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span><span style="position: absolute; clip: rect(0.858em, 1002.57em, 1.285em, -999.997em); top: -1.34em; left: 0em;"><span style="display: inline-block; overflow: hidden; vertical-align: 0em; border-top: 1.3px solid; width: 2.567em; height: 0px;"></span><span style="display: inline-block; width: 0px; height: 1.102em;"></span></span></span></span></span></span></span><span style="display: inline-block; width: 0px; height: 2.201em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -1.227em; border-left: 0px solid; width: 0px; height: 3.081em;"></span></span></nobr><span class="MJX_Assistive_MathML MJX_Assistive_MathML_Block" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mi>Z</mi><msub><mi>Z</mi><mrow class="MJX-TeXAtom-ORD"><mi>c</mi></mrow></msub><mo>=</mo><mrow class="MJX-TeXAtom-ORD"><mfrac><mi>f</mi><mrow><mi>f</mi><mo>−</mo><mi>n</mi></mrow></mfrac><msub><mi>Z</mi><mrow class="MJX-TeXAtom-ORD"><mi>c</mi></mrow></msub></mrow><mo>−</mo><mrow class="MJX-TeXAtom-ORD"><mfrac><mrow><mi>f</mi><mi>n</mi></mrow><mrow><mi>f</mi><mo>−</mo><mi>n</mi></mrow></mfrac></mrow></math></span></span></div><script type="math/tex; mode=display" id="MathJax-Element-1">ZZ_{c}={\frac{f}{f-n}Z_{c}}-{\frac{fn}{f-n}}</script></p>
+<p>　　上面的方程中，<span class="MathJax_Preview" style="color: inherit; display: none;"></span><span class="MathJax" id="MathJax-Element-2-Frame" tabindex="0" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;mi&gt;Z&lt;/mi&gt;&lt;/math&gt;" role="presentation" style="position: relative;"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-34" style="width: 0.919em; display: inline-block;"><span style="display: inline-block; position: relative; width: 0.736em; height: 0px; font-size: 126%;"><span style="position: absolute; clip: rect(1.346em, 1000.74em, 2.384em, -999.997em); top: -2.195em; left: 0em;"><span class="mrow" id="MathJax-Span-35"><span class="mi" id="MathJax-Span-36" style="font-family: MathJax_Math-italic;">Z<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.064em;"></span></span></span><span style="display: inline-block; width: 0px; height: 2.201em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -0.073em; border-left: 0px solid; width: 0px; height: 1.004em;"></span></span></nobr><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>Z</mi></math></span></span><script type="math/tex" id="MathJax-Element-2">Z</script>即我们要求的深度值，<span class="MathJax_Preview" style="color: inherit; display: none;"></span><span class="MathJax" id="MathJax-Element-3-Frame" tabindex="0" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;msub&gt;&lt;mi&gt;Z&lt;/mi&gt;&lt;mrow class=&quot;MJX-TeXAtom-ORD&quot;&gt;&lt;mi&gt;c&lt;/mi&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;/math&gt;" role="presentation" style="position: relative;"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-37" style="width: 1.346em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.041em; height: 0px; font-size: 126%;"><span style="position: absolute; clip: rect(1.285em, 1001.04em, 2.506em, -999.997em); top: -2.134em; left: 0em;"><span class="mrow" id="MathJax-Span-38"><span class="msubsup" id="MathJax-Span-39"><span style="display: inline-block; position: relative; width: 1.041em; height: 0px;"><span style="position: absolute; clip: rect(3.178em, 1000.74em, 4.216em, -999.997em); top: -4.026em; left: 0em;"><span class="mi" id="MathJax-Span-40" style="font-family: MathJax_Math-italic;">Z<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.064em;"></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span><span style="position: absolute; top: -3.904em; left: 0.675em;"><span class="texatom" id="MathJax-Span-41"><span class="mrow" id="MathJax-Span-42"><span class="mi" id="MathJax-Span-43" style="font-size: 70.7%; font-family: MathJax_Math-italic;">c</span></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span></span></span></span><span style="display: inline-block; width: 0px; height: 2.14em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -0.304em; border-left: 0px solid; width: 0px; height: 1.235em;"></span></span></nobr><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>Z</mi><mrow class="MJX-TeXAtom-ORD"><mi>c</mi></mrow></msub></math></span></span><script type="math/tex" id="MathJax-Element-3">Z_{c}</script>是物体在Eye Space中的z坐标，f是视锥体远裁剪平面在Eye Space中的z坐标，n是视锥体近裁剪平面在Eye Space中的z坐标。由上式可求得(<span class="MathJax_Preview" style="color: inherit; display: none;"></span><span class="MathJax" id="MathJax-Element-4-Frame" tabindex="0" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;mi&gt;Z&lt;/mi&gt;&lt;msub&gt;&lt;mi&gt;Z&lt;/mi&gt;&lt;mrow class=&quot;MJX-TeXAtom-ORD&quot;&gt;&lt;mi&gt;c&lt;/mi&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;/math&gt;" role="presentation" style="position: relative;"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-44" style="width: 2.262em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.774em; height: 0px; font-size: 126%;"><span style="position: absolute; clip: rect(1.346em, 1001.77em, 2.567em, -999.997em); top: -2.195em; left: 0em;"><span class="mrow" id="MathJax-Span-45"><span class="mi" id="MathJax-Span-46" style="font-family: MathJax_Math-italic;">Z<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.064em;"></span></span><span class="msubsup" id="MathJax-Span-47"><span style="display: inline-block; position: relative; width: 1.041em; height: 0px;"><span style="position: absolute; clip: rect(3.178em, 1000.74em, 4.216em, -999.997em); top: -4.026em; left: 0em;"><span class="mi" id="MathJax-Span-48" style="font-family: MathJax_Math-italic;">Z<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.064em;"></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span><span style="position: absolute; top: -3.904em; left: 0.675em;"><span class="texatom" id="MathJax-Span-49"><span class="mrow" id="MathJax-Span-50"><span class="mi" id="MathJax-Span-51" style="font-size: 70.7%; font-family: MathJax_Math-italic;">c</span></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span></span></span></span><span style="display: inline-block; width: 0px; height: 2.201em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -0.304em; border-left: 0px solid; width: 0px; height: 1.235em;"></span></span></nobr><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>Z</mi><msub><mi>Z</mi><mrow class="MJX-TeXAtom-ORD"><mi>c</mi></mrow></msub></math></span></span><script type="math/tex" id="MathJax-Element-4">ZZ_{c}</script>其实是Clip Space中的z值，除以<span class="MathJax_Preview" style="color: inherit; display: none;"></span><span class="MathJax" id="MathJax-Element-5-Frame" tabindex="0" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;msub&gt;&lt;mi&gt;Z&lt;/mi&gt;&lt;mrow class=&quot;MJX-TeXAtom-ORD&quot;&gt;&lt;mi&gt;c&lt;/mi&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;/math&gt;" role="presentation" style="position: relative;"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-52" style="width: 1.346em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.041em; height: 0px; font-size: 126%;"><span style="position: absolute; clip: rect(1.285em, 1001.04em, 2.506em, -999.997em); top: -2.134em; left: 0em;"><span class="mrow" id="MathJax-Span-53"><span class="msubsup" id="MathJax-Span-54"><span style="display: inline-block; position: relative; width: 1.041em; height: 0px;"><span style="position: absolute; clip: rect(3.178em, 1000.74em, 4.216em, -999.997em); top: -4.026em; left: 0em;"><span class="mi" id="MathJax-Span-55" style="font-family: MathJax_Math-italic;">Z<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.064em;"></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span><span style="position: absolute; top: -3.904em; left: 0.675em;"><span class="texatom" id="MathJax-Span-56"><span class="mrow" id="MathJax-Span-57"><span class="mi" id="MathJax-Span-58" style="font-size: 70.7%; font-family: MathJax_Math-italic;">c</span></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span></span></span></span><span style="display: inline-block; width: 0px; height: 2.14em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -0.304em; border-left: 0px solid; width: 0px; height: 1.235em;"></span></span></nobr><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>Z</mi><mrow class="MJX-TeXAtom-ORD"><mi>c</mi></mrow></msub></math></span></span><script type="math/tex" id="MathJax-Element-5">Z_{c}</script>就是透视除法，得到NDC空间的z值，也即是深度值Z)：
+</p>
+<p>&nbsp;<span class="MathJax_Preview" style="color: inherit; display: none;"></span><div class="MathJax_Display" style="text-align: center;"><span class="MathJax" id="MathJax-Element-6-Frame" tabindex="0" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot; display=&quot;block&quot;&gt;&lt;mi&gt;Z&lt;/mi&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mrow class=&quot;MJX-TeXAtom-ORD&quot;&gt;&lt;mfrac&gt;&lt;mi&gt;f&lt;/mi&gt;&lt;mrow&gt;&lt;mi&gt;f&lt;/mi&gt;&lt;mo&gt;&amp;#x2212;&lt;/mo&gt;&lt;mi&gt;n&lt;/mi&gt;&lt;/mrow&gt;&lt;/mfrac&gt;&lt;/mrow&gt;&lt;mo&gt;&amp;#x2212;&lt;/mo&gt;&lt;mrow class=&quot;MJX-TeXAtom-ORD&quot;&gt;&lt;mfrac&gt;&lt;mrow&gt;&lt;mi&gt;f&lt;/mi&gt;&lt;mi&gt;n&lt;/mi&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;mo stretchy=&quot;false&quot;&gt;(&lt;/mo&gt;&lt;mi&gt;f&lt;/mi&gt;&lt;mo&gt;&amp;#x2212;&lt;/mo&gt;&lt;mi&gt;n&lt;/mi&gt;&lt;mo stretchy=&quot;false&quot;&gt;)&lt;/mo&gt;&lt;mo&gt;&amp;#x2217;&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;Z&lt;/mi&gt;&lt;mrow class=&quot;MJX-TeXAtom-ORD&quot;&gt;&lt;mi&gt;c&lt;/mi&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;/mfrac&gt;&lt;/mrow&gt;&lt;mspace width=&quot;1em&quot; /&gt;&lt;mrow class=&quot;MJX-TeXAtom-ORD&quot;&gt;&lt;mo&gt;&amp;#x2460;&lt;/mo&gt;&lt;/mrow&gt;&lt;/math&gt;" role="presentation" style="text-align: center; position: relative;"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-59" style="width: 17.158em; display: inline-block;"><span style="display: inline-block; position: relative; width: 13.617em; height: 0px; font-size: 126%;"><span style="position: absolute; clip: rect(0.614em, 1013.62em, 3.361em, -999.997em); top: -2.195em; left: 0em;"><span class="mrow" id="MathJax-Span-60"><span class="mi" id="MathJax-Span-61" style="font-family: MathJax_Math-italic;">Z<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.064em;"></span></span><span class="mo" id="MathJax-Span-62" style="font-family: MathJax_Main; padding-left: 0.308em;">=</span><span class="texatom" id="MathJax-Span-63" style="padding-left: 0.308em;"><span class="mrow" id="MathJax-Span-64"><span class="mfrac" id="MathJax-Span-65"><span style="display: inline-block; position: relative; width: 2.567em; height: 0px; margin-right: 0.125em; margin-left: 0.125em;"><span style="position: absolute; clip: rect(3.117em, 1000.55em, 4.399em, -999.997em); top: -4.698em; left: 50%; margin-left: -0.302em;"><span class="mi" id="MathJax-Span-66" style="font-family: MathJax_Math-italic;">f<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.064em;"></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span><span style="position: absolute; clip: rect(3.117em, 1002.38em, 4.399em, -999.997em); top: -3.355em; left: 50%; margin-left: -1.218em;"><span class="mrow" id="MathJax-Span-67"><span class="mi" id="MathJax-Span-68" style="font-family: MathJax_Math-italic;">f<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.064em;"></span></span><span class="mo" id="MathJax-Span-69" style="font-family: MathJax_Main; padding-left: 0.247em;">−</span><span class="mi" id="MathJax-Span-70" style="font-family: MathJax_Math-italic; padding-left: 0.247em;">n</span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span><span style="position: absolute; clip: rect(0.858em, 1002.57em, 1.285em, -999.997em); top: -1.34em; left: 0em;"><span style="display: inline-block; overflow: hidden; vertical-align: 0em; border-top: 1.3px solid; width: 2.567em; height: 0px;"></span><span style="display: inline-block; width: 0px; height: 1.102em;"></span></span></span></span></span></span><span class="mo" id="MathJax-Span-71" style="font-family: MathJax_Main; padding-left: 0.247em;">−</span><span class="texatom" id="MathJax-Span-72" style="padding-left: 0.247em;"><span class="mrow" id="MathJax-Span-73"><span class="mfrac" id="MathJax-Span-74"><span style="display: inline-block; position: relative; width: 5.375em; height: 0px; margin-right: 0.125em; margin-left: 0.125em;"><span style="position: absolute; clip: rect(3.117em, 1001.16em, 4.399em, -999.997em); top: -4.698em; left: 50%; margin-left: -0.546em;"><span class="mrow" id="MathJax-Span-75"><span class="mi" id="MathJax-Span-76" style="font-family: MathJax_Math-italic;">f<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.064em;"></span></span><span class="mi" id="MathJax-Span-77" style="font-family: MathJax_Math-italic;">n</span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span><span style="position: absolute; clip: rect(3.117em, 1005.25em, 4.46em, -999.997em); top: -3.294em; left: 50%; margin-left: -2.622em;"><span class="mrow" id="MathJax-Span-78"><span class="mo" id="MathJax-Span-79" style="font-family: MathJax_Main;">(</span><span class="mi" id="MathJax-Span-80" style="font-family: MathJax_Math-italic;">f<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.064em;"></span></span><span class="mo" id="MathJax-Span-81" style="font-family: MathJax_Main; padding-left: 0.247em;">−</span><span class="mi" id="MathJax-Span-82" style="font-family: MathJax_Math-italic; padding-left: 0.247em;">n</span><span class="mo" id="MathJax-Span-83" style="font-family: MathJax_Main;">)</span><span class="mo" id="MathJax-Span-84" style="font-family: MathJax_Main; padding-left: 0.247em;">∗</span><span class="msubsup" id="MathJax-Span-85" style="padding-left: 0.247em;"><span style="display: inline-block; position: relative; width: 1.041em; height: 0px;"><span style="position: absolute; clip: rect(3.178em, 1000.74em, 4.216em, -999.997em); top: -4.026em; left: 0em;"><span class="mi" id="MathJax-Span-86" style="font-family: MathJax_Math-italic;">Z<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.064em;"></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span><span style="position: absolute; top: -3.904em; left: 0.675em;"><span class="texatom" id="MathJax-Span-87"><span class="mrow" id="MathJax-Span-88"><span class="mi" id="MathJax-Span-89" style="font-size: 70.7%; font-family: MathJax_Math-italic;">c</span></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span></span></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span><span style="position: absolute; clip: rect(0.858em, 1005.38em, 1.285em, -999.997em); top: -1.34em; left: 0em;"><span style="display: inline-block; overflow: hidden; vertical-align: 0em; border-top: 1.3px solid; width: 5.375em; height: 0px;"></span><span style="display: inline-block; width: 0px; height: 1.102em;"></span></span></span></span></span></span><span class="mspace" id="MathJax-Span-90" style="height: 0em; vertical-align: 0em; width: 0.98em; display: inline-block; overflow: hidden;"></span><span class="texatom" id="MathJax-Span-91"><span class="mrow" id="MathJax-Span-92"><span class="mo" id="MathJax-Span-93"><span style="font-family: STIXGeneral, &quot;Arial Unicode MS&quot;, serif; font-size: 79%; font-style: normal; font-weight: normal;">①</span></span></span></span></span><span style="display: inline-block; width: 0px; height: 2.201em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -1.304em; border-left: 0px solid; width: 0px; height: 3.158em;"></span></span></nobr><span class="MJX_Assistive_MathML MJX_Assistive_MathML_Block" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mi>Z</mi><mo>=</mo><mrow class="MJX-TeXAtom-ORD"><mfrac><mi>f</mi><mrow><mi>f</mi><mo>−</mo><mi>n</mi></mrow></mfrac></mrow><mo>−</mo><mrow class="MJX-TeXAtom-ORD"><mfrac><mrow><mi>f</mi><mi>n</mi></mrow><mrow><mo stretchy="false">(</mo><mi>f</mi><mo>−</mo><mi>n</mi><mo stretchy="false">)</mo><mo>∗</mo><msub><mi>Z</mi><mrow class="MJX-TeXAtom-ORD"><mi>c</mi></mrow></msub></mrow></mfrac></mrow><mspace width="1em"></mspace><mrow class="MJX-TeXAtom-ORD"><mo>①</mo></mrow></math></span></span></div><script type="math/tex; mode=display" id="MathJax-Element-6">Z={\frac{f}{f-n}}-{\frac{fn}{(f-n)*Z_{c}}}\quad ①</script></p>
+<p>　　对于<span class="MathJax_Preview" style="color: inherit; display: none;"></span><span class="MathJax" id="MathJax-Element-7-Frame" tabindex="0" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;msub&gt;&lt;mi&gt;Z&lt;/mi&gt;&lt;mrow class=&quot;MJX-TeXAtom-ORD&quot;&gt;&lt;mi&gt;c&lt;/mi&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;/math&gt;" role="presentation" style="position: relative;"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-94" style="width: 1.346em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.041em; height: 0px; font-size: 126%;"><span style="position: absolute; clip: rect(1.285em, 1001.04em, 2.506em, -999.997em); top: -2.134em; left: 0em;"><span class="mrow" id="MathJax-Span-95"><span class="msubsup" id="MathJax-Span-96"><span style="display: inline-block; position: relative; width: 1.041em; height: 0px;"><span style="position: absolute; clip: rect(3.178em, 1000.74em, 4.216em, -999.997em); top: -4.026em; left: 0em;"><span class="mi" id="MathJax-Span-97" style="font-family: MathJax_Math-italic;">Z<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.064em;"></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span><span style="position: absolute; top: -3.904em; left: 0.675em;"><span class="texatom" id="MathJax-Span-98"><span class="mrow" id="MathJax-Span-99"><span class="mi" id="MathJax-Span-100" style="font-size: 70.7%; font-family: MathJax_Math-italic;">c</span></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span></span></span></span><span style="display: inline-block; width: 0px; height: 2.14em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -0.304em; border-left: 0px solid; width: 0px; height: 1.235em;"></span></span></nobr><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>Z</mi><mrow class="MJX-TeXAtom-ORD"><mi>c</mi></mrow></msub></math></span></span><script type="math/tex" id="MathJax-Element-7">Z_{c}</script>，我们可以证明其关于物体在World Space中的z值<span class="MathJax_Preview" style="color: inherit; display: none;"></span><span class="MathJax" id="MathJax-Element-8-Frame" tabindex="0" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;msub&gt;&lt;mi&gt;Z&lt;/mi&gt;&lt;mrow class=&quot;MJX-TeXAtom-ORD&quot;&gt;&lt;mi&gt;w&lt;/mi&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;/math&gt;" role="presentation" style="position: relative;"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-101" style="width: 1.651em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.285em; height: 0px; font-size: 126%;"><span style="position: absolute; clip: rect(1.285em, 1001.28em, 2.506em, -999.997em); top: -2.134em; left: 0em;"><span class="mrow" id="MathJax-Span-102"><span class="msubsup" id="MathJax-Span-103"><span style="display: inline-block; position: relative; width: 1.285em; height: 0px;"><span style="position: absolute; clip: rect(3.178em, 1000.74em, 4.216em, -999.997em); top: -4.026em; left: 0em;"><span class="mi" id="MathJax-Span-104" style="font-family: MathJax_Math-italic;">Z<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.064em;"></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span><span style="position: absolute; top: -3.904em; left: 0.675em;"><span class="texatom" id="MathJax-Span-105"><span class="mrow" id="MathJax-Span-106"><span class="mi" id="MathJax-Span-107" style="font-size: 70.7%; font-family: MathJax_Math-italic;">w</span></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span></span></span></span><span style="display: inline-block; width: 0px; height: 2.14em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -0.304em; border-left: 0px solid; width: 0px; height: 1.235em;"></span></span></nobr><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>Z</mi><mrow class="MJX-TeXAtom-ORD"><mi>w</mi></mrow></msub></math></span></span><script type="math/tex" id="MathJax-Element-8">Z_{w}</script>为线性关系，那么根据上式可知<span class="MathJax_Preview" style="color: inherit; display: none;"></span><span class="MathJax" id="MathJax-Element-9-Frame" tabindex="0" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;mi&gt;Z&lt;/mi&gt;&lt;/math&gt;" role="presentation" style="position: relative;"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-108" style="width: 0.919em; display: inline-block;"><span style="display: inline-block; position: relative; width: 0.736em; height: 0px; font-size: 126%;"><span style="position: absolute; clip: rect(1.346em, 1000.74em, 2.384em, -999.997em); top: -2.195em; left: 0em;"><span class="mrow" id="MathJax-Span-109"><span class="mi" id="MathJax-Span-110" style="font-family: MathJax_Math-italic;">Z<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.064em;"></span></span></span><span style="display: inline-block; width: 0px; height: 2.201em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -0.073em; border-left: 0px solid; width: 0px; height: 1.004em;"></span></span></nobr><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>Z</mi></math></span></span><script type="math/tex" id="MathJax-Element-9">Z</script>与<span class="MathJax_Preview" style="color: inherit; display: none;"></span><span class="MathJax" id="MathJax-Element-10-Frame" tabindex="0" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;msub&gt;&lt;mi&gt;Z&lt;/mi&gt;&lt;mrow class=&quot;MJX-TeXAtom-ORD&quot;&gt;&lt;mi&gt;c&lt;/mi&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;/math&gt;" role="presentation" style="position: relative;"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-111" style="width: 1.346em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.041em; height: 0px; font-size: 126%;"><span style="position: absolute; clip: rect(1.285em, 1001.04em, 2.506em, -999.997em); top: -2.134em; left: 0em;"><span class="mrow" id="MathJax-Span-112"><span class="msubsup" id="MathJax-Span-113"><span style="display: inline-block; position: relative; width: 1.041em; height: 0px;"><span style="position: absolute; clip: rect(3.178em, 1000.74em, 4.216em, -999.997em); top: -4.026em; left: 0em;"><span class="mi" id="MathJax-Span-114" style="font-family: MathJax_Math-italic;">Z<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.064em;"></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span><span style="position: absolute; top: -3.904em; left: 0.675em;"><span class="texatom" id="MathJax-Span-115"><span class="mrow" id="MathJax-Span-116"><span class="mi" id="MathJax-Span-117" style="font-size: 70.7%; font-family: MathJax_Math-italic;">c</span></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span></span></span></span><span style="display: inline-block; width: 0px; height: 2.14em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -0.304em; border-left: 0px solid; width: 0px; height: 1.235em;"></span></span></nobr><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>Z</mi><mrow class="MJX-TeXAtom-ORD"><mi>c</mi></mrow></msub></math></span></span><script type="math/tex" id="MathJax-Element-10">Z_{c}</script>、<span class="MathJax_Preview" style="color: inherit; display: none;"></span><span class="MathJax" id="MathJax-Element-11-Frame" tabindex="0" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;msub&gt;&lt;mi&gt;Z&lt;/mi&gt;&lt;mrow class=&quot;MJX-TeXAtom-ORD&quot;&gt;&lt;mi&gt;w&lt;/mi&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;/math&gt;" role="presentation" style="position: relative;"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-118" style="width: 1.651em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.285em; height: 0px; font-size: 126%;"><span style="position: absolute; clip: rect(1.285em, 1001.28em, 2.506em, -999.997em); top: -2.134em; left: 0em;"><span class="mrow" id="MathJax-Span-119"><span class="msubsup" id="MathJax-Span-120"><span style="display: inline-block; position: relative; width: 1.285em; height: 0px;"><span style="position: absolute; clip: rect(3.178em, 1000.74em, 4.216em, -999.997em); top: -4.026em; left: 0em;"><span class="mi" id="MathJax-Span-121" style="font-family: MathJax_Math-italic;">Z<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.064em;"></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span><span style="position: absolute; top: -3.904em; left: 0.675em;"><span class="texatom" id="MathJax-Span-122"><span class="mrow" id="MathJax-Span-123"><span class="mi" id="MathJax-Span-124" style="font-size: 70.7%; font-family: MathJax_Math-italic;">w</span></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span></span></span></span><span style="display: inline-block; width: 0px; height: 2.14em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -0.304em; border-left: 0px solid; width: 0px; height: 1.235em;"></span></span></nobr><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>Z</mi><mrow class="MJX-TeXAtom-ORD"><mi>w</mi></mrow></msub></math></span></span><script type="math/tex" id="MathJax-Element-11">Z_{w}</script>皆不为线性关系。简单起见，我们取f=1000，n=0.01，有：
+</p>
+<p>&nbsp;<span class="MathJax_Preview" style="color: inherit; display: none;"></span><div class="MathJax_Display" style="text-align: center;"><span class="MathJax" id="MathJax-Element-12-Frame" tabindex="0" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot; display=&quot;block&quot;&gt;&lt;mi&gt;Z&lt;/mi&gt;&lt;mo&gt;&amp;#x2248;&lt;/mo&gt;&lt;mo&gt;&amp;#x2212;&lt;/mo&gt;&lt;mrow class=&quot;MJX-TeXAtom-ORD&quot;&gt;&lt;mfrac&gt;&lt;mn&gt;0.01&lt;/mn&gt;&lt;msub&gt;&lt;mi&gt;Z&lt;/mi&gt;&lt;mrow class=&quot;MJX-TeXAtom-ORD&quot;&gt;&lt;mi&gt;c&lt;/mi&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;/mfrac&gt;&lt;/mrow&gt;&lt;mo&gt;+&lt;/mo&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;mspace width=&quot;1em&quot; /&gt;&lt;mrow class=&quot;MJX-TeXAtom-ORD&quot;&gt;&lt;mo&gt;&amp;#x2461;&lt;/mo&gt;&lt;/mrow&gt;&lt;/math&gt;" role="presentation" style="text-align: center; position: relative;"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-125" style="width: 10.87em; display: inline-block;"><span style="display: inline-block; position: relative; width: 8.611em; height: 0px; font-size: 126%;"><span style="position: absolute; clip: rect(0.675em, 1008.61em, 3.239em, -999.997em); top: -2.195em; left: 0em;"><span class="mrow" id="MathJax-Span-126"><span class="mi" id="MathJax-Span-127" style="font-family: MathJax_Math-italic;">Z<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.064em;"></span></span><span class="mo" id="MathJax-Span-128" style="font-family: MathJax_Main; padding-left: 0.308em;">≈</span><span class="mo" id="MathJax-Span-129" style="font-family: MathJax_Main; padding-left: 0.308em;">−</span><span class="texatom" id="MathJax-Span-130"><span class="mrow" id="MathJax-Span-131"><span class="mfrac" id="MathJax-Span-132"><span style="display: inline-block; position: relative; width: 1.896em; height: 0px; margin-right: 0.125em; margin-left: 0.125em;"><span style="position: absolute; clip: rect(3.178em, 1001.71em, 4.216em, -999.997em); top: -4.698em; left: 50%; margin-left: -0.913em;"><span class="mn" id="MathJax-Span-133" style="font-family: MathJax_Main;">0.01</span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span><span style="position: absolute; clip: rect(3.178em, 1001.04em, 4.399em, -999.997em); top: -3.355em; left: 50%; margin-left: -0.546em;"><span class="msubsup" id="MathJax-Span-134"><span style="display: inline-block; position: relative; width: 1.041em; height: 0px;"><span style="position: absolute; clip: rect(3.178em, 1000.74em, 4.216em, -999.997em); top: -4.026em; left: 0em;"><span class="mi" id="MathJax-Span-135" style="font-family: MathJax_Math-italic;">Z<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.064em;"></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span><span style="position: absolute; top: -3.904em; left: 0.675em;"><span class="texatom" id="MathJax-Span-136"><span class="mrow" id="MathJax-Span-137"><span class="mi" id="MathJax-Span-138" style="font-size: 70.7%; font-family: MathJax_Math-italic;">c</span></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span><span style="position: absolute; clip: rect(0.858em, 1001.9em, 1.285em, -999.997em); top: -1.34em; left: 0em;"><span style="display: inline-block; overflow: hidden; vertical-align: 0em; border-top: 1.3px solid; width: 1.896em; height: 0px;"></span><span style="display: inline-block; width: 0px; height: 1.102em;"></span></span></span></span></span></span><span class="mo" id="MathJax-Span-139" style="font-family: MathJax_Main; padding-left: 0.247em;">+</span><span class="mn" id="MathJax-Span-140" style="font-family: MathJax_Main; padding-left: 0.247em;">1</span><span class="mspace" id="MathJax-Span-141" style="height: 0em; vertical-align: 0em; width: 0.98em; display: inline-block; overflow: hidden;"></span><span class="texatom" id="MathJax-Span-142"><span class="mrow" id="MathJax-Span-143"><span class="mo" id="MathJax-Span-144"><span style="font-family: STIXGeneral, &quot;Arial Unicode MS&quot;, serif; font-size: 79%; font-style: normal; font-weight: normal;">②</span></span></span></span></span><span style="display: inline-block; width: 0px; height: 2.201em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -1.15em; border-left: 0px solid; width: 0px; height: 2.927em;"></span></span></nobr><span class="MJX_Assistive_MathML MJX_Assistive_MathML_Block" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mi>Z</mi><mo>≈</mo><mo>−</mo><mrow class="MJX-TeXAtom-ORD"><mfrac><mn>0.01</mn><msub><mi>Z</mi><mrow class="MJX-TeXAtom-ORD"><mi>c</mi></mrow></msub></mfrac></mrow><mo>+</mo><mn>1</mn><mspace width="1em"></mspace><mrow class="MJX-TeXAtom-ORD"><mo>②</mo></mrow></math></span></span></div><script type="math/tex; mode=display" id="MathJax-Element-12">Z≈-{\frac{0.01}{Z_{c}}}+1\quad②</script></p>
+<p>其函数图像如下（<span class="MathJax_Preview" style="color: inherit; display: none;"></span><span class="MathJax" id="MathJax-Element-13-Frame" tabindex="0" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;msub&gt;&lt;mi&gt;Z&lt;/mi&gt;&lt;mrow class=&quot;MJX-TeXAtom-ORD&quot;&gt;&lt;mi&gt;c&lt;/mi&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo&gt;&amp;gt;&lt;/mo&gt;&lt;mn&gt;0&lt;/mn&gt;&lt;/math&gt;" role="presentation" style="position: relative;"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-145" style="width: 3.727em; display: inline-block;"><span style="display: inline-block; position: relative; width: 2.933em; height: 0px; font-size: 126%;"><span style="position: absolute; clip: rect(1.346em, 1002.87em, 2.567em, -999.997em); top: -2.195em; left: 0em;"><span class="mrow" id="MathJax-Span-146"><span class="msubsup" id="MathJax-Span-147"><span style="display: inline-block; position: relative; width: 1.041em; height: 0px;"><span style="position: absolute; clip: rect(3.178em, 1000.74em, 4.216em, -999.997em); top: -4.026em; left: 0em;"><span class="mi" id="MathJax-Span-148" style="font-family: MathJax_Math-italic;">Z<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.064em;"></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span><span style="position: absolute; top: -3.904em; left: 0.675em;"><span class="texatom" id="MathJax-Span-149"><span class="mrow" id="MathJax-Span-150"><span class="mi" id="MathJax-Span-151" style="font-size: 70.7%; font-family: MathJax_Math-italic;">c</span></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span></span></span><span class="mo" id="MathJax-Span-152" style="font-family: MathJax_Main; padding-left: 0.308em;">&gt;</span><span class="mn" id="MathJax-Span-153" style="font-family: MathJax_Main; padding-left: 0.308em;">0</span></span><span style="display: inline-block; width: 0px; height: 2.201em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -0.304em; border-left: 0px solid; width: 0px; height: 1.235em;"></span></span></nobr><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>Z</mi><mrow class="MJX-TeXAtom-ORD"><mi>c</mi></mrow></msub><mo>&gt;</mo><mn>0</mn></math></span></span><script type="math/tex" id="MathJax-Element-13">Z_{c}>0</script>）:
+</p>
+<p><img src="./Reversed-Z详解 - jackmaxwell - 博客园_files/260973-20170514100714660-1838198251.png" alt="">
+	</p>
+<p style="text-align: center;">图1
+</p>
+<p>
+&nbsp;</p>
+<p>　　图中A点表明了<span class="MathJax_Preview" style="color: inherit; display: none;"></span><span class="MathJax" id="MathJax-Element-14-Frame" tabindex="0" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;msub&gt;&lt;mi&gt;Z&lt;/mi&gt;&lt;mrow class=&quot;MJX-TeXAtom-ORD&quot;&gt;&lt;mi&gt;c&lt;/mi&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;/math&gt;" role="presentation" style="position: relative;"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-154" style="width: 1.346em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.041em; height: 0px; font-size: 126%;"><span style="position: absolute; clip: rect(1.285em, 1001.04em, 2.506em, -999.997em); top: -2.134em; left: 0em;"><span class="mrow" id="MathJax-Span-155"><span class="msubsup" id="MathJax-Span-156"><span style="display: inline-block; position: relative; width: 1.041em; height: 0px;"><span style="position: absolute; clip: rect(3.178em, 1000.74em, 4.216em, -999.997em); top: -4.026em; left: 0em;"><span class="mi" id="MathJax-Span-157" style="font-family: MathJax_Math-italic;">Z<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.064em;"></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span><span style="position: absolute; top: -3.904em; left: 0.675em;"><span class="texatom" id="MathJax-Span-158"><span class="mrow" id="MathJax-Span-159"><span class="mi" id="MathJax-Span-160" style="font-size: 70.7%; font-family: MathJax_Math-italic;">c</span></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span></span></span></span><span style="display: inline-block; width: 0px; height: 2.14em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -0.304em; border-left: 0px solid; width: 0px; height: 1.235em;"></span></span></nobr><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>Z</mi><mrow class="MJX-TeXAtom-ORD"><mi>c</mi></mrow></msub></math></span></span><script type="math/tex" id="MathJax-Element-14">Z_{c}</script>∈[0.01,0.1]的物体占用了十分之九（0~0.9）的深度值，这说明在z轴方向上与相机距离为0.1到1000的物体只用到了十分之一（0.9~1.0）的深度值。这个结果是令人印象深刻的，因为Z值的分布太不均匀了，就好像世界上的绝大部分钱都被一个人占有了一样。那Z值的分布情况对于3d渲染来说重要吗？它意味着什么呢？</p>
+<p>　　深度值的不均分分配会导致非常严重的后果，那就是Z-Fighting。深度值的取值范围是[0,1]，但这并不代表它存到Z-Buffer里面后也一定是[0,1]的浮点数，事实上在过去很长一段时间乃至现在很多时候，深度值被保存在16位或者24位的无符号整数中。这里我们用范围更小的16位来存储深度值，因为这能更好的凸显出问题。当深度值存储为16位无符号整型格式时，其取值范围是[0,65535]，现在我们来算一算当深度值为65534时，<span class="MathJax_Preview" style="color: inherit; display: none;"></span><span class="MathJax" id="MathJax-Element-15-Frame" tabindex="0" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;msub&gt;&lt;mi&gt;Z&lt;/mi&gt;&lt;mrow class=&quot;MJX-TeXAtom-ORD&quot;&gt;&lt;mi&gt;c&lt;/mi&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;/math&gt;" role="presentation" style="position: relative;"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-161" style="width: 1.346em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.041em; height: 0px; font-size: 126%;"><span style="position: absolute; clip: rect(1.285em, 1001.04em, 2.506em, -999.997em); top: -2.134em; left: 0em;"><span class="mrow" id="MathJax-Span-162"><span class="msubsup" id="MathJax-Span-163"><span style="display: inline-block; position: relative; width: 1.041em; height: 0px;"><span style="position: absolute; clip: rect(3.178em, 1000.74em, 4.216em, -999.997em); top: -4.026em; left: 0em;"><span class="mi" id="MathJax-Span-164" style="font-family: MathJax_Math-italic;">Z<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.064em;"></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span><span style="position: absolute; top: -3.904em; left: 0.675em;"><span class="texatom" id="MathJax-Span-165"><span class="mrow" id="MathJax-Span-166"><span class="mi" id="MathJax-Span-167" style="font-size: 70.7%; font-family: MathJax_Math-italic;">c</span></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span></span></span></span><span style="display: inline-block; width: 0px; height: 2.14em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -0.304em; border-left: 0px solid; width: 0px; height: 1.235em;"></span></span></nobr><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>Z</mi><mrow class="MJX-TeXAtom-ORD"><mi>c</mi></mrow></msub></math></span></span><script type="math/tex" id="MathJax-Element-15">Z_{c}</script>是多少?65534映射到[0,1]中，值为65534/65535。连同f=1000，n=0.01代入①式（①比②可获得更精确的结果）可解得：<span class="MathJax_Preview" style="color: inherit; display: none;"></span><span class="MathJax" id="MathJax-Element-16-Frame" tabindex="0" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;msub&gt;&lt;mi&gt;Z&lt;/mi&gt;&lt;mrow class=&quot;MJX-TeXAtom-ORD&quot;&gt;&lt;mi&gt;c&lt;/mi&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;/math&gt;" role="presentation" style="position: relative;"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-168" style="width: 1.346em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.041em; height: 0px; font-size: 126%;"><span style="position: absolute; clip: rect(1.285em, 1001.04em, 2.506em, -999.997em); top: -2.134em; left: 0em;"><span class="mrow" id="MathJax-Span-169"><span class="msubsup" id="MathJax-Span-170"><span style="display: inline-block; position: relative; width: 1.041em; height: 0px;"><span style="position: absolute; clip: rect(3.178em, 1000.74em, 4.216em, -999.997em); top: -4.026em; left: 0em;"><span class="mi" id="MathJax-Span-171" style="font-family: MathJax_Math-italic;">Z<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.064em;"></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span><span style="position: absolute; top: -3.904em; left: 0.675em;"><span class="texatom" id="MathJax-Span-172"><span class="mrow" id="MathJax-Span-173"><span class="mi" id="MathJax-Span-174" style="font-size: 70.7%; font-family: MathJax_Math-italic;">c</span></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span></span></span></span><span style="display: inline-block; width: 0px; height: 2.14em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -0.304em; border-left: 0px solid; width: 0px; height: 1.235em;"></span></span></nobr><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>Z</mi><mrow class="MJX-TeXAtom-ORD"><mi>c</mi></mrow></msub></math></span></span><script type="math/tex" id="MathJax-Element-16">Z_{c}</script>≈395.9005401718437≈395.9，这说明在Eye Space中在z轴方向上距离相机395.9到1000的物体的深度值都是65535！当两个物体拥有同样的深度值时，就会产生非常丑陋的Z-Fighting(详见：<a href="https://en.wikipedia.org/wiki/Z-fighting">https://en.wikipedia.org/wiki/Z-fighting</a>）: 
+</p>
+<p><img src="./Reversed-Z详解 - jackmaxwell - 博客园_files/260973-20170514100714957-1872921170.png" alt="">
+	</p>
+<p>(相同的深度值导致GPU不能正确分辨哪个在前，哪个在后)。
+</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;在3d渲染中，应该尽可能的避免产生Z-Fighting，即应该尽可能的改善深度值分布的均匀程度。提高用来保存深度值类型的精度可以起到改善z值冲突的情况，比如用24位甚至32位的数据类型来存储深度会比16位好很多，但由于硬件条件的限制和Z值的非线性增长，目前来说不可能用太多位的硬件出现。有的人也许会想到用浮点数来保存深度值，但其实这毫无作用的，甚至可以说更为浪费，因为对于32位浮点数，其尾数（Mantissa）只有23位二进制数，规格化浮点数加上一位保留位也只有24位，这与24位无符号整数表示的精度是一样的，而浮点数还多使用了8位来存储其他信息。另外，虽然浮点数本身表示的范围更广，但我们知道深度值的范围不过为[0,1]，当我们用浮点数来存储深度值时，当然不会再去做映射，这样，深度值其实只占到了范围在[0,1]的浮点数所占的精度，这势必就更少了，不过好在浮点数的精度分布也主要分布在0值附近，0值附近的符点数拥有更好的精度，但不管怎样，目前来说想依靠浮点数来改善状况是不可取的。
+</p>
+<p>　　除了提高Z-Buffer的精度以外，还有一些方法也可以改善Z值冲突的情况，如增大近裁面与相机位置z值距离（即n值）就是一种方法。对①式 我们取n=0.1，f=1000（不变），有：
+</p>
+<p><span class="MathJax_Preview" style="color: inherit; display: none;"></span><div class="MathJax_Display" style="text-align: center;"><span class="MathJax" id="MathJax-Element-17-Frame" tabindex="0" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot; display=&quot;block&quot;&gt;&lt;mi&gt;Z&lt;/mi&gt;&lt;mo&gt;&amp;#x2248;&lt;/mo&gt;&lt;mo&gt;&amp;#x2212;&lt;/mo&gt;&lt;mfrac&gt;&lt;mn&gt;0.1&lt;/mn&gt;&lt;msub&gt;&lt;mi&gt;Z&lt;/mi&gt;&lt;mrow class=&quot;MJX-TeXAtom-ORD&quot;&gt;&lt;mi&gt;c&lt;/mi&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;/mfrac&gt;&lt;mo&gt;+&lt;/mo&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;/math&gt;" role="presentation" style="text-align: center; position: relative;"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-175" style="width: 8.001em; display: inline-block;"><span style="display: inline-block; position: relative; width: 6.352em; height: 0px; font-size: 126%;"><span style="position: absolute; clip: rect(0.675em, 1006.29em, 3.239em, -999.997em); top: -2.195em; left: 0em;"><span class="mrow" id="MathJax-Span-176"><span class="mi" id="MathJax-Span-177" style="font-family: MathJax_Math-italic;">Z<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.064em;"></span></span><span class="mo" id="MathJax-Span-178" style="font-family: MathJax_Main; padding-left: 0.308em;">≈</span><span class="mo" id="MathJax-Span-179" style="font-family: MathJax_Main; padding-left: 0.308em;">−</span><span class="mfrac" id="MathJax-Span-180"><span style="display: inline-block; position: relative; width: 1.407em; height: 0px; margin-right: 0.125em; margin-left: 0.125em;"><span style="position: absolute; clip: rect(3.178em, 1001.22em, 4.216em, -999.997em); top: -4.698em; left: 50%; margin-left: -0.607em;"><span class="mn" id="MathJax-Span-181" style="font-family: MathJax_Main;">0.1</span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span><span style="position: absolute; clip: rect(3.178em, 1001.04em, 4.399em, -999.997em); top: -3.355em; left: 50%; margin-left: -0.546em;"><span class="msubsup" id="MathJax-Span-182"><span style="display: inline-block; position: relative; width: 1.041em; height: 0px;"><span style="position: absolute; clip: rect(3.178em, 1000.74em, 4.216em, -999.997em); top: -4.026em; left: 0em;"><span class="mi" id="MathJax-Span-183" style="font-family: MathJax_Math-italic;">Z<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.064em;"></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span><span style="position: absolute; top: -3.904em; left: 0.675em;"><span class="texatom" id="MathJax-Span-184"><span class="mrow" id="MathJax-Span-185"><span class="mi" id="MathJax-Span-186" style="font-size: 70.7%; font-family: MathJax_Math-italic;">c</span></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span><span style="position: absolute; clip: rect(0.858em, 1001.41em, 1.285em, -999.997em); top: -1.34em; left: 0em;"><span style="display: inline-block; overflow: hidden; vertical-align: 0em; border-top: 1.3px solid; width: 1.407em; height: 0px;"></span><span style="display: inline-block; width: 0px; height: 1.102em;"></span></span></span></span><span class="mo" id="MathJax-Span-187" style="font-family: MathJax_Main; padding-left: 0.247em;">+</span><span class="mn" id="MathJax-Span-188" style="font-family: MathJax_Main; padding-left: 0.247em;">1</span></span><span style="display: inline-block; width: 0px; height: 2.201em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -1.15em; border-left: 0px solid; width: 0px; height: 2.927em;"></span></span></nobr><span class="MJX_Assistive_MathML MJX_Assistive_MathML_Block" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mi>Z</mi><mo>≈</mo><mo>−</mo><mfrac><mn>0.1</mn><msub><mi>Z</mi><mrow class="MJX-TeXAtom-ORD"><mi>c</mi></mrow></msub></mfrac><mo>+</mo><mn>1</mn></math></span></span></div><script type="math/tex; mode=display" id="MathJax-Element-17">Z≈-\frac{0.1}{Z_{c}}+1</script></p>
+<p>其图像如下：
+</p>
+<p><img src="./Reversed-Z详解 - jackmaxwell - 博客园_files/260973-20170514100715332-2023250724.png" alt="">
+	</p>
+<p style="text-align: center;">图2
+</p>
+<p>　　对比图1，图2的情况好了很多，对比两个图中的点A，前0.9的深度值表示的范围从0.1扩大到了1，说明有更多的深度值用来表示<span class="MathJax_Preview" style="color: inherit; display: none;"></span><span class="MathJax" id="MathJax-Element-18-Frame" tabindex="0" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;msub&gt;&lt;mi&gt;Z&lt;/mi&gt;&lt;mrow class=&quot;MJX-TeXAtom-ORD&quot;&gt;&lt;mi&gt;c&lt;/mi&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;/math&gt;" role="presentation" style="position: relative;"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-189" style="width: 1.346em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.041em; height: 0px; font-size: 126%;"><span style="position: absolute; clip: rect(1.285em, 1001.04em, 2.506em, -999.997em); top: -2.134em; left: 0em;"><span class="mrow" id="MathJax-Span-190"><span class="msubsup" id="MathJax-Span-191"><span style="display: inline-block; position: relative; width: 1.041em; height: 0px;"><span style="position: absolute; clip: rect(3.178em, 1000.74em, 4.216em, -999.997em); top: -4.026em; left: 0em;"><span class="mi" id="MathJax-Span-192" style="font-family: MathJax_Math-italic;">Z<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.064em;"></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span><span style="position: absolute; top: -3.904em; left: 0.675em;"><span class="texatom" id="MathJax-Span-193"><span class="mrow" id="MathJax-Span-194"><span class="mi" id="MathJax-Span-195" style="font-size: 70.7%; font-family: MathJax_Math-italic;">c</span></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span></span></span></span><span style="display: inline-block; width: 0px; height: 2.14em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -0.304em; border-left: 0px solid; width: 0px; height: 1.235em;"></span></span></nobr><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>Z</mi><mrow class="MJX-TeXAtom-ORD"><mi>c</mi></mrow></msub></math></span></span><script type="math/tex" id="MathJax-Element-18">Z_{c}</script>比较大的情况，如果还以16位无符号整数来存储深度值，计算后可得<span class="MathJax_Preview" style="color: inherit; display: none;"></span><span class="MathJax" id="MathJax-Element-19-Frame" tabindex="0" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;msub&gt;&lt;mi&gt;Z&lt;/mi&gt;&lt;mrow class=&quot;MJX-TeXAtom-ORD&quot;&gt;&lt;mi&gt;c&lt;/mi&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;/math&gt;" role="presentation" style="position: relative;"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-196" style="width: 1.346em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.041em; height: 0px; font-size: 126%;"><span style="position: absolute; clip: rect(1.285em, 1001.04em, 2.506em, -999.997em); top: -2.134em; left: 0em;"><span class="mrow" id="MathJax-Span-197"><span class="msubsup" id="MathJax-Span-198"><span style="display: inline-block; position: relative; width: 1.041em; height: 0px;"><span style="position: absolute; clip: rect(3.178em, 1000.74em, 4.216em, -999.997em); top: -4.026em; left: 0em;"><span class="mi" id="MathJax-Span-199" style="font-family: MathJax_Math-italic;">Z<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.064em;"></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span><span style="position: absolute; top: -3.904em; left: 0.675em;"><span class="texatom" id="MathJax-Span-200"><span class="mrow" id="MathJax-Span-201"><span class="mi" id="MathJax-Span-202" style="font-size: 70.7%; font-family: MathJax_Math-italic;">c</span></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span></span></span></span><span style="display: inline-block; width: 0px; height: 2.14em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -0.304em; border-left: 0px solid; width: 0px; height: 1.235em;"></span></span></nobr><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>Z</mi><mrow class="MJX-TeXAtom-ORD"><mi>c</mi></mrow></msub></math></span></span><script type="math/tex" id="MathJax-Element-19">Z_{c}</script>在区间[868,1000]时共享65535这个深度值，这比[396,1000]的冲突少了非常多，降低了出现Z-Fighting的概率。而我们仅仅是将n从0.01提高到0.1而已，这对一般的应用场景几乎不会产生影响。
+</p>
+<p>　　既然如此，我们将n值继续增大，比如取n=100，会怎样呢?我们将n=100，f=1000（不变）代入1式得：</p>
+<p>&nbsp;<span class="MathJax_Preview" style="color: inherit; display: none;"></span><div class="MathJax_Display" style="text-align: center;"><span class="MathJax" id="MathJax-Element-20-Frame" tabindex="0" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot; display=&quot;block&quot;&gt;&lt;mi&gt;Z&lt;/mi&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mo&gt;&amp;#x2212;&lt;/mo&gt;&lt;mfrac&gt;&lt;mn&gt;1000&lt;/mn&gt;&lt;mrow&gt;&lt;mn&gt;9&lt;/mn&gt;&lt;msub&gt;&lt;mi&gt;Z&lt;/mi&gt;&lt;mrow class=&quot;MJX-TeXAtom-ORD&quot;&gt;&lt;mi&gt;c&lt;/mi&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;/mfrac&gt;&lt;mo&gt;+&lt;/mo&gt;&lt;mfrac&gt;&lt;mn&gt;10&lt;/mn&gt;&lt;mn&gt;9&lt;/mn&gt;&lt;/mfrac&gt;&lt;/math&gt;" role="presentation" style="text-align: center; position: relative;"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-203" style="width: 10.015em; display: inline-block;"><span style="display: inline-block; position: relative; width: 7.94em; height: 0px; font-size: 126%;"><span style="position: absolute; clip: rect(0.675em, 1007.94em, 3.239em, -999.997em); top: -2.195em; left: 0em;"><span class="mrow" id="MathJax-Span-204"><span class="mi" id="MathJax-Span-205" style="font-family: MathJax_Math-italic;">Z<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.064em;"></span></span><span class="mo" id="MathJax-Span-206" style="font-family: MathJax_Main; padding-left: 0.308em;">=</span><span class="mo" id="MathJax-Span-207" style="font-family: MathJax_Main; padding-left: 0.308em;">−</span><span class="mfrac" id="MathJax-Span-208"><span style="display: inline-block; position: relative; width: 2.14em; height: 0px; margin-right: 0.125em; margin-left: 0.125em;"><span style="position: absolute; clip: rect(3.178em, 1001.96em, 4.216em, -999.997em); top: -4.698em; left: 50%; margin-left: -0.974em;"><span class="mn" id="MathJax-Span-209" style="font-family: MathJax_Main;">1000</span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span><span style="position: absolute; clip: rect(3.178em, 1001.59em, 4.399em, -999.997em); top: -3.355em; left: 50%; margin-left: -0.791em;"><span class="mrow" id="MathJax-Span-210"><span class="mn" id="MathJax-Span-211" style="font-family: MathJax_Main;">9</span><span class="msubsup" id="MathJax-Span-212"><span style="display: inline-block; position: relative; width: 1.041em; height: 0px;"><span style="position: absolute; clip: rect(3.178em, 1000.74em, 4.216em, -999.997em); top: -4.026em; left: 0em;"><span class="mi" id="MathJax-Span-213" style="font-family: MathJax_Math-italic;">Z<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.064em;"></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span><span style="position: absolute; top: -3.904em; left: 0.675em;"><span class="texatom" id="MathJax-Span-214"><span class="mrow" id="MathJax-Span-215"><span class="mi" id="MathJax-Span-216" style="font-size: 70.7%; font-family: MathJax_Math-italic;">c</span></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span></span></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span><span style="position: absolute; clip: rect(0.858em, 1002.14em, 1.285em, -999.997em); top: -1.34em; left: 0em;"><span style="display: inline-block; overflow: hidden; vertical-align: 0em; border-top: 1.3px solid; width: 2.14em; height: 0px;"></span><span style="display: inline-block; width: 0px; height: 1.102em;"></span></span></span></span><span class="mo" id="MathJax-Span-217" style="font-family: MathJax_Main; padding-left: 0.247em;">+</span><span class="mfrac" id="MathJax-Span-218" style="padding-left: 0.247em;"><span style="display: inline-block; position: relative; width: 1.102em; height: 0px; margin-right: 0.125em; margin-left: 0.125em;"><span style="position: absolute; clip: rect(3.178em, 1000.98em, 4.216em, -999.997em); top: -4.698em; left: 50%; margin-left: -0.485em;"><span class="mn" id="MathJax-Span-219" style="font-family: MathJax_Main;">10</span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span><span style="position: absolute; clip: rect(3.178em, 1000.43em, 4.216em, -999.997em); top: -3.355em; left: 50%; margin-left: -0.241em;"><span class="mn" id="MathJax-Span-220" style="font-family: MathJax_Main;">9</span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span><span style="position: absolute; clip: rect(0.858em, 1001.1em, 1.285em, -999.997em); top: -1.34em; left: 0em;"><span style="display: inline-block; overflow: hidden; vertical-align: 0em; border-top: 1.3px solid; width: 1.102em; height: 0px;"></span><span style="display: inline-block; width: 0px; height: 1.102em;"></span></span></span></span></span><span style="display: inline-block; width: 0px; height: 2.201em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -1.15em; border-left: 0px solid; width: 0px; height: 2.927em;"></span></span></nobr><span class="MJX_Assistive_MathML MJX_Assistive_MathML_Block" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mi>Z</mi><mo>=</mo><mo>−</mo><mfrac><mn>1000</mn><mrow><mn>9</mn><msub><mi>Z</mi><mrow class="MJX-TeXAtom-ORD"><mi>c</mi></mrow></msub></mrow></mfrac><mo>+</mo><mfrac><mn>10</mn><mn>9</mn></mfrac></math></span></span></div><script type="math/tex; mode=display" id="MathJax-Element-20">Z=-\frac{1000}{9Z_{c}}+\frac{10}{9}</script></p>
+<p>图像如下（我必须把x轴压缩400倍才能截个图）：
+</p>
+<p><img src="./Reversed-Z详解 - jackmaxwell - 博客园_files/260973-20170514100715597-1348153952.png" alt="">
+	</p>
+<p style="text-align: center;">图3
+</p>
+<p>　　可以看到0到0.9的深度值已经可以表示到大约=600的时候了，要知道n=0.01的时候， 0.9的深度值<span class="MathJax_Preview" style="color: inherit; display: none;"></span><span class="MathJax" id="MathJax-Element-21-Frame" tabindex="0" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;msub&gt;&lt;mi&gt;Z&lt;/mi&gt;&lt;mrow class=&quot;MJX-TeXAtom-ORD&quot;&gt;&lt;mi&gt;c&lt;/mi&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;/math&gt;" role="presentation" style="position: relative;"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-221" style="width: 1.346em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.041em; height: 0px; font-size: 126%;"><span style="position: absolute; clip: rect(1.285em, 1001.04em, 2.506em, -999.997em); top: -2.134em; left: 0em;"><span class="mrow" id="MathJax-Span-222"><span class="msubsup" id="MathJax-Span-223"><span style="display: inline-block; position: relative; width: 1.041em; height: 0px;"><span style="position: absolute; clip: rect(3.178em, 1000.74em, 4.216em, -999.997em); top: -4.026em; left: 0em;"><span class="mi" id="MathJax-Span-224" style="font-family: MathJax_Math-italic;">Z<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.064em;"></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span><span style="position: absolute; top: -3.904em; left: 0.675em;"><span class="texatom" id="MathJax-Span-225"><span class="mrow" id="MathJax-Span-226"><span class="mi" id="MathJax-Span-227" style="font-size: 70.7%; font-family: MathJax_Math-italic;">c</span></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span></span></span></span><span style="display: inline-block; width: 0px; height: 2.14em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -0.304em; border-left: 0px solid; width: 0px; height: 1.235em;"></span></span></nobr><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>Z</mi><mrow class="MJX-TeXAtom-ORD"><mi>c</mi></mrow></msub></math></span></span><script type="math/tex" id="MathJax-Element-21">Z_{c}</script>只能表示到0.1；n=0.1的时候<span class="MathJax_Preview" style="color: inherit; display: none;"></span><span class="MathJax" id="MathJax-Element-22-Frame" tabindex="0" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;msub&gt;&lt;mi&gt;Z&lt;/mi&gt;&lt;mrow class=&quot;MJX-TeXAtom-ORD&quot;&gt;&lt;mi&gt;c&lt;/mi&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;/math&gt;" role="presentation" style="position: relative;"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-228" style="width: 1.346em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.041em; height: 0px; font-size: 126%;"><span style="position: absolute; clip: rect(1.285em, 1001.04em, 2.506em, -999.997em); top: -2.134em; left: 0em;"><span class="mrow" id="MathJax-Span-229"><span class="msubsup" id="MathJax-Span-230"><span style="display: inline-block; position: relative; width: 1.041em; height: 0px;"><span style="position: absolute; clip: rect(3.178em, 1000.74em, 4.216em, -999.997em); top: -4.026em; left: 0em;"><span class="mi" id="MathJax-Span-231" style="font-family: MathJax_Math-italic;">Z<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.064em;"></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span><span style="position: absolute; top: -3.904em; left: 0.675em;"><span class="texatom" id="MathJax-Span-232"><span class="mrow" id="MathJax-Span-233"><span class="mi" id="MathJax-Span-234" style="font-size: 70.7%; font-family: MathJax_Math-italic;">c</span></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span></span></span></span><span style="display: inline-block; width: 0px; height: 2.14em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -0.304em; border-left: 0px solid; width: 0px; height: 1.235em;"></span></span></nobr><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>Z</mi><mrow class="MJX-TeXAtom-ORD"><mi>c</mi></mrow></msub></math></span></span><script type="math/tex" id="MathJax-Element-22">Z_{c}</script>只能表示到1。依然将深度值存入到无符号整型中，我们可以计算出当物体的<span class="MathJax_Preview" style="color: inherit; display: none;"></span><span class="MathJax" id="MathJax-Element-23-Frame" tabindex="0" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;msub&gt;&lt;mi&gt;Z&lt;/mi&gt;&lt;mrow class=&quot;MJX-TeXAtom-ORD&quot;&gt;&lt;mi&gt;c&lt;/mi&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;/math&gt;" role="presentation" style="position: relative;"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-235" style="width: 1.346em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.041em; height: 0px; font-size: 126%;"><span style="position: absolute; clip: rect(1.285em, 1001.04em, 2.506em, -999.997em); top: -2.134em; left: 0em;"><span class="mrow" id="MathJax-Span-236"><span class="msubsup" id="MathJax-Span-237"><span style="display: inline-block; position: relative; width: 1.041em; height: 0px;"><span style="position: absolute; clip: rect(3.178em, 1000.74em, 4.216em, -999.997em); top: -4.026em; left: 0em;"><span class="mi" id="MathJax-Span-238" style="font-family: MathJax_Math-italic;">Z<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.064em;"></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span><span style="position: absolute; top: -3.904em; left: 0.675em;"><span class="texatom" id="MathJax-Span-239"><span class="mrow" id="MathJax-Span-240"><span class="mi" id="MathJax-Span-241" style="font-size: 70.7%; font-family: MathJax_Math-italic;">c</span></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span></span></span></span><span style="display: inline-block; width: 0px; height: 2.14em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -0.304em; border-left: 0px solid; width: 0px; height: 1.235em;"></span></span></nobr><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>Z</mi><mrow class="MJX-TeXAtom-ORD"><mi>c</mi></mrow></msub></math></span></span><script type="math/tex" id="MathJax-Element-23">Z_{c}</script>∈[999.863,1000]时，它们才共用65535这个深度值，通过取n=100我们很好地改善了Z值的分布情况。至少看起来已经是个很好——甚至可以说近乎完美的办法了。但是，事实并非如此，由于取得n=100，我们舍弃了整个<span class="MathJax_Preview" style="color: inherit; display: none;"></span><span class="MathJax" id="MathJax-Element-24-Frame" tabindex="0" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;msub&gt;&lt;mi&gt;Z&lt;/mi&gt;&lt;mrow class=&quot;MJX-TeXAtom-ORD&quot;&gt;&lt;mi&gt;c&lt;/mi&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;/math&gt;" role="presentation" style="position: relative;"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-242" style="width: 1.346em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.041em; height: 0px; font-size: 126%;"><span style="position: absolute; clip: rect(1.285em, 1001.04em, 2.506em, -999.997em); top: -2.134em; left: 0em;"><span class="mrow" id="MathJax-Span-243"><span class="msubsup" id="MathJax-Span-244"><span style="display: inline-block; position: relative; width: 1.041em; height: 0px;"><span style="position: absolute; clip: rect(3.178em, 1000.74em, 4.216em, -999.997em); top: -4.026em; left: 0em;"><span class="mi" id="MathJax-Span-245" style="font-family: MathJax_Math-italic;">Z<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.064em;"></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span><span style="position: absolute; top: -3.904em; left: 0.675em;"><span class="texatom" id="MathJax-Span-246"><span class="mrow" id="MathJax-Span-247"><span class="mi" id="MathJax-Span-248" style="font-size: 70.7%; font-family: MathJax_Math-italic;">c</span></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span></span></span></span><span style="display: inline-block; width: 0px; height: 2.14em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -0.304em; border-left: 0px solid; width: 0px; height: 1.235em;"></span></span></nobr><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>Z</mi><mrow class="MJX-TeXAtom-ORD"><mi>c</mi></mrow></msub></math></span></span><script type="math/tex" id="MathJax-Element-24">Z_{c}</script>∈[0,100]的物体，我们将永远看不到那些离相机z轴距离少于100的物体！增大近裁剪面的值以换取深度值的分布均匀程度，难言利弊得失。
+</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;难道就没有更好的改善深度值分布的办法了吗？当然有了，办法就是神奇的Reversed-Z，Reversed-Z的做法其实是很简单的，即将原本近裁剪平面映射到深度值0，远裁剪平面映射到深度值1的映射关系反过来，让近裁剪平面映射到深度值1，远裁剪平面映射到深度值0。即将[n,f]映射到[1,0]，按照上文给出的投影矩阵推导链接中的方法，我们可以推导出Reversed-Z的情况下Z与<span class="MathJax_Preview" style="color: inherit; display: none;"></span><span class="MathJax" id="MathJax-Element-25-Frame" tabindex="0" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;msub&gt;&lt;mi&gt;Z&lt;/mi&gt;&lt;mrow class=&quot;MJX-TeXAtom-ORD&quot;&gt;&lt;mi&gt;c&lt;/mi&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;/math&gt;" role="presentation" style="position: relative;"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-249" style="width: 1.346em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.041em; height: 0px; font-size: 126%;"><span style="position: absolute; clip: rect(1.285em, 1001.04em, 2.506em, -999.997em); top: -2.134em; left: 0em;"><span class="mrow" id="MathJax-Span-250"><span class="msubsup" id="MathJax-Span-251"><span style="display: inline-block; position: relative; width: 1.041em; height: 0px;"><span style="position: absolute; clip: rect(3.178em, 1000.74em, 4.216em, -999.997em); top: -4.026em; left: 0em;"><span class="mi" id="MathJax-Span-252" style="font-family: MathJax_Math-italic;">Z<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.064em;"></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span><span style="position: absolute; top: -3.904em; left: 0.675em;"><span class="texatom" id="MathJax-Span-253"><span class="mrow" id="MathJax-Span-254"><span class="mi" id="MathJax-Span-255" style="font-size: 70.7%; font-family: MathJax_Math-italic;">c</span></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span></span></span></span><span style="display: inline-block; width: 0px; height: 2.14em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -0.304em; border-left: 0px solid; width: 0px; height: 1.235em;"></span></span></nobr><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>Z</mi><mrow class="MJX-TeXAtom-ORD"><mi>c</mi></mrow></msub></math></span></span><script type="math/tex" id="MathJax-Element-25">Z_{c}</script>的关系（其实就是①式中n与f互换）：
+</p>
+<p>&nbsp;&nbsp;<span class="MathJax_Preview" style="color: inherit; display: none;"></span><div class="MathJax_Display" style="text-align: center;"><span class="MathJax" id="MathJax-Element-26-Frame" tabindex="0" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot; display=&quot;block&quot;&gt;&lt;mi&gt;Z&lt;/mi&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mrow class=&quot;MJX-TeXAtom-ORD&quot;&gt;&lt;mfrac&gt;&lt;mi&gt;n&lt;/mi&gt;&lt;mrow&gt;&lt;mi&gt;n&lt;/mi&gt;&lt;mo&gt;&amp;#x2212;&lt;/mo&gt;&lt;mi&gt;f&lt;/mi&gt;&lt;/mrow&gt;&lt;/mfrac&gt;&lt;/mrow&gt;&lt;mo&gt;&amp;#x2212;&lt;/mo&gt;&lt;mrow class=&quot;MJX-TeXAtom-ORD&quot;&gt;&lt;mfrac&gt;&lt;mrow&gt;&lt;mi&gt;f&lt;/mi&gt;&lt;mi&gt;n&lt;/mi&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;mo stretchy=&quot;false&quot;&gt;(&lt;/mo&gt;&lt;mi&gt;n&lt;/mi&gt;&lt;mo&gt;&amp;#x2212;&lt;/mo&gt;&lt;mi&gt;f&lt;/mi&gt;&lt;mo stretchy=&quot;false&quot;&gt;)&lt;/mo&gt;&lt;mo&gt;&amp;#x2217;&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;Z&lt;/mi&gt;&lt;mrow class=&quot;MJX-TeXAtom-ORD&quot;&gt;&lt;mi&gt;c&lt;/mi&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;/mfrac&gt;&lt;/mrow&gt;&lt;/math&gt;" role="presentation" style="text-align: center; position: relative;"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-256" style="width: 14.96em; display: inline-block;"><span style="display: inline-block; position: relative; width: 11.847em; height: 0px; font-size: 126%;"><span style="position: absolute; clip: rect(0.614em, 1011.85em, 3.361em, -999.997em); top: -2.195em; left: 0em;"><span class="mrow" id="MathJax-Span-257"><span class="mi" id="MathJax-Span-258" style="font-family: MathJax_Math-italic;">Z<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.064em;"></span></span><span class="mo" id="MathJax-Span-259" style="font-family: MathJax_Main; padding-left: 0.308em;">=</span><span class="texatom" id="MathJax-Span-260" style="padding-left: 0.308em;"><span class="mrow" id="MathJax-Span-261"><span class="mfrac" id="MathJax-Span-262"><span style="display: inline-block; position: relative; width: 2.567em; height: 0px; margin-right: 0.125em; margin-left: 0.125em;"><span style="position: absolute; clip: rect(3.422em, 1000.61em, 4.216em, -999.997em); top: -4.698em; left: 50%; margin-left: -0.302em;"><span class="mi" id="MathJax-Span-263" style="font-family: MathJax_Math-italic;">n</span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span><span style="position: absolute; clip: rect(3.117em, 1002.45em, 4.399em, -999.997em); top: -3.355em; left: 50%; margin-left: -1.218em;"><span class="mrow" id="MathJax-Span-264"><span class="mi" id="MathJax-Span-265" style="font-family: MathJax_Math-italic;">n</span><span class="mo" id="MathJax-Span-266" style="font-family: MathJax_Main; padding-left: 0.247em;">−</span><span class="mi" id="MathJax-Span-267" style="font-family: MathJax_Math-italic; padding-left: 0.247em;">f<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.064em;"></span></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span><span style="position: absolute; clip: rect(0.858em, 1002.57em, 1.285em, -999.997em); top: -1.34em; left: 0em;"><span style="display: inline-block; overflow: hidden; vertical-align: 0em; border-top: 1.3px solid; width: 2.567em; height: 0px;"></span><span style="display: inline-block; width: 0px; height: 1.102em;"></span></span></span></span></span></span><span class="mo" id="MathJax-Span-268" style="font-family: MathJax_Main; padding-left: 0.247em;">−</span><span class="texatom" id="MathJax-Span-269" style="padding-left: 0.247em;"><span class="mrow" id="MathJax-Span-270"><span class="mfrac" id="MathJax-Span-271"><span style="display: inline-block; position: relative; width: 5.375em; height: 0px; margin-right: 0.125em; margin-left: 0.125em;"><span style="position: absolute; clip: rect(3.117em, 1001.16em, 4.399em, -999.997em); top: -4.698em; left: 50%; margin-left: -0.546em;"><span class="mrow" id="MathJax-Span-272"><span class="mi" id="MathJax-Span-273" style="font-family: MathJax_Math-italic;">f<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.064em;"></span></span><span class="mi" id="MathJax-Span-274" style="font-family: MathJax_Math-italic;">n</span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span><span style="position: absolute; clip: rect(3.117em, 1005.25em, 4.46em, -999.997em); top: -3.294em; left: 50%; margin-left: -2.622em;"><span class="mrow" id="MathJax-Span-275"><span class="mo" id="MathJax-Span-276" style="font-family: MathJax_Main;">(</span><span class="mi" id="MathJax-Span-277" style="font-family: MathJax_Math-italic;">n</span><span class="mo" id="MathJax-Span-278" style="font-family: MathJax_Main; padding-left: 0.247em;">−</span><span class="mi" id="MathJax-Span-279" style="font-family: MathJax_Math-italic; padding-left: 0.247em;">f<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.064em;"></span></span><span class="mo" id="MathJax-Span-280" style="font-family: MathJax_Main;">)</span><span class="mo" id="MathJax-Span-281" style="font-family: MathJax_Main; padding-left: 0.247em;">∗</span><span class="msubsup" id="MathJax-Span-282" style="padding-left: 0.247em;"><span style="display: inline-block; position: relative; width: 1.041em; height: 0px;"><span style="position: absolute; clip: rect(3.178em, 1000.74em, 4.216em, -999.997em); top: -4.026em; left: 0em;"><span class="mi" id="MathJax-Span-283" style="font-family: MathJax_Math-italic;">Z<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.064em;"></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span><span style="position: absolute; top: -3.904em; left: 0.675em;"><span class="texatom" id="MathJax-Span-284"><span class="mrow" id="MathJax-Span-285"><span class="mi" id="MathJax-Span-286" style="font-size: 70.7%; font-family: MathJax_Math-italic;">c</span></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span></span></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span><span style="position: absolute; clip: rect(0.858em, 1005.38em, 1.285em, -999.997em); top: -1.34em; left: 0em;"><span style="display: inline-block; overflow: hidden; vertical-align: 0em; border-top: 1.3px solid; width: 5.375em; height: 0px;"></span><span style="display: inline-block; width: 0px; height: 1.102em;"></span></span></span></span></span></span></span><span style="display: inline-block; width: 0px; height: 2.201em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -1.304em; border-left: 0px solid; width: 0px; height: 3.158em;"></span></span></nobr><span class="MJX_Assistive_MathML MJX_Assistive_MathML_Block" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mi>Z</mi><mo>=</mo><mrow class="MJX-TeXAtom-ORD"><mfrac><mi>n</mi><mrow><mi>n</mi><mo>−</mo><mi>f</mi></mrow></mfrac></mrow><mo>−</mo><mrow class="MJX-TeXAtom-ORD"><mfrac><mrow><mi>f</mi><mi>n</mi></mrow><mrow><mo stretchy="false">(</mo><mi>n</mi><mo>−</mo><mi>f</mi><mo stretchy="false">)</mo><mo>∗</mo><msub><mi>Z</mi><mrow class="MJX-TeXAtom-ORD"><mi>c</mi></mrow></msub></mrow></mfrac></mrow></math></span></span></div><script type="math/tex; mode=display" id="MathJax-Element-26">Z={\frac{n}{n-f}}-{\frac{fn}{(n-f)*Z_{c}}}</script></p>
+<p>　　我们取n=0.1<span style="font-size: 10pt;">，f=1000，有：
+</span></p>
+<p><span class="MathJax_Preview" style="color: inherit; display: none;"></span><div class="MathJax_Display" style="text-align: center;"><span class="MathJax" id="MathJax-Element-27-Frame" tabindex="0" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot; display=&quot;block&quot;&gt;&lt;mi&gt;Z&lt;/mi&gt;&lt;mo&gt;&amp;#x2248;&lt;/mo&gt;&lt;mfrac&gt;&lt;mn&gt;0.1&lt;/mn&gt;&lt;msub&gt;&lt;mi&gt;Z&lt;/mi&gt;&lt;mrow class=&quot;MJX-TeXAtom-ORD&quot;&gt;&lt;mi&gt;c&lt;/mi&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;/mfrac&gt;&lt;/math&gt;" role="presentation" style="text-align: center; position: relative;"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-287" style="width: 4.765em; display: inline-block;"><span style="display: inline-block; position: relative; width: 3.788em; height: 0px; font-size: 126%;"><span style="position: absolute; clip: rect(0.675em, 1003.79em, 3.239em, -999.997em); top: -2.195em; left: 0em;"><span class="mrow" id="MathJax-Span-288"><span class="mi" id="MathJax-Span-289" style="font-family: MathJax_Math-italic;">Z<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.064em;"></span></span><span class="mo" id="MathJax-Span-290" style="font-family: MathJax_Main; padding-left: 0.308em;">≈</span><span class="mfrac" id="MathJax-Span-291" style="padding-left: 0.308em;"><span style="display: inline-block; position: relative; width: 1.407em; height: 0px; margin-right: 0.125em; margin-left: 0.125em;"><span style="position: absolute; clip: rect(3.178em, 1001.22em, 4.216em, -999.997em); top: -4.698em; left: 50%; margin-left: -0.607em;"><span class="mn" id="MathJax-Span-292" style="font-family: MathJax_Main;">0.1</span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span><span style="position: absolute; clip: rect(3.178em, 1001.04em, 4.399em, -999.997em); top: -3.355em; left: 50%; margin-left: -0.546em;"><span class="msubsup" id="MathJax-Span-293"><span style="display: inline-block; position: relative; width: 1.041em; height: 0px;"><span style="position: absolute; clip: rect(3.178em, 1000.74em, 4.216em, -999.997em); top: -4.026em; left: 0em;"><span class="mi" id="MathJax-Span-294" style="font-family: MathJax_Math-italic;">Z<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.064em;"></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span><span style="position: absolute; top: -3.904em; left: 0.675em;"><span class="texatom" id="MathJax-Span-295"><span class="mrow" id="MathJax-Span-296"><span class="mi" id="MathJax-Span-297" style="font-size: 70.7%; font-family: MathJax_Math-italic;">c</span></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span></span></span><span style="display: inline-block; width: 0px; height: 4.032em;"></span></span><span style="position: absolute; clip: rect(0.858em, 1001.41em, 1.285em, -999.997em); top: -1.34em; left: 0em;"><span style="display: inline-block; overflow: hidden; vertical-align: 0em; border-top: 1.3px solid; width: 1.407em; height: 0px;"></span><span style="display: inline-block; width: 0px; height: 1.102em;"></span></span></span></span></span><span style="display: inline-block; width: 0px; height: 2.201em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -1.15em; border-left: 0px solid; width: 0px; height: 2.927em;"></span></span></nobr><span class="MJX_Assistive_MathML MJX_Assistive_MathML_Block" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mi>Z</mi><mo>≈</mo><mfrac><mn>0.1</mn><msub><mi>Z</mi><mrow class="MJX-TeXAtom-ORD"><mi>c</mi></mrow></msub></mfrac></math></span></span></div><script type="math/tex; mode=display" id="MathJax-Element-27">Z≈\frac{0.1}{Z_{c}}</script></p>
+<p><span style="font-size: 10pt;">函数图像如下：
+</span></p>
+<p><img src="./Reversed-Z详解 - jackmaxwell - 博客园_files/260973-20170514100715972-2034946221.png" alt=""></p>
+<p style="text-align: center;"><span style="font-size: 10pt;">图4
+</span></p>
+<p><span style="font-size: 10pt;">&nbsp;&nbsp;&nbsp;&nbsp;看到上面的图，细心的读者可能会发现，这不跟图2一样嘛，都是<span class="MathJax_Preview" style="color: inherit; display: none;"></span><span class="MathJax" id="MathJax-Element-28-Frame" tabindex="0" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;msub&gt;&lt;mi&gt;Z&lt;/mi&gt;&lt;mrow class=&quot;MJX-TeXAtom-ORD&quot;&gt;&lt;mi&gt;c&lt;/mi&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;/math&gt;" role="presentation" style="position: relative;"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-298" style="width: 1.372em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.074em; height: 0px; font-size: 126%;"><span style="position: absolute; clip: rect(1.432em, 1001.07em, 2.622em, -999.997em); top: -2.259em; left: 0em;"><span class="mrow" id="MathJax-Span-299"><span class="msubsup" id="MathJax-Span-300"><span style="display: inline-block; position: relative; width: 1.074em; height: 0px;"><span style="position: absolute; clip: rect(3.158em, 1000.72em, 4.17em, -999.997em); top: -3.985em; left: 0em;"><span class="mi" id="MathJax-Span-301" style="font-family: MathJax_Math-italic;">Z<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.063em;"></span></span><span style="display: inline-block; width: 0px; height: 3.991em;"></span></span><span style="position: absolute; top: -3.807em; left: 0.658em;"><span class="texatom" id="MathJax-Span-302"><span class="mrow" id="MathJax-Span-303"><span class="mi" id="MathJax-Span-304" style="font-size: 70.7%; font-family: MathJax_Math-italic;">c</span></span></span><span style="display: inline-block; width: 0px; height: 3.991em;"></span></span></span></span></span><span style="display: inline-block; width: 0px; height: 2.265em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -0.296em; border-left: 0px solid; width: 0px; height: 1.204em;"></span></span></nobr><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>Z</mi><mrow class="MJX-TeXAtom-ORD"><mi>c</mi></mrow></msub></math></span></span><script type="math/tex" id="MathJax-Element-28">Z_{c}</script></span>=1的时候，深度值Z就用了十分之九（0.9）了，不过是前者是[0, 0.9]，这里是[0.1, 1]而已，有区别吗？如果我们还是以无符号整型来存储深度值，的确对我们达成目的没有帮助，依然是靠近近裁剪平面的少数物体占据了大多数深度值。但是我说过Reversed-Z是神奇的，它的神奇之处是当它搭配上我前面否定过的浮点数时，Reversed-Z在"提高深度值均分分布程度" 这件事上就变得非常有效了。
+</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;让我们回到浮点数，前面有提到过 "0值附近的符点数拥有更好的精度"，这是有依据的，浮点数具体介绍请参考维基百科：<a href="https://en.wikipedia.org/wiki/IEEE_floating_point">https://en.wikipedia.org/wiki/IEEE_floating_point</a>，这里以单精度符点类型做简单说明。规约化单精度浮点数的有效位数只有7位（实际是7点多位，这里简单起见取7），当一个浮点数小于1的时候，它可以确保有6位小数位是精确的，也就是说，在(0,1)这个开区间内至少可以包含999999（6位）个误差允许的单精度浮点数，1~9同理，但由于非规约化浮点数（主要是在0值左右）的存在，使得(0,1)这个区间内的浮点数个数要比(1,2),(2,3)…(9,10)这些区间内的符点数要多。在(10, 11)这个区间内，由于整数位占去了两位，所以这个区间内至少只可以包含99999（5位）个有效单精度浮点数，以此类推，(100,101)开区间内包含9999个有效单精度浮点数，(1000,1001)开区间内包含999个有效单精度浮点数等等，当数量级来到[1000000,1000001]时(注意这里是闭区间)，这个区间内能保证有效的单精度浮点数不过就两个：1000000与1000001本身。这说明浮点数的分布与深度值的分布一样是不均与的，越靠近0的浮点数分布越密集，越远离0的浮点数分布越稀疏：
+</p>
+<p><img src="./Reversed-Z详解 - jackmaxwell - 博客园_files/260973-20170514100716707-1613247786.png" alt="">
+	</p>
+<p style="text-align: center;">浮点数分布情况图
+</p>
+<p>　　当我们用正常的Z值系统（[n,f]映射到[0,1]）与浮点数配合时，符点数没有任何帮助(原谅这个不一样的画风，由于我还不太会使用GeogeBra作图，我把本文的主要参考文章<a href="https://developer.nvidia.com/content/depth-precision-visualized">Depth Precision Visualized</a>的图拿过来用了)： 
+</p>
+<p><img src="./Reversed-Z详解 - jackmaxwell - 博客园_files/260973-20170514100717176-780615856.png" alt="">
+	</p>
+<p style="text-align: center;"><span style="font-size: 10pt;">图5
+</span></p>
+<p>　　图5中z1到z2这么远的距离依然只共享一个深度值0.99。
+</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;
+</p>
+<p>但当我们将Reversed-Z（[n,f]映射到[1,0]）与浮点数结合起来，情况就变成了：
+</p>
+<p><img src="./Reversed-Z详解 - jackmaxwell - 博客园_files/260973-20170514100717426-781762842.png" alt=""></p>
+<p style="text-align: center;"><span style="font-size: 10pt;">图6 
+</span></p>
+<p><span style="font-size: 10pt;">随着<span class="MathJax_Preview" style="color: inherit; display: none;"></span><span class="MathJax" id="MathJax-Element-29-Frame" tabindex="0" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;msub&gt;&lt;mi&gt;Z&lt;/mi&gt;&lt;mrow class=&quot;MJX-TeXAtom-ORD&quot;&gt;&lt;mi&gt;c&lt;/mi&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;/math&gt;" role="presentation" style="position: relative;"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-305" style="width: 1.372em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.074em; height: 0px; font-size: 126%;"><span style="position: absolute; clip: rect(1.432em, 1001.07em, 2.622em, -999.997em); top: -2.259em; left: 0em;"><span class="mrow" id="MathJax-Span-306"><span class="msubsup" id="MathJax-Span-307"><span style="display: inline-block; position: relative; width: 1.074em; height: 0px;"><span style="position: absolute; clip: rect(3.158em, 1000.72em, 4.17em, -999.997em); top: -3.985em; left: 0em;"><span class="mi" id="MathJax-Span-308" style="font-family: MathJax_Math-italic;">Z<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.063em;"></span></span><span style="display: inline-block; width: 0px; height: 3.991em;"></span></span><span style="position: absolute; top: -3.807em; left: 0.658em;"><span class="texatom" id="MathJax-Span-309"><span class="mrow" id="MathJax-Span-310"><span class="mi" id="MathJax-Span-311" style="font-size: 70.7%; font-family: MathJax_Math-italic;">c</span></span></span><span style="display: inline-block; width: 0px; height: 3.991em;"></span></span></span></span></span><span style="display: inline-block; width: 0px; height: 2.265em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -0.296em; border-left: 0px solid; width: 0px; height: 1.204em;"></span></span></nobr><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>Z</mi><mrow class="MJX-TeXAtom-ORD"><mi>c</mi></mrow></msub></math></span></span><script type="math/tex" id="MathJax-Element-29">Z_{c}</script></span>的增大，深度值Z的降幅越来越小，看似又要陷入精度不够的死胡同，但浮点数的分布规律恰好弥补了这一不足，使得较大的也有足够的精度表示，图6中z1到z2比之图5中多获得了5个深度值。这样，距离相机近和远的物体分得的深度值就比较平均了，变相的实现了"改善深度值分布状况"这一目的，从而也达到了降低Z-Fighting出现的概率（是的，虽然Reversed-Z这么神奇，但Z-Fighting还是不能完全避免的，虽然概率已经降到很低）。
+</p>
+<p>作为依赖Unity引擎的开发者，很高兴看到Unity在其5.5以及以后的版本中引入了Reversed-Z的做法，在这里也提醒一下大家以后为Unity写shader的时候，如果用到深度值Z，一定要记得 [n,f] 是映射到[1,0]，否则就会写出错误的效果<span style="font-family: Wingdings;">J</span>。</p>
+<p>&nbsp;</p>
+<p>参考与说明：</p>
+<p>本文参考：<a href="https://developer.nvidia.com/content/depth-precision-visualized">Depth Precision Visualized</a>，对Reversed-Z进行思考与分析，希望能对读者有所帮助。</p>
+<p>文中的函数图像使用GeoGeBra软件绘制，公式用LaTex 语法写成。</p>
+</div>
+<div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block"><div id="BlogPostCategory">
+    分类: 
+            <a href="https://www.cnblogs.com/jackmaxwell/category/707108.html" target="_blank">【图形学】</a></div>
+<div id="EntryTag">
+    标签: 
+            <a href="https://www.cnblogs.com/jackmaxwell/tag/Reversed-Z%20Z-Buffer%20%E7%B2%BE%E5%BA%A6%20%E6%B8%B2%E6%9F%93/">Reversed-Z Z-Buffer 精度 渲染</a></div>
+
+    <div id="blog_post_info">
+<div id="green_channel">
+        <a href="javascript:void(0);" id="green_channel_digg" onclick="DiggIt(6851728,cb_blogId,1);green_channel_success(this,&#39;谢谢推荐！&#39;);">好文要顶</a>
+        <a id="green_channel_follow" onclick="follow(&#39;e09c30cc-d51a-e011-ac81-842b2b196315&#39;);" href="javascript:void(0);">关注我</a>
+    <a id="green_channel_favorite" onclick="AddToWz(cb_entryId);return false;" href="javascript:void(0);">收藏该文</a>
+    <a id="green_channel_weibo" href="javascript:void(0);" title="分享至新浪微博" onclick="ShareToTsina()"><img src="./Reversed-Z详解 - jackmaxwell - 博客园_files/icon_weibo_24.png" alt=""></a>
+    <a id="green_channel_wechat" href="javascript:void(0);" title="分享至微信" onclick="shareOnWechat()"><img src="./Reversed-Z详解 - jackmaxwell - 博客园_files/wechat.png" alt=""></a>
+</div>
+<div id="author_profile">
+    <div id="author_profile_info" class="author_profile_info">
+            <a href="https://home.cnblogs.com/u/jackmaxwell/" target="_blank"><img src="./Reversed-Z详解 - jackmaxwell - 博客园_files/20171130205339.png" class="author_avatar" alt=""></a>
+        <div id="author_profile_detail" class="author_profile_info">
+            <a href="https://home.cnblogs.com/u/jackmaxwell/">jackmaxwell</a><br>
+            <a href="https://home.cnblogs.com/u/jackmaxwell/followees/">关注 - 1</a><br>
+            <a href="https://home.cnblogs.com/u/jackmaxwell/followers/">粉丝 - 5</a>
+        </div>
+    </div>
+    <div class="clear"></div>
+    <div id="author_profile_honor"></div>
+    <div id="author_profile_follow">
+                <a href="javascript:void(0);" onclick="follow(&#39;e09c30cc-d51a-e011-ac81-842b2b196315&#39;);return false;">+加关注</a>
+    </div>
+</div>
+<div id="div_digg">
+    <div class="diggit" onclick="votePost(6851728,&#39;Digg&#39;)">
+        <span class="diggnum" id="digg_count">0</span>
+    </div>
+    <div class="buryit" onclick="votePost(6851728,&#39;Bury&#39;)">
+        <span class="burynum" id="bury_count">0</span>
+    </div>
+    <div class="clear"></div>
+    <div class="diggword" id="digg_tips">
+    </div>
+</div>
+
+<script type="text/javascript">
+    currentDiggType = 0;
+</script></div>
+    <div class="clear"></div>
+    <div id="post_next_prev">
+
+    <a href="https://www.cnblogs.com/jackmaxwell/p/6535642.html" class="p_n_p_prefix">« </a> 上一篇：    <a href="https://www.cnblogs.com/jackmaxwell/p/6535642.html" title="发布于 2017-03-11 17:39">各语言系统或编程接口中向量与矩阵存储的差异</a>
+    <br>
+    <a href="https://www.cnblogs.com/jackmaxwell/p/7099591.html" class="p_n_p_prefix">» </a> 下一篇：    <a href="https://www.cnblogs.com/jackmaxwell/p/7099591.html" title="发布于 2017-06-30 16:41">光在参与介质中的传播及辐射传递方程</a>
+
+</div>
+</div>
+            </div>
+            <div class="postDesc">posted @ 
+<span id="post-date">2017-05-14 10:07</span>&nbsp;
+<a href="https://www.cnblogs.com/jackmaxwell/">jackmaxwell</a>&nbsp;
+阅读(<span id="post_view_count">1000</span>)&nbsp;
+评论(<span id="post_comment_count">0</span>)&nbsp;
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=6851728" rel="nofollow">编辑</a>&nbsp;
+<a href="javascript:void(0)" onclick="AddToWz(6851728);return false;">收藏</a></div>
+        </div>
+<script src="./Reversed-Z详解 - jackmaxwell - 博客园_files/highlight.min.js.下载"></script>
+<script>markdown_highlight();</script>
+<script>
+    var allowComments = true, cb_blogId = 116063, cb_blogApp = 'jackmaxwell', cb_blogUserGuid = 'e09c30cc-d51a-e011-ac81-842b2b196315';
+    var cb_entryId = 6851728, cb_entryCreatedDate = '2017-05-14 10:07', cb_postType = 1; 
+    loadViewCount(cb_entryId);
+</script><a name="!comments"></a>
+<div id="blog-comments-placeholder"></div>
+<script>
+    var commentManager = new blogCommentManager();
+    commentManager.renderComments(0);
+</script>
+
+<div id="comment_form" class="commentform">
+    <a name="commentform"></a>
+    <div id="divCommentShow"></div>
+    <div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="https://www.cnblogs.com/jackmaxwell/p/6851728.html#" onclick="return RefreshPage();">刷新页面</a><a href="https://www.cnblogs.com/jackmaxwell/p/6851728.html#top">返回顶部</a></div>
+    <div id="comment_form_container" style="visibility: visible;"><div class="login_tips">
+    注册用户登录后才能发表评论，请 
+    <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return login(&#39;commentform&#39;);">登录</a>
+     或 
+    <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return register();">注册</a>，
+    <a href="https://www.cnblogs.com/">访问</a> 网站首页。
+</div></div>
+    <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+    <div id="ad_t2"><a href="http://www.ucancode.com/index.htm" target="_blank" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;Link&#39;, &#39;click&#39;, &#39;T2-ucancode&#39;)">【推荐】超50万行VC++源码: 大型组态工控、电力仿真CAD与GIS源码库</a><br><a href="https://cloud.tencent.com/act/seckill?fromSource=gwzcw.3498755.3498755.3498755&amp;utm_medium=cpc&amp;utm_id=gwzcw.3498755.3498755.3498755" target="_blank" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;Link&#39;, &#39;click&#39;, &#39;T2-腾讯云&#39;)">【推荐】腾讯云产品限时秒杀，爆款1核2G云服务器99元/年！</a><br></div>
+    <div id="opt_under_post"></div>
+    <script async="async" src="./Reversed-Z详解 - jackmaxwell - 博客园_files/gpt.js.下载"></script>
+    <script>
+        var googletag = googletag || {};
+        googletag.cmd = googletag.cmd || [];
+    </script>
+    <script>
+        googletag.cmd.push(function () {
+            googletag.defineSlot("/1090369/C1", [300, 250], "div-gpt-ad-1546353474406-0").addService(googletag.pubads());
+            googletag.defineSlot("/1090369/C2", [468, 60], "div-gpt-ad-1539008685004-0").addService(googletag.pubads());
+            googletag.pubads().enableSingleRequest();
+            googletag.enableServices();
+        });
+    </script>
+    <div id="cnblogs_c1" class="c_ad_block">
+        <div id="div-gpt-ad-1546353474406-0" style="height:250px; width:300px;" data-google-query-id="CMrvuN2hxugCFdEBXAod5CcI6A"><div id="google_ads_iframe_/1090369/C1_0__container__" style="border: 0pt none;"><iframe id="google_ads_iframe_/1090369/C1_0" title="3rd party ad content" name="google_ads_iframe_/1090369/C1_0" width="300" height="250" scrolling="no" marginwidth="0" marginheight="0" frameborder="0" style="border: 0px; vertical-align: bottom;" data-google-container-id="1" data-load-complete="true" src="./Reversed-Z详解 - jackmaxwell - 博客园_files/saved_resource.html"></iframe></div></div>
+    </div>
+    <div id="under_post_news"><div class="recomm-block"><b>相关博文：</b><br>·  <a title="透视投影详解" href="https://www.cnblogs.com/graphics/archive/2012/07/25/2582119.html" target="_blank" onclick="clickRecomItmem(2582119)">透视投影详解</a><br>·  <a title="空间坐标转换" href="https://www.cnblogs.com/lancidie/archive/2012/01/18/2325210.html" target="_blank" onclick="clickRecomItmem(2325210)">空间坐标转换</a><br>·  <a title="投影矩阵推导(翻译)" href="https://www.cnblogs.com/davelink/p/5623760.html" target="_blank" onclick="clickRecomItmem(5623760)">投影矩阵推导(翻译)</a><br>·  <a title="Shadow Mapping 的原理与实践（一）" href="https://www.cnblogs.com/yzwalkman/p/3149072.html" target="_blank" onclick="clickRecomItmem(3149072)">Shadow Mapping 的原理与实践（一）</a><br>·  <a title="视锥体（frustum）裁剪" href="https://www.cnblogs.com/dragon2012/p/3891519.html" target="_blank" onclick="clickRecomItmem(3891519)">视锥体（frustum）裁剪</a><br>»  <a target="_blank" href="https://recomm.cnblogs.com/blogpost/6851728">更多推荐...</a></div></div>
+    <div id="cnblogs_c2" class="c_ad_block">
+        <div id="div-gpt-ad-1539008685004-0" style="height:60px; width:468px;" data-google-query-id="CMvvuN2hxugCFdEBXAod5CcI6A">
+            <script>
+                if (new Date() >= new Date(2018, 9, 13)) {
+                    googletag.cmd.push(function () { googletag.display("div-gpt-ad-1539008685004-0"); });
+                }
+            </script>
+        <div id="google_ads_iframe_/1090369/C2_0__container__" style="border: 0pt none; width: 468px; height: 60px;"></div></div>
+    </div>
+    <div id="under_post_kb">
+<div class="itnews c_ad_block">
+    <b>最新 IT 新闻</b>:
+    <br>
+ ·              <a href="https://news.cnblogs.com/n/658821/" target="_blank">文件显示特斯拉拖着不愿关厂  卫生官员称是“公共健康风险”</a>
+            <br>
+ ·              <a href="https://news.cnblogs.com/n/658820/" target="_blank">传iPhone 9或4月22日开卖 代码曝光具备车钥匙功能</a>
+            <br>
+ ·              <a href="https://news.cnblogs.com/n/658819/" target="_blank">小米10 Lite将推国内版本 或命名红米K30SE 5G</a>
+            <br>
+ ·              <a href="https://news.cnblogs.com/n/658818/" target="_blank">疫情中微软亚马逊最抗跌：一季度飘红收盘</a>
+            <br>
+ ·              <a href="https://news.cnblogs.com/n/658817/" target="_blank">居家办公刺激全球PC市场：显示器3月前两周销量暴增四成</a>
+            <br>
+    » <a href="https://news.cnblogs.com/" title="IT 新闻" target="_blank">更多新闻...</a>
+</div></div>
+    <div id="HistoryToday" class="c_ad_block"></div>
+    <script type="text/javascript">
+        fixPostBody();
+        deliverBigBanner();
+setTimeout(function() { incrementViewCount(cb_entryId); }, 50);        deliverAdT2();
+        deliverAdC1();
+        deliverAdC2();
+        loadNewsAndKb();
+        loadBlogSignature();
+LoadPostCategoriesTags(cb_blogId, cb_entryId);        LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+        GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
+        loadOptUnderPost();
+        GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
+    </script>
+</div>    </div>
+</div>
+            </div>
+        </div>
+
+        <div id="sideBar">
+            <div id="sideBarMain">
+                
+<div id="sidebar_news" class="newsItem">
+<h3 class="catListTitle">公告</h3>
+
+<div id="blog-news">
+    
+    <div id="profile_block">
+        昵称：
+        <a href="https://home.cnblogs.com/u/jackmaxwell/">
+            jackmaxwell
+        </a>
+        <br>
+        园龄：
+        <a href="https://home.cnblogs.com/u/jackmaxwell/" title="入园时间：2011-01-08">
+            9年2个月
+        </a>
+        <br>
+        粉丝：
+        <a href="https://home.cnblogs.com/u/jackmaxwell/followers/">
+            5
+        </a>
+        <br>
+        关注：
+        <a href="https://home.cnblogs.com/u/jackmaxwell/followees/">
+            1
+        </a>
+        <div id="p_b_follow">
+<a href="javascript:void(0)" onclick="follow(&#39;e09c30cc-d51a-e011-ac81-842b2b196315&#39;)">+加关注</a></div>
+        <script>getFollowStatus('e09c30cc-d51a-e011-ac81-842b2b196315');</script>
+    </div>
+</div></div>
+
+                <div id="calendar"><div id="blog-calendar" style="">
+
+<table id="blogCalendar" class="Cal" cellspacing="0" cellpadding="0" title="Calendar" border="0">
+    <tbody>
+        <tr>
+            <td colspan="7">
+                <table class="CalTitle" cellspacing="0" border="0">
+                    <tbody>
+                        <tr>
+                            <td class="CalNextPrev">
+                                <a href="javascript:void(0);" onclick="loadBlogCalendar(&#39;2020/03/01&#39;); return false;">&lt;</a>
+                            </td>
+                            <td align="center">2020年4月</td>
+                            <td align="right" class="CalNextPrev">
+                                <a href="javascript:void(0);" onclick="loadBlogCalendar(&#39;2020/05/01&#39;); return false;">&gt;</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        <tr>
+                    <th class="CalDayHeader" align="center" abbr="日" scope="col">日</th>
+                    <th class="CalDayHeader" align="center" abbr="一" scope="col">一</th>
+                    <th class="CalDayHeader" align="center" abbr="二" scope="col">二</th>
+                    <th class="CalDayHeader" align="center" abbr="三" scope="col">三</th>
+                    <th class="CalDayHeader" align="center" abbr="四" scope="col">四</th>
+                    <th class="CalDayHeader" align="center" abbr="五" scope="col">五</th>
+                    <th class="CalDayHeader" align="center" abbr="六" scope="col">六</th>
+        </tr>
+            <tr>
+                            <td class="CalOtherMonthDay" align="center">29</td>
+                            <td class="CalOtherMonthDay" align="center">30</td>
+                            <td class="CalOtherMonthDay" align="center">31</td>
+                        <td class="CalTodayDay" align="center">
+                            1
+                        </td>
+                        <td class="" align="center">
+                            2
+                        </td>
+                        <td class="" align="center">
+                            3
+                        </td>
+                    <td class="CalWeekendDay" align="center">
+                        4
+                    </td>
+            </tr>
+                <tr>
+                        <td class="CalWeekendDay" align="center">
+                            5
+                        </td>
+                            <td class="" align="center">
+                                6
+                            </td>
+                            <td class="" align="center">
+                                7
+                            </td>
+                            <td class="" align="center">
+                                8
+                            </td>
+                            <td class="" align="center">
+                                9
+                            </td>
+                            <td class="" align="center">
+                                10
+                            </td>
+                        <td class="CalWeekendDay" align="center">
+                            11
+                        </td>
+                </tr>
+                <tr>
+                        <td class="CalWeekendDay" align="center">
+                            12
+                        </td>
+                            <td class="" align="center">
+                                13
+                            </td>
+                            <td class="" align="center">
+                                14
+                            </td>
+                            <td class="" align="center">
+                                15
+                            </td>
+                            <td class="" align="center">
+                                16
+                            </td>
+                            <td class="" align="center">
+                                17
+                            </td>
+                        <td class="CalWeekendDay" align="center">
+                            18
+                        </td>
+                </tr>
+                <tr>
+                        <td class="CalWeekendDay" align="center">
+                            19
+                        </td>
+                            <td class="" align="center">
+                                20
+                            </td>
+                            <td class="" align="center">
+                                21
+                            </td>
+                            <td class="" align="center">
+                                22
+                            </td>
+                            <td class="" align="center">
+                                23
+                            </td>
+                            <td class="" align="center">
+                                24
+                            </td>
+                        <td class="CalWeekendDay" align="center">
+                            25
+                        </td>
+                </tr>
+                <tr>
+                        <td class="CalWeekendDay" align="center">
+                            26
+                        </td>
+                            <td class="" align="center">
+                                27
+                            </td>
+                            <td class="" align="center">
+                                28
+                            </td>
+                            <td class="" align="center">
+                                29
+                            </td>
+                            <td class="" align="center">
+                                30
+                            </td>
+                            <td class="CalOtherMonthDay" align="center">
+                                1
+                            </td>
+                        <td class="CalOtherMonthDay" align="center">
+                            2
+                        </td>
+                </tr>
+                <tr>
+                        <td class="CalOtherMonthDay" align="center">
+                            3
+                        </td>
+                            <td class="CalOtherMonthDay" align="center">
+                                4
+                            </td>
+                            <td class="CalOtherMonthDay" align="center">
+                                5
+                            </td>
+                            <td class="CalOtherMonthDay" align="center">
+                                6
+                            </td>
+                            <td class="CalOtherMonthDay" align="center">
+                                7
+                            </td>
+                            <td class="CalOtherMonthDay" align="center">
+                                8
+                            </td>
+                        <td class="CalOtherMonthDay" align="center">
+                            9
+                        </td>
+                </tr>
+    </tbody>
+</table></div></div>                
+                <script>loadBlogDefaultCalendar();</script>
+                <div id="leftcontentcontainer">
+                    <!-- begin:SingleColumn -->
+                    <div id="blog-sidecolumn">
+<!-- 搜索 -->
+<div id="sidebar_search" class="sidebar-block">
+    <div id="sidebar_search" class="mySearch">
+        <h3 class="catListTitle">搜索</h3>
+        <div id="sidebar_search_box">
+            <div id="widget_my_zzk" class="div_my_zzk">
+                <input type="text" id="q" onkeydown="return zzk_go_enter(event);" class="input_my_zzk">&nbsp;<input onclick="zzk_go()" type="button" value="找找看" id="btnZzk" class="btn_my_zzk">
+            </div>
+            <div id="widget_my_google" class="div_my_zzk">
+                <input type="text" name="google_q" id="google_q" onkeydown="return google_go_enter(event);" class="input_my_zzk">&nbsp;<input onclick="google_go()" type="button" value="谷歌搜索" class="btn_my_zzk">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 常用链接 -->
+<div id="sidebar_shortcut" class="sidebar-block">
+    
+<h3 class="catListTitle">
+常用链接
+</h3>
+<ul>
+        <li>
+
+<a href="https://www.cnblogs.com/jackmaxwell/p/" title="我的博客的随笔列表">我的随笔</a>
+</li>
+        <li>
+
+<a href="https://www.cnblogs.com/jackmaxwell/MyComments.html" title="我的发表过的评论列表">我的评论</a>
+</li>
+        <li>
+
+<a href="https://www.cnblogs.com/jackmaxwell/OtherPosts.html" title="我评论过的随笔列表">我的参与</a>
+</li>
+        <li>
+
+<a href="https://www.cnblogs.com/jackmaxwell/RecentComments.html" title="我的博客的评论列表">最新评论</a>
+</li>
+        <li>
+
+<a href="https://www.cnblogs.com/jackmaxwell/tag/" title="我的博客的标签列表">我的标签</a>
+</li>
+</ul>
+
+<!-- TODO: 检查是否有使用这一部分的控件，如果没有则应该删除。 -->
+<div id="itemListLin_con" style="display:none">
+    <ul>
+
+    </ul>
+</div>
+
+</div>
+
+<!-- 最新随笔 -->
+
+
+
+<!-- 我的标签 -->
+<div id="sidebar_toptags" class="sidebar-block">
+    
+<div class="catListTag">
+    <h3 class="catListTitle">我的标签</h3>
+    <ul>
+        
+        <li>
+            <a href="https://www.cnblogs.com/jackmaxwell/tag/bit%20reversal/">bit reversal</a>(1)
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/jackmaxwell/tag/fft/">fft</a>(1)
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/jackmaxwell/tag/Gold%20Rader/">Gold Rader</a>(1)
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/jackmaxwell/tag/mono%20ios/">mono ios</a>(1)
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/jackmaxwell/tag/Reversed-Z%20Z-Buffer%20%E7%B2%BE%E5%BA%A6%20%E6%B8%B2%E6%9F%93/">Reversed-Z Z-Buffer 精度 渲染</a>(1)
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/jackmaxwell/tag/shader%20%E9%98%9F%E4%BC%8D%E5%8F%98%E8%89%B2/">shader 队伍变色</a>(1)
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/jackmaxwell/tag/VS2017%20%E8%BF%87%E6%9C%9F%20%E5%BB%B6%E6%9C%9F/">VS2017 过期 延期</a>(1)
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/jackmaxwell/tag/%E5%9B%BE%E5%BD%A2%E5%AD%A6%20shader%20%E7%9F%A9%E9%98%B5/">图形学 shader 矩阵</a>(1)
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/jackmaxwell/tag/%E4%BD%8D%E5%8F%8D%E8%BD%AC/">位反转</a>(1)
+        </li>
+
+    </ul>
+</div>
+
+</div>
+
+<!-- 积分与排名 -->
+
+
+<!-- 随笔分类、随笔档案、文章分类、新闻分类、相册、链接 -->
+<div id="sidebar_categories">
+    
+        <div class="catListPostCategory">
+            <h3 class="catListTitle">
+                
+
+随笔分类
+<span style="font-size:11px;font-weight:normal">(10)</span>
+
+
+            </h3>
+            <ul>
+                        <li>
+                            
+<a href="https://www.cnblogs.com/jackmaxwell/category/565392.html" rel="" target="">
+    【.NET}(1)
+</a>
+
+                            
+
+                        </li>
+                        
+                        <li>
+                            
+<a href="https://www.cnblogs.com/jackmaxwell/category/565390.html" rel="" target="">
+    【C++】
+</a>
+
+                            
+
+                        </li>
+                        
+                        <li>
+                            
+<a href="https://www.cnblogs.com/jackmaxwell/category/565386.html" rel="" target="">
+    【Unity3d】(3)
+</a>
+
+                            
+
+                        </li>
+                        
+                        <li>
+                            
+<a href="https://www.cnblogs.com/jackmaxwell/category/565385.html" rel="" target="">
+    【设计模式】
+</a>
+
+                            
+
+                        </li>
+                        
+                        <li>
+                            
+<a href="https://www.cnblogs.com/jackmaxwell/category/565387.html" rel="" target="">
+    【生活】
+</a>
+
+                            
+
+                        </li>
+                        
+                        <li>
+                            
+<a href="https://www.cnblogs.com/jackmaxwell/category/707108.html" rel="" target="">
+    【图形学】(5)
+</a>
+
+                            
+
+                        </li>
+                        
+                        <li>
+                            
+<a href="https://www.cnblogs.com/jackmaxwell/category/565388.html" rel="" target="">
+    【兴趣爱好】(1)
+</a>
+
+                            
+
+                        </li>
+                        
+            </ul>
+        </div>
+        <div class="catListPostArchive">
+            <h3 class="catListTitle">
+                
+
+随笔档案
+<span style="font-size:11px;font-weight:normal">(8)</span>
+
+
+            </h3>
+            <ul>
+                        <li>
+                            
+<a href="https://www.cnblogs.com/jackmaxwell/archive/2017/11.html" rel="" target="">
+    2017年11月(1)
+</a>
+
+                            
+
+                        </li>
+                        
+                        <li>
+                            
+<a href="https://www.cnblogs.com/jackmaxwell/archive/2017/07.html" rel="" target="">
+    2017年7月(1)
+</a>
+
+                            
+
+                        </li>
+                        
+                        <li>
+                            
+<a href="https://www.cnblogs.com/jackmaxwell/archive/2017/06.html" rel="" target="">
+    2017年6月(1)
+</a>
+
+                            
+
+                        </li>
+                        
+                        <li>
+                            
+<a href="https://www.cnblogs.com/jackmaxwell/archive/2017/05.html" rel="" target="">
+    2017年5月(1)
+</a>
+
+                            
+
+                        </li>
+                        
+                        <li>
+                            
+<a href="https://www.cnblogs.com/jackmaxwell/archive/2017/03.html" rel="" target="">
+    2017年3月(1)
+</a>
+
+                            
+
+                        </li>
+                        
+                        <li>
+                            
+<a href="https://www.cnblogs.com/jackmaxwell/archive/2017/01.html" rel="" target="">
+    2017年1月(1)
+</a>
+
+                            
+
+                        </li>
+                        
+                        <li>
+                            
+<a href="https://www.cnblogs.com/jackmaxwell/archive/2016/12.html" rel="" target="">
+    2016年12月(1)
+</a>
+
+                            
+
+                        </li>
+                        
+                        <li>
+                            
+<a href="https://www.cnblogs.com/jackmaxwell/archive/2015/12.html" rel="" target="">
+    2015年12月(1)
+</a>
+
+                            
+
+                        </li>
+                        
+            </ul>
+        </div>
+
+</div>
+
+<!-- 最新评论 -->
+<div id="sidebar_recentcomments" class="sidebar-block">
+    <div id="recent_comments_wrap" class="RecentComment">
+    <h3 class="catListTitle">最新评论</h3>
+    <div class="RecentCommentBlock">
+        <ul>
+                    <li class="recent_comment_title"><a href="http://www.cnblogs.com/jackmaxwell/p/6298658.html#3739627">1. Re:VS 2017 RC到期的解决方法</a></li>
+                    <li class="recent_comment_body">确实不行，咋办</li>
+                    <li class="recent_comment_author">--NavyHaijun</li>
+                    <li class="recent_comment_title"><a href="http://www.cnblogs.com/jackmaxwell/p/6298658.html#3738641">2. Re:VS 2017 RC到期的解决方法</a></li>
+                    <li class="recent_comment_body">分析了下地址，原始的：relType=prerelease，把你写的 prelease 替换成 prerelease，但还是延期失败</li>
+                    <li class="recent_comment_author">--519740105</li>
+                    <li class="recent_comment_title"><a href="http://www.cnblogs.com/jackmaxwell/p/6298658.html#3738620">3. Re:VS 2017 RC到期的解决方法</a></li>
+                    <li class="recent_comment_body">非常感谢！<br>但是，我按照你的方法，还是不能延期呢。</li>
+                    <li class="recent_comment_author">--519740105</li>
+        </ul>
+    </div>
+</div>
+</div>
+
+
+
+<!-- 阅读排行榜 -->
+<div id="sidebar_topviewedposts" class="sidebar-block">
+    
+<div id="topview_posts_wrap">
+    <h3 class="catListTitle">阅读排行榜</h3>
+    <div id="TopViewPostsBlock">
+        <ul style="word-break:break-all">
+                    <li>
+                        <a href="https://www.cnblogs.com/jackmaxwell/p/6298658.html">
+                            1. VS 2017 RC到期的解决方法(17855)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.cnblogs.com/jackmaxwell/p/7117909.html">
+                            2. unity shader Offset Factor, Units详解(3097)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.cnblogs.com/jackmaxwell/p/6220511.html">
+                            3. Unity 为队伍设置不同颜色的shader(2386)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.cnblogs.com/jackmaxwell/p/6851728.html">
+                            4. Reversed-Z详解(1000)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.cnblogs.com/jackmaxwell/p/7099591.html">
+                            5. 光在参与介质中的传播及辐射传递方程(356)
+                        </a>
+                    </li>
+        </ul>
+    </div>
+</div>
+</div>
+
+<!-- 评论排行榜 -->
+<div id="sidebar_topcommentedposts" class="sidebar-block">
+    
+<div id="topfeedback_posts_wrap">
+    <h3 class="catListTitle">评论排行榜</h3>
+    <div id="TopFeedbackPostsBlock">
+        <ul style="word-break:break-all">
+                    <li>
+                        <a href="https://www.cnblogs.com/jackmaxwell/p/6298658.html">
+                            1. VS 2017 RC到期的解决方法(3)
+                        </a>
+                    </li>
+        </ul>
+    </div>
+</div>
+</div>
+
+<!-- 推荐排行榜 -->
+<div id="sidebar_topdiggedposts" class="sidebar-block">
+    
+<div id="topdigg_posts_wrap">
+    <div class="catListView">
+        <h3 class="catListTitle">推荐排行榜</h3>
+        <div id="TopDiggPostsBlock">
+            <ul style="word-break: break-all">
+                        <li>
+                            <a href="https://www.cnblogs.com/jackmaxwell/p/6298658.html">
+                                1. VS 2017 RC到期的解决方法(2)
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.cnblogs.com/jackmaxwell/p/6220511.html">
+                                2. Unity 为队伍设置不同颜色的shader(1)
+                            </a>
+                        </li>
+            </ul>
+        </div>
+    </div>
+</div>
+</div></div>
+                    <script>loadBlogSideColumn();</script>
+                    <!-- end:  SingleColumn -->
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="clear"></div>
+    <div id="footer">
+        <!--done-->
+Copyright © 2020 jackmaxwell
+<br><span id="poweredby">Powered by .NET Core on Kubernetes</span>
+
+    </div>
+</div>
+
+    
+
+<div style="position: absolute; width: 0px; height: 0px; overflow: hidden; padding: 0px; border: 0px; margin: 0px;"><div id="MathJax_Font_Test" style="position: absolute; visibility: hidden; top: 0px; left: 0px; width: auto; padding: 0px; border: 0px; margin: 0px; white-space: nowrap; text-align: left; text-indent: 0px; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; font-size: 40px; font-weight: normal; font-style: normal; font-family: MathJax_AMS, monospace;"></div></div><div class="xl-chrome-ext-bar" id="xl_chrome_ext_{4DB361DE-01F7-4376-B494-639E489D19ED}" style="display: none;">
+      <div class="xl-chrome-ext-bar__logo"></div>
+
+      <a id="xl_chrome_ext_download" href="javascript:;" class="xl-chrome-ext-bar__option">下载视频</a>
+      <a id="xl_chrome_ext_close" href="javascript:;" class="xl-chrome-ext-bar__close"></a>
+    </div></body></html>
