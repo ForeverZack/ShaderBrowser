@@ -11,6 +11,34 @@ namespace customGL
 		{ GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_ALBEDO_COLOR], "vec4"},
 	};
 
+
+	/*
+		Material结构:
+		{
+			"name": "Standard",
+			"uniforms": 
+			{
+				"CGL_TEXTURE0": 
+				{             
+					"type": "sampler2D",             
+					"value": "res/texture/xxx.png"         
+				},
+				"CGL_ALBEDO_COLOR":
+				{
+					"type": "vec4",
+					"value": [1, 1, 1, 1]
+				}
+			},
+			"pass": [
+				{
+					"vert": "shader/default/xx.vert",
+					"frag": "shader/default/xx.frag",
+					"vert_program": "代码代码",
+					"frag_program": "代码代码",
+				},
+			],
+		}
+	*/
 	Material* MaterialParser::parseMaterialFileByContent(const std::string& content)
 	{
 		Material* material = Material::createMaterial();
