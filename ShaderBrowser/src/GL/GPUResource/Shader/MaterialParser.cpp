@@ -39,12 +39,26 @@ namespace customGL
 			],
 		}
 	*/
-	Material* MaterialParser::parseMaterialFileByContent(const std::string& content)
+	MaterialParameters MaterialParser::parseMaterialFileByContent(const std::string& content)
 	{
-		Material* material = Material::createMaterial();
+		MaterialParameters parameters;
 
 		Document document;
 		document.Parse(content.c_str());
+
+		// name
+		if (document.HasMember("name"))
+		{
+			BROWSER_ASSERT(document["name"].IsString(), "Material's name must be string value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+			parameters.name = document["name"].GetString();
+		}
+
+		// uniforms
+		if (document.HasMember("uniforms"))
+		{
+
+		}
+
 		
 	//	std::string json = "{\"vert\": \"xxxx\",     \"frag\": \"yyyy\",     \"uniforms\": {         \"CGL_TEXTURE0\": {             \"type\": \"texture\",             \"value\": \"res/texture\"         },         \"CGL_COLOR\": {             \"type\": \"vec3\",             \"value\": [1,1,1]         }     } }";
 	//	rapidjson::Document d;
@@ -60,7 +74,7 @@ namespace customGL
 	//	bool isArry = obj["CGL_COLOR"]["value"].IsArray();
 	//	rapidjson::Value::Array& arr = obj["CGL_COLOR"]["value"].GetArray();
 
-		return material;
+		return parameters;
 	}
 
 }
