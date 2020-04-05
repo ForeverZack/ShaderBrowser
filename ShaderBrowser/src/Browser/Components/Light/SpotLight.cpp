@@ -94,15 +94,15 @@ namespace browser
 				float sin = sinf(halfSpotRad);
 				float cotHalfSpotAngle = cos / sin;
 				glm::mat4 halfFieldMat(1, 0, 0, 0,
-					0, 1, 0, 0,
-					0, 0, 1, 2/cotHalfSpotAngle,
-					0, 0, 0, 0);
+                                       0, 1, 0, 0,
+                                       0, 0, 1, 2/cotHalfSpotAngle,
+                                       0, 0, 0, 0);
 
 				float s = 1 / m_fRange;
 				glm::mat4 scaleMat(s, 0, 0, 0,
-					0, s, 0, 0,
-					0, 0, s, 0,
-					0, 0, 0, 1);
+                                   0, s, 0, 0,
+                                   0, 0, s, 0,
+                                   0, 0, 0, 1);
 
 				// halfFieldMat * scaleMat * object2Light
 				m_oLightMatrix = halfFieldMat * scaleMat * glm::inverse(transform->getModelMatrix());
