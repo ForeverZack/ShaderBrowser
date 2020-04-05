@@ -38,9 +38,9 @@ namespace customGL
 				std::vector<float> vec;
 			} floatv, v2fv, v3fv, v4fv, mat4v, mat4x3v, mat3v, mat3x4v;
 
-			// Èç¹ûÔÚUnionÖĞµÄÀàĞÍÌí¼ÓÁË¹¹Ôìº¯Êı£¬»òÕßÌí¼ÓÎö¹¹º¯Êı£¬¾Í»á·¢ÏÖ³ÌĞò»á³öÏÖ´íÎó¡£ÓÉÓÚunionÀïÃæµÄ¶«Î÷¹²ÏíÄÚ´æ£¬ËùÒÔ²»ÄÜ¶¨Òå¾²Ì¬¡¢ÒıÓÃÀàĞÍµÄ±äÁ¿¡£
-			//	ÓÉÓÚÔÚunionÀïÒ²²»ÔÊĞí´æ·Å´øÓĞ¹¹Ôìº¯Êı¡¢Îö¹¹º¯ÊıºÍ¸´ÖÆ¹¹Ôìº¯ÊıµÈµÄÀàµÄ¶ÔÏó£¬µ«ÊÇ¿ÉÒÔ´æ·Å¶ÔÓ¦µÄÀà¶ÔÏóÖ¸Õë¡£±àÒëÆ÷ÎŞ·¨±£Ö¤ÀàµÄ¹¹Ôìº¯ÊıºÍÎö¹¹º¯ÊıµÃµ½ÕıÈ·µÄµ÷ÓÃ£¬ÓÉ´Ë£¬¾Í¿ÉÄÜ³öÏÖÄÚ´æĞ¹Â©¡£
-			// ËùÒÔ£¬ÔÚC++ÖĞÊ¹ÓÃunionÊ±£¬¾¡Á¿±£³ÖCÓïÑÔÖĞÊ¹ÓÃunionµÄ·ç¸ñ£¬¾¡Á¿²»ÒªÈÃunion´øÓĞ¶ÔÏó¡£ÕâÑù¿ÉÒÔ±ÜÃâ±¨´í
+			// å¦‚æœåœ¨Unionä¸­çš„ç±»å‹æ·»åŠ äº†æ„é€ å‡½æ•°ï¼Œæˆ–è€…æ·»åŠ ææ„å‡½æ•°ï¼Œå°±ä¼šå‘ç°ç¨‹åºä¼šå‡ºç°é”™è¯¯ã€‚ç”±äºunioné‡Œé¢çš„ä¸œè¥¿å…±äº«å†…å­˜ï¼Œæ‰€ä»¥ä¸èƒ½å®šä¹‰é™æ€ã€å¼•ç”¨ç±»å‹çš„å˜é‡ã€‚
+			//	ç”±äºåœ¨unioné‡Œä¹Ÿä¸å…è®¸å­˜æ”¾å¸¦æœ‰æ„é€ å‡½æ•°ã€ææ„å‡½æ•°å’Œå¤åˆ¶æ„é€ å‡½æ•°ç­‰çš„ç±»çš„å¯¹è±¡ï¼Œä½†æ˜¯å¯ä»¥å­˜æ”¾å¯¹åº”çš„ç±»å¯¹è±¡æŒ‡é’ˆã€‚ç¼–è¯‘å™¨æ— æ³•ä¿è¯ç±»çš„æ„é€ å‡½æ•°å’Œææ„å‡½æ•°å¾—åˆ°æ­£ç¡®çš„è°ƒç”¨ï¼Œç”±æ­¤ï¼Œå°±å¯èƒ½å‡ºç°å†…å­˜æ³„æ¼ã€‚
+			// æ‰€ä»¥ï¼Œåœ¨C++ä¸­ä½¿ç”¨unionæ—¶ï¼Œå°½é‡ä¿æŒCè¯­è¨€ä¸­ä½¿ç”¨unionçš„é£æ ¼ï¼Œå°½é‡ä¸è¦è®©unionå¸¦æœ‰å¯¹è±¡ã€‚è¿™æ ·å¯ä»¥é¿å…æŠ¥é”™
 			U() { memset(this, 0, sizeof(*this)); }
 			~U() {}
 			U& operator=(const U& other) {
@@ -52,7 +52,7 @@ namespace customGL
 
 	struct MaterialParameters
 	{
-		// ²ÄÖÊÃû³Æ 
+		// æè´¨åç§° 
 		std::string name;
 		// uniforms
 		std::vector<MaterialUnformParamter> uniforms;
@@ -64,7 +64,7 @@ namespace customGL
 	};
 
 	/*
-		Material½á¹¹:
+		Materialç»“æ„:
 		{
 			"name": "Standard",
 			"uniforms":
@@ -84,8 +84,8 @@ namespace customGL
 				{
 					"vert": "shader/default/xx.vert",
 					"frag": "shader/default/xx.frag",
-					"vert_program": "´úÂë´úÂë",
-					"frag_program": "´úÂë´úÂë",
+					"vert_program": "ä»£ç ä»£ç ",
+					"frag_program": "ä»£ç ä»£ç ",
 				},
 			],
 		}
@@ -96,7 +96,7 @@ namespace customGL
 		static MaterialParameters parseMaterialFileByContent(const std::string& content);
 
 	protected:
-		// ÄÚÖÃuniform¶ÔÓ¦ÀàĞÍ
+		// å†…ç½®uniformå¯¹åº”ç±»å‹
 		static std::unordered_map<std::string, std::string> m_mBuiltinUniforms;
 	};
 }
