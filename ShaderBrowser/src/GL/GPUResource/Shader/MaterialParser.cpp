@@ -3,7 +3,7 @@
 
 namespace customGL
 {
-	// 初始化内置uniform对应类型
+	// 鍒濆鍖栧唴缃畊niform瀵瑰簲绫诲瀷
 	std::unordered_map<std::string, std::string> MaterialParser::m_mBuiltinUniforms
 	{
 		{ GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_TEXUTRE0], "sampler2D" },
@@ -13,7 +13,7 @@ namespace customGL
 
 
 	/*
-		Material结构:
+		Material缁撴瀯:
 		{
 			"name": "Standard",
 			"uniforms": 
@@ -33,8 +33,8 @@ namespace customGL
 				{
 					"vert": "shader/default/xx.vert",
 					"frag": "shader/default/xx.frag",
-					"vert_program": "代码代码",
-					"frag_program": "代码代码",
+					"vert_program": "浠ｇ爜浠ｇ爜",
+					"frag_program": "浠ｇ爜浠ｇ爜",
 				},
 			],
 		}
