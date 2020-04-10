@@ -28,6 +28,13 @@ namespace customGL
 			glm::mat3x4 mat3x4;
 			glm::mat4 mat4;
 			glm::mat4x3 mat4x3;
+			struct {
+				const int* pointer;	// 从自身std::vector<int>中取址
+				GLsizei count;
+			} intv, ivec2v, ivec3v, ivec4v;
+			struct {
+				const char* path;
+			} tex2D;
 
 			// 如果在Union中的类型添加了构造函数，或者添加析构函数，就会发现程序会出现错误。由于union里面的东西共享内存，所以不能定义静态、引用类型的变量。
 			//	由于在union里也不允许存放带有构造函数、析构函数和复制构造函数等的类的对象，但是可以存放对应的类对象指针。编译器无法保证类的构造函数和析构函数得到正确的调用，由此，就可能出现内存泄漏。
@@ -43,9 +50,8 @@ namespace customGL
 				return *this;
 			}
 		} value;
-        std::string texPath;
         
-        
+		std::string texPath;
         std::vector<int> intv, ivec2v, ivec3v, ivec4v;
         std::vector<float> floatv, v2fv, v3fv, v4fv, mat4v, mat4x3v, mat3v, mat3x4v;
 	};
