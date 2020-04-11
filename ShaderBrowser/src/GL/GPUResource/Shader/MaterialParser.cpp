@@ -32,6 +32,63 @@ namespace customGL
     };
 
 
+	MaterialUniformParamter::MaterialUniformParamter()
+		: m_pString(nullptr)
+		, m_pIntV(nullptr)
+		, m_pFloatV(nullptr)
+	{
+	}
+
+	MaterialUniformParamter::MaterialUniformParamter(const MaterialUniformParamter& param)
+	{
+		name = param.name;
+		type = param.type;
+		value = param.value;
+		// 复制指针数据
+		if (param.m_pString)
+		{
+			m_pString = new std::string(*param.m_pString);
+		}
+		if (param.m_pIntV && param.m_pIntV->size() > 0)
+		{
+			m_pIntV = new std::vector<int>(&(*param.m_pIntV)[0], &(*param.m_pIntV)[0] + param.m_pIntV->size());
+		}
+		if (param.m_pFloatV && param.m_pFloatV->size() > 0)
+		{
+			m_pFloatV = new std::vector<float>(&(*param.m_pFloatV)[0], &(*param.m_pFloatV)[0] + param.m_pFloatV->size());
+		}
+	}
+
+	MaterialUniformParamter::MaterialUniformParamter(MaterialUniformParamter&& param)
+	{
+		name = param.name;
+		type = param.type;
+		value = param.value;
+		// 接管指针数据
+		if (param.m_pString)
+		{
+			m_pString = param.m_pString;
+			param.m_pString = nullptr;
+		}
+		if (param.m_pIntV)
+		{
+			m_pIntV = param.m_pIntV;
+			param.m_pIntV = nullptr;
+		}
+		if (param.m_pFloatV)
+		{
+			m_pFloatV = param.m_pFloatV;
+			param.m_pFloatV = nullptr;
+		}
+	}
+
+	MaterialUniformParamter::~MaterialUniformParamter()
+	{
+		BROWSER_SAFE_RELEASE_POINTER(m_pString);
+		BROWSER_SAFE_RELEASE_POINTER(m_pIntV);
+		BROWSER_SAFE_RELEASE_POINTER(m_pFloatV);
+	}
+
 	/*
 		Material结构:
 		{
@@ -182,7 +239,9 @@ namespace customGL
                     case UniformValue::UniformValueType::UniformValueType_Sampler2D:
                         {
                             BROWSER_ASSERT(value.IsString(), "Uniform's value is not string (type sampler2D) in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
-                            uniformParam.texPath = value.GetString();
+							BROWSER_SAFE_RELEASE_POINTER(uniformParam.m_pString);
+							uniformParam.m_pString = new std::string(value.GetString());
+                            uniformParam.value.tex2D.path = &(*uniformParam.m_pString)[0];
                         }
                         break;
                             
@@ -217,44 +276,48 @@ namespace customGL
                         }
                         break;
                                                                 
-                case UniformValue::UniformValueType::UniformValueType_Mat3x4:
-                    {
-                        BROWSER_ASSERT(value.IsArray() && value.GetArray().Size()>=12, "Uniform's value is not array (type mat3x4) in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
-                        const rapidjson::Value::Array& var_array = value.GetArray();
-                        uniformParam.value.mat3x4 = glm::mat3x4(var_array[0].GetFloat(), var_array[4].GetFloat(), var_array[8].GetFloat(),
-                                                                var_array[1].GetFloat(), var_array[5].GetFloat(), var_array[9].GetFloat(),
-                                                                var_array[2].GetFloat(), var_array[6].GetFloat(), var_array[10].GetFloat(),
-                                                                var_array[3].GetFloat(), var_array[7].GetFloat(), var_array[11].GetFloat());
-                    }
-                    break;
-                            
-                case UniformValue::UniformValueType::UniformValueType_FloatV:
-                    {
-                        BROWSER_ASSERT(value.IsArray(), "Uniform's value is not array (type float[]) in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
-                        const rapidjson::Value::Array& var_array = value.GetArray();
-                        std::vector<float> vec;
-                        vec.reserve(var_array.Size());
-                        for(int i=0; i<var_array.Size(); ++i)
-                        {
-                            vec.push_back(var_array[i].GetFloat());
-                        }
-                        uniformParam.floatv = std::move(vec);
-                    }
-                    break;
-                            
-                case UniformValue::UniformValueType::UniformValueType_IntV:
-                    {
-                        BROWSER_ASSERT(value.IsArray(), "Uniform's value is not array (type int[]) in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
-                        const rapidjson::Value::Array& var_array = value.GetArray();
-                        std::vector<int> vec;
-                        vec.reserve(var_array.Size());
-                        for(int i=0; i<var_array.Size(); ++i)
-                        {
-                            vec.push_back(var_array[i].GetInt());
-                        }
-                        uniformParam.intv = std::move(vec);
-                    }
-                    break;
+					case UniformValue::UniformValueType::UniformValueType_Mat3x4:
+						{
+							BROWSER_ASSERT(value.IsArray() && value.GetArray().Size() >= 12, "Uniform's value is not array (type mat3x4) in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+							const rapidjson::Value::Array& var_array = value.GetArray();
+							uniformParam.value.mat3x4 = glm::mat3x4(var_array[0].GetFloat(), var_array[4].GetFloat(), var_array[8].GetFloat(),
+								var_array[1].GetFloat(), var_array[5].GetFloat(), var_array[9].GetFloat(),
+								var_array[2].GetFloat(), var_array[6].GetFloat(), var_array[10].GetFloat(),
+								var_array[3].GetFloat(), var_array[7].GetFloat(), var_array[11].GetFloat());
+						}
+						break;
+
+					case UniformValue::UniformValueType::UniformValueType_FloatV:
+					{
+						BROWSER_ASSERT(value.IsArray(), "Uniform's value is not array (type float[]) in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+						const rapidjson::Value::Array& var_array = value.GetArray();
+						BROWSER_SAFE_RELEASE_POINTER(uniformParam.m_pFloatV);
+						uniformParam.m_pFloatV = new std::vector<float>();
+						uniformParam.m_pFloatV->reserve(var_array.Size());
+						for (int i = 0; i < var_array.Size(); ++i)
+						{
+							uniformParam.m_pFloatV->push_back(var_array[i].GetFloat());
+						}
+						uniformParam.value.floatv.pointer = &(*uniformParam.m_pFloatV)[0];
+						uniformParam.value.floatv.count = var_array.Size();
+					}
+					break;
+
+					case UniformValue::UniformValueType::UniformValueType_IntV:
+					{
+						BROWSER_ASSERT(value.IsArray(), "Uniform's value is not array (type int[]) in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+						const rapidjson::Value::Array& var_array = value.GetArray();
+						BROWSER_SAFE_RELEASE_POINTER(uniformParam.m_pIntV);
+						uniformParam.m_pIntV = new std::vector<int>();
+						uniformParam.m_pIntV->reserve(var_array.Size());
+						for (int i = 0; i < var_array.Size(); ++i)
+						{
+							uniformParam.m_pIntV->push_back(var_array[i].GetInt());
+						}
+						uniformParam.value.intv.pointer = &(*uniformParam.m_pIntV)[0];
+						uniformParam.value.intv.count = var_array.Size();
+					}
+					break;
                                                                 
                     }
                 }

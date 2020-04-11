@@ -42,7 +42,6 @@ namespace customGL {
         , m_bDirty(true)
 		, m_pIntV(nullptr)
 		, m_pFloatV(nullptr)
-		, m_pString(nullptr)
     {
         
     }
@@ -52,22 +51,39 @@ namespace customGL {
 		m_eType = uniformVal.m_eType;
 		_value = uniformVal._value;
 		m_bDirty = uniformVal.m_bDirty;
-		// TODO: pointer
-
+		// 复制vector指针数据
+		if (uniformVal.m_pIntV && uniformVal.m_pIntV->size()>0)
+		{
+			m_pIntV = new std::vector<int>(&(*uniformVal.m_pIntV)[0], &(*uniformVal.m_pIntV)[0] + uniformVal.m_pIntV->size());
+		}
+		if (uniformVal.m_pFloatV && uniformVal.m_pFloatV->size() > 0)
+		{
+			m_pFloatV = new std::vector<float>(&(*uniformVal.m_pFloatV)[0], &(*uniformVal.m_pFloatV)[0] + uniformVal.m_pFloatV->size());
+		}
 	}
     
-    UniformValue::UniformValue(const UniformValue&& uniformVal) noexcept
+    UniformValue::UniformValue(UniformValue&& uniformVal) noexcept
     {
         m_eType = uniformVal.m_eType;
         _value = std::move(uniformVal._value);
         m_bDirty = uniformVal.m_bDirty;
-		// TODO: pointer
-
+		// 接管vector指针数据
+		if (uniformVal.m_pIntV)
+		{
+			m_pIntV = uniformVal.m_pIntV;
+			uniformVal.m_pIntV = nullptr;
+		}
+		if (uniformVal.m_pFloatV)
+		{
+			m_pFloatV = uniformVal.m_pFloatV;
+			uniformVal.m_pFloatV = nullptr;
+		}
 	}
     
     UniformValue::~UniformValue()
     {
-        
+		BROWSER_SAFE_RELEASE_POINTER(m_pIntV);
+		BROWSER_SAFE_RELEASE_POINTER(m_pFloatV);
     }
     
     void UniformValue::setInt(int value)

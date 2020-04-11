@@ -10,8 +10,15 @@ using namespace rapidjson;
 
 namespace customGL
 {
-	struct MaterialUniformParamter
+	class MaterialUniformParamter
 	{
+	public:
+		MaterialUniformParamter();
+		MaterialUniformParamter(const MaterialUniformParamter& param);
+		MaterialUniformParamter(MaterialUniformParamter&& param);
+		~MaterialUniformParamter();
+
+	public:
 		std::string name;
 		UniformValue::UniformValueType type;
 		union U
@@ -33,6 +40,10 @@ namespace customGL
 				GLsizei count;
 			} intv, ivec2v, ivec3v, ivec4v;
 			struct {
+				const float* pointer;
+				GLsizei count;
+			} floatv, v2fv, v3fv, v4fv, mat4v, mat4x3v, mat3v, mat3x4v;
+			struct {
 				const char* path;
 			} tex2D;
 
@@ -51,9 +62,10 @@ namespace customGL
 			}
 		} value;
         
-		std::string texPath;
-        std::vector<int> intv, ivec2v, ivec3v, ivec4v;
-        std::vector<float> floatv, v2fv, v3fv, v4fv, mat4v, mat4x3v, mat3v, mat3x4v;
+		// 数组数据
+		std::string* m_pString;
+		std::vector<int>* m_pIntV;
+		std::vector<float>* m_pFloatV;
 	};
     
     struct MaterialPassParamter

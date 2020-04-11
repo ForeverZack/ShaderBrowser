@@ -375,7 +375,7 @@ namespace customGL
 		// 拷贝构造函数
 		UniformValue(const UniformValue& uniformVal);
         // 移动构造函数
-        UniformValue(const UniformValue&& uniformVal) noexcept;
+        UniformValue(UniformValue&& uniformVal) noexcept;
         // 析构函数
         ~UniformValue();
         // 设置数值
@@ -475,9 +475,9 @@ namespace customGL
         } _value;
         
 		private:
+			// 数组数据
 			std::vector<int>* m_pIntV;
 			std::vector<float>* m_pFloatV;
-			std::string* m_pString;
     };
     
 }
