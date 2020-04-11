@@ -5,6 +5,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <string>
+#include <vector>
 
 namespace customGL
 {
@@ -473,7 +474,10 @@ namespace customGL
             }
         } _value;
         
-        
+		private:
+			std::vector<int>* m_pIntV;
+			std::vector<float>* m_pFloatV;
+			std::string* m_pString;
     };
     
 }

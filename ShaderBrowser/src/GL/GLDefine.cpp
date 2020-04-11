@@ -40,6 +40,9 @@ namespace customGL {
     UniformValue::UniformValue()
         : m_eType(UniformValueType::UniformValueType_Undefined)
         , m_bDirty(true)
+		, m_pIntV(nullptr)
+		, m_pFloatV(nullptr)
+		, m_pString(nullptr)
     {
         
     }
@@ -49,6 +52,8 @@ namespace customGL {
 		m_eType = uniformVal.m_eType;
 		_value = uniformVal._value;
 		m_bDirty = uniformVal.m_bDirty;
+		// TODO: pointer
+
 	}
     
     UniformValue::UniformValue(const UniformValue&& uniformVal) noexcept
@@ -56,7 +61,9 @@ namespace customGL {
         m_eType = uniformVal.m_eType;
         _value = std::move(uniformVal._value);
         m_bDirty = uniformVal.m_bDirty;
-    }
+		// TODO: pointer
+
+	}
     
     UniformValue::~UniformValue()
     {
@@ -80,10 +87,12 @@ namespace customGL {
                                || m_eType==UniformValueType::UniformValueType_IntV,
                                "UniformValueType has already defined, you cannot change it again in function UniformValue::setIntV");
         
-        m_bDirty = true;
-        m_eType = UniformValueType::UniformValueType_IntV;
+		m_bDirty = true;
+		m_eType = UniformValueType::UniformValueType_IntV;
+		BROWSER_SAFE_RELEASE_POINTER(m_pIntV);
+		m_pIntV = new std::vector<int>(value, value + count);
         _value.intv.count = count;
-        _value.intv.pointer = value;
+        _value.intv.pointer = &(*m_pIntV)[0];
     }
     
     void UniformValue::setFloat(float value)
@@ -149,8 +158,10 @@ namespace customGL {
         
         m_bDirty = true;
         m_eType = UniformValueType::UniformValueType_Mat4V;
+		BROWSER_SAFE_RELEASE_POINTER(m_pFloatV);
+		m_pFloatV = new std::vector<float>(value, value + count);
         _value.mat4v.count = count;
-        _value.mat4v.pointer = value;
+        _value.mat4v.pointer = &(*m_pFloatV)[0];
     }
     
     void UniformValue::setMat4x3V(int count, const float* value)
@@ -161,8 +172,10 @@ namespace customGL {
         
         m_bDirty = true;
         m_eType = UniformValueType::UniformValueType_Mat4x3V;
+		BROWSER_SAFE_RELEASE_POINTER(m_pFloatV);
+		m_pFloatV = new std::vector<float>(value, value + count);
         _value.mat4x3v.count = count;
-        _value.mat4x3v.pointer = value;
+        _value.mat4x3v.pointer = &(*m_pFloatV)[0];
     }
     
     void UniformValue::setMat3V(int count, const float* value)
@@ -173,8 +186,10 @@ namespace customGL {
         
         m_bDirty = true;
         m_eType = UniformValueType::UniformValueType_Mat3V;
+		BROWSER_SAFE_RELEASE_POINTER(m_pFloatV);
+		m_pFloatV = new std::vector<float>(value, value + count);
         _value.mat3v.count = count;
-        _value.mat3v.pointer = value;
+        _value.mat3v.pointer = &(*m_pFloatV)[0];
     }
     
     void UniformValue::setMat3x4V(int count, const float* value)
@@ -185,8 +200,10 @@ namespace customGL {
         
         m_bDirty = true;
         m_eType = UniformValueType::UniformValueType_Mat3x4V;
+		BROWSER_SAFE_RELEASE_POINTER(m_pFloatV);
+		m_pFloatV = new std::vector<float>(value, value + count);
         _value.mat3x4v.count = count;
-        _value.mat3x4v.pointer = value;
+        _value.mat3x4v.pointer = &(*m_pFloatV)[0];
     }
     
     void UniformValue::setFloatV(int count, const float* value)
@@ -195,10 +212,12 @@ namespace customGL {
                || m_eType==UniformValueType::UniformValueType_FloatV,
                "UniformValueType has already defined, you cannot change it again in function UniformValue::setFloatV");
         
-        m_bDirty = true;
+		m_bDirty = true;
         m_eType = UniformValueType::UniformValueType_FloatV;
+		BROWSER_SAFE_RELEASE_POINTER(m_pFloatV);
+		m_pFloatV = new std::vector<float>(value, value + count);
         _value.floatv.count = count;
-        _value.floatv.pointer = value;
+        _value.floatv.pointer = &(*m_pFloatV)[0];
     }
     
     void UniformValue::setVec2(const glm::vec2& value)
@@ -231,8 +250,10 @@ namespace customGL {
         
         m_bDirty = true;
         m_eType = UniformValueType::UniformValueType_Vec2V;
+		BROWSER_SAFE_RELEASE_POINTER(m_pFloatV);
+		m_pFloatV = new std::vector<float>(value, value + count);
         _value.v2fv.count = count;
-        _value.v2fv.pointer = value;
+        _value.v2fv.pointer = &(*m_pFloatV)[0];
     }
     
     void UniformValue::setIVec2V(int count, const int* value)
@@ -243,8 +264,10 @@ namespace customGL {
         
         m_bDirty = true;
         m_eType = UniformValueType::UniformValueType_IVec2V;
+		BROWSER_SAFE_RELEASE_POINTER(m_pIntV);
+		m_pIntV = new std::vector<int>(value, value + count);
         _value.ivec2v.count = count;
-        _value.ivec2v.pointer = value;
+        _value.ivec2v.pointer = &(*m_pIntV)[0];
     }
     
     void UniformValue::setVec3(const glm::vec3& value)
@@ -277,8 +300,10 @@ namespace customGL {
         
         m_bDirty = true;
         m_eType = UniformValueType::UniformValueType_Vec3V;
+		BROWSER_SAFE_RELEASE_POINTER(m_pFloatV);
+		m_pFloatV = new std::vector<float>(value, value + count);
         _value.v3fv.count = count;
-        _value.v3fv.pointer = value;
+        _value.v3fv.pointer = &(*m_pFloatV)[0];
     }
     
     void UniformValue::setIVec3V(int count, const int* value)
@@ -289,8 +314,10 @@ namespace customGL {
         
         m_bDirty = true;
         m_eType = UniformValueType::UniformValueType_IVec3V;
+		BROWSER_SAFE_RELEASE_POINTER(m_pIntV);
+		m_pIntV = new std::vector<int>(value, value + count);
         _value.ivec3v.count = count;
-        _value.ivec3v.pointer = value;
+        _value.ivec3v.pointer = &(*m_pIntV)[0];
     }
     
     void UniformValue::setVec4(const glm::vec4& value)
@@ -323,8 +350,10 @@ namespace customGL {
         
         m_bDirty = true;
         m_eType = UniformValueType::UniformValueType_Vec4V;
+		BROWSER_SAFE_RELEASE_POINTER(m_pFloatV);
+		m_pFloatV = new std::vector<float>(value, value + count);
         _value.v4fv.count = count;
-        _value.v4fv.pointer = value;
+        _value.v4fv.pointer = &(*m_pFloatV)[0];
     }
     
     void UniformValue::setIVec4V(int count, const int* value)
@@ -335,8 +364,10 @@ namespace customGL {
         
         m_bDirty = true;
         m_eType = UniformValueType::UniformValueType_IVec4V;
+		BROWSER_SAFE_RELEASE_POINTER(m_pIntV);
+		m_pIntV = new std::vector<int>(value, value + count);
         _value.ivec4v.count = count;
-        _value.ivec4v.pointer = value;
+        _value.ivec4v.pointer = &(*m_pIntV)[0];
     }
     
     void UniformValue::setTex2D(Texture2D* texture)
