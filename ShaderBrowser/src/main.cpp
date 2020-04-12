@@ -31,6 +31,8 @@
 #include "Common/Tools/UI/InspectorPanel.h"
 #include "Common/Tools/UI/GameStatusPanel.h"
 
+#include "GL/GPUResource/Shader/MaterialParser.h"
+
 
 using namespace customGL;
 using namespace browser;
@@ -271,7 +273,12 @@ void testVal()
 //    modelEntity->changeAllMeshesMaterial(GLProgram::DEFAULT_SKELETON_GLPROGRAM_NAME);
     m_YBotEntity = modelEntity;
 
-
+//    {
+//        const std::string matContent = std::move(Utils::readFile("materials/test.material"));
+//        MaterialParameters param = MaterialParser::parseMaterialFileByContent(matContent);
+//        int aaa = 0;
+//    }
+    
 	// 性能测试
 	//for (int i = 0; i < 20; ++i)
 	//{

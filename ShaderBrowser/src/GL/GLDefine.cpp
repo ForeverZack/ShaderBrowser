@@ -52,11 +52,11 @@ namespace customGL {
 		_value = uniformVal._value;
 		m_bDirty = uniformVal.m_bDirty;
 		// 复制vector指针数据
-		if (uniformVal.m_pIntV && uniformVal.m_pIntV->size()>0)
+		if (checkIntVectorNeed() && uniformVal.m_pIntV && uniformVal.m_pIntV->size()>0)
 		{
 			m_pIntV = new std::vector<int>(&(*uniformVal.m_pIntV)[0], &(*uniformVal.m_pIntV)[0] + uniformVal.m_pIntV->size());
 		}
-		if (uniformVal.m_pFloatV && uniformVal.m_pFloatV->size() > 0)
+		if (checkFloatVectorNeed() && uniformVal.m_pFloatV && uniformVal.m_pFloatV->size() > 0)
 		{
 			m_pFloatV = new std::vector<float>(&(*uniformVal.m_pFloatV)[0], &(*uniformVal.m_pFloatV)[0] + uniformVal.m_pFloatV->size());
 		}
@@ -68,12 +68,12 @@ namespace customGL {
         _value = std::move(uniformVal._value);
         m_bDirty = uniformVal.m_bDirty;
 		// 接管vector指针数据
-		if (uniformVal.m_pIntV)
+		if (checkIntVectorNeed() && uniformVal.m_pIntV)
 		{
 			m_pIntV = uniformVal.m_pIntV;
 			uniformVal.m_pIntV = nullptr;
 		}
-		if (uniformVal.m_pFloatV)
+		if (checkFloatVectorNeed() && uniformVal.m_pFloatV)
 		{
 			m_pFloatV = uniformVal.m_pFloatV;
 			uniformVal.m_pFloatV = nullptr;
@@ -82,8 +82,34 @@ namespace customGL {
     
     UniformValue::~UniformValue()
     {
-		BROWSER_SAFE_RELEASE_POINTER(m_pIntV);
-		BROWSER_SAFE_RELEASE_POINTER(m_pFloatV);
+        if (checkIntVectorNeed())
+        {
+            BROWSER_SAFE_RELEASE_POINTER(m_pIntV);
+        }
+		if (checkFloatVectorNeed())
+        {
+            BROWSER_SAFE_RELEASE_POINTER(m_pFloatV);
+        }
+    }
+    
+    bool UniformValue::checkIntVectorNeed() const
+    {
+        return m_eType==UniformValue::UniformValueType::UniformValueType_IntV
+            || m_eType==UniformValue::UniformValueType::UniformValueType_IVec2V
+            || m_eType==UniformValue::UniformValueType::UniformValueType_IVec3V
+            || m_eType==UniformValue::UniformValueType::UniformValueType_IVec4V;
+    }
+    
+    bool UniformValue::checkFloatVectorNeed() const
+    {
+        return m_eType==UniformValue::UniformValueType::UniformValueType_FloatV
+            || m_eType==UniformValue::UniformValueType::UniformValueType_Vec2V
+            || m_eType==UniformValue::UniformValueType::UniformValueType_Vec3V
+            || m_eType==UniformValue::UniformValueType::UniformValueType_Vec4V
+            || m_eType==UniformValue::UniformValueType::UniformValueType_Mat4V
+            || m_eType==UniformValue::UniformValueType::UniformValueType_Mat4x3V
+            || m_eType==UniformValue::UniformValueType::UniformValueType_Mat3V
+            || m_eType==UniformValue::UniformValueType::UniformValueType_Mat3x4V;
     }
     
     void UniformValue::setInt(int value)

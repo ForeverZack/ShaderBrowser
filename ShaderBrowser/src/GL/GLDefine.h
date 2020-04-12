@@ -475,6 +475,9 @@ namespace customGL
         } _value;
         
 		private:
+            // 是否需要数组数据
+            bool checkIntVectorNeed() const;
+            bool checkFloatVectorNeed() const;
 			// 数组数据
 			std::vector<int>* m_pIntV;
 			std::vector<float>* m_pFloatV;

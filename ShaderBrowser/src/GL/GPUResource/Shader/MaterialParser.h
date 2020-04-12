@@ -15,7 +15,7 @@ namespace customGL
 	public:
 		MaterialUniformParamter();
 		MaterialUniformParamter(const MaterialUniformParamter& param);
-		MaterialUniformParamter(MaterialUniformParamter&& param);
+        MaterialUniformParamter(MaterialUniformParamter&& param) noexcept;
 		~MaterialUniformParamter();
 
 	public:
@@ -62,6 +62,10 @@ namespace customGL
 			}
 		} value;
         
+        // 是否需要数组数据
+        bool checkStringNeed() const;
+        bool checkIntVectorNeed() const;
+        bool checkFloatVectorNeed() const;
 		// 数组数据
 		std::string* m_pString;
 		std::vector<int>* m_pIntV;

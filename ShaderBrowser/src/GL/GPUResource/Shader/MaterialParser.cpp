@@ -45,37 +45,37 @@ namespace customGL
 		type = param.type;
 		value = param.value;
 		// 复制指针数据
-		if (param.m_pString)
+		if (param.checkStringNeed() && param.m_pString)
 		{
 			m_pString = new std::string(*param.m_pString);
 		}
-		if (param.m_pIntV && param.m_pIntV->size() > 0)
+		if (param.checkIntVectorNeed() && param.m_pIntV && param.m_pIntV->size() > 0)
 		{
 			m_pIntV = new std::vector<int>(&(*param.m_pIntV)[0], &(*param.m_pIntV)[0] + param.m_pIntV->size());
 		}
-		if (param.m_pFloatV && param.m_pFloatV->size() > 0)
+		if (param.checkFloatVectorNeed() && param.m_pFloatV && param.m_pFloatV->size() > 0)
 		{
 			m_pFloatV = new std::vector<float>(&(*param.m_pFloatV)[0], &(*param.m_pFloatV)[0] + param.m_pFloatV->size());
 		}
 	}
 
-	MaterialUniformParamter::MaterialUniformParamter(MaterialUniformParamter&& param)
+	MaterialUniformParamter::MaterialUniformParamter(MaterialUniformParamter&& param) noexcept
 	{
 		name = param.name;
 		type = param.type;
 		value = param.value;
 		// 接管指针数据
-		if (param.m_pString)
+		if (param.checkStringNeed() && param.m_pString)
 		{
 			m_pString = param.m_pString;
 			param.m_pString = nullptr;
 		}
-		if (param.m_pIntV)
+        if (param.checkIntVectorNeed() && param.m_pIntV)
 		{
 			m_pIntV = param.m_pIntV;
 			param.m_pIntV = nullptr;
 		}
-		if (param.m_pFloatV)
+        if (param.checkFloatVectorNeed() && param.m_pFloatV)
 		{
 			m_pFloatV = param.m_pFloatV;
 			param.m_pFloatV = nullptr;
@@ -84,11 +84,48 @@ namespace customGL
 
 	MaterialUniformParamter::~MaterialUniformParamter()
 	{
-		BROWSER_SAFE_RELEASE_POINTER(m_pString);
-		BROWSER_SAFE_RELEASE_POINTER(m_pIntV);
-		BROWSER_SAFE_RELEASE_POINTER(m_pFloatV);
+        if (checkStringNeed())
+        {
+            BROWSER_SAFE_RELEASE_POINTER(m_pString);
+        }
+		if (checkIntVectorNeed())
+        {
+            BROWSER_SAFE_RELEASE_POINTER(m_pIntV);
+        }
+		if (checkFloatVectorNeed())
+        {
+            BROWSER_SAFE_RELEASE_POINTER(m_pFloatV);
+        }
 	}
+    
+    bool MaterialUniformParamter::checkStringNeed() const
+    {
+        return type == UniformValue::UniformValueType::UniformValueType_Sampler2D;
+    }
+    
+    bool MaterialUniformParamter::checkIntVectorNeed() const
+    {
+        return type==UniformValue::UniformValueType::UniformValueType_IntV
+            || type==UniformValue::UniformValueType::UniformValueType_IVec2V
+            || type==UniformValue::UniformValueType::UniformValueType_IVec3V
+            || type==UniformValue::UniformValueType::UniformValueType_IVec4V;
+    }
+    
+    bool MaterialUniformParamter::checkFloatVectorNeed() const
+    {
+        return type==UniformValue::UniformValueType::UniformValueType_FloatV
+            || type==UniformValue::UniformValueType::UniformValueType_Vec2V
+            || type==UniformValue::UniformValueType::UniformValueType_Vec3V
+            || type==UniformValue::UniformValueType::UniformValueType_Vec4V
+            || type==UniformValue::UniformValueType::UniformValueType_Mat4V
+            || type==UniformValue::UniformValueType::UniformValueType_Mat4x3V
+            || type==UniformValue::UniformValueType::UniformValueType_Mat3V
+            || type==UniformValue::UniformValueType::UniformValueType_Mat3x4V;
+    }
 
+    
+    
+    
 	/*
 		Material结构:
 		{
