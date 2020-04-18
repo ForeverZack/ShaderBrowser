@@ -45,7 +45,7 @@ namespace common
 	{
         // Loader默认允许最大线程数
         #define DEFAULT_LOADER_MAX_THREAD_COUNT 2
-		typedef std::function<DataType*(const char*, shared_ptr<ExtraCreateDataType>)> CreateFunc;
+		typedef std::function<DataType*(const std::string&, shared_ptr<ExtraCreateDataType>)> CreateFunc;
 
 	public:
 		BaseAsyncLoader(CreateFunc createFunc, int maxThreadCount = DEFAULT_LOADER_MAX_THREAD_COUNT)

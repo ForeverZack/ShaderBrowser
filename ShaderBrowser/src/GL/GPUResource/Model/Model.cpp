@@ -296,10 +296,10 @@ namespace customGL
     
     
     // ==================================== Model class ================= start ===================
-    Model* Model::createAsync(const char* fileName, shared_ptr<std::vector<std::string>> animFileNames)
+    Model* Model::createAsync(const std::string& fileName, shared_ptr<std::vector<std::string>> animFileNames)
     {
         Model* model = new Model();
-        if (!model->initWithFile(fileName, *animFileNames, DEFAULT_ASSIMP_FLAG))
+        if (!model->initWithFile(fileName.c_str(), *animFileNames, DEFAULT_ASSIMP_FLAG))
         {
             delete model;
             return nullptr;
@@ -308,7 +308,7 @@ namespace customGL
         return model;
     }
     
-    Model* Model::createAlone(std::string fileName, const std::vector<std::string>& animFiles, std::function<void(Model*)> success, unsigned int pFlags /*= DEFAULT_ASSIMP_FLAG*/)
+    Model* Model::createAlone(const std::string& fileName, const std::vector<std::string>& animFiles, std::function<void(Model*)> success, unsigned int pFlags /*= DEFAULT_ASSIMP_FLAG*/)
     {
         Model* model = new Model();
         model->m_oSuccessCallback = success;
@@ -389,7 +389,7 @@ namespace customGL
         m_mSkeletonAnimations.clear();
     }
 
-	bool Model::initWithFile(const char* fileName, const std::vector<std::string>& animFiles, unsigned int pFlags)
+	bool Model::initWithFile(const std::string& fileName, const std::vector<std::string>& animFiles, unsigned int pFlags)
 	{
         // 加载模型（主模型文件）
 		{

@@ -134,8 +134,8 @@ namespace customGL
         // aiProcess_GenNormals：如果模型不包含法向量的话，就为每个顶点创建法线
         // aiProcess_SplitLargeMeshes：将比较大的网格分割成更小的子网格，如果你的渲染有最大顶点数限制，只能渲染较小的网格，那么它会非常有用
         // aiProcess_OptimizeMeshes：和上个选项相反，它会将多个小网格拼接为一个大的网格，减少绘制调用从而进行优化
-		static Model* createAsync(const char* fileName, shared_ptr<std::vector<std::string>> animFileNames);
-        static Model* createAlone(std::string fileName, const std::vector<std::string>& animFiles, std::function<void(Model*)> success, unsigned int pFlags = DEFAULT_ASSIMP_FLAG);
+		static Model* createAsync(const std::string& fileName, shared_ptr<std::vector<std::string>> animFileNames);
+        static Model* createAlone(const std::string& fileName, const std::vector<std::string>& animFiles, std::function<void(Model*)> success, unsigned int pFlags = DEFAULT_ASSIMP_FLAG);
 
         
 	public:
@@ -170,7 +170,7 @@ namespace customGL
         
 	private:
         // 初始化aiScenes（因为可能在异步线程调用，所以这里只读取了aiScene）
-		bool initWithFile(const char* fileName, const std::vector<std::string>& animFiles, unsigned int pFlags);
+		bool initWithFile(const std::string& fileName, const std::vector<std::string>& animFiles, unsigned int pFlags);
 		// 加载动画
 		void loadAnimations(const aiScene*& scene);
         // 递归遍历模型节点
