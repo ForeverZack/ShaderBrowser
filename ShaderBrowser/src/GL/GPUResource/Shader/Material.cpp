@@ -9,6 +9,32 @@ namespace customGL
 	// 默认材质名称
 	const char* Material::DEFAULT_MATERIAL_NAME = "ShaderBrowser_DefaultMaterial";
 
+    Material* Material::create(const MaterialParameters* parameters)
+    {
+        Material* material = Material::createMaterial(parameters->name);
+        
+        // pass
+        GLProgram* program = nullptr;
+        Pass* pass = nullptr;
+        for (auto itor=parameters->passes.begin(); itor!=parameters->passes.end(); ++itor)
+        {
+            const MaterialPassParamter& passParam = *itor;
+            program = GLProgramCache::getInstance()->getGLProgram(passParam.name);
+            if (!program)
+            {
+                GLProgramCache::getInstance()->addGLProgramBySource(passParam.name, passParam.vert_program, passParam.frag_program);
+                program = GLProgramCache::getInstance()->getGLProgram(passParam.name);
+            }
+            pass = Pass::createPass(program);
+            material->addPass(pass);
+        }
+        
+        // uniforms (注意！！！这里Material的材质必须提前加载完成！！)
+        MaterialParser::setupMaterialUniforms(parameters->uniforms, material);
+        
+        return material;
+    }
+    
 	Material* Material::createMaterial(const std::string& materialName /*= DEFAULT_MATERIAL_NAME*/)
 	{
 		Material* material = new Material(materialName);

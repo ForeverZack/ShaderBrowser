@@ -52,6 +52,18 @@ namespace common
 		}
 	}
     
+    void GLProgramCache::addGLProgramBySource(const std::string& name, const std::string& vertSource, const std::string& fragSource)
+    {
+        GLProgram* program = GLProgram::createBySource(vertSource, fragSource);
+        BROWSER_ASSERT(program, "GLProgram is not invalid in function GLProgramCache::addGLProgramBySource(const std::string& name, const std::string& vertSource, const std::string& fragSource)");
+        program->retain();
+        if (add(name, program))
+        {
+            program->release();
+            BROWSER_WARNING(false, "GLProgram has been added, please check your program in function GLProgramCache::addGLProgramBySource(const std::string& name, const std::string& vertSource, const std::string& fragSource)");
+        }
+    }
+    
     GLProgram* GLProgramCache::getGLProgram(const std::string& name)
     {
 		GLProgram* program = get(name);

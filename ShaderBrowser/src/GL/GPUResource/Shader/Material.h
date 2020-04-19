@@ -14,12 +14,14 @@
 #include "Common/CommonDefine.h"
 #include "GL/GPUResource/Texture/Texture2D.h"
 #include "GL/GPUResource/Texture/TextureBuffer.h"
+#
 
 using namespace std;
 using namespace browser;
 
 namespace customGL
 {
+    class MaterialParameters;
     
     class Material : public Reference
 	{
@@ -28,7 +30,7 @@ namespace customGL
 		static const char* DEFAULT_MATERIAL_NAME;
 
 	public:
-		// TODO: 这里的vao应该是生成material之后自动生成的(可以从缓存中找)
+        static Material* create(const MaterialParameters* parameters);
 		static Material* createMaterial(const std::string& materialName = DEFAULT_MATERIAL_NAME);
         static Material* createMaterial(const std::string& programName, const std::string& materialName);
 

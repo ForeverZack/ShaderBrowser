@@ -6,7 +6,8 @@ namespace common
 {    
 
     MaterialCache::MaterialCache()
-        : m_uIdGenerator(0)
+        : BaseAsyncLoader<MaterialParameters, std::function<void(Material*)>>(MaterialParser::parseMaterialFile, MAX_MATERIALCACHE_THREAD_COUNT)
+        , m_uIdGenerator(0)
     {
 
     }
@@ -18,6 +19,11 @@ namespace common
     
     void MaterialCache::init()
     {
+    }
+    
+    void MaterialCache::addMaterial(const std::string& filepath)
+    {
+        
     }
     
 	void MaterialCache::addMaterial(Material* material, bool isShared/* = false*/, bool isDefault/* = false*/)
@@ -52,20 +58,10 @@ namespace common
         BROWSER_ASSERT(material, "Material is not invalid in function MaterialCache::getShareMaterial");
         return material;
     }
-    
-	void MaterialCache::operateAllMaterials(std::function<void(Material*)> callback)
-	{
-		Material* material = nullptr;
-		for (auto itor=m_mContents.begin(); itor!=m_mContents.end(); ++itor)
-		{
-			material = itor->second;
-			callback(material);
-		}
-	}
 
 	void MaterialCache::update(float dt)
 	{
-
+        // 注意：要先加载纹理资源
 	}
 
 

@@ -31,7 +31,8 @@ namespace common
 		FILE* infile = fopen(absolutePath, "rb");
 #endif
 
-		if (!infile) {
+		if (!infile)
+        {
 #ifdef _DEBUG
 			std::cerr << "Unable to open file '" << absolutePath << "'" << std::endl;
 #endif /* DEBUG */

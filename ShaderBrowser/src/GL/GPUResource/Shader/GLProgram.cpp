@@ -75,13 +75,20 @@ namespace customGL
     // 预定义uniform变量名字的最大长度
     const int GLProgram::SHADER_UNIFORM_NAME_MAX_LENGTH = 100;
 
-    GLProgram* GLProgram::create(const char* vertSrc, const char* fragSrc)
+    GLProgram* GLProgram::create(const char* vertPath, const char* fragPath)
     {
         GLProgram* program = new GLProgram();
-        program->initProgram(vertSrc, fragSrc);
+        program->initProgram(vertPath, fragPath);
         return program;
     }
-
+    
+    GLProgram* GLProgram::createBySource(const std::string& vertSource, const std::string& fragSource)
+    {
+        GLProgram* program = new GLProgram();
+        program->initProgramBySource(vertSource.c_str(), fragSource.c_str());
+        return program;
+    }
+    
 	GLProgram::GLProgram()
 		: m_uProgram(0)
 		, m_uVertShader(0)
@@ -165,6 +172,20 @@ namespace customGL
 		m_sFragFilePath = fragPath;
         createGPUResource(vertPath, fragPath);
 	}
+    
+    void GLProgram::initProgramBySource(const std::string& vertSource, const std::string& fragSource, bool saveSource /*= true*/)
+    {
+        if (vertSource.size()==0 || fragSource.size()==0)
+        {
+            return;
+        }
+        
+        // 创建GPU资源
+        m_eResouceState = GRS_DataLoaded;
+        m_sVertexSource = vertSource;
+        m_sFragSource = fragSource;
+        createGPUResourceBySource(vertSource, fragSource);
+    }
     
     bool GLProgram::cloneProgram(GLProgram* srcGLProgram)
     {

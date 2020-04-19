@@ -2,6 +2,8 @@
 
 #include <string>
 #include <unordered_map>
+#include <set>
+#include <memory>
 #include "Plugins/rapidjson/document.h"
 #include "GL/GPUResource/Shader/Material.h"
 #include "GL/GLDefine.h"
@@ -74,20 +76,24 @@ namespace customGL
     
     struct MaterialPassParamter
     {
-        std::string vert;
-        std::string frag;
+        std::string name;   // program name
+//        std::string vert;     // 这两个字段不用，直接读取使用program
+//        std::string frag;
         std::string vert_program;
         std::string frag_program;
     };
 
-	struct MaterialParameters
+	class MaterialParameters
 	{
+    public:
 		// 材质名称 
 		std::string name;
 		// uniforms
 		std::vector<MaterialUniformParamter> uniforms;
 		// pass
         std::vector<MaterialPassParamter> passes;
+        // 所有纹理的路径(方便异步加载)
+        std::set<std::string> textures_path;
 	};
 
 	/*
@@ -109,7 +115,8 @@ namespace customGL
 			},
 			"pass": [
 				{
-					"vert": "shader/default/xx.vert",
+                    "name": "xxx",
+					"vert": "shader/default/xx.vert",   // vert\frag最后会直接读取为vert_program\frag_program
 					"frag": "shader/default/xx.frag",
 					"vert_program": "代码代码",
 					"frag_program": "代码代码",
@@ -120,12 +127,19 @@ namespace customGL
     class MaterialParser
 	{
 	public:
-		static MaterialParameters parseMaterialFileByContent(const std::string& content);
+        // 通过材质文件路径解析材质
+        static MaterialParameters* parseMaterialFile(const std::string& fullpath, shared_ptr<const char*> extra = nullptr);
+        // 通过材质文件内容解析材质
+		static MaterialParameters* parseMaterialFileByContent(const std::string& content);
+        // 将MaterialUniformParamter设置到Material上
+        static void setupMaterialUniforms(const std::vector<MaterialUniformParamter> uniforms, Material* material);
 
 	protected:
 		// 内置uniform对应类型
 		static std::unordered_map<std::string, std::string> m_mBuiltinUniforms;
         // 字符串类型 转 UniformValueType
         static std::unordered_map<std::string, UniformValue::UniformValueType> m_mStrType2UniformValueType;
+        // 未定义GLProgram名称id
+        static unsigned long m_uGeneratorId;
 	};
 }

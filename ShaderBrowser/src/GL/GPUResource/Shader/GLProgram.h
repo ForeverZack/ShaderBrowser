@@ -115,7 +115,8 @@ namespace customGL
         static const int SHADER_UNIFORM_NAME_MAX_LENGTH;
 
 	public:
-		static GLProgram* create(const char* vertSrc, const char* fragSrc);
+		static GLProgram* create(const char* vertPath, const char* fragPath);
+        static GLProgram* createBySource(const std::string& vertSource, const std::string& fragSource);
 
 	public:
 		GLProgram();
@@ -170,6 +171,7 @@ namespace customGL
     protected:
         // 创建gpu资源
         void createGPUResource(const char* vertPath, const char* fragPath);
+        void createGPUResourceBySource(const char* vertSource, const char* fragSource);
 		void createGPUResourceBySource(const string& vertSource, const string& fragSource);
 		// 更新gpu资源
 		void updateGPUResource(const std::unordered_map<std::string, UniformValue>& uniforms);
@@ -182,6 +184,7 @@ namespace customGL
         std::string& traverseConvertSourceCodeInc(std::string& source, std::set<std::string>& includeFilesSet);
 		// 初始化着色器程序
 		void initProgram(const char* vertPath, const char* fragPath, bool saveSource = true);
+        void initProgramBySource(const std::string& vertSource, const std::string& fragSource, bool saveSource = true);
         bool cloneProgram(GLProgram* srcGLProgram);
 		// 创建着色器
 		bool createShader(GLenum type, GLuint& shader, const char* shaderPath);

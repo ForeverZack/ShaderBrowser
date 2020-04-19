@@ -1,4 +1,7 @@
 #include "MaterialParser.h"
+#include "Common/Tools/Utils.h"
+#include "Common/Tools/FileUtils.h"
+#include "Common/System/Cache/TextureCache.h"
 #include "GL/GPUResource/Shader/GLProgram.h"
 
 namespace customGL
@@ -122,10 +125,14 @@ namespace customGL
             || type==UniformValue::UniformValueType::UniformValueType_Mat3V
             || type==UniformValue::UniformValueType::UniformValueType_Mat3x4V;
     }
-
     
+    unsigned long MaterialParser::m_uGeneratorId = 0;
     
-    
+    MaterialParameters* MaterialParser::parseMaterialFile(const std::string& fullpath, shared_ptr<const char*> extra/* = nullptr*/)
+    {
+        std::string content = Utils::readAbsolutePathFile(fullpath.c_str());
+        return MaterialParser::parseMaterialFileByContent(content);
+    }
 	/*
 		Material结构:
 		{
@@ -153,9 +160,9 @@ namespace customGL
 			],
 		}
 	*/
-	MaterialParameters MaterialParser::parseMaterialFileByContent(const std::string& content)
+	MaterialParameters* MaterialParser::parseMaterialFileByContent(const std::string& content)
 	{
-		MaterialParameters parameters;
+		MaterialParameters* parameters = new MaterialParameters();
 
 		Document document;
 		document.Parse(content.c_str());
@@ -166,7 +173,7 @@ namespace customGL
 		if (document.HasMember("name"))
 		{
 			BROWSER_ASSERT(document["name"].IsString(), "Material's name must be string value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
-			parameters.name = document["name"].GetString();
+			parameters->name = document["name"].GetString();
 		}
 
 		// uniforms
@@ -279,6 +286,7 @@ namespace customGL
 							BROWSER_SAFE_RELEASE_POINTER(uniformParam.m_pString);
 							uniformParam.m_pString = new std::string(value.GetString());
                             uniformParam.value.tex2D.path = &(*uniformParam.m_pString)[0];
+                            parameters->textures_path.insert(*(uniformParam.m_pString));
                         }
                         break;
                             
@@ -359,7 +367,7 @@ namespace customGL
                     }
                 }
             
-                parameters.uniforms.push_back(std::move(uniformParam));
+                parameters->uniforms.push_back(std::move(uniformParam));
             }
             
 		}
@@ -370,18 +378,29 @@ namespace customGL
             rapidjson::Value& pass = document["pass"];
             BROWSER_ASSERT(pass.IsArray() && pass.GetArray().Size()>0, "Material's parameter pass size must bigger than 0, please check your program in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
             const rapidjson::Value::Array& passes = pass.GetArray();
-            parameters.passes.reserve(passes.Size());
+            parameters->passes.reserve(passes.Size());
             for(int i=0; i<passes.Size(); ++i)
             {
                 MaterialPassParamter passParam;
                 
                 rapidjson::Value& one_pass = passes[i];
                 
+                // glprogram name
+                if (one_pass.HasMember("name"))
+                {
+                    BROWSER_ASSERT(one_pass["name"].IsString(), "Pass's name is not a string value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+                    passParam.name = one_pass["name"].GetString();
+                }
+                else
+                {
+                    passParam.name = "Undefine_"+std::to_string(m_uGeneratorId++);
+                }
                 // vertex shader
                 if (one_pass.HasMember("vert"))
                 {
                     BROWSER_ASSERT(one_pass["vert"].IsString(), "Pass's vert is not a string value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
-                    passParam.vert = one_pass["vert"].GetString();
+                    std::string vert_path = one_pass["vert"].GetString();
+                    passParam.vert_program = Utils::readFile(vert_path.c_str());
                 }
                 else if (one_pass.HasMember("vert_program"))
                 {
@@ -393,7 +412,8 @@ namespace customGL
                 if (one_pass.HasMember("frag"))
                 {
                     BROWSER_ASSERT(one_pass["frag"].IsString(), "Pass's frag is not a string value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
-                    passParam.frag = one_pass["frag"].GetString();
+                    std::string frag_path = one_pass["frag"].GetString();
+                    passParam.frag_program = Utils::readFile(frag_path.c_str());
                 }
                 else if (one_pass.HasMember("frag_program"))
                 {
@@ -401,11 +421,112 @@ namespace customGL
                     passParam.frag_program = one_pass["frag_program"].GetString();
                 }
                 
-                parameters.passes.push_back(std::move(passParam));
+                parameters->passes.push_back(std::move(passParam));
             }
         }
 
 		return parameters;
 	}
+    
+    void MaterialParser::setupMaterialUniforms(const std::vector<MaterialUniformParamter> uniforms, Material* material)
+    {
+        for (auto itor=uniforms.begin(); itor!=uniforms.end(); ++itor)
+        {
+            const MaterialUniformParamter& uniformParam = *itor;
+            switch(uniformParam.type)
+            {
+                case UniformValue::UniformValueType::UniformValueType_Float:
+                    {
+                        material->setUniformFloat(uniformParam.name, uniformParam.value.floatValue);
+                    }
+                    break;
+                
+                case UniformValue::UniformValueType::UniformValueType_Vec2:
+                    {
+                        material->setUniformV2f(uniformParam.name, uniformParam.value.v2f);
+                    }
+                    break;
+                        
+                case UniformValue::UniformValueType::UniformValueType_Vec3:
+                    {
+                        material->setUniformV3f(uniformParam.name, uniformParam.value.v3f);
+                    }
+                    break;
+                        
+                case UniformValue::UniformValueType::UniformValueType_Vec4:
+                    {
+                        material->setUniformV4f(uniformParam.name, uniformParam.value.v4f);
+                    }
+                    break;
+                        
+                case UniformValue::UniformValueType::UniformValueType_Int:
+                    {
+                        material->setUniformInt(uniformParam.name, uniformParam.value.intValue);
+                    }
+                    break;
+                        
+                case UniformValue::UniformValueType::UniformValueType_IVec2:
+                    {
+                        material->setUniformIVec2(uniformParam.name, uniformParam.value.ivec2);
+                    }
+                    break;
+                        
+                case UniformValue::UniformValueType::UniformValueType_IVec3:
+                    {
+                        material->setUniformIVec3(uniformParam.name, uniformParam.value.ivec3);
+                    }
+                    break;
+                        
+                case UniformValue::UniformValueType::UniformValueType_IVec4:
+                    {
+                        material->setUniformIVec4(uniformParam.name, uniformParam.value.ivec4);
+                    }
+                    break;
+                        
+                case UniformValue::UniformValueType::UniformValueType_Sampler2D:
+                    {
+                        Texture2D* texture = TextureCache::getInstance()->getTexture(uniformParam.value.tex2D.path);
+                        material->setUniformTex2D(uniformParam.name, texture);
+                    }
+                    break;
+                        
+                case UniformValue::UniformValueType::UniformValueType_Mat4:
+                    {
+                        material->setUniformMat4(uniformParam.name, uniformParam.value.mat4);
+                    }
+                    break;
+                
+                case UniformValue::UniformValueType::UniformValueType_Mat4x3:
+                    {
+                        material->setUniformMat4x3(uniformParam.name, uniformParam.value.mat4x3);
+                    }
+                    break;
+                        
+                case UniformValue::UniformValueType::UniformValueType_Mat3:
+                    {
+                        material->setUniformMat3(uniformParam.name, uniformParam.value.mat3);
+                    }
+                    break;
+                                                            
+                case UniformValue::UniformValueType::UniformValueType_Mat3x4:
+                    {
+                        material->setUniformMat3x4(uniformParam.name, uniformParam.value.mat3x4);
+                    }
+                    break;
+
+                case UniformValue::UniformValueType::UniformValueType_FloatV:
+                {
+                    material->setUniformFloatV(uniformParam.name, uniformParam.value.floatv.count, uniformParam.value.floatv.pointer);
+                }
+                break;
+
+                case UniformValue::UniformValueType::UniformValueType_IntV:
+                {
+                    material->setUniformIntV(uniformParam.name, uniformParam.value.intv.count, uniformParam.value.intv.pointer);
+                }
+                break;
+            }
+        }
+    }
 
 }
