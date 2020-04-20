@@ -118,6 +118,10 @@ namespace customGL
 		static GLProgram* create(const char* vertPath, const char* fragPath);
         static GLProgram* createBySource(const std::string& vertSource, const std::string& fragSource);
 
+		// 将shader源码中的include替换成对应代码
+		static std::string& convertSourceCodeInclude(std::string& source);
+		static std::string& traverseConvertSourceCodeInc(std::string& source, std::set<std::string>& includeFilesSet);
+
 	public:
 		GLProgram();
 		~GLProgram();
@@ -179,9 +183,6 @@ namespace customGL
         virtual void deleteGPUResource();
         
 	protected:
-		// 将shader源码中的include替换成对应代码
-		std::string& convertSourceCodeInclude(std::string& source);
-        std::string& traverseConvertSourceCodeInc(std::string& source, std::set<std::string>& includeFilesSet);
 		// 初始化着色器程序
 		void initProgram(const char* vertPath, const char* fragPath, bool saveSource = true);
         void initProgramBySource(const std::string& vertSource, const std::string& fragSource, bool saveSource = true);

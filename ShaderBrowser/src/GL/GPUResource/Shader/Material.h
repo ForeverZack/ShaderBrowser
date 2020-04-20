@@ -83,6 +83,7 @@ namespace customGL
         REGISTER_PROPERTY_GET_SET(unsigned int, m_uMaterialId, MaterialId)
 		REGISTER_PROPERTY_CONSTREF_GET(std::vector<Pass*>, m_vPass, Pass)
 		REGISTER_PROPERTY_CONSTREF_GET(std::string, m_sMaterialName, MaterialName)
+		REGISTER_PROPERTY_CONSTREF_GET_SET(std::string, m_sFilePath, FilePath)
         REGISTER_PROPERTY_GET_SET(unsigned int, m_uSharedId, SharedId)
         REGISTER_PROPERTY_GET_SET(bool, m_bDefaultMaterialFlag, DefaultMaterialFlag)
         REGISTER_PROPERTY_GET_SET(RenderQueue, m_eQueue, RenderQueue)
@@ -97,6 +98,8 @@ namespace customGL
         unsigned int m_uMaterialId;
 		// 名称
 		std::string m_sMaterialName;
+		// 对应材质文件绝对路径
+		std::string m_sFilePath;
         // 渲染队列
         RenderQueue m_eQueue;
         // uniform数据

@@ -354,6 +354,9 @@
     <ClCompile Include="src\GL\GPUResource\Shader\MaterialParser.cpp">
       <Filter>src\GL\GPUResource\Shader</Filter>
     </ClCompile>
+    <ClCompile Include="src\Common\System\Cache\MaterialManager.cpp">
+      <Filter>src\Common\System\Cache</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\GL\GLDefine.h">
@@ -628,6 +631,9 @@
     </ClInclude>
     <ClInclude Include="src\GL\GPUResource\Shader\MaterialParser.h">
       <Filter>src\GL\GPUResource\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Common\System\Cache\MaterialManager.h">
+      <Filter>src\Common\System\Cache</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

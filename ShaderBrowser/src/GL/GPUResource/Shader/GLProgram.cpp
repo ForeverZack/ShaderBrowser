@@ -88,6 +88,51 @@ namespace customGL
         program->initProgramBySource(vertSource.c_str(), fragSource.c_str());
         return program;
     }
+
+	std::string& GLProgram::convertSourceCodeInclude(std::string& source)
+	{
+		std::set<std::string> includeSet;
+		return traverseConvertSourceCodeInc(source, includeSet);
+	}
+
+	std::string& GLProgram::traverseConvertSourceCodeInc(std::string& source, std::set<std::string>& includeFilesSet)
+	{
+		int startIdx, endIdx;
+
+		startIdx = source.find("#include \"");    // int find(str);    -1:没找到
+		while (startIdx != -1)
+		{
+			endIdx = source.find("\"", startIdx + 10);    // int find(str, startPos);
+
+			BROWSER_ASSERT(endIdx != -1, "The #include \"XXX\" in your shader program miss the symbol \"");
+
+			// include文件名
+			std::string inc_filename = source.substr(startIdx + 10, endIdx - startIdx - 10);    // std::string substr(pos, length)
+																								// 获取文件绝对路径
+			inc_filename = common::FileUtils::getInstance()->getAbsolutePathForFilename(inc_filename);
+			// 检测文件是否重复包含
+			if (includeFilesSet.find(inc_filename) == includeFilesSet.end())
+			{
+				// 未重复包含
+				includeFilesSet.insert(inc_filename);
+				// 读取include文件源码
+				std::string inc_source = common::Utils::readAbsolutePathFile(inc_filename.c_str());
+				BROWSER_ASSERT(inc_source != "", "The inc file in your shader is empty");
+				// 递归转换include文件中的include
+				traverseConvertSourceCodeInc(inc_source, includeFilesSet);
+				source.replace(startIdx, endIdx - startIdx + 1, inc_source);    // std::string& replace(pos, length, str);
+			}
+			else
+			{
+				// 重复包含
+				source.replace(startIdx, endIdx - startIdx + 1, "");
+			}
+
+			startIdx = source.find("#include \"");
+		}
+
+		return source;
+	}
     
 	GLProgram::GLProgram()
 		: m_uProgram(0)
@@ -303,51 +348,6 @@ namespace customGL
         }
         
         return true;
-    }
-
-	std::string& GLProgram::convertSourceCodeInclude(std::string& source)
-	{
-		std::set<std::string> includeSet;
-        return traverseConvertSourceCodeInc(source, includeSet);
-	}
-    
-    std::string& GLProgram::traverseConvertSourceCodeInc(std::string& source, std::set<std::string>& includeFilesSet)
-    {
-        int startIdx, endIdx;
-
-        startIdx = source.find("#include \"");    // int find(str);    -1:没找到
-        while (startIdx != -1)
-        {
-            endIdx = source.find("\"", startIdx + 10);    // int find(str, startPos);
-
-            BROWSER_ASSERT(endIdx != -1, "The #include \"XXX\" in your shader program miss the symbol \"");
-            
-            // include文件名
-            std::string inc_filename = source.substr(startIdx + 10, endIdx - startIdx - 10);    // std::string substr(pos, length)
-            // 获取文件绝对路径
-            inc_filename = common::FileUtils::getInstance()->getAbsolutePathForFilename(inc_filename);
-            // 检测文件是否重复包含
-            if (includeFilesSet.find(inc_filename) == includeFilesSet.end())
-            {
-                // 未重复包含
-                includeFilesSet.insert(inc_filename);
-                // 读取include文件源码
-                std::string inc_source = common::Utils::readAbsolutePathFile(inc_filename.c_str());
-                BROWSER_ASSERT(inc_source!="", "The inc file in your shader is empty");
-                // 递归转换include文件中的include
-                traverseConvertSourceCodeInc(inc_source, includeFilesSet);
-                source.replace(startIdx, endIdx - startIdx + 1, inc_source);    // std::string& replace(pos, length, str);
-            }
-            else
-            {
-                // 重复包含
-                source.replace(startIdx, endIdx - startIdx + 1, "");
-            }
-            
-            startIdx = source.find("#include \"");
-        }
-        
-        return source;
     }
     
 	string& GLProgram::getSourceSavePointer(GLenum type)

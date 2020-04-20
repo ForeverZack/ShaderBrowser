@@ -10,7 +10,8 @@ using namespace browser;
 
 namespace common
 {
-	class MaterialCache : public BaseMapCache<unsigned int, Material*, MaterialCache>, public BaseAsyncLoader<MaterialParameters, std::function<void(Material*)>>
+	// MaterialCache只存储含有材质文件的材质
+	class MaterialCache : public BaseMapCache<std::string, Material*, MaterialCache>, public BaseAsyncLoader<MaterialParameters, std::function<void(Material*)>>
 	{
         // MaterialCache异步加载最大允许线程数
         #define MAX_MATERIALCACHE_THREAD_COUNT 2
@@ -22,33 +23,23 @@ namespace common
     public:
         // 初始化
         void init();
-        // 加载材质 (靠材质文件添加)
+        // 加载材质 (读取材质文件)
         void addMaterial(const std::string& filepath);
-        
-        
-        // 添加（Material构造函数中调用）
-        void addMaterial(Material* material, bool isShared = false, bool isDefault = false);
+        // 加载材质异步 (读取材质文件)
+		void addMaterialAsync(const std::string& filepath, std::function<void(Material*)> callback);
         // 移除
         void removeMaterial(Material* material);
-        void removeMaterial(unsigned int materialId);
+        void removeMaterial(const std::string& filepath);
         // 获取
-        Material* getMaterial(const unsigned int materialId);
+        Material* getMaterial(const std::string& filepath);
 
-
+		// 刷新
 		void update(float dt);
 
-    private:
-		// 生成materialId
-        unsigned int generateId()
-        {
-            return ++m_uIdGenerator;
-        }
+	private:
+		// 异步创建材质
+		void createMaterial(AsyncData<MaterialParameters, std::function<void(Material*)>>* asyncData);
 
-    private:
-        // id生成器
-        unsigned int m_uIdGenerator;
-
-        
 	};
 }
 

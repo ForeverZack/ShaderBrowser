@@ -27,6 +27,7 @@
 #include "Common/System/Cache/GLProgramCache.h"
 #include "Common/System/Cache/TextureCache.h"
 #include "Common/System/Cache/ModelCache.h"
+#include "Common/System/Cache/MaterialCache.h"
 #include "Common/Tools/UI/GUIFramework.h"
 #include "Common/Tools/UI/InspectorPanel.h"
 #include "Common/Tools/UI/GameStatusPanel.h"
@@ -272,6 +273,14 @@ void testVal()
     modelEntity->playAnimation(1, true);
 //    modelEntity->changeAllMeshesMaterial(GLProgram::DEFAULT_SKELETON_GLPROGRAM_NAME);
     m_YBotEntity = modelEntity;
+
+	//MaterialCache::getInstance()->addMaterial("res/materials/test.material");
+	//MaterialCache::getInstance()->addMaterialAsync("res/materials/test.material", [](Material* material) mutable->void
+	//{
+	//	BROWSER_LOG(material->getUniforms().size());
+	//	BROWSER_LOG(material->getFilePath());
+	//	BROWSER_LOG(material->getMaterialName());
+	//});
 
 //    {
 //        const std::string matContent = std::move(Utils::readFile("materials/test.material"));

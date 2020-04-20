@@ -15,10 +15,8 @@
     },
     "pass": [
         {
-            "vert": "shader/default/xx.vert",
-            "frag": "shader/default/xx.frag",
-            "vert_program": "代码代码",
-            "frag_program": "代码代码"
+            "vert": "shaders/default/model_default.vert",
+            "frag": "shaders/default/model_default.frag"
         }
     ]
 }

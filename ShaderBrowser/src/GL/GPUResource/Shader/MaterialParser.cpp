@@ -286,7 +286,9 @@ namespace customGL
 							BROWSER_SAFE_RELEASE_POINTER(uniformParam.m_pString);
 							uniformParam.m_pString = new std::string(value.GetString());
                             uniformParam.value.tex2D.path = &(*uniformParam.m_pString)[0];
-                            parameters->textures_path.insert(*(uniformParam.m_pString));
+							const std::string full_path = FileUtils::getInstance()->getAbsolutePathForFilename(uniformParam.m_pString->c_str());
+							BROWSER_ASSERT(FileUtils::getInstance()->isDirectoryOrFileExist(full_path), "Uniform's texture file is not found in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+                            parameters->textures_path.push_back(*(uniformParam.m_pString));
                         }
                         break;
                             
@@ -393,34 +395,40 @@ namespace customGL
                 }
                 else
                 {
-                    passParam.name = "Undefine_"+std::to_string(m_uGeneratorId++);
+                    passParam.name = "UndefineGLProgram_"+std::to_string(m_uGeneratorId++);
                 }
                 // vertex shader
                 if (one_pass.HasMember("vert"))
                 {
                     BROWSER_ASSERT(one_pass["vert"].IsString(), "Pass's vert is not a string value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
                     std::string vert_path = one_pass["vert"].GetString();
-                    passParam.vert_program = Utils::readFile(vert_path.c_str());
+					const std::string full_path = FileUtils::getInstance()->getAbsolutePathForFilename(vert_path);
+					BROWSER_ASSERT(FileUtils::getInstance()->isDirectoryOrFileExist(full_path), "Pass's vert file is not found in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+					passParam.vert_program = Utils::readAbsolutePathFile(full_path.c_str());
                 }
                 else if (one_pass.HasMember("vert_program"))
                 {
                     BROWSER_ASSERT(one_pass["vert_program"].IsString(), "Pass's vert_program is not a string value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
                     passParam.vert_program = one_pass["vert_program"].GetString();
                 }
+				GLProgram::convertSourceCodeInclude(passParam.vert_program);	// 替换shader中的inc
 
                 // fragment shader
                 if (one_pass.HasMember("frag"))
                 {
                     BROWSER_ASSERT(one_pass["frag"].IsString(), "Pass's frag is not a string value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
                     std::string frag_path = one_pass["frag"].GetString();
-                    passParam.frag_program = Utils::readFile(frag_path.c_str());
+					const std::string full_path = FileUtils::getInstance()->getAbsolutePathForFilename(frag_path);
+					BROWSER_ASSERT(FileUtils::getInstance()->isDirectoryOrFileExist(full_path), "Pass's frag file is not found in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+                    passParam.frag_program = Utils::readFile(full_path.c_str());
                 }
                 else if (one_pass.HasMember("frag_program"))
                 {
                     BROWSER_ASSERT(one_pass["frag_program"].IsString(), "Pass's frag_program is not a string value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
                     passParam.frag_program = one_pass["frag_program"].GetString();
                 }
-                
+				GLProgram::convertSourceCodeInclude(passParam.frag_program);	// 替换shader中的inc
+
                 parameters->passes.push_back(std::move(passParam));
             }
         }

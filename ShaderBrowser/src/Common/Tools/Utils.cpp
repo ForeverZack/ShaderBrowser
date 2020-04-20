@@ -52,8 +52,8 @@ namespace common
     
     std::string Utils::readFile(const char* filepath)
     {
-        const std::string inc_full_path = FileUtils::getInstance()->getAbsolutePathForFilename(filepath);
-        return readAbsolutePathFile(inc_full_path.c_str());
+        const std::string full_path = FileUtils::getInstance()->getAbsolutePathForFilename(filepath);
+        return readAbsolutePathFile(full_path.c_str());
     }
     
     VertexAttribDeclaration* Utils::createVertexAttribDeclaration(GLuint location, GLint size, GLenum type, GLboolean normalized, GLsizei stride, VertexDataType dataType /*= VertexDataType::Float*/)

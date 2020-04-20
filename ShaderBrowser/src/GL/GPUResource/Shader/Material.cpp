@@ -1,6 +1,7 @@
 #include "Material.h"
 #include "Common/Tools/Utils.h"
 #include "Common/System/Cache/GLProgramCache.h"
+#include "Common/System/Cache/MaterialManager.h"
 #include "Common/System/Cache/MaterialCache.h"
 #include "Browser/System/LightSystem.h"
 
@@ -59,6 +60,7 @@ namespace customGL
 
 	Material::Material(const std::string& materialName)
 		: m_sMaterialName(materialName)
+		, m_sFilePath("")
         , m_uMaterialId(0)
         , m_eQueue(RenderQueue::Geometry)
         , m_bGpuInstance(false)
@@ -70,16 +72,13 @@ namespace customGL
         m_vPass.clear();
 	
 		// 新的材质加入MaterialCache
-		MaterialCache::getInstance()->addMaterial(this);
+		MaterialManager::getInstance()->addMaterial(this);
 		// 加入待处理的光照材质
 		LightSystem::getInstance()->addPrepareLightMaterial(this);
 	}
 
 	Material::~Material()
 	{
-		// 从MaterialCache中移除材质
-		MaterialCache::getInstance()->removeMaterial(this);
-
         for(auto itor=m_vPass.begin(); itor!=m_vPass.end(); ++itor)
         {
             (*itor)->release();
@@ -89,6 +88,8 @@ namespace customGL
 		LightSystem::getInstance()->removePrepareLightMaterial(this);
 		// 从MaterialCache移除
 		MaterialCache::getInstance()->removeMaterial(this);
+		// 从MaterialManager中移除
+		MaterialManager::getInstance()->removeMaterial(this);
 	}
 
 	void Material::init()

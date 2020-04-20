@@ -68,7 +68,7 @@ namespace common
     {
 		GLProgram* program = get(name);
         
-		BROWSER_ASSERT(program, "GLProgram is not invalid in function GLProgramCache::getGLProgram");
+		BROWSER_WARNING(program, "GLProgram is not invalid in function GLProgramCache::getGLProgram");
 		return program;
 	}
     

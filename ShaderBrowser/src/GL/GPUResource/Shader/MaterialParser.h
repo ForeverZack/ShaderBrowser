@@ -2,8 +2,8 @@
 
 #include <string>
 #include <unordered_map>
-#include <set>
 #include <memory>
+#include "Common/Components/Reference.h"
 #include "Plugins/rapidjson/document.h"
 #include "GL/GPUResource/Shader/Material.h"
 #include "GL/GLDefine.h"
@@ -83,7 +83,7 @@ namespace customGL
         std::string frag_program;
     };
 
-	class MaterialParameters
+	class MaterialParameters : public common::Reference
 	{
     public:
 		// 材质名称 
@@ -93,7 +93,7 @@ namespace customGL
 		// pass
         std::vector<MaterialPassParamter> passes;
         // 所有纹理的路径(方便异步加载)
-        std::set<std::string> textures_path;
+        std::vector<std::string> textures_path;
 	};
 
 	/*
