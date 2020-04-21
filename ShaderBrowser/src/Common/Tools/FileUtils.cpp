@@ -78,6 +78,54 @@ namespace common
 		return file_path;
 	}
 
+	std::string FileUtils::tryGetAbsolutePathForFilename(const std::string& filename, const std::string& directory)
+	{
+		std::string file_path;
+
+		// 查找替代"./"
+		{
+			file_path = filename;
+			int start_idx = file_path.find("./");
+			if (start_idx != -1)
+			{
+				file_path.replace(start_idx, 2, directory);
+				file_path = getAbsolutePathForFilename(file_path);
+				if (isDirectoryOrFileExist(file_path))
+				{
+					return file_path;
+				}
+			}
+		}
+
+		// 检测是否不含路径
+		{
+			file_path = filename;
+			int start_idx = file_path.find("/");
+			if (start_idx == -1)
+			{
+				file_path = directory + file_path;
+				file_path = getAbsolutePathForFilename(file_path);
+				if (isDirectoryOrFileExist(file_path))
+				{
+					return file_path;
+				}
+			}
+		}
+
+		// 是否可以直接获取
+		{
+			file_path = filename;
+			file_path = getAbsolutePathForFilename(file_path);
+			if (isDirectoryOrFileExist(file_path))
+			{
+				return file_path;
+			}
+		}
+
+		// 没找到
+		return "";
+	}
+
 	bool FileUtils::isDirectoryOrFileExist(const std::string& path)
 	{
         if (access(path.c_str(), 0) == -1)

@@ -58,7 +58,7 @@ namespace browser
     
 	Material* BaseRender::changeMaterial(int index, const std::string& materialName, const std::string& programName)
     {
-        BROWSER_WARNING(0<index && index<m_vMaterials.size()+1, "The material index is out of range, and you are trying to change it, please confirm your program in function BaseRender::changeMaterial");
+        BROWSER_WARNING(0<=index && index<m_vMaterials.size(), "The material index is out of range, and you are trying to change it, please confirm your program in function BaseRender::changeMaterial");
         
         Material* material = createMaterial(programName, materialName);
 		changeMaterial(index, material);
@@ -67,8 +67,9 @@ namespace browser
     
 	Material* BaseRender::changeMaterial(int index, Material* material)
     {
-        BROWSER_WARNING(0<index && index<m_vMaterials.size()+1, "The material index is out of range, and you are trying to change it, please confirm your program in function BaseRender::changeMaterial");
+        BROWSER_WARNING(0<=index && index<m_vMaterials.size(), "The material index is out of range, and you are trying to change it, please confirm your program in function BaseRender::changeMaterial");
         
+		int size = m_vMaterials.size();
         if (index < m_vMaterials.size())
         {
             m_vMaterials[index]->release();

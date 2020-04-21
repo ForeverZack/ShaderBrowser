@@ -128,10 +128,12 @@ namespace customGL
     
     unsigned long MaterialParser::m_uGeneratorId = 0;
     
-    MaterialParameters* MaterialParser::parseMaterialFile(const std::string& fullpath, shared_ptr<const char*> extra/* = nullptr*/)
+    MaterialParameters* MaterialParser::parseMaterialFile(const std::string& filepath, shared_ptr<const char*> extra/* = nullptr*/)
     {
-        std::string content = Utils::readAbsolutePathFile(fullpath.c_str());
-        return MaterialParser::parseMaterialFileByContent(content);
+		std::string directory;
+		const std::string full_path = FileUtils::getInstance()->getAbsolutePathForFilename(filepath, directory);
+		std::string content = Utils::readAbsolutePathFile(full_path.c_str());
+		return MaterialParser::parseMaterialFileByContent(content, directory);
     }
 	/*
 		Material结构:
@@ -160,9 +162,10 @@ namespace customGL
 			],
 		}
 	*/
-	MaterialParameters* MaterialParser::parseMaterialFileByContent(const std::string& content)
+	MaterialParameters* MaterialParser::parseMaterialFileByContent(const std::string& content, const std::string& directory)
 	{
 		MaterialParameters* parameters = new MaterialParameters();
+		parameters->directory = directory;
 
 		Document document;
 		document.Parse(content.c_str());
@@ -285,9 +288,9 @@ namespace customGL
                             BROWSER_ASSERT(value.IsString(), "Uniform's value is not string (type sampler2D) in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
 							BROWSER_SAFE_RELEASE_POINTER(uniformParam.m_pString);
 							uniformParam.m_pString = new std::string(value.GetString());
+							*(uniformParam.m_pString) = FileUtils::getInstance()->tryGetAbsolutePathForFilename(*(uniformParam.m_pString), directory);
                             uniformParam.value.tex2D.path = &(*uniformParam.m_pString)[0];
-							const std::string full_path = FileUtils::getInstance()->getAbsolutePathForFilename(uniformParam.m_pString->c_str());
-							BROWSER_ASSERT(FileUtils::getInstance()->isDirectoryOrFileExist(full_path), "Uniform's texture file is not found in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+							BROWSER_ASSERT(FileUtils::getInstance()->isDirectoryOrFileExist(*uniformParam.m_pString), "Uniform's texture file is not found in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
                             parameters->textures_path.push_back(*(uniformParam.m_pString));
                         }
                         break;

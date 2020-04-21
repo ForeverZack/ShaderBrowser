@@ -1,11 +1,11 @@
 {
-    "name": "Standard",
+    "name": "Fighter",
     "uniforms":
     {
         "CGL_TEXTURE0":
         {
             "type": "sampler2D",
-            "value": "res/texture/default/grass.png"
+            "value": "Fighter.png"
         },
         "CGL_ALBEDO_COLOR":
         {
@@ -15,8 +15,8 @@
     },
     "pass": [
         {
-            "vert": "shaders/default/model_default.vert",
-            "frag": "shaders/default/model_default.frag"
+            "vert": "shaders/default/skeleton_model_default.vert",
+            "frag": "shaders/default/skeleton_model_default.frag"
         }
     ]
 }

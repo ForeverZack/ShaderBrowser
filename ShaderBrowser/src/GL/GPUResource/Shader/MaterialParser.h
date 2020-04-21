@@ -94,6 +94,8 @@ namespace customGL
         std::vector<MaterialPassParamter> passes;
         // 所有纹理的路径(方便异步加载)
         std::vector<std::string> textures_path;
+		// 材质文件所在目录
+		std::string directory;
 	};
 
 	/*
@@ -105,7 +107,7 @@ namespace customGL
 				"CGL_TEXTURE0":
 				{
 					"type": "sampler2D",
-					"value": "res/texture/xxx.png"
+					"value": "res/texture/xxx.png"	// 或者缩写 "xxx.png"(当前目录下)  或 "./xxx.png"
 				},
 				"CGL_ALBEDO_COLOR":
 				{
@@ -128,9 +130,9 @@ namespace customGL
 	{
 	public:
         // 通过材质文件路径解析材质
-        static MaterialParameters* parseMaterialFile(const std::string& fullpath, shared_ptr<const char*> extra = nullptr);
+        static MaterialParameters* parseMaterialFile(const std::string& filepath, shared_ptr<const char*> extra = nullptr);
         // 通过材质文件内容解析材质
-		static MaterialParameters* parseMaterialFileByContent(const std::string& content);
+		static MaterialParameters* parseMaterialFileByContent(const std::string& content, const std::string& directory);
         // 将MaterialUniformParamter设置到Material上
         static void setupMaterialUniforms(const std::vector<MaterialUniformParamter> uniforms, Material* material);
 
