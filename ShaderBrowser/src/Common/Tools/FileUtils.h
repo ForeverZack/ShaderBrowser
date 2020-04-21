@@ -30,7 +30,7 @@ namespace common
 		// 获取文件的绝对路径 和 该文件所在的目录路径
 		std::string getAbsolutePathForFilename(const std::string& filename, std::string& directoryPath);
 
-		// 尝试通过制定目录获取文件的绝对路径
+		// 尝试通过制定目录获取文件的绝对路径  (如材质文件中直接使用 xxx.png 或 ./xxx.png，会先尝试从材质文件所在目录去查找文件是否存在)
 		std::string tryGetAbsolutePathForFilename(const std::string& filename, const std::string& directory);
 
 		// 判断路径或者文件是否存在

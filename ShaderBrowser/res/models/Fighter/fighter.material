@@ -1,5 +1,5 @@
 {
-    "name": "Fighter",
+    "name": "FighterMat",
     "uniforms":
     {
         "CGL_TEXTURE0":
@@ -15,8 +15,8 @@
     },
     "pass": [
         {
-            "vert": "shaders/default/skeleton_model_default.vert",
-            "frag": "shaders/default/skeleton_model_default.frag"
+            "vert": "fighter.vert",
+            "frag": "fighter.frag"
         }
     ]
 }

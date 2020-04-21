@@ -1,5 +1,6 @@
 #include "Model.h"
 #include "Common/Tools/FileUtils.h"
+#include "Common/System/Cache/MaterialCache.h"
 #include "Common/System/Cache/MeshCache.h"
 #include "GL/Assimp.h"
 #include "GL/AssimpConvert.h"

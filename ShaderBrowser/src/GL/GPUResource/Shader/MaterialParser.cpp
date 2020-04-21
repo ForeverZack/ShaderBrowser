@@ -405,7 +405,7 @@ namespace customGL
                 {
                     BROWSER_ASSERT(one_pass["vert"].IsString(), "Pass's vert is not a string value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
                     std::string vert_path = one_pass["vert"].GetString();
-					const std::string full_path = FileUtils::getInstance()->getAbsolutePathForFilename(vert_path);
+					const std::string full_path = FileUtils::getInstance()->tryGetAbsolutePathForFilename(vert_path, directory);
 					BROWSER_ASSERT(FileUtils::getInstance()->isDirectoryOrFileExist(full_path), "Pass's vert file is not found in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
 					passParam.vert_program = Utils::readAbsolutePathFile(full_path.c_str());
                 }
@@ -421,7 +421,7 @@ namespace customGL
                 {
                     BROWSER_ASSERT(one_pass["frag"].IsString(), "Pass's frag is not a string value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
                     std::string frag_path = one_pass["frag"].GetString();
-					const std::string full_path = FileUtils::getInstance()->getAbsolutePathForFilename(frag_path);
+					const std::string full_path = FileUtils::getInstance()->tryGetAbsolutePathForFilename(frag_path, directory);
 					BROWSER_ASSERT(FileUtils::getInstance()->isDirectoryOrFileExist(full_path), "Pass's frag file is not found in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
                     passParam.frag_program = Utils::readFile(full_path.c_str());
                 }
