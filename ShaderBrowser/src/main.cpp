@@ -57,7 +57,7 @@ void testVal();
 
 // 加载进度
 int _curLoadedNum = 0;
-int _totalLoadNum = 8;
+int _totalLoadNum = 7;
 
 
 
@@ -209,6 +209,10 @@ void testVal()
     browser::MeshFilter* meshFilter = MeshFilter::create();
     meshFilter->addMesh(mesh);
     entity->addComponent(meshFilter);
+	//MaterialCache::getInstance()->addMaterialAsync("res/materials/Plane.material", [renderCom](Material* material) mutable->void
+	//{
+	//	renderCom->changeMaterial(0, material);
+	//});
 
     
     // "models/Fighter/fighterChar.FBX", "models/nanosuit/nanosuit.obj", "models/man/model.dae", "models/YBot/ybot.fbx" }
@@ -353,7 +357,7 @@ int main()
 {
 	Application* app = new Application();
 
-    TextureCache::getInstance()->addTexturesAsync({ "texture/awesomeface.png", "texture/HelloWorld.png", "models/Fighter/Fighter.png" }, [&](Texture2D* texture)
+    TextureCache::getInstance()->addTexturesAsync({ "texture/awesomeface.png", "texture/HelloWorld.png" }, [&](Texture2D* texture)
         {
             ++_curLoadedNum;
             common::GUIFramework::getInstance()->getGameStatusPanel()->setLoadPercent(_curLoadedNum/(float)_totalLoadNum);

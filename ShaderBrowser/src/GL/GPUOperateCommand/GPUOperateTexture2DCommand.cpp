@@ -94,7 +94,7 @@ namespace customGL
         第七第八个参数定义了源图的格式和数据类型。我们使用RGB值加载这个图像，并把它们储存为char(byte)数组，我们将会传入对应值。
         最后一个参数是真正的图像数据。
         */
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_pImage->getWidth(), m_pImage->getHeight(), 0, m_pImage->getType(), GL_UNSIGNED_BYTE, m_pImage->getData());
+        glTexImage2D(GL_TEXTURE_2D, 0, m_pImage->getType(), m_pImage->getWidth(), m_pImage->getHeight(), 0, m_pImage->getType(), GL_UNSIGNED_BYTE, m_pImage->getData());
 
         // 为当前绑定的纹理自动生成所有需要的多级渐远纹理
         //glGenerateMipmap(GL_TEXTURE_2D);
@@ -111,7 +111,7 @@ namespace customGL
         BROWSER_ASSERT(m_pImage, "GPUOperateTexture2DCommand does not have Image object, please check your program in function GPUOperateTexture2DCommand::updateTexture2D");
         
         glBindTexture(GL_TEXTURE_2D, m_pTexture->m_uTextureId);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_pImage->getWidth(), m_pImage->getHeight(), 0, m_pImage->getType(), GL_UNSIGNED_BYTE, m_pImage->getData());
+        glTexImage2D(GL_TEXTURE_2D, 0, m_pImage->getType(), m_pImage->getWidth(), m_pImage->getHeight(), 0, m_pImage->getType(), GL_UNSIGNED_BYTE, m_pImage->getData());
         
         delete m_pImage;
         m_pImage = nullptr;

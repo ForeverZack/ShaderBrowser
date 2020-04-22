@@ -145,6 +145,9 @@ namespace common
 							createMaterial(asyncData);
 						}
 					});
+					//for (int j=0; j<parameters->textures_path.size(); ++j)
+					//	TextureCache::getInstance()->addTexture(parameters->textures_path[j]);
+					//createMaterial(asyncData);
 				}
 				else
 				{
