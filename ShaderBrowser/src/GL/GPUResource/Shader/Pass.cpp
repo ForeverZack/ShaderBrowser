@@ -49,11 +49,11 @@ namespace customGL
 		}
 
 		// 更新mvp
-		if (transformDirty)
+		//if (transformDirty)
 		{
 			m_oGLProgram->setUniformWithMat4(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_MODEL_MATRIX], modelMatrix);
 		}
-		if (cameraDirty)
+		//if (cameraDirty)
 		{
             m_oGLProgram->setUniformWithVec3(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_MAINCAMERA_WORLDPOS], cameraGlobalPos.x, cameraGlobalPos.y, cameraGlobalPos.z);
 			m_oGLProgram->setUniformWithMat4(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_VIEW_MATRIX], viewMatrix);

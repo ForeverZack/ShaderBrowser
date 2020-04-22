@@ -24,7 +24,7 @@ namespace customGL
             if (!program)
             {
                 GLProgramCache::getInstance()->addGLProgramBySource(passParam.name, passParam.vert_program, passParam.frag_program);
-                program = GLProgramCache::getInstance()->getGLProgram(passParam.name);
+                program = GLProgramCache::getInstance()->getGLProgramCopy(passParam.name);
             }
             pass = Pass::createPass(program);
             material->addPass(pass);
@@ -68,6 +68,7 @@ namespace customGL
         , m_bDefaultMaterialFlag(false)
         , m_bTransparentFlag(false)
         , m_oCurCamera(nullptr)
+		, m_bTransformDirty(true)
 	{
         m_vPass.clear();
 	

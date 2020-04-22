@@ -172,7 +172,14 @@ namespace customGL
         GLProgram* program = new GLProgram();
 		if (this->getResouceState() != GRS_Loaded)
 		{
-			program->initProgram(m_sVertFilePath.c_str(), m_sFragFilePath.c_str());
+			if (m_sVertexSource != "" || m_sFragSource != "")
+			{
+				program->initProgramBySource(m_sVertexSource.c_str(), m_sFragSource.c_str());
+			}
+			else
+			{
+				program->initProgram(m_sVertFilePath.c_str(), m_sFragFilePath.c_str());
+			}
 		}
 		else
 		{

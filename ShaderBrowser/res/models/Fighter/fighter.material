@@ -12,10 +12,10 @@
             "type": "vec4",
             "value": [1, 1, 1, 1]
         },
-		"CGL_TEXTURE1":
+		"CGL_NORMALMAP":
         {
             "type": "sampler2D",
-            "value": "Fighter.png"
+            "value": "fighterNormal.png"
         }
     },
     "pass": [
