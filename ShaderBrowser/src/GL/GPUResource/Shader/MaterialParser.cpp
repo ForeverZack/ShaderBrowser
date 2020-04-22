@@ -443,7 +443,7 @@ namespace customGL
     {
         for (auto itor=uniforms.begin(); itor!=uniforms.end(); ++itor)
         {
-            const MaterialUniformParamter& uniformParam = *itor;
+			const MaterialUniformParamter& uniformParam = *itor;
             switch(uniformParam.type)
             {
                 case UniformValue::UniformValueType::UniformValueType_Float:

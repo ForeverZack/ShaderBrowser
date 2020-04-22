@@ -3,7 +3,7 @@
 #include "SkeletonAnimation.inc"
 #include "Math.inc"
 
-#define VertOutStruct_Standard
+#define VertOutStruct_StandardTBN
 #include "CommonStruct.inc"
 
 void main() 
@@ -17,6 +17,11 @@ void main()
     // v2f.color = a_color;
 	v2f.color = a_color;
     v2f.coord = a_coord;
-    v2f.normal = ObjectToWorldNormal(mat3(skinning) * a_normal);
+	
+	mat3 inverse_model = mat3(inverse(CGL_MODEL_MATRIX));
+	
+    v2f.normal = normalize(mat3(skinning) * a_normal * inverse_model);
+	v2f.tangent = normalize(mat3(skinning) * a_tangent * inverse_model);
+	v2f.binormal = normalize(mat3(skinning) * cross(a_normal, a_tangent) * inverse_model);
     v2f.world_position = vec3(worldPos);
 }

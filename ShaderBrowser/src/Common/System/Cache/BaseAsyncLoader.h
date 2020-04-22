@@ -21,6 +21,7 @@ namespace common
 			, data(nullptr)
 			, loadSuccess(false)
 			, extradata(extra)
+			, loaded_count(0)
 		{
 			callbacks.clear();
 			callbacks.push_back(cb);
@@ -36,6 +37,8 @@ namespace common
 		DataType* data;
 		// 是否加载完成
 		bool loadSuccess;
+		// 计数器 (依赖资源使用(如材质文件依赖纹理))
+		int loaded_count;
 	};
 
 	// 加载器

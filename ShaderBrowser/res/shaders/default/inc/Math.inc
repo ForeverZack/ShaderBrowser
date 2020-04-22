@@ -37,3 +37,10 @@ vec3 CalculateDirection(vec3 from, vec3 to)
 {
     return normalize(to - from);
 }
+
+// 解法线贴图(法线空间)
+vec3 UnpackNormal(vec3 n)
+{
+	// [0,1] -> [-1,1]
+	return normalize(n*2-1); 
+}

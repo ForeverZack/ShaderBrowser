@@ -238,6 +238,9 @@ void testVal()
 	SkinnedMeshRenderer* fighterSkinedMeshRenderer = modelEntity->getComponent<browser::Transform>()->getChildren()[0]->getBelongEntity()->getComponent<SkinnedMeshRenderer>();
 	MaterialCache::getInstance()->addMaterialAsync("res/models/Fighter/fighter.material", [fighterSkinedMeshRenderer](Material* material) mutable->void
 	{
+		//TextureCache::getInstance()->addTexture("models/Fighter/fighterNormal.png");
+		//Texture2D* normalmap = TextureCache::getInstance()->getTexture("models/Fighter/fighterNormal.png");
+		//material->setUniformTex2D("CGL_NORMALMAP", normalmap);
 		fighterSkinedMeshRenderer->changeMaterial(0, material);
 	});
 
