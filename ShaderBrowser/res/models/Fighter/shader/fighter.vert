@@ -22,6 +22,6 @@ void main()
 	
     v2f.normal = normalize(mat3(skinning) * a_normal * inverse_model);
 	v2f.tangent = normalize(mat3(skinning) * a_tangent * inverse_model);
-	v2f.binormal = normalize(mat3(skinning) * cross(a_normal, a_tangent) * inverse_model);
+	v2f.binormal = normalize(cross(v2f.normal, v2f.tangent));
     v2f.world_position = vec3(worldPos);
 }

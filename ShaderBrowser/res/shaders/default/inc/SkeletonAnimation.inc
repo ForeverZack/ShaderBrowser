@@ -6,17 +6,6 @@ mat4 VertexSkinningMatrix(ivec4 boneIds, vec4 boneWeights)
     mat4 skinning = mat4(0.0);
     for (int i=0; i<4; ++i)
     {
-//        // 旧代码：uniform传递骨骼矩阵数组，速度较慢
-//        int boneId = boneIds[i];
-//        int index = 1 + 4*boneId;
-//        mat3x4 simpleBoneMat = CGL_BONES_MATRIX[boneId];
-//        mat4 boneMatrix = mat4(
-//            simpleBoneMat[0][0], simpleBoneMat[1][0], simpleBoneMat[2][0], 0,
-//            simpleBoneMat[0][1], simpleBoneMat[1][1], simpleBoneMat[2][1], 0,
-//            simpleBoneMat[0][2], simpleBoneMat[1][2], simpleBoneMat[2][2], 0,
-//            simpleBoneMat[0][3], simpleBoneMat[1][3], simpleBoneMat[2][3], 1);
-//        skinning += boneMatrix * boneWeights[i];
-        
         int boneId = boneIds[i];
         vec4 col0 = texelFetch(CGL_BONES_MATRIX, boneId*4+0);   // boneMatrix第1列
         vec4 col1 = texelFetch(CGL_BONES_MATRIX, boneId*4+1);   // boneMatrix第2列
