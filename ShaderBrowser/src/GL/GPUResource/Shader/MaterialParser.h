@@ -47,6 +47,8 @@ namespace customGL
 			} floatv, v2fv, v3fv, v4fv, mat4v, mat4x3v, mat3v, mat3x4v;
 			struct {
 				const char* path;
+				GLenum wrap;	// 纹理环绕方式
+				GLenum filter;	// 纹理过滤方式
 			} tex2D;
 
 			// 如果在Union中的类型添加了构造函数，或者添加析构函数，就会发现程序会出现错误。由于union里面的东西共享内存，所以不能定义静态、引用类型的变量。
@@ -98,34 +100,6 @@ namespace customGL
 		std::string directory;
 	};
 
-	/*
-		Material结构:
-		{
-			"name": "Standard",
-			"uniforms":
-			{
-				"CGL_TEXTURE0":
-				{
-					"type": "sampler2D",
-					"value": "res/texture/xxx.png"	// 或者缩写 "xxx.png"(当前目录下)  或 "./xxx.png"
-				},
-				"CGL_ALBEDO_COLOR":
-				{
-					"type": "vec4",
-					"value": [1, 1, 1, 1]
-				}
-			},
-			"pass": [
-				{
-                    "name": "xxx",
-					"vert": "shader/default/xx.vert",   // vert\frag最后会直接读取为vert_program\frag_program
-					"frag": "shader/default/xx.frag",
-					"vert_program": "代码代码",
-					"frag_program": "代码代码",
-				},
-			],
-		}
-	*/
     class MaterialParser
 	{
 	public:
@@ -137,9 +111,15 @@ namespace customGL
         static void setupMaterialUniforms(const std::vector<MaterialUniformParamter> uniforms, Material* material);
 
 	protected:
+		// 转换字符串 到 GLenum
+		static GLenum convertString2GLenum(const std::string& sWrap, GLenum defaultEnum);
+
+	protected:
 		// 内置uniform对应类型
 		static std::unordered_map<std::string, std::string> m_mBuiltinUniforms;
-        // 字符串类型 转 UniformValueType
+		// 字符串对应GLenum
+		static std::unordered_map<std::string, GLenum> m_mString2GLenum;
+		// 字符串类型 转 UniformValueType
         static std::unordered_map<std::string, UniformValue::UniformValueType> m_mStrType2UniformValueType;
         // 未定义GLProgram名称id
         static unsigned long m_uGeneratorId;

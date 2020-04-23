@@ -72,6 +72,9 @@ namespace customGL
     extern const glm::vec4 GLM_COLOR_BLUE;  // 蓝色
     // 单位四元数
     extern const glm::quat GLM_QUAT_UNIT;
+	// 纹理默认参数
+	extern const GLenum TexParameters_DefaultWrap;
+	extern const GLenum TexParameters_DefaultFilter;
     // 旋转坐标空间
     enum Space
     {

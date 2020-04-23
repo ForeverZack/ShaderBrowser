@@ -225,17 +225,17 @@ void testVal()
 	// 渲染模型0
 	BaseEntity* modelEntity = m_oModel->createNewEntity("namizhuang");
 	modelEntity->setScale(0.2f, 0.2f, 0.2f);
-	modelEntity->setEulerAngle(0, 0, 0);
+	modelEntity->setEulerAngle(-1, 0, 0);
 	//    modelEntity->getTransform()->setQuaternion(0.144154,0.155388,0.259979,0.942064);
 	modelEntity->setPosition(0, 0, 0);
 	scene->addChild(modelEntity);
 
 	// 渲染模型2    fighter => aabb Min:-20, 0, -13  Max:20, 80, 15
 	modelEntity = m_oModel2->createNewEntity("fighter");
-	modelEntity->setScale(0.2f, 0.2f, 0.2f);
+	modelEntity->setScale(0.05f, 0.05f, 0.05f);
 	modelEntity->setEulerAngle(90, 90, 0);
 	//    modelEntity->getTransform()->setQuaternion(0, -0.707106709, 0, 0.707106829);
-	modelEntity->setPosition(1, 0, -2);
+	modelEntity->setPosition(1, 0, 1);
 	scene->addChild(modelEntity);
 	modelEntity->playAnimation("Take 001", true);
 	//    modelEntity->changeAllMeshesMaterial(GLProgram::DEFAULT_SKELETON_GLPROGRAM_NAME);

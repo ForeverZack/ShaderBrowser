@@ -36,6 +36,9 @@ namespace customGL {
     extern const glm::vec4 GLM_COLOR_BLUE = glm::vec4(0, 0, 255, 255);  // 蓝色
     // 单位四元数
     extern const glm::quat GLM_QUAT_UNIT = glm::quat(1.0f, 0, 0, 0);
+	// 纹理默认参数
+	extern const GLenum TexParameters_DefaultWrap = GL_CLAMP_TO_EDGE;
+	extern const GLenum TexParameters_DefaultFilter = GL_LINEAR;
     
     UniformValue::UniformValue()
         : m_eType(UniformValueType::UniformValueType_Undefined)

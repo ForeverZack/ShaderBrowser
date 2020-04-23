@@ -35,6 +35,21 @@ namespace customGL
         { "int[]", UniformValue::UniformValueType::UniformValueType_IntV },
     };
 
+	// 字符串转OpenGL内部枚举
+	std::unordered_map<std::string, GLenum> MaterialParser::m_mString2GLenum
+	{
+		{ "GL_REPEAT", GL_REPEAT },	// 对纹理的默认行为。重复纹理图像。
+		{ "GL_MIRRORED_REPEAT", GL_MIRRORED_REPEAT },	// 和GL_REPEAT一样，但每次重复图片是镜像放置的。
+		{ "GL_CLAMP_TO_EDGE", GL_CLAMP_TO_EDGE },	// 纹理坐标会被约束在0到1之间，超出的部分会重复纹理坐标的边缘，产生一种边缘被拉伸的效果。
+		{ "GL_CLAMP_TO_BORDER", GL_CLAMP_TO_BORDER },	//超出的坐标为用户指定的边缘颜色。
+		{ "GL_NEAREST", GL_NEAREST },	// GL_NEAREST（也叫邻近过滤，Nearest Neighbor Filtering）是OpenGL默认的纹理过滤方式。当设置为GL_NEAREST的时候，OpenGL会选择中心点最接近纹理坐标的那个像素。
+		{ "GL_LINEAR", GL_LINEAR },	// GL_LINEAR（也叫线性过滤，(Bi)linear Filtering）它会基于纹理坐标附近的纹理像素，计算出一个插值，近似出这些纹理像素之间的颜色。一个纹理像素的中心距离纹理坐标越近，那么这个纹理像素的颜色对最终的样本颜色的贡献越大。
+		{ "GL_NEAREST_MIPMAP_NEAREST", GL_NEAREST_MIPMAP_NEAREST },	// 使用最邻近的多级渐远纹理来匹配像素大小，并使用邻近插值进行纹理采样
+		{ "GL_LINEAR_MIPMAP_NEAREST", GL_LINEAR_MIPMAP_NEAREST },	// 使用最邻近的多级渐远纹理级别，并使用线性插值进行采样
+		{ "GL_NEAREST_MIPMAP_LINEAR", GL_NEAREST_MIPMAP_LINEAR },	// 在两个最匹配像素大小的多级渐远纹理之间进行线性插值，使用邻近插值进行采样
+		{ "GL_LINEAR_MIPMAP_LINEAR", GL_LINEAR_MIPMAP_LINEAR },	// 在两个邻近的多级渐远纹理之间使用线性插值，并使用线性插值进行采样
+	};
+
 
 	MaterialUniformParamter::MaterialUniformParamter()
 		: m_pString(nullptr)
@@ -145,7 +160,9 @@ namespace customGL
 				"CGL_TEXTURE0": 
 				{             
 					"type": "sampler2D",             // 内置参数(m_mBuiltinUniforms)可省略type
-					"value": "res/texture/xxx.png"         
+					"wrap": "GL_REPEAT",	// 纹理环绕方式，默认为GL_CLAMP_TO_EDGE
+					"filter": "GL_LINEAR",		// 纹理过滤方式，默认为GL_LINEAR
+					"value": "res/texture/xxx.png"			// 或者缩写 "xxx.png"(当前目录下)  或 "./xxx.png"
 				},
 				"CGL_ALBEDO_COLOR":
 				{
@@ -156,8 +173,8 @@ namespace customGL
 			"pass": [
 				{
 					"name": "Pass1",	// 省略会生成"UndefineGLProgram_XXX"
-					"vert": "shader/default/xx.vert",		// vert最后会读取使用vert_program
-					"frag": "shader/default/xx.frag",	// frag最后会读取使用frag_program
+					"vert": "shader/default/xx.vert",		 // vert\frag最后会直接读取为vert_program\frag_program
+					"frag": "shader/default/xx.frag",	
 					"vert_program": "代码代码",
 					"frag_program": "代码代码",
 				},
@@ -288,13 +305,28 @@ namespace customGL
                     case UniformValue::UniformValueType::UniformValueType_Sampler2D:
                         {
                             BROWSER_ASSERT(value.IsString(), "Uniform's value is not string (type sampler2D) in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+							// path
 							BROWSER_SAFE_RELEASE_POINTER(uniformParam.m_pString);
 							uniformParam.m_pString = new std::string(value.GetString());
 							*(uniformParam.m_pString) = FileUtils::getInstance()->tryGetAbsolutePathForFilename(*(uniformParam.m_pString), directory);
                             uniformParam.value.tex2D.path = &(*uniformParam.m_pString)[0];
 							BROWSER_ASSERT(FileUtils::getInstance()->isDirectoryOrFileExist(*uniformParam.m_pString), "Uniform's texture file is not found in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
-                            parameters->textures_path.push_back(*(uniformParam.m_pString));
-                        }
+							parameters->textures_path.push_back(*(uniformParam.m_pString));	// 记录纹理路径，方便统一异步加载所有图片
+							// wrap
+							uniformParam.value.tex2D.wrap = TexParameters_DefaultWrap;
+							if (uniformValue.HasMember("wrap"))
+							{
+								BROWSER_ASSERT(uniformValue["wrap"].IsString(), "Sampler2D's wrap property is not string (type sampler2D) in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+								convertString2GLenum(uniformValue["wrap"].GetString(), TexParameters_DefaultWrap);
+							}
+							// filter
+							uniformParam.value.tex2D.wrap = TexParameters_DefaultFilter;
+							if (uniformValue.HasMember("filter"))
+							{
+								BROWSER_ASSERT(uniformValue["filter"].IsString(), "Sampler2D's filter property is not string (type sampler2D) in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+								convertString2GLenum(uniformValue["filter"].GetString(), TexParameters_DefaultFilter);
+							}
+						}
                         break;
                             
                     case UniformValue::UniformValueType::UniformValueType_Mat4:
@@ -499,6 +531,8 @@ namespace customGL
                 case UniformValue::UniformValueType::UniformValueType_Sampler2D:
                     {
                         Texture2D* texture = TextureCache::getInstance()->getTexture(uniformParam.value.tex2D.path);
+						texture->setTexWrapParams(uniformParam.value.tex2D.wrap, uniformParam.value.tex2D.wrap);
+						texture->setTexFilterParams(uniformParam.value.tex2D.filter, uniformParam.value.tex2D.filter);
                         material->setUniformTex2D(uniformParam.name, texture);
                     }
                     break;
@@ -541,5 +575,16 @@ namespace customGL
             }
         }
     }
+
+
+	GLenum MaterialParser::convertString2GLenum(const std::string& sWrap, GLenum defaultEnum)
+	{
+		if (m_mString2GLenum.find(sWrap) != m_mString2GLenum.end())
+		{
+			return m_mString2GLenum[sWrap];
+		}
+
+		return defaultEnum;
+	}
 
 }

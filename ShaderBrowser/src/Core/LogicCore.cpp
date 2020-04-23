@@ -209,12 +209,12 @@ namespace core
                 else if (Input::isKeyDown(GLFW_KEY_E))
                 {
                     browser::Transform* transform = camera->getBelongEntity()->getComponent<browser::Transform>();
-                    transform->Rotate(glm::vec3(0, -1.0f, 0), Space::Self);
+                    transform->Rotate(glm::vec3(0, -1.0f, 0), Space::World);
                 }
                 else if (Input::isKeyDown(GLFW_KEY_Q))
                 {
                     browser::Transform* transform = camera->getBelongEntity()->getComponent<browser::Transform>();
-                    transform->Rotate(glm::vec3(0, 1.0f, 0), Space::Self);
+                    transform->Rotate(glm::vec3(0, 1.0f, 0), Space::World);
                 }
             }
             

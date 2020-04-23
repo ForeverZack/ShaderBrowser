@@ -21,6 +21,7 @@
 		"CGL_NORMALMAP":
         {
             "type": "sampler2D",
+			"wrap": "GL_REPEAT",
             "value": "texture/fighterNormal.png"
         }
     },
