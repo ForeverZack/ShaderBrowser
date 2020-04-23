@@ -2,26 +2,32 @@
     "name": "FighterMat",
     "uniforms":
     {
-        "CGL_TEXTURE0":
-        {
-            "type": "sampler2D",
-            "value": "Fighter.png"
-        },
-        "CGL_ALBEDO_COLOR":
+		"CGL_ALBEDO_COLOR":
         {
             "type": "vec4",
             "value": [1, 1, 1, 1]
         },
+        "CGL_TEXTURE0":
+        {
+            "type": "sampler2D",
+            "value": "texture/Fighter.png"
+        },
+		"CGL_TEXTURE1":
+        {
+            "type": "sampler2D",
+            "value": "texture/FighterLight.jpg"
+        },
+
 		"CGL_NORMALMAP":
         {
             "type": "sampler2D",
-            "value": "fighterNormal.png"
+            "value": "texture/fighterNormal.png"
         }
     },
     "pass": [
         {
-            "vert": "fighter.vert",
-            "frag": "fighter.frag"
+            "vert": "shader/fighter.vert",
+            "frag": "shader/fighter.frag"
         }
     ]
 }

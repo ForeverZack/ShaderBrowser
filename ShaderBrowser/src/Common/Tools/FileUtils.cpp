@@ -97,18 +97,13 @@ namespace common
 			}
 		}
 
-		// 检测是否不含路径
+		// 检测当前路径
 		{
-			file_path = filename;
-			int start_idx = file_path.find("/");
-			if (start_idx == -1)
+			file_path = directory + filename;
+			file_path = getAbsolutePathForFilename(file_path);
+			if (isDirectoryOrFileExist(file_path))
 			{
-				file_path = directory + file_path;
-				file_path = getAbsolutePathForFilename(file_path);
-				if (isDirectoryOrFileExist(file_path))
-				{
-					return file_path;
-				}
+				return file_path;
 			}
 		}
 

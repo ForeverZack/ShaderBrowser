@@ -4,6 +4,7 @@ const int MAX_DYNAMIC_BATCH_COUNT = 1000;
 uniform vec3 CGL_MAINCAMERA_WORLDPOS;   // 主相机位置(world space)
 uniform sampler2D CGL_TEXTURE0; // 主纹理
 uniform sampler2D CGL_TEXTURE1; // 附加纹理1
+uniform sampler2D CGL_NORMALMAP; // 法线贴图
 uniform mat4 CGL_MODEL_MATRIX;  // model矩阵
 uniform mat4 CGL_VIEW_MATRIX;   // view矩阵
 uniform mat4 CGL_PROJECTION_MATRIX; // projection矩阵

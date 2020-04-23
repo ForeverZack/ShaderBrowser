@@ -16,12 +16,12 @@ void main()
 		M(切线->世界) = [- B(世界空间Y坐标轴在切线空间的表示) -] = I_M(世界->切线) = T_M(世界->切线) = [T(切线空间T坐标轴在世界空间的表示)	B(切线空间B坐标轴在世界空间的表示)	N(切线空间N坐标轴在世界空间的表示)	]
 						 - N(世界空间N坐标轴在切线空间的表示) -											|									|									|
 	*/
-	// mat3 tangentToWorldMat = mat3(
-		// v2f.tangent.x, v2f.binormal.x, v2f.normal.x,
-		// v2f.tangent.y, v2f.binormal.y, v2f.normal.y,
-		// v2f.tangent.z, v2f.binormal.z, v2f.normal.z);
-	// vec3 tangent_normal = texture(CGL_NORMALMAP, v2f.coord).rgb;	// tangent-space
-	vec3 normal = v2f.normal;//tangentToWorldMat * UnpackNormal(tangent_normal);
+	mat3 tangentToWorldMat = mat3(
+		v2f.tangent.x, v2f.binormal.x, v2f.normal.x,
+		v2f.tangent.y, v2f.binormal.y, v2f.normal.y,
+		v2f.tangent.z, v2f.binormal.z, v2f.normal.z);
+	vec3 tangent_normal = texture(CGL_NORMALMAP, v2f.coord).rgb;	// tangent-space
+	vec3 normal = tangentToWorldMat * UnpackNormal(tangent_normal);
 	
     vec4 lightColor;
     float lightIntensity;

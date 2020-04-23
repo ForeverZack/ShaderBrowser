@@ -64,6 +64,8 @@ namespace customGL
 			UNIFORM_CGL_TEXUTRE0,
 			// 纹理1
 			UNIFORM_CGL_TEXUTRE1,
+			// 法线贴图
+			UNIFORM_CGL_NORMALMAP,
 			// model matrix
 			UNIFORM_CGL_MODEL_MATRIX,
 			// view matrix

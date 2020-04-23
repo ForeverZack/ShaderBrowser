@@ -9,9 +9,10 @@ namespace customGL
 	// 初始化内置uniform对应类型
 	std::unordered_map<std::string, std::string> MaterialParser::m_mBuiltinUniforms
 	{
-		{ GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_TEXUTRE0], "sampler2D" },
-		{ GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_TEXUTRE1], "sampler2D"},
-		{ GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_ALBEDO_COLOR], "vec4"},
+		{ GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_TEXUTRE0], "sampler2D" },	// 纹理0 (主纹理)
+		{ GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_TEXUTRE1], "sampler2D"},	// 纹理1 (附加纹理)
+		{ GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_NORMALMAP], "sampler2D" },	// 法线贴图
+		{ GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_ALBEDO_COLOR], "vec4"},	// albedo颜色
 	};
     
     // 字符串类型 转 UniformValueType
@@ -143,7 +144,7 @@ namespace customGL
 			{
 				"CGL_TEXTURE0": 
 				{             
-					"type": "sampler2D",             
+					"type": "sampler2D",             // 内置参数(m_mBuiltinUniforms)可省略type
 					"value": "res/texture/xxx.png"         
 				},
 				"CGL_ALBEDO_COLOR":
@@ -154,8 +155,9 @@ namespace customGL
 			},
 			"pass": [
 				{
-					"vert": "shader/default/xx.vert",
-					"frag": "shader/default/xx.frag",
+					"name": "Pass1",	// 省略会生成"UndefineGLProgram_XXX"
+					"vert": "shader/default/xx.vert",		// vert最后会读取使用vert_program
+					"frag": "shader/default/xx.frag",	// frag最后会读取使用frag_program
 					"vert_program": "代码代码",
 					"frag_program": "代码代码",
 				},
@@ -208,8 +210,8 @@ namespace customGL
                     // 检测是否是内置变量
                     if (m_mBuiltinUniforms.find(uniformParam.name) != m_mBuiltinUniforms.end())
                     {
-                        BROWSER_ASSERT(strType!="" || m_mBuiltinUniforms[uniformParam.name]==strType, "Found builtin uniform type not right in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
-                        strType = m_mBuiltinUniforms[uniformParam.name];
+						strType = m_mBuiltinUniforms[uniformParam.name];
+						BROWSER_ASSERT(strType != "" || m_mBuiltinUniforms[uniformParam.name] == strType, "Found builtin uniform type not right in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
                     }
                     BROWSER_ASSERT(m_mStrType2UniformValueType.find(strType)!=m_mStrType2UniformValueType.end(), "Cannot find the uniform value type in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
                     uniformParam.type = m_mStrType2UniformValueType[strType];
