@@ -4,8 +4,8 @@
 #define FragInStruct_StandardTBN
 #include "CommonStruct.inc"
 
-const vec4 specColor = vec4(1, 1, 1, 1);
-const float gloss = 8;
+const vec4 specColor = vec4(1, 1, 1, 1);	// 传入albedo更正常
+uniform float gloss = 8;
 
 void main()
 {
@@ -41,7 +41,7 @@ void main()
     for (int i=0; i<CGL_DIRECTIONAL_LIGHT_NUM; ++i)
     {
         getDirectionalLightInfo(i, lightColor, lightIntensity, lightDir);
-        result = result + vec3(BlinnPhongLight(albedo, normal, WorldSpaceViewDir(v2f.world_position), lightColor, lightDir, specColor, gloss))*lightIntensity;
+        result = result + vec3(BlinnPhongLight(albedo, normal, WorldSpaceViewDir(v2f.world_position), lightColor, lightDir, albedo, gloss))*lightIntensity;
 	}
     // 点光源
     for (int i=0; i<CGL_POINT_LIGHT_NUM; ++i)
@@ -49,7 +49,7 @@ void main()
         getPointLightInfo(i, lightColor, lightIntensity, lightPosition, lightMatrix);
         atten = PointLightAtten(v2f.world_position, lightMatrix);
         lightDir = CalculateDirection(v2f.world_position, lightPosition);
-        result = result + vec3(BlinnPhongLight(albedo, normal, WorldSpaceViewDir(v2f.world_position), lightColor, lightDir, specColor, gloss))*lightIntensity*atten;
+        result = result + vec3(BlinnPhongLight(albedo, normal, WorldSpaceViewDir(v2f.world_position), lightColor, lightDir, albedo, gloss))*lightIntensity*atten;
     }
     // 聚光灯
     for (int i=0; i<CGL_SPOT_LIGHT_NUM; ++i)
@@ -57,7 +57,7 @@ void main()
         getSpotLightInfo(i, lightColor, lightIntensity, lightPosition, lightMatrix);
         atten = SpotLightAtten(v2f.world_position, lightMatrix);
         lightDir = CalculateDirection(v2f.world_position, lightPosition);
-        result = result + vec3(BlinnPhongLight(albedo, normal, WorldSpaceViewDir(v2f.world_position), lightColor, lightDir, specColor, gloss))*lightIntensity*atten;
+        result = result + vec3(BlinnPhongLight(albedo, normal, WorldSpaceViewDir(v2f.world_position), lightColor, lightDir, albedo, gloss))*lightIntensity*atten;
     }
     
 	// 环境光 (ambient)

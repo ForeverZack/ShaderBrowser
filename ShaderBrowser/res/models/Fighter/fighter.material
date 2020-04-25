@@ -23,7 +23,12 @@
             "type": "sampler2D",
 			"wrap": "GL_REPEAT",
             "value": "texture/fighterNormal.png"
-        }
+        },
+		"gloss":
+		{
+			"type": "float",
+			"value": 8.0
+		}
     },
     "pass": [
         {
