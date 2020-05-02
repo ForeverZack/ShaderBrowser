@@ -19,7 +19,9 @@
 13）内存的管理与检查。 <br>
 等等<br>
 
-搞定fighter的骨骼动画枢纽问题
+## 2020.5.2 <br>
+解决了fighter骨骼动画不正确的问题，原因是assimp生成的preserve pivots是会发生变换的，之前在使用Transform组件的变换来计算
+骨骼的变换，忽略了这个preserve pivots。现在将其算作骨骼(并非原始fbx的骨骼)。<br>
 
 ## 2020.4.21~2020.4.23 <br>
 之前使用新的材质替换原来的材质时，会因为transform和camera的dirty标记不正确，造成模型无法显示。

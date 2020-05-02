@@ -398,7 +398,8 @@ namespace customGL
 
 			std::shared_ptr<Assimp::Importer> importer = make_shared<Assimp::Importer>();
 			// 设置importer的属性
-            importer->SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, false);    // 防止FBX自己生成枢轴，干扰Node结构树
+            // 注意：这里必须要让fbx生成枢轴，否则会有部分骨骼动画不正确（这些枢轴也会在骨骼动画中发生变化，从而控制位于子节点骨骼的位置）
+//            importer->SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, false);    // 防止FBX自己生成枢轴，干扰Node结构树
 //            importer->SetPropertyBool(AI_CONFIG_IMPORT_FBX_READ_LIGHTS, false);
 			const aiScene* scene = importer->ReadFile(m_sFullPath, pFlags);
 			if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
@@ -812,6 +813,11 @@ namespace customGL
                 m_vAiMeshes[node->mMeshes[i]] = make_tuple(aiMesh, node);
 			}
 		}
+        // 检测是否是assimp枢轴(preserve pivot)，目前只能靠名称来检测，后面看看有没有更好的优化方法
+        if (Skeleton::isPreservePivot(node))
+        {
+            m_oSkeleton->addPreservePivot(node);
+        }
         
 //        std::string nodeName(node->mName.C_Str());
 //        if (FileUtils::getInstance()->getAbsolutePathForFilename("models/Fighter/fighterChar.FBX") == m_sFullPath)
@@ -906,12 +912,6 @@ namespace customGL
 			for (unsigned int i = 0; i < aiMesh->mNumBones; ++i)
 			{
 				bone = aiMesh->mBones[i];	// aiBone
-//                if (!m_oSkeleton->isBone(bone->mName.C_Str(), boneIdx))
-//                {
-//                    // 骨骼尚未被记录
-//                    boneIdx = m_oSkeleton->getBoneNum();
-//
-//                }
                 boneIdx = m_oSkeleton->addBone(bone);
 				
 				for (unsigned int w = 0; w < bone->mNumWeights; ++w)
