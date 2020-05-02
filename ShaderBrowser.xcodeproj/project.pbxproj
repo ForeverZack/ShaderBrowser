@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		1405E8A321F432FF00FBDD71 /* ComponentEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1405E8A221F432FF00FBDD71 /* ComponentEvent.cpp */; };
 		14098F5B243097AA0047DC03 /* MaterialParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14098F5A243097AA0047DC03 /* MaterialParser.cpp */; };
+		140A81F9245D6B6000F75C68 /* MaterialManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 140A81F8245D6B6000F75C68 /* MaterialManager.cpp */; };
 		141098ED22D0C5F800C9F982 /* FeedbackSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 141098EC22D0C5F800C9F982 /* FeedbackSystem.cpp */; };
 		141098F022D0CE4900C9F982 /* GLFeedback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 141098EF22D0CE4900C9F982 /* GLFeedback.cpp */; };
 		141098F222D0E28700C9F982 /* BaseFeedback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 141098F122D0E28700C9F982 /* BaseFeedback.cpp */; };
@@ -115,6 +116,8 @@
 		1405E8A221F432FF00FBDD71 /* ComponentEvent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ComponentEvent.cpp; sourceTree = "<group>"; };
 		14098F59243097A90047DC03 /* MaterialParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MaterialParser.h; sourceTree = "<group>"; };
 		14098F5A243097AA0047DC03 /* MaterialParser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MaterialParser.cpp; sourceTree = "<group>"; };
+		140A81F7245D6B6000F75C68 /* MaterialManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MaterialManager.h; sourceTree = "<group>"; };
+		140A81F8245D6B6000F75C68 /* MaterialManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MaterialManager.cpp; sourceTree = "<group>"; };
 		141098EB22D0C5F800C9F982 /* FeedbackSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeedbackSystem.h; sourceTree = "<group>"; };
 		141098EC22D0C5F800C9F982 /* FeedbackSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FeedbackSystem.cpp; sourceTree = "<group>"; };
 		141098EE22D0CE4900C9F982 /* GLFeedback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLFeedback.h; sourceTree = "<group>"; };
@@ -464,6 +467,8 @@
 				149C01FE21F4AF910011DAE2 /* GLProgramCache.cpp */,
 				14C23F33226C64DC00AFE69B /* MaterialCache.h */,
 				14C23F34226C64DC00AFE69B /* MaterialCache.cpp */,
+				140A81F7245D6B6000F75C68 /* MaterialManager.h */,
+				140A81F8245D6B6000F75C68 /* MaterialManager.cpp */,
 				14E1431922084723001A2EB1 /* ModelCache.h */,
 				14E1431822084723001A2EB1 /* ModelCache.cpp */,
 			);
@@ -890,6 +895,7 @@
 				143995D7238158B700323A90 /* Application.cpp in Sources */,
 				14E723E621E8C31E002A8A89 /* MeshFilter.cpp in Sources */,
 				14B9068521BABC8F00554B0B /* BaseComponent.cpp in Sources */,
+				140A81F9245D6B6000F75C68 /* MaterialManager.cpp in Sources */,
 				143995D8238158B700323A90 /* LogicCore.cpp in Sources */,
 				1486090422C8EC8000DD1B96 /* BinaryFileUtils.cpp in Sources */,
 				14E143172208115B001A2EB1 /* GLStateCache.cpp in Sources */,
