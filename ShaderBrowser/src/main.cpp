@@ -239,7 +239,8 @@ void testVal()
 	scene->addChild(modelEntity);
 	modelEntity->playAnimation("Take 001", true);
 	//    modelEntity->changeAllMeshesMaterial(GLProgram::DEFAULT_SKELETON_GLPROGRAM_NAME);
-	SkinnedMeshRenderer* fighterSkinedMeshRenderer = modelEntity->getComponent<browser::Transform>()->getChildren()[0]->getBelongEntity()->getComponent<SkinnedMeshRenderer>();
+    std::list<SkinnedMeshRenderer*> skinMeshRenderers = modelEntity->getComponentsInChildren<browser::SkinnedMeshRenderer>();
+    SkinnedMeshRenderer* fighterSkinedMeshRenderer = *skinMeshRenderers.begin(); 
 	MaterialCache::getInstance()->addMaterialAsync("res/models/Fighter/fighter.material", [fighterSkinedMeshRenderer](Material* material) mutable->void
 	{
 		fighterSkinedMeshRenderer->changeMaterial(0, material);

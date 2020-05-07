@@ -22,6 +22,10 @@ namespace customGL
      */
     class Skeleton : public Reference
 	{
+    public:
+        // 检测是否是assimp生成的辅助枢轴(preserve pivot)，暂时是通过名称来检查的，后面看看有没有更好的优化方法
+        static bool isPreservePivot(aiNode* node);
+        
 	public:
 		Skeleton();
 		~Skeleton();
@@ -29,8 +33,11 @@ namespace customGL
     public:
         // 添加骨骼
         unsigned int addBone(aiBone* bone);
-        // 获取骨骼数量
+        // assimp生成的辅助枢轴(PreservePivots)也要算作骨骼，但它不会影响并不会影响顶点的boneIndices和boneWeights。算作骨骼更多的是告诉Animator它参与骨骼动画的计算
+        unsigned int addPreservePivot(aiNode* pivotNode);
+        // 获取骨骼数量 (包含assimp生成的辅助枢轴(Preserve Pivots))
         unsigned int getBoneNum();
+        // 
         // 获取骨骼信息
         aiBone* getBone(unsigned int boneId);
 		// 检测节点是否是骨骼
@@ -80,6 +87,8 @@ namespace customGL
         std::vector<glm::vec4> m_vBonesInitPosition;
         std::vector<glm::vec4> m_vBonesInitRotation;
         std::vector<glm::vec4> m_vBonesInitScale;
+        // assimp枢轴(FBX_PRESERVE_PIVOTS)生成的骨骼
+        std::vector<aiBone*> m_vPreservePivots;
         
         // test
         bool hasInit;

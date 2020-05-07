@@ -4,6 +4,12 @@ using namespace common;
 
 namespace customGL
 {
+    bool Skeleton::isPreservePivot(aiNode* node)
+    {
+        std::string nodeName(node->mName.C_Str());
+        return nodeName.find("$AssimpFbx$")!=-1;
+    }
+    
     // 骨架类
     Skeleton::Skeleton()
         : m_pRootBoneNode(nullptr)
@@ -19,6 +25,12 @@ namespace customGL
     
     Skeleton::~Skeleton()
     {
+        // 干掉手动靠assimp枢轴生成的骨骼
+        for (auto itor=m_vPreservePivots.begin(); itor!=m_vPreservePivots.end(); ++itor)
+        {
+            BROWSER_SAFE_RELEASE_POINTER(*itor);
+        }
+        m_vPreservePivots.clear();
     }
     
     unsigned int Skeleton::addBone(aiBone* bone)
@@ -35,6 +47,28 @@ namespace customGL
             // 骨骼id要自己生成
             boneIdx = m_vBones.size();
             m_vBones.push_back(bone);
+            m_mBonesIdMap[bone->mName.C_Str()] = boneIdx;
+        }
+        return boneIdx;
+    }
+    
+    unsigned int Skeleton::addPreservePivot(aiNode* pivotNode)
+    {
+        int boneIdx;
+        auto boneIdItor = m_mBonesIdMap.find(pivotNode->mName.C_Str());
+        if (boneIdItor != m_mBonesIdMap.end())
+        {
+            // 骨骼已存在
+            boneIdx = boneIdItor->second;
+        }
+        else
+        {
+            // 骨骼id要自己生成
+            boneIdx = m_vBones.size();
+            aiBone* bone = new aiBone();
+            bone->mName = pivotNode->mName;
+            m_vBones.push_back(bone);
+            m_vPreservePivots.push_back(bone);
             m_mBonesIdMap[bone->mName.C_Str()] = boneIdx;
         }
         return boneIdx;
