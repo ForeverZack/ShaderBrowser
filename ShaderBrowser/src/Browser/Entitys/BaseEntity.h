@@ -123,7 +123,7 @@ namespace browser
 				}
 				break;
 
-			case EnumComponentClass::ECC_BaseRenderer:
+			case EnumComponentClass::ECC_MeshRenderer:
 				{
 					if (m_oRenderer && static_cast<MeshRenderer*>(m_oRenderer)->getRendererType()==MeshRenderer::RendererType::RendererType_Mesh)
 					{

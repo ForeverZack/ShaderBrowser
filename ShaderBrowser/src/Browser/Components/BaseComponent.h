@@ -19,7 +19,7 @@ namespace browser
 	{
 		ECC_BaseComponent = 0,
 		ECC_Transform,
-		ECC_BaseRenderer,
+		ECC_MeshRenderer,
 		ECC_SkinnedMeshRenderer,
 		ECC_MeshFilter,
 		ECC_AABBBoundBox,
