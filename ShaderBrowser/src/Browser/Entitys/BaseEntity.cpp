@@ -149,9 +149,9 @@ namespace browser
         // 是否需要被渲染
         if (m_oRenderer)
         {
-            switch(static_cast<BaseRender*>(m_oRenderer)->getRendererType())
+            switch(static_cast<MeshRenderer*>(m_oRenderer)->getRendererType())
             {
-                case BaseRender::RendererType::RendererType_Mesh:
+                case MeshRenderer::RendererType::RendererType_Mesh:
                     {
                         if(m_oMeshFilter)
                         {
@@ -160,7 +160,7 @@ namespace browser
                     }
                     break;
                     
-                case BaseRender::RendererType::RendererType_Skinned:
+                case MeshRenderer::RendererType::RendererType_Skinned:
                     {
                         return true;
                     }
@@ -241,7 +241,7 @@ namespace browser
 	void BaseEntity::changeAllMeshesMaterial(const std::string& programName)
 	{
 		traverseEntity(this, [=](BaseEntity* entity) {
-			BaseRender* renderer = entity->getComponent<BaseRender>();
+			MeshRenderer* renderer = entity->getComponent<MeshRenderer>();
 			MeshFilter* meshFilter = entity->getComponent<MeshFilter>();
 			if (renderer && meshFilter)
 			{
@@ -379,7 +379,7 @@ namespace browser
 		case SystemType::RenderSystem:
 			// 渲染组件
 			MARK_SPECIAL_COMPONENT(m_oRenderer, component, bEmpty);
-            deliverComponentMessage(ComponentEvent::Render_AddComponent, new RenderAddComponentMessage(static_cast<BaseRender*>(m_oRenderer), this));
+            deliverComponentMessage(ComponentEvent::Render_AddComponent, new RenderAddComponentMessage(static_cast<MeshRenderer*>(m_oRenderer), this));
 			break;
 
 		case SystemType::Camera:

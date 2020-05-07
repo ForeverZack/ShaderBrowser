@@ -8,7 +8,7 @@
 #include "Browser/Components/Transform/Transform.h"
 #include "Browser/Components/Mesh/MeshFilter.h"
 #include "Browser/Components/BoundBox/AABBBoundBox.h"
-#include "Browser/Components/Render/BaseRender.h"
+#include "Browser/Components/Render/MeshRenderer.h"
 #include "Browser/Components/Render/SkinnedMeshRenderer.h"
 #include "Browser/Components/Animation/Animator.h"
 #include <queue>
@@ -601,8 +601,8 @@ namespace customGL
 			// MeshFilter组件
             browser::MeshFilter* meshFilter = nullptr;
 			// 渲染组件
-			BaseRender* renderer = nullptr;
-            BaseRender* skinnedRender = nullptr;
+			MeshRenderer* renderer = nullptr;
+            MeshRenderer* skinnedRender = nullptr;
 			Material* sharedMaterial = nullptr;
             
 			for (unsigned int i = 0; i < node->mNumMeshes; ++i)
@@ -643,9 +643,9 @@ namespace customGL
                         
                         if (!renderer)
                         {
-//                            renderer = BaseRender::createBaseRender();
+//                            renderer = MeshRenderer::createBaseRender();
 							sharedMaterial = getSharedMaterial(mesh, mesh->getMaterialName(), GLProgram::DEFAULT_GLPROGRAM_NAME);
-                            renderer = BaseRender::createBaseRender(sharedMaterial);
+                            renderer = MeshRenderer::createBaseRender(sharedMaterial);
                             entity->addComponent(renderer);
                         }
                         else

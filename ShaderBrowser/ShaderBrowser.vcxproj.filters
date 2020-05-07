@@ -114,9 +114,6 @@
     <ClCompile Include="src\Browser\System\RenderSystem.cpp">
       <Filter>src\Browser\System</Filter>
     </ClCompile>
-    <ClCompile Include="src\Browser\Components\Render\BaseRender.cpp">
-      <Filter>src\Browser\Components\Render</Filter>
-    </ClCompile>
     <ClCompile Include="src\Common\Tools\Utils.cpp">
       <Filter>src\Common\Tools</Filter>
     </ClCompile>
@@ -230,9 +227,6 @@
     </ClCompile>
     <ClCompile Include="src\Common\System\Cache\MaterialCache.cpp">
       <Filter>src\Common\System\Cache</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Browser\Components\Render\Commands\BaseRenderCommand.cpp">
-      <Filter>src\Browser\Components\Render\Commands</Filter>
     </ClCompile>
     <ClCompile Include="src\Browser\Components\Render\Commands\SkinnedRenderCommand.cpp">
       <Filter>src\Browser\Components\Render\Commands</Filter>
@@ -357,6 +351,12 @@
     <ClCompile Include="src\Common\System\Cache\MaterialManager.cpp">
       <Filter>src\Common\System\Cache</Filter>
     </ClCompile>
+    <ClCompile Include="src\Browser\Components\Render\MeshRenderer.cpp">
+      <Filter>src\Browser\Components\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Browser\Components\Render\Commands\MeshRenderCommand.cpp">
+      <Filter>src\Browser\Components\Render\Commands</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\GL\GLDefine.h">
@@ -364,9 +364,6 @@
     </ClInclude>
     <ClInclude Include="src\Browser\System\RenderSystem.h">
       <Filter>src\Browser\System</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Browser\Components\Render\BaseRender.h">
-      <Filter>src\Browser\Components\Render</Filter>
     </ClInclude>
     <ClInclude Include="src\Common\Tools\Utils.h">
       <Filter>src\Common\Tools</Filter>
@@ -490,9 +487,6 @@
     </ClInclude>
     <ClInclude Include="src\Common\System\Cache\MaterialCache.h">
       <Filter>src\Common\System\Cache</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Browser\Components\Render\Commands\BaseRenderCommand.h">
-      <Filter>src\Browser\Components\Render\Commands</Filter>
     </ClInclude>
     <ClInclude Include="src\Browser\Components\Render\Commands\SkinnedRenderCommand.h">
       <Filter>src\Browser\Components\Render\Commands</Filter>
@@ -634,6 +628,12 @@
     </ClInclude>
     <ClInclude Include="src\Common\System\Cache\MaterialManager.h">
       <Filter>src\Common\System\Cache</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Browser\Components\Render\MeshRenderer.h">
+      <Filter>src\Browser\Components\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Browser\Components\Render\Commands\MeshRenderCommand.h">
+      <Filter>src\Browser\Components\Render\Commands</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

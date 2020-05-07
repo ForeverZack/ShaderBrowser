@@ -5,7 +5,7 @@
 #include "GL/GLDefine.h"
 #include "Browser/Components/Mesh/MeshFilter.h"
 #include "Browser/Components/Camera/Camera.h"
-#include "BaseRender.h"
+#include "MeshRenderer.h"
 
 using namespace std;
 using namespace customGL;
@@ -15,7 +15,7 @@ namespace browser
 {
     class BaseBoundBox;
     
-    class SkinnedMeshRenderer : public BaseRender
+    class SkinnedMeshRenderer : public MeshRenderer
 	{
 	public:
 		static EnumComponentClass ComponentClass;

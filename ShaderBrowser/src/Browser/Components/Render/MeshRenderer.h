@@ -17,14 +17,14 @@ namespace browser
 {
     class Pass;
 
-	class BaseRender : public BaseComponent
+	class MeshRenderer : public BaseComponent
 	{
 	public:
 		static EnumComponentClass ComponentClass;
 
 	public:
-		static BaseRender* createBaseRender(const std::string& materialName = customGL::Material::DEFAULT_MATERIAL_NAME, const std::string& programeName = GLProgram::DEFAULT_GLPROGRAM_NAME);
-        static BaseRender* createBaseRender(Material* material);
+		static MeshRenderer* createBaseRender(const std::string& materialName = customGL::Material::DEFAULT_MATERIAL_NAME, const std::string& programeName = GLProgram::DEFAULT_GLPROGRAM_NAME);
+        static MeshRenderer* createBaseRender(Material* material);
     
     public:
         // 渲染器类型
@@ -37,8 +37,8 @@ namespace browser
         };
         
 	public:
-		BaseRender();
-		virtual ~BaseRender();
+		MeshRenderer();
+		virtual ~MeshRenderer();
 
 	public:
 		// init

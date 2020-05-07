@@ -13,7 +13,7 @@
 #include "Browser/Components/Light/SpotLight.h"
 #include "Browser/Components/Mesh/MeshFilter.h"
 #include "GL/GPUResource/Model/Mesh.h"
-#include "Browser/Components/Render/BaseRender.h"
+#include "Browser/Components/Render/MeshRenderer.h"
 #include "Browser/Components/Render/SkinnedMeshRenderer.h"
 #include "GL/GPUResource/Shader/Material.h"
 #include "GL/GPUResource/Shader/Pass.h"
@@ -117,7 +117,7 @@ void testVal()
 	// 创建场景根节点
 	BaseEntity* scene = BaseEntity::create("scene");
 	scene->setIsAxisVisible(true);
-	scene->addComponent(BaseRender::createBaseRender());
+	scene->addComponent(MeshRenderer::createBaseRender());
 	scene->retain();
 	browser::TransformSystem::getInstance()->setScene(scene);   //设置场景节点
 
@@ -198,7 +198,7 @@ void testVal()
 	BaseEntity* entity = BaseEntity::create("Plane");
 	scene->addChild(entity);
 	// 组件：渲染组件
-	BaseRender* renderCom = BaseRender::createBaseRender();
+	MeshRenderer* renderCom = MeshRenderer::createBaseRender();
 	Material* mat = renderCom->changeMaterial(0, mesh->getMaterialName(), "Triangles");   // 修改mesh的材质对应的shader
 	mat->setUniformTex2D("CGL_TEXTURE0", texture1);
 	mat->setUniformV4f("CGL_ALBEDO_COLOR", glm::vec4(0, 0, 0, 1));
@@ -304,7 +304,7 @@ void testVal()
 	//	modelEntity->setPosition(i, 1, 0);
 	//	scene->addChild(modelEntity);
 	//	// 渲染组件
-	//	modelEntity->addComponent(BaseRender::createBaseRender());
+	//	modelEntity->addComponent(MeshRenderer::createBaseRender());
 	//	// 包围盒
 	//	modelEntity->addComponent(new AABBBoundBox());
 	//	// MeshFilter组件

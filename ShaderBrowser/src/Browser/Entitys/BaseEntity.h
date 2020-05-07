@@ -9,7 +9,7 @@
 #include "Browser/Components/Transform/Transform.h"
 #include "Browser/Components/BoundBox/BaseBoundBox.h"
 #include "Browser/Components/Animation/Animator.h"
-#include "Browser/Components/Render/BaseRender.h"
+#include "Browser/Components/Render/MeshRenderer.h"
 #include "Browser/Components/Camera/Camera.h"
 
 namespace customGL
@@ -63,7 +63,7 @@ namespace browser
         // 可见性检测
         bool checkVisibility(Camera* camera, bool reCalculate = false);
         
-		// 修改所有网格模型shader (仅针对BaseRender)
+		// 修改所有网格模型shader (仅针对MeshRenderer)
 		void changeAllMeshesMaterial(const std::string& programName);
         // 播放动画
         void playAnimation(const std::string& animName, bool repeat = false, float speed = 1.0f, bool interpolate = true);
@@ -125,7 +125,7 @@ namespace browser
 
 			case EnumComponentClass::ECC_BaseRenderer:
 				{
-					if (m_oRenderer && static_cast<BaseRender*>(m_oRenderer)->getRendererType()==BaseRender::RendererType::RendererType_Mesh)
+					if (m_oRenderer && static_cast<MeshRenderer*>(m_oRenderer)->getRendererType()==MeshRenderer::RendererType::RendererType_Mesh)
 					{
 						return static_cast<T*>(m_oRenderer);
 					}
@@ -133,7 +133,7 @@ namespace browser
 				break;
 			case EnumComponentClass::ECC_SkinnedMeshRenderer:
 				{
-					if (m_oRenderer && static_cast<BaseRender*>(m_oRenderer)->getRendererType()==BaseRender::RendererType::RendererType_Skinned)
+					if (m_oRenderer && static_cast<MeshRenderer*>(m_oRenderer)->getRendererType()==MeshRenderer::RendererType::RendererType_Skinned)
 					{
 						return static_cast<T*>(m_oRenderer);
 					}

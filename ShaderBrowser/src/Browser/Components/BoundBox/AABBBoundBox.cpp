@@ -1,7 +1,7 @@
 #include "AABBBoundBox.h"
 #include "GL/GLDefine.h"
 #include "Browser/Components/Mesh/MeshFilter.h"
-//#include "Browser/Components/Render/BaseRender.h"
+//#include "Browser/Components/Render/MeshRenderer.h"
 #include "Browser/Components/Render/SkinnedMeshRenderer.h"
 #include "Browser/Components/Animation/Animator.h"
 #include "Browser/Entitys/BaseEntity.h"

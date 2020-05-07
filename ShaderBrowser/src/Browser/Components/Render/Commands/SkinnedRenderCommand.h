@@ -1,6 +1,6 @@
 #pragma once
 
-#include "BaseRenderCommand.h"
+#include "MeshRenderCommand.h"
 #include "Browser/Entitys/BaseEntity.h"
 
 
@@ -9,7 +9,7 @@ namespace browser
     class BaseEntity;
 
     // 渲染命令基类
-    class SkinnedRenderCommand : public BaseRenderCommand
+    class SkinnedRenderCommand : public MeshRenderCommand
 	{
 	public:
 		SkinnedRenderCommand();

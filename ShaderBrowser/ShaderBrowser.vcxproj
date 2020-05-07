@@ -34,9 +34,9 @@
     <ClCompile Include="src\Browser\Components\Light\PointLight.cpp" />
     <ClCompile Include="src\Browser\Components\Light\SpotLight.cpp" />
     <ClCompile Include="src\Browser\Components\Mesh\MeshFilter.cpp" />
-    <ClCompile Include="src\Browser\Components\Render\BaseRender.cpp" />
-    <ClCompile Include="src\Browser\Components\Render\Commands\BaseRenderCommand.cpp" />
+    <ClCompile Include="src\Browser\Components\Render\Commands\MeshRenderCommand.cpp" />
     <ClCompile Include="src\Browser\Components\Render\Commands\SkinnedRenderCommand.cpp" />
+    <ClCompile Include="src\Browser\Components\Render\MeshRenderer.cpp" />
     <ClCompile Include="src\Browser\Components\Render\SkinnedMeshRenderer.cpp" />
     <ClCompile Include="src\Browser\Components\Transform\Transform.cpp" />
     <ClCompile Include="src\Browser\Entitys\BaseEntity.cpp" />
@@ -119,9 +119,9 @@
     <ClInclude Include="src\Browser\Components\Light\PointLight.h" />
     <ClInclude Include="src\Browser\Components\Light\SpotLight.h" />
     <ClInclude Include="src\Browser\Components\Mesh\MeshFilter.h" />
-    <ClInclude Include="src\Browser\Components\Render\BaseRender.h" />
-    <ClInclude Include="src\Browser\Components\Render\Commands\BaseRenderCommand.h" />
+    <ClInclude Include="src\Browser\Components\Render\Commands\MeshRenderCommand.h" />
     <ClInclude Include="src\Browser\Components\Render\Commands\SkinnedRenderCommand.h" />
+    <ClInclude Include="src\Browser\Components\Render\MeshRenderer.h" />
     <ClInclude Include="src\Browser\Components\Render\SkinnedMeshRenderer.h" />
     <ClInclude Include="src\Browser\Components\Transform\Transform.h" />
     <ClInclude Include="src\Browser\Entitys\BaseEntity.h" />

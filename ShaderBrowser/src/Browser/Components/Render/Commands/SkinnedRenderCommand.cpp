@@ -6,7 +6,7 @@ namespace browser
 	SkinnedRenderCommand::SkinnedRenderCommand()
 	{
         // 记得修改渲染类型
-        m_oRenderType = BaseRender::RendererType::RendererType_Skinned;
+        m_oRenderType = MeshRenderer::RendererType::RendererType_Skinned;
     }
 
 	SkinnedRenderCommand::~SkinnedRenderCommand()
@@ -16,7 +16,7 @@ namespace browser
 
     void SkinnedRenderCommand::init(BaseEntity* entity, Material* material, Mesh* mesh, Transform* transform, Camera* camera, bool gpuInstance /*= false*/)
     {
-		BaseRenderCommand::init(material, mesh, transform, camera, gpuInstance);
+		MeshRenderCommand::init(material, mesh, transform, camera, gpuInstance);
 
 
 		// 更新骨骼矩阵samplerBuffer

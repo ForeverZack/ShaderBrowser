@@ -1,9 +1,9 @@
-#include "BaseRenderCommand.h"
+#include "MeshRenderCommand.h"
 
 namespace browser
 {
-	BaseRenderCommand::BaseRenderCommand()
-        : m_oRenderType(BaseRender::RendererType::RendererType_Mesh)
+	MeshRenderCommand::MeshRenderCommand()
+        : m_oRenderType(MeshRenderer::RendererType::RendererType_Mesh)
         , m_oMaterial(nullptr)
         , m_oMesh(nullptr)
         , m_bGpuInstance(false)
@@ -15,22 +15,22 @@ namespace browser
 	{
 	}
 
-	BaseRenderCommand::~BaseRenderCommand()
+	MeshRenderCommand::~MeshRenderCommand()
 	{
 
 	}
     
-    int BaseRenderCommand::getVertexCount()
+    int MeshRenderCommand::getVertexCount()
     {
         return m_oMesh->getVertexCount();
     }
     
-    int BaseRenderCommand::getIndexCount()
+    int MeshRenderCommand::getIndexCount()
     {
         return m_oMesh->getIndexCount();
     }
 
-    void BaseRenderCommand::init(Material* material, Mesh* mesh, Transform* transform, Camera* camera, bool gpuInstance /*= false*/)
+    void MeshRenderCommand::init(Material* material, Mesh* mesh, Transform* transform, Camera* camera, bool gpuInstance /*= false*/)
     {
         m_oMaterial = material;
         m_oMesh = mesh;
@@ -69,7 +69,7 @@ namespace browser
 		m_oMesh->retain();
 	}
     
-    void BaseRenderCommand::draw()
+    void MeshRenderCommand::draw()
     {
         GLuint vao = m_oMesh->getVAO();
         m_oMaterial->useMaterial(m_bTransformDirty, m_oModelMatrix, m_bCameraDirty, m_oCameraGlobalPosition, m_oViewMatrix, m_oProjectionMatrix, m_mUniforms);

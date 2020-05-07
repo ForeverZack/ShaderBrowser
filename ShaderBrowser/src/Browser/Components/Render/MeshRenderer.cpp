@@ -1,27 +1,27 @@
-#include "BaseRender.h"
+#include "MeshRenderer.h"
 #include "GL/GPUResource/Shader/Pass.h"
 #include "Common/System/Cache/GLProgramCache.h"
 #include "Common/Tools/Utils.h"
 
 namespace browser
 {
-	EnumComponentClass BaseRender::ComponentClass = EnumComponentClass::ECC_BaseRenderer;
+	EnumComponentClass MeshRenderer::ComponentClass = EnumComponentClass::ECC_BaseRenderer;
 
-	BaseRender* BaseRender::createBaseRender(const std::string& materialName /*= Material::DEFAULT_MATERIAL_NAME*/, const std::string& programeName /*= GLProgram::DEFAULT_GLPROGRAM_NAME*/)
+	MeshRenderer* MeshRenderer::createBaseRender(const std::string& materialName /*= Material::DEFAULT_MATERIAL_NAME*/, const std::string& programeName /*= GLProgram::DEFAULT_GLPROGRAM_NAME*/)
 	{
-		BaseRender* renderer = new BaseRender();
+		MeshRenderer* renderer = new MeshRenderer();
         renderer->init(materialName, programeName);
 		return renderer;
 	}
     
-    BaseRender* BaseRender::createBaseRender(Material* material)
+    MeshRenderer* MeshRenderer::createBaseRender(Material* material)
     {
-        BaseRender* renderer = new BaseRender();
+        MeshRenderer* renderer = new MeshRenderer();
         renderer->init(material);
         return renderer;
     }
 
-	BaseRender::BaseRender()
+	MeshRenderer::MeshRenderer()
         : BaseComponent("Base Render")
         , m_eRendererType(RendererType::RendererType_Mesh)
 	{
@@ -32,11 +32,11 @@ namespace browser
         m_vMaterials.clear();
 	}
 
-	BaseRender::~BaseRender()
+	MeshRenderer::~MeshRenderer()
 	{
 	}
 
-	void BaseRender::onInspectorGUI(InspectorPanel* inspector)
+	void MeshRenderer::onInspectorGUI(InspectorPanel* inspector)
 	{
 		// 材质列表(临时)
 		for (auto itor = m_vMaterials.begin(); itor != m_vMaterials.end(); ++itor)
@@ -46,28 +46,28 @@ namespace browser
 		}
 	}
 
-	void BaseRender::init(const std::string& materialName, const std::string& programName)
+	void MeshRenderer::init(const std::string& materialName, const std::string& programName)
 	{
         addMaterial(materialName, programName);
 	}
     
-    void BaseRender::init(Material* material)
+    void MeshRenderer::init(Material* material)
     {
         addMaterial(material);
     }
     
-	Material* BaseRender::changeMaterial(int index, const std::string& materialName, const std::string& programName)
+	Material* MeshRenderer::changeMaterial(int index, const std::string& materialName, const std::string& programName)
     {
-        BROWSER_WARNING(0<=index && index<m_vMaterials.size(), "The material index is out of range, and you are trying to change it, please confirm your program in function BaseRender::changeMaterial");
+        BROWSER_WARNING(0<=index && index<m_vMaterials.size(), "The material index is out of range, and you are trying to change it, please confirm your program in function MeshRenderer::changeMaterial");
         
         Material* material = createMaterial(programName, materialName);
 		changeMaterial(index, material);
 		return material;
     }
     
-	Material* BaseRender::changeMaterial(int index, Material* material)
+	Material* MeshRenderer::changeMaterial(int index, Material* material)
     {
-        BROWSER_WARNING(0<=index && index<m_vMaterials.size(), "The material index is out of range, and you are trying to change it, please confirm your program in function BaseRender::changeMaterial");
+        BROWSER_WARNING(0<=index && index<m_vMaterials.size(), "The material index is out of range, and you are trying to change it, please confirm your program in function MeshRenderer::changeMaterial");
         
 		int size = m_vMaterials.size();
         if (index < m_vMaterials.size())
@@ -86,27 +86,27 @@ namespace browser
 		return material;
 	}
     
-    Material* BaseRender::getMaterialByIndex(int index /*= 0*/)
+    Material* MeshRenderer::getMaterialByIndex(int index /*= 0*/)
     {
-        BROWSER_ASSERT(index<m_vMaterials.size(), "The material index is out of materils range in function BaseRender::getMaterialByMeshIndex");
+        BROWSER_ASSERT(index<m_vMaterials.size(), "The material index is out of materils range in function MeshRenderer::getMaterialByMeshIndex");
         
         return m_vMaterials[index];
     }
 
-	Material* BaseRender::createMaterial(const std::string& programName, const std::string& materialName /*= Material::DEFAULT_MATERIAL_NAME*/)
+	Material* MeshRenderer::createMaterial(const std::string& programName, const std::string& materialName /*= Material::DEFAULT_MATERIAL_NAME*/)
 	{
 		Material* material = Material::createMaterial(programName, materialName);
 
 		return material;
 	}
 
-	void BaseRender::addMaterial(const std::string& materialName, const std::string& programName)
+	void MeshRenderer::addMaterial(const std::string& materialName, const std::string& programName)
 	{
 		Material* material = createMaterial(programName, materialName);
 		addMaterial(material);
 	}
     
-    bool BaseRender::checkMaterialExist(Material* material)
+    bool MeshRenderer::checkMaterialExist(Material* material)
     {
         for(auto itor=m_vMaterials.begin(); itor!=m_vMaterials.end(); ++itor)
         {
@@ -119,14 +119,14 @@ namespace browser
         return false;
     }
     
-    void BaseRender::addMaterial(Material* material)
+    void MeshRenderer::addMaterial(Material* material)
     {
 		const std::string& name = material->getMaterialName();
         m_vMaterials.push_back(material);
         material->retain();
     }
     
-    void BaseRender::handleEvent(ComponentEvent event, BaseComponentMessage* msg)
+    void MeshRenderer::handleEvent(ComponentEvent event, BaseComponentMessage* msg)
     {
         switch (event)
         {

@@ -1,6 +1,6 @@
 #include "RenderSystem.h"
 #include "CameraSystem.h"
-#include "Browser/Components/Render/Commands/BaseRenderCommand.h"
+#include "Browser/Components/Render/Commands/MeshRenderCommand.h"
 #include "Browser/Components/Render/Commands/SkinnedRenderCommand.h"
 #include "GL/GPUResource/Shader/Material.h"
 #include "Browser/Components/Mesh/MeshFilter.h"
@@ -94,19 +94,19 @@ namespace browser
         // 开启深度测试
         GLStateCache::getInstance()->openDepthTest();
         
-        std::stable_sort(std::begin(m_vRenderCommands), std::end(m_vRenderCommands), [](BaseRenderCommand* c1, BaseRenderCommand* c2) {
+        std::stable_sort(std::begin(m_vRenderCommands), std::end(m_vRenderCommands), [](MeshRenderCommand* c1, MeshRenderCommand* c2) {
             return c1->getMaterial()->getSharedId() < c2->getMaterial()->getSharedId();
         });
         
         Material* lastMaterial = nullptr;
         Material* curMaterial = nullptr;
-        BaseRenderCommand* command;
+        MeshRenderCommand* command;
         for(int i=0; i<m_vRenderCommands.size(); ++i)
         {
             command = m_vRenderCommands[i];
             
             curMaterial = command->getMaterial();
-            if(command->getRenderType() == BaseRender::RendererType::RendererType_Mesh
+            if(command->getRenderType() == MeshRenderer::RendererType::RendererType_Mesh
                && curMaterial->getSharedId() != 0
                && lastMaterial == curMaterial
                && command->getVertexCount() <= MAX_DYNAMIC_BATCH_VERTEX_COUNT)
@@ -336,13 +336,13 @@ namespace browser
         }
     }
     
-    void RenderSystem::addCurFrameCommand(BaseRenderCommand* command)
+    void RenderSystem::addCurFrameCommand(MeshRenderCommand* command)
     {
         unsigned long frameIndex = core::LogicCore::getInstance()->getFrameIndex();
         m_mWaitRenderCommands[frameIndex].push_back(command);
     }
     
-    const std::vector<BaseRenderCommand*> RenderSystem::getCommands(unsigned long frameIndex)
+    const std::vector<MeshRenderCommand*> RenderSystem::getCommands(unsigned long frameIndex)
     {
         return m_mWaitRenderCommands[frameIndex];
     }
@@ -372,19 +372,19 @@ namespace browser
         GLuint vao;
         size_t vertCount;
         int indexCount;
-        BaseRender* render;
+        MeshRenderer* render;
         SkinnedMeshRenderer* skinRenderer;
         Transform* transform;
         MeshFilter* meshFilter;
         Mesh* mesh;
         BaseEntity* entity;
 		Animator* animator;
-        BaseRenderCommand* command;
+        MeshRenderCommand* command;
 		bool verticesDirty;
         for (auto itor = m_mComponentsList.begin(); itor != m_mComponentsList.end(); ++itor)
         {
 			const std::list<BaseComponent*>& renderList = itor->second;
-            render = static_cast<BaseRender*>(*(renderList.begin()));
+            render = static_cast<MeshRenderer*>(*(renderList.begin()));
             entity = render->getBelongEntity();
             meshFilter = entity->getComponent<MeshFilter>();
             transform = entity->getComponent<Transform>();
@@ -402,7 +402,7 @@ namespace browser
             
             // 蒙皮渲染器
             skinRenderer = nullptr;
-            if(render->getRendererType() == BaseRender::RendererType::RendererType_Skinned)
+            if(render->getRendererType() == MeshRenderer::RendererType::RendererType_Skinned)
             {
                 skinRenderer = static_cast<SkinnedMeshRenderer*>(render);
             }
@@ -423,17 +423,17 @@ namespace browser
                 // 生成渲染命令
                 switch(render->getRendererType())
                 {                       
-                    case BaseRender::RendererType::RendererType_Skinned:
+                    case MeshRenderer::RendererType::RendererType_Skinned:
                         {
                             command = new SkinnedRenderCommand();
                             static_cast<SkinnedRenderCommand*>(command)->init(entity, material, mesh, transform, camera);
                         }
                         break;
 
-					case BaseRender::RendererType::RendererType_Mesh:
+					case MeshRenderer::RendererType::RendererType_Mesh:
 					default:
 						{
-							command = new BaseRenderCommand();
+							command = new MeshRenderCommand();
 							command->init(material, mesh, transform, camera);
 						}
 						break;

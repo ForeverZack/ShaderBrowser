@@ -29,7 +29,7 @@ namespace browser
     class Animator;
     class BaseBoundBox;
     class Camera;
-    class BaseRender;
+    class MeshRenderer;
     class BaseLight;
     
     // 组件之间通讯的事件
@@ -99,12 +99,12 @@ namespace browser
 	class RenderAddComponentMessage : public BaseComponentMessage
 	{
 	public:
-		RenderAddComponentMessage(BaseRender* renderer, BaseEntity* entity) : m_oRenderer(renderer), m_oEntity(entity) {}
+		RenderAddComponentMessage(MeshRenderer* renderer, BaseEntity* entity) : m_oRenderer(renderer), m_oEntity(entity) {}
 		~RenderAddComponentMessage() {}
-		REGISTER_PROPERTY_GET(BaseRender*, m_oRenderer, BaseRender)
+		REGISTER_PROPERTY_GET(MeshRenderer*, m_oRenderer, MeshRenderer)
         REGISTER_PROPERTY_GET(BaseEntity*, m_oEntity, Entity)
 	protected:
-		BaseRender* m_oRenderer;
+		MeshRenderer* m_oRenderer;
         BaseEntity* m_oEntity;
 	};
 
