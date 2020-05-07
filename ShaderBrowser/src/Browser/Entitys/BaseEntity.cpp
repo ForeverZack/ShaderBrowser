@@ -151,7 +151,7 @@ namespace browser
         {
             switch(static_cast<BaseRender*>(m_oRenderer)->getRendererType())
             {
-                case BaseRender::RendererType::Base:
+                case BaseRender::RendererType::RendererType_Mesh:
                     {
                         if(m_oMeshFilter)
                         {
@@ -160,7 +160,7 @@ namespace browser
                     }
                     break;
                     
-                case BaseRender::RendererType::Skinned:
+                case BaseRender::RendererType::RendererType_Skinned:
                     {
                         return true;
                     }

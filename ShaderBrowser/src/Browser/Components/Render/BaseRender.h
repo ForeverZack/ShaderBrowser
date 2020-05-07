@@ -31,9 +31,9 @@ namespace browser
         enum RendererType
         {
             // 普通渲染器
-            Base = 0,
+            RendererType_Mesh = 0,
             // 蒙皮渲染器
-            Skinned,
+			RendererType_Skinned,
         };
         
 	public:

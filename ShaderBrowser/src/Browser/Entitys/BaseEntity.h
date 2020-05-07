@@ -125,7 +125,7 @@ namespace browser
 
 			case EnumComponentClass::ECC_BaseRenderer:
 				{
-					if (m_oRenderer && static_cast<BaseRender*>(m_oRenderer)->getRendererType()==BaseRender::RendererType::Base)
+					if (m_oRenderer && static_cast<BaseRender*>(m_oRenderer)->getRendererType()==BaseRender::RendererType::RendererType_Mesh)
 					{
 						return static_cast<T*>(m_oRenderer);
 					}
@@ -133,7 +133,7 @@ namespace browser
 				break;
 			case EnumComponentClass::ECC_SkinnedMeshRenderer:
 				{
-					if (m_oRenderer && static_cast<BaseRender*>(m_oRenderer)->getRendererType()==BaseRender::RendererType::Skinned)
+					if (m_oRenderer && static_cast<BaseRender*>(m_oRenderer)->getRendererType()==BaseRender::RendererType::RendererType_Skinned)
 					{
 						return static_cast<T*>(m_oRenderer);
 					}

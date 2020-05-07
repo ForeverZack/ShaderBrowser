@@ -106,7 +106,7 @@ namespace browser
             command = m_vRenderCommands[i];
             
             curMaterial = command->getMaterial();
-            if(command->getRenderType() == BaseRender::RendererType::Base
+            if(command->getRenderType() == BaseRender::RendererType::RendererType_Mesh
                && curMaterial->getSharedId() != 0
                && lastMaterial == curMaterial
                && command->getVertexCount() <= MAX_DYNAMIC_BATCH_VERTEX_COUNT)
@@ -402,7 +402,7 @@ namespace browser
             
             // 蒙皮渲染器
             skinRenderer = nullptr;
-            if(render->getRendererType() == BaseRender::RendererType::Skinned)
+            if(render->getRendererType() == BaseRender::RendererType::RendererType_Skinned)
             {
                 skinRenderer = static_cast<SkinnedMeshRenderer*>(render);
             }
@@ -423,14 +423,14 @@ namespace browser
                 // 生成渲染命令
                 switch(render->getRendererType())
                 {                       
-                    case BaseRender::RendererType::Skinned:
+                    case BaseRender::RendererType::RendererType_Skinned:
                         {
                             command = new SkinnedRenderCommand();
                             static_cast<SkinnedRenderCommand*>(command)->init(entity, material, mesh, transform, camera);
                         }
                         break;
 
-					case BaseRender::RendererType::Base:
+					case BaseRender::RendererType::RendererType_Mesh:
 					default:
 						{
 							command = new BaseRenderCommand();

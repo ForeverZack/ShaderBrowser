@@ -23,7 +23,7 @@ namespace browser
 
 	BaseRender::BaseRender()
         : BaseComponent("Base Render")
-        , m_eRendererType(RendererType::Base)
+        , m_eRendererType(RendererType::RendererType_Mesh)
 	{
 		// 组件所属系统
 		m_eBelongSystem = SystemType::RenderSystem;

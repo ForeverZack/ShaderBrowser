@@ -6,7 +6,7 @@ namespace browser
 	SkinnedRenderCommand::SkinnedRenderCommand()
 	{
         // 记得修改渲染类型
-        m_oRenderType = BaseRender::RendererType::Skinned;
+        m_oRenderType = BaseRender::RendererType::RendererType_Skinned;
     }
 
 	SkinnedRenderCommand::~SkinnedRenderCommand()

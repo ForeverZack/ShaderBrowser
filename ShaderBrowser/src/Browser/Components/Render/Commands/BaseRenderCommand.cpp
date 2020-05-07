@@ -3,7 +3,7 @@
 namespace browser
 {
 	BaseRenderCommand::BaseRenderCommand()
-        : m_oRenderType(BaseRender::RendererType::Base)
+        : m_oRenderType(BaseRender::RendererType::RendererType_Mesh)
         , m_oMaterial(nullptr)
         , m_oMesh(nullptr)
         , m_bGpuInstance(false)

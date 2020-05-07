@@ -27,7 +27,7 @@ namespace browser
         m_sComponentName = "Skinned Mesh Renderer";
 
         // 渲染器类型
-        m_eRendererType = RendererType::Skinned;
+        m_eRendererType = RendererType::RendererType_Skinned;
         
         // 网格筛选器
         m_oMeshFilter = new MeshFilter();
