@@ -24,6 +24,8 @@ namespace browser
 	MeshRenderer::MeshRenderer()
         : BaseComponent("Base Render")
         , m_eRendererType(RendererType::RendererType_Mesh)
+		, m_bCastShadows(false)
+		, m_bReceiveShadows(false)
 	{
 		// 组件所属系统
 		m_eBelongSystem = SystemType::RenderSystem;

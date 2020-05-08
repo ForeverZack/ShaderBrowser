@@ -36,6 +36,8 @@ namespace customGL
 		GRT_Model,
 		// shader
 		GRT_GLProgram,
+		// 帧缓存
+		GRT_FrameBuffer,
 	};
 
 	// GPU资源基类

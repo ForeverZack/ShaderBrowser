@@ -61,7 +61,9 @@ namespace browser
 		virtual void onInspectorGUI(InspectorPanel* inspector);
         
         
-        REGISTER_PROPERTY_GET(RendererType, m_eRendererType, RendererType)
+		REGISTER_PROPERTY_GET(RendererType, m_eRendererType, RendererType)
+		REGISTER_PROPERTY_GET_SET(bool, m_bCastShadows, CastShadows)
+		REGISTER_PROPERTY_GET_SET(bool, m_bReceiveShadows, ReceiveShadows)
         
     protected:
         // 处理组件事件
@@ -76,6 +78,10 @@ namespace browser
         
         // 渲染器类型
         RendererType m_eRendererType;
+		// 是否投射阴影
+		bool m_bCastShadows;
+		// 是否接受阴影
+		bool m_bReceiveShadows;
 	};
 }
 
