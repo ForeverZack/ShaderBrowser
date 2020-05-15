@@ -357,6 +357,9 @@
     <ClCompile Include="src\Browser\Components\Render\Commands\MeshRenderCommand.cpp">
       <Filter>src\Browser\Components\Render\Commands</Filter>
     </ClCompile>
+    <ClCompile Include="src\GL\GPUResource\Texture\FrameBuffer.cpp">
+      <Filter>src\GL\GPUResource\Texture</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\GL\GLDefine.h">
@@ -634,6 +637,9 @@
     </ClInclude>
     <ClInclude Include="src\Browser\Components\Render\Commands\MeshRenderCommand.h">
       <Filter>src\Browser\Components\Render\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GL\GPUResource\Texture\FrameBuffer.h">
+      <Filter>src\GL\GPUResource\Texture</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -375,10 +375,18 @@ namespace customGL
     public:
         // 构造函数
         UniformValue();
-		// 拷贝构造函数
+		// 拷贝构造函数	
+		// 注意：如果显式声明了移动构造函数或移动赋值运算符，则：1.不自动生成复制构造函数。2.不自动生成复制赋值运算符。
+		// 注意：如果显式声明了复制构造函数或析构函数，则弃用复制赋值运算符的自动生成。
+		// 注意：如果显式声明了复制赋值运算符或析构函数，则弃用复制构造函数的自动生成。
 		UniformValue(const UniformValue& uniformVal);
+		UniformValue& operator=(const UniformValue& uniformVal);
+
         // 移动构造函数
+		// 注意：如果显式声明了复制构造函数、复制赋值运算符、移动构造函数、移动赋值运算符或析构函数，则：1.不自动生成移动构造函数。2.不自动生成移动赋值运算符。
         UniformValue(UniformValue&& uniformVal) noexcept;
+		UniformValue& operator=(UniformValue&& uniformVal) noexcept;
+
         // 析构函数
         ~UniformValue();
         // 设置数值

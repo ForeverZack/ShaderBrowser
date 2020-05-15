@@ -20,7 +20,7 @@ namespace customGL
     
     void GPUOperateTextureBufferCommand::ready(GPUOperateType operateType)
     {
-        BROWSER_ASSERT(m_pTexture, "GPUOperateTexture2DCommand does not have operate object, please check your program in function GPUOperateTexture2DCommand::ready");
+        BROWSER_ASSERT(m_pTexture, "GPUOperateTextureBufferCommand does not have operate object, please check your program in function GPUOperateTextureBufferCommand::ready");
         
         BaseGPUOperateCommand::ready(operateType);
         
@@ -60,6 +60,7 @@ namespace customGL
     void GPUOperateTextureBufferCommand::finish()
     {
         // 清除
+		m_pTexture = nullptr;
         m_pData = nullptr;
         m_uSize = 0;
         if (m_eCommandType == GPUOperateType::GOT_Update)

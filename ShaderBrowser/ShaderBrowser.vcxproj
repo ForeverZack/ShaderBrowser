@@ -79,6 +79,7 @@
     <ClCompile Include="src\GL\GPUOperateCommand\GPUOperateCommandPool.cpp" />
     <ClCompile Include="src\GL\GPUOperateCommand\GPUOperateGLProgramCommand.cpp" />
     <ClCompile Include="src\GL\GPUOperateCommand\GPUOperateMeshCommand.cpp" />
+    <ClCompile Include="src\GL\GPUOperateCommand\GPUOperateRenderTextureCommand.cpp" />
     <ClCompile Include="src\GL\GPUOperateCommand\GPUOperateTexture2DCommand.cpp" />
     <ClCompile Include="src\GL\GPUOperateCommand\GPUOperateTextureBufferCommand.cpp" />
     <ClCompile Include="src\GL\GPUResource\BaseGPUResource.cpp" />
@@ -90,6 +91,7 @@
     <ClCompile Include="src\GL\GPUResource\Shader\Material.cpp" />
     <ClCompile Include="src\GL\GPUResource\Shader\MaterialParser.cpp" />
     <ClCompile Include="src\GL\GPUResource\Shader\Pass.cpp" />
+    <ClCompile Include="src\GL\GPUResource\Texture\RenderTexture.cpp" />
     <ClCompile Include="src\GL\GPUResource\Texture\Image.cpp" />
     <ClCompile Include="src\GL\GPUResource\Texture\Texture2D.cpp" />
     <ClCompile Include="src\GL\GPUResource\Texture\TextureBuffer.cpp" />
@@ -171,6 +173,7 @@
     <ClInclude Include="src\GL\GPUOperateCommand\GPUOperateCommandPool.h" />
     <ClInclude Include="src\GL\GPUOperateCommand\GPUOperateGLProgramCommand.h" />
     <ClInclude Include="src\GL\GPUOperateCommand\GPUOperateMeshCommand.h" />
+    <ClInclude Include="src\GL\GPUOperateCommand\GPUOperateRenderTextureCommand.h" />
     <ClInclude Include="src\GL\GPUOperateCommand\GPUOperateTexture2DCommand.h" />
     <ClInclude Include="src\GL\GPUOperateCommand\GPUOperateTextureBufferCommand.h" />
     <ClInclude Include="src\GL\GPUResource\BaseGPUResource.h" />
@@ -182,6 +185,7 @@
     <ClInclude Include="src\GL\GPUResource\Shader\Material.h" />
     <ClInclude Include="src\GL\GPUResource\Shader\MaterialParser.h" />
     <ClInclude Include="src\GL\GPUResource\Shader\Pass.h" />
+    <ClInclude Include="src\GL\GPUResource\Texture\RenderTexture.h" />
     <ClInclude Include="src\GL\GPUResource\Texture\Image.h" />
     <ClInclude Include="src\GL\GPUResource\Texture\Texture2D.h" />
     <ClInclude Include="src\GL\GPUResource\Texture\TextureBuffer.h" />

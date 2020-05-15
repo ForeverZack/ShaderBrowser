@@ -31,6 +31,8 @@ namespace customGL
 		GOCT_GLProgram,
 		// 网格
 		GOCT_Mesh,
+		// 渲染纹理
+		GOCT_RenderTexture,
         
     };
     
