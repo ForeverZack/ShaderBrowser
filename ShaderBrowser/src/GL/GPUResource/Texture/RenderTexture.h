@@ -105,22 +105,37 @@ namespace customGL
 		GLuint property5;	// tbo: wrap
 	};
     
-	// 渲染缓冲
+	// 渲染纹理
 	class RenderTexture : public BaseGPUResource
 	{
 	public:
 		static RenderTexture* create(unsigned int width, unsigned int height);
+		static RenderTexture* create(unsigned int width, unsigned int height, const std::unordered_map<GLuint, RenderTextureAttachment>& attachments);
 
 	public:
-		RenderTexture(unsigned int width, unsigned int height);
+		RenderTexture(unsigned int width, unsigned int height, const std::unordered_map<GLuint, RenderTextureAttachment>& attachments);
+		RenderTexture(unsigned int width, unsigned int height, bool autoCreateGPURes = true);
 		~RenderTexture();
 		friend class GPUOperateRenderTextureCommand;
 
     public:
+		// 使用当前渲染纹理 (渲染线程使用)
+		void useRenderTexture();
 
 		REGISTER_PROPERTY_GET(unsigned int, m_uFrameBufferId, FrameBufferId);
 		REGISTER_PROPERTY_GET(unsigned int, m_uWidth, Width);
 		REGISTER_PROPERTY_GET(unsigned int, m_uHeight, Height);
+		GLuint getAttachmentTextureBufferObject(GLuint attachment)
+		{
+			auto itor = m_mAttachments.find(attachment);
+			if (itor != m_mAttachments.end())
+			{
+				return itor->second.buffer_object;
+			}
+			return 0;
+		}
+		void setAttachment(GLuint attachment, const RenderTextureAttachment& data);
+		
 
 	protected:
 		// 创建gpu资源
