@@ -20,7 +20,7 @@ namespace browser
         void init(BaseEntity* entity, Material* material, Mesh* mesh, Transform* transform, Camera* camera, bool gpuInstance = false);
         
         // 绘制
-        virtual void draw();
+        virtual void execute();
         
         
 	protected:

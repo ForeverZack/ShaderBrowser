@@ -3,6 +3,7 @@
 #include "Browser/Components/BaseComponent.h"
 #include "Browser/Components/Transform/Transform.h"
 #include "Common/Tools/Utils.h"
+#include "GL/GPUResource/Texture/RenderTexture.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -63,7 +64,8 @@ namespace browser
 		REGISTER_PROPERTY_CONSTREF_GET(glm::mat4, m_oViewMatrix, ViewMatrix)
 		REGISTER_PROPERTY_CONSTREF_GET(glm::mat4, m_oProjectionMatrix, ProjectionMatrix)
         REGISTER_PROPERTY_GET_SET(RenderPathType, m_eRenderPathType, RenderPathType)
-        REGISTER_PROPERTY_GET(bool, m_bTransDirty, TransDirty)
+		REGISTER_PROPERTY_GET(bool, m_bTransDirty, TransDirty)
+		REGISTER_PROPERTY_GET(RenderTexture*, m_pRenderTexture, RenderTexture)
 
 	protected:
 		// view matrix 相关
@@ -92,6 +94,8 @@ namespace browser
         
         // 渲染路径
         RenderPathType m_eRenderPathType;
+		// 渲染纹理
+		RenderTexture* m_pRenderTexture;
 	};
 }
 

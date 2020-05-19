@@ -8,6 +8,7 @@
 #include "Browser/Components/Camera/Camera.h"
 #include "Browser/Components/Transform/Transform.h"
 #include "Browser/Components/Render/MeshRenderer.h"
+#include "Browser/Components/Render/Commands/BaseRenderCommand.h"
 
 using namespace customGL;
 
@@ -17,8 +18,8 @@ namespace browser
     class Camera;
     
 
-    // 渲染命令基类
-    class MeshRenderCommand
+    // 网格渲染命令
+    class MeshRenderCommand : public BaseRenderCommand
 	{
 	public:
 		MeshRenderCommand();
@@ -29,7 +30,7 @@ namespace browser
         void init(Material* material, Mesh* mesh, Transform* transform, Camera* camera, bool gpuInstance = false);
         
         // 绘制
-        virtual void draw();
+        virtual void execute();
         
         
         
@@ -40,12 +41,10 @@ namespace browser
         
         REGISTER_PROPERTY_GET(Material*, m_oMaterial, Material);
         REGISTER_PROPERTY_GET(Mesh*, m_oMesh, Mesh);
-        REGISTER_PROPERTY_GET(MeshRenderer::RendererType, m_oRenderType, RenderType);
         
         
 	protected:
-        // 类型
-        MeshRenderer::RendererType m_oRenderType;
+
         // 材质
         Material* m_oMaterial;
         // 网格模型

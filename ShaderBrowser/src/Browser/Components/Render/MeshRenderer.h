@@ -30,8 +30,10 @@ namespace browser
         // 渲染器类型
         enum RendererType
         {
+			// 帧缓存
+			RendererType_RenderTexture = 0,
             // 普通渲染器
-            RendererType_Mesh = 0,
+            RendererType_Mesh,
             // 蒙皮渲染器
 			RendererType_Skinned,
         };

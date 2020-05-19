@@ -35,7 +35,7 @@ namespace browser
 		
 	}
     
-    void SkinnedRenderCommand::draw()
+    void SkinnedRenderCommand::execute()
     {
         GLuint vao = m_oMesh->getVAO();
         

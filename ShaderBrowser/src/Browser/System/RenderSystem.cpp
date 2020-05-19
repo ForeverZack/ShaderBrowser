@@ -1,17 +1,19 @@
 #include "RenderSystem.h"
 #include "CameraSystem.h"
+#include "Browser/Components/Render/Commands/RenderTextureCommand.h"
 #include "Browser/Components/Render/Commands/MeshRenderCommand.h"
 #include "Browser/Components/Render/Commands/SkinnedRenderCommand.h"
-#include "GL/GPUResource/Shader/Material.h"
 #include "Browser/Components/Mesh/MeshFilter.h"
 #include "Browser/Components/BoundBox/AABBBoundBox.h"
 #include "Browser/Components/Render/SkinnedMeshRenderer.h"
 #include "Browser/Components/Animation/Animator.h"
-#include "GL/GPUResource/Shader/Pass.h"
 #include "Common/System/Cache/GLProgramCache.h"
-#include "GL/GLStateCache.h"
 #include "Core/LogicCore.h"
 #include "Core/RenderCore.h"
+#include "GL/GPUResource/Shader/Material.h"
+#include "GL/GPUResource/Shader/Pass.h"
+#include "GL/GPUResource/Texture/RenderTexture.h"
+#include "GL/GLStateCache.h"
 #include <chrono>
 #include <stdio.h>
 #ifdef  _WIN32
@@ -93,38 +95,77 @@ namespace browser
         
         // 开启深度测试
         GLStateCache::getInstance()->openDepthTest();
-        
-        std::stable_sort(std::begin(m_vRenderCommands), std::end(m_vRenderCommands), [](MeshRenderCommand* c1, MeshRenderCommand* c2) {
-            return c1->getMaterial()->getSharedId() < c2->getMaterial()->getSharedId();
-        });
-        
-        Material* lastMaterial = nullptr;
-        Material* curMaterial = nullptr;
-        MeshRenderCommand* command;
-        for(int i=0; i<m_vRenderCommands.size(); ++i)
-        {
-            command = m_vRenderCommands[i];
-            
-            curMaterial = command->getMaterial();
-            if(command->getRenderType() == MeshRenderer::RendererType::RendererType_Mesh
-               && curMaterial->getSharedId() != 0
-               && lastMaterial == curMaterial
-               && command->getVertexCount() <= MAX_DYNAMIC_BATCH_VERTEX_COUNT)
-            {
-                // 可以合批的条件
-//                int iii = 0;
-            }
-            lastMaterial = curMaterial;
-            
-            //
-            command->draw();
-            
-            // 删除命令
-            delete command;
-        }
+
+		// 根据fbo拆分渲染命令
+		std::vector<BaseRenderCommand*>::iterator s_itor, e_itor;
+		e_itor = m_vRenderCommands.begin();
+
+		while (e_itor != m_vRenderCommands.end())
+		{
+			s_itor = e_itor;
+
+			// 切换fbo
+			if ((*s_itor)->getRenderType() == MeshRenderer::RendererType::RendererType_RenderTexture)
+			{
+				// 切换到渲染纹理的fbo
+				(*s_itor)->execute();
+				++s_itor;
+				if (s_itor == m_vRenderCommands.end())
+				{
+					break;
+				}
+			}
+			else
+			{
+				// 切换默认fbo
+				glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			}
+
+			// 截取当前fbo的渲染命令  范围在[s_itor, e_itor)内，左闭右开
+			for (; e_itor != m_vRenderCommands.end(); ++e_itor)
+			{
+				if ((*e_itor)->getRenderType() == MeshRenderer::RendererType::RendererType_RenderTexture)
+				{
+					break;
+				}
+			}
+			// 合批	std::stable_sort(start_itor, end_itor):   [start_itor, end_itor) 左闭右开
+			std::stable_sort(s_itor, e_itor, [](BaseRenderCommand* c1, BaseRenderCommand* c2) {
+				return static_cast<MeshRenderCommand*>(c1)->getMaterial()->getSharedId() < static_cast<MeshRenderCommand*>(c2)->getMaterial()->getSharedId();
+			});
+			// 渲染
+			Material* lastMaterial = nullptr;
+			Material* curMaterial = nullptr;
+			MeshRenderCommand* command;
+			for (auto itor=s_itor; itor!=e_itor; ++itor)
+			{
+				command = static_cast<MeshRenderCommand*>(*itor);
+
+				curMaterial = command->getMaterial();
+				if (command->getRenderType() == MeshRenderer::RendererType::RendererType_Mesh
+					&& curMaterial->getSharedId() != 0
+					&& lastMaterial == curMaterial
+					&& command->getVertexCount() <= MAX_DYNAMIC_BATCH_VERTEX_COUNT)
+				{
+					// 可以合批的条件
+					//                int iii = 0;
+				}
+				lastMaterial = curMaterial;
+
+				//
+				command->execute();
+
+				// 删除命令
+				delete command;
+			}
+		}
+		
         
         // 重置
         m_vRenderCommands.clear();
+
+		// 切换回默认fbo
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
     
     void RenderSystem::beforeUpdate(float deltaTime)
@@ -142,20 +183,18 @@ namespace browser
     
 	void RenderSystem::update(float deltaTime)
 	{
-        unsigned long frameIndex = core::RenderCore::getInstance()->getFrameIndex();
-        m_vRenderCommands = getCommands(frameIndex);
-        eraseCommands(frameIndex);
+		// 从逻辑线程拷贝渲染命令队列
+		unsigned long frameIndex = core::RenderCore::getInstance()->getFrameIndex();
+		m_vRenderCommands = getCommands(frameIndex);
+		eraseCommands(frameIndex);
+
+		// 递交渲染命令
+		flushRenders();
+
+		Camera* camera = CameraSystem::getInstance()->getMainCamera();
+		// 渲染包围盒跟坐标轴
+		renderAssistTools(camera);
 	}
-    
-    void RenderSystem::afterUpdate(float deltaTime)
-    {
-        // 递交渲染命令
-        flushRenders();
-        
-        Camera* camera = CameraSystem::getInstance()->getMainCamera();
-        // 渲染包围盒跟坐标轴
-        renderAssistTools(camera);
-    }
 
 	void RenderSystem::renderScene(Camera* camera, float deltaTime)
 	{
@@ -166,9 +205,15 @@ namespace browser
 		// 3. 延迟渲染不透明物体（G-Buffer）：相同的mesh，使用了相同的纹理和Pass(实际上只要Pass里使用的GLProgram和uniform变量一样)，就可以合批
 		// 4. 正向渲染透明物体
         if (camera)
-        {
-            // 清空渲染队列
-            
+        {         
+			// 相机渲染纹理对象
+			RenderTexture* rt = camera->getRenderTexture();
+			if (rt)
+			{
+				addCurFrameCommand(RenderTextureCommand::create(rt));
+			}
+
+			// 渲染
             switch(camera->getRenderPathType())
             {
                 case Camera::RenderPathType::Forward:
@@ -336,13 +381,13 @@ namespace browser
         }
     }
     
-    void RenderSystem::addCurFrameCommand(MeshRenderCommand* command)
+    void RenderSystem::addCurFrameCommand(BaseRenderCommand* command)
     {
         unsigned long frameIndex = core::LogicCore::getInstance()->getFrameIndex();
         m_mWaitRenderCommands[frameIndex].push_back(command);
     }
     
-    const std::vector<MeshRenderCommand*> RenderSystem::getCommands(unsigned long frameIndex)
+    const std::vector<BaseRenderCommand*> RenderSystem::getCommands(unsigned long frameIndex)
     {
         return m_mWaitRenderCommands[frameIndex];
     }
@@ -379,7 +424,7 @@ namespace browser
         Mesh* mesh;
         BaseEntity* entity;
 		Animator* animator;
-        MeshRenderCommand* command;
+		MeshRenderCommand* command;
 		bool verticesDirty;
         for (auto itor = m_mComponentsList.begin(); itor != m_mComponentsList.end(); ++itor)
         {

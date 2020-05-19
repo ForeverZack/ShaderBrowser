@@ -12,7 +12,7 @@
 
 namespace browser
 {
-    class MeshRenderCommand;
+    class BaseRenderCommand;
     
     // VBO 最大size
     static const int VBO_SIZE = 65536;
@@ -35,10 +35,8 @@ namespace browser
         void flushRenders();
         // 渲染前（逻辑线程做好渲染准备）
         virtual void beforeUpdate(float deltaTime);
-        // 每帧更新 (渲染线程拷贝渲染命令队列)
+        // 渲染 (渲染线程拷贝渲染命令队列，渲染线程执行渲染命令)
 		void update(float deltaTime);
-        // 渲染 (渲染线程执行渲染命令)
-        void afterUpdate(float deltaTime);
 		// 绘制场景
 		void renderScene(Camera* camera, float deltaTime);
         // 前向渲染
@@ -53,18 +51,17 @@ namespace browser
         // 画出辅助工具
         void renderAssistTools(Camera* camera);
         // 添加渲染命令
-        void addCurFrameCommand(MeshRenderCommand* command);
+        void addCurFrameCommand(BaseRenderCommand* command);
         // 获取渲染命令队列
-        const std::vector<MeshRenderCommand*> getCommands(unsigned long frameIndex);
+        const std::vector<BaseRenderCommand*> getCommands(unsigned long frameIndex);
         // 删除渲染命令
         void eraseCommands(unsigned long frameIndex);
 	
 	private:
         // 渲染队列 (渲染线程)
-        // 注意：这里没有和GPUOperateSystem一样使用MutexQueue，因为这里的队列只在逻辑线程和渲染线程中使用。它们的复制过程只允许发生在逻辑线程一帧结束，并且渲染线程刚刚开始时，这里逻辑线程会被锁住，只有渲染线程在跑
-        std::vector<MeshRenderCommand*> m_vRenderCommands;
-        // 渲染队列队列 (逻辑线程)
-        MutexUnorderedMap<unsigned long, std::vector<MeshRenderCommand*>> m_mWaitRenderCommands;
+        std::vector<BaseRenderCommand*> m_vRenderCommands;
+		// 渲染队列队列 (逻辑线程)
+        MutexUnorderedMap<unsigned long, std::vector<BaseRenderCommand*>> m_mWaitRenderCommands;
         
         // 绘制所用的draw call次数
         unsigned int m_uDrawCalls;

@@ -3,8 +3,7 @@
 namespace browser
 {
 	MeshRenderCommand::MeshRenderCommand()
-        : m_oRenderType(MeshRenderer::RendererType::RendererType_Mesh)
-        , m_oMaterial(nullptr)
+        : m_oMaterial(nullptr)
         , m_oMesh(nullptr)
         , m_bGpuInstance(false)
 		, m_bVerticesDirty(false)
@@ -13,6 +12,7 @@ namespace browser
 		, m_bTransformDirty(false)
 		, m_bCameraDirty(false)
 	{
+		m_oRenderType = MeshRenderer::RendererType::RendererType_Mesh;
 	}
 
 	MeshRenderCommand::~MeshRenderCommand()
@@ -69,7 +69,7 @@ namespace browser
 		m_oMesh->retain();
 	}
     
-    void MeshRenderCommand::draw()
+    void MeshRenderCommand::execute()
     {
         GLuint vao = m_oMesh->getVAO();
         m_oMaterial->useMaterial(m_bTransformDirty, m_oModelMatrix, m_bCameraDirty, m_oCameraGlobalPosition, m_oViewMatrix, m_oProjectionMatrix, m_mUniforms);

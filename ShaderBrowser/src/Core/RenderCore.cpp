@@ -164,16 +164,14 @@ namespace core
 
         float deltaTime = Application::CurrentApplication->getDeltaTime();
         
-        // 从逻辑线程拷贝渲染命令队列
-        ECSManager::getInstance()->updateSystem(SystemType::RenderSystem, deltaTime);
-        // 处理gpu操作指令  注意：这里会把LogicCore的状态置为LCS_Prepare
+        // 处理gpu操作指令  注意：这里会把LogicCore的状态置为LCS_Prepare (ps: 以前会通过这个状态限制逻辑线程，但会严重降低程序的帧率，现在不靠这个锁了)
         GPUOperateSystem::getInstance()->update();
 
 		// 重置GL状态（这里主要是为了防止插件如imgui绑定纹理，造成缓存失效）
 		GLStateCache::getInstance()->update(deltaTime);
         
-        // 渲染场景结束后
-        ECSManager::getInstance()->afterUpdateSystem(SystemType::RenderSystem, deltaTime);
+        // 渲染场景 (1.从逻辑线程拷贝渲染命令队列  2.渲染)
+		ECSManager::getInstance()->updateSystem(SystemType::RenderSystem, deltaTime);
 
         // 等待imgui数据完成 (因为逻辑线程和渲染线程共享一个imgui上下文，所以这里会等待逻辑线程完成运算，防止闪烁)
         while(GUIFramework::getInstance()->getImGuiUseState() != GUIFramework::ImGuiUseState::IGUS_LogicFinish) ;
