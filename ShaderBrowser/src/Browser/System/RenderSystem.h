@@ -58,7 +58,7 @@ namespace browser
         void eraseCommands(unsigned long frameIndex);
 	
 	private:
-        // 渲染队列 (渲染线程)
+        // 渲染队列 (渲染线程)		// [ChangeFrameBufferObjectCmd, xxxRenderCmds, ... , ChangeFrameBufferObjectCmd, xxxRenderCmds, ... ] 切换帧缓冲的命令会分割渲染命令队列
         std::vector<BaseRenderCommand*> m_vRenderCommands;
 		// 渲染队列队列 (逻辑线程)
         MutexUnorderedMap<unsigned long, std::vector<BaseRenderCommand*>> m_mWaitRenderCommands;

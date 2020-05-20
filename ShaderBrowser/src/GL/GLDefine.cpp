@@ -39,7 +39,11 @@ namespace customGL {
 	// 纹理默认参数
 	extern const GLenum TexParameters_DefaultWrap = GL_CLAMP_TO_EDGE;
 	extern const GLenum TexParameters_DefaultFilter = GL_LINEAR;
-    
+	// GL默认清除位
+	extern const GLbitfield DEFAULT_GL_CLEAR_BIT = GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT;
+	// GL默认fbo清除颜色
+	extern const glm::vec4 DEFAULT_GL_CLEAR_COLOR = glm::vec4(0.45f, 0.55f, 0.60f, 1.00f);
+
     UniformValue::UniformValue()
         : m_eType(UniformValueType::UniformValueType_Undefined)
         , m_bDirty(true)

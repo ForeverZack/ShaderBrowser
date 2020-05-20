@@ -35,7 +35,7 @@
     <ClCompile Include="src\Browser\Components\Light\SpotLight.cpp" />
     <ClCompile Include="src\Browser\Components\Mesh\MeshFilter.cpp" />
     <ClCompile Include="src\Browser\Components\Render\Commands\MeshRenderCommand.cpp" />
-    <ClCompile Include="src\Browser\Components\Render\Commands\RenderTextureCommand.cpp" />
+    <ClCompile Include="src\Browser\Components\Render\Commands\ChangeFrameBufferObjectCommand.cpp" />
     <ClCompile Include="src\Browser\Components\Render\Commands\SkinnedRenderCommand.cpp" />
     <ClCompile Include="src\Browser\Components\Render\MeshRenderer.cpp" />
     <ClCompile Include="src\Browser\Components\Render\SkinnedMeshRenderer.cpp" />
@@ -124,7 +124,7 @@
     <ClInclude Include="src\Browser\Components\Mesh\MeshFilter.h" />
     <ClInclude Include="src\Browser\Components\Render\Commands\BaseRenderCommand.h" />
     <ClInclude Include="src\Browser\Components\Render\Commands\MeshRenderCommand.h" />
-    <ClInclude Include="src\Browser\Components\Render\Commands\RenderTextureCommand.h" />
+    <ClInclude Include="src\Browser\Components\Render\Commands\ChangeFrameBufferObjectCommand.h" />
     <ClInclude Include="src\Browser\Components\Render\Commands\SkinnedRenderCommand.h" />
     <ClInclude Include="src\Browser\Components\Render\MeshRenderer.h" />
     <ClInclude Include="src\Browser\Components\Render\SkinnedMeshRenderer.h" />

@@ -75,6 +75,10 @@ namespace customGL
 	// 纹理默认参数
 	extern const GLenum TexParameters_DefaultWrap;
 	extern const GLenum TexParameters_DefaultFilter;
+	// GL默认fbo清除位
+	extern const GLbitfield DEFAULT_GL_CLEAR_BIT;
+	// GL默认fbo清除颜色
+	extern const glm::vec4 DEFAULT_GL_CLEAR_COLOR;
     // 旋转坐标空间
     enum Space
     {

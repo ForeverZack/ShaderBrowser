@@ -132,7 +132,7 @@ void testVal()
 	mainCameraEntity->setPosition(0, 10, 10);
 	mainCameraEntity->setEulerAngle(45, 180, 0);
 	// 设置主相机
-	CameraSystem::getInstance()->setMainCamera(mainCamera);
+	//CameraSystem::getInstance()->setMainCamera(mainCamera);
 	//=============================创建相机==================================
 
 	//=============================创建平行光==================================

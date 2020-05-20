@@ -60,12 +60,15 @@ namespace browser
 		void updateProjectionMatrix();
 
 
-        REGISTER_PROPERTY_CONSTREF_GET(glm::vec3, m_oGlobalPosition, GlobalPosition)
+		REGISTER_PROPERTY_CONSTREF_GET(glm::vec3, m_oGlobalPosition, GlobalPosition)
 		REGISTER_PROPERTY_CONSTREF_GET(glm::mat4, m_oViewMatrix, ViewMatrix)
 		REGISTER_PROPERTY_CONSTREF_GET(glm::mat4, m_oProjectionMatrix, ProjectionMatrix)
-        REGISTER_PROPERTY_GET_SET(RenderPathType, m_eRenderPathType, RenderPathType)
+		REGISTER_PROPERTY_GET_SET(RenderPathType, m_eRenderPathType, RenderPathType)
 		REGISTER_PROPERTY_GET(bool, m_bTransDirty, TransDirty)
 		REGISTER_PROPERTY_GET(RenderTexture*, m_pRenderTexture, RenderTexture)
+		REGISTER_PROPERTY_GET(int, m_iDepth, Depth)
+		void setDepth(int depth);
+		REGISTER_PROPERTY_CONSTREF_GET(glm::vec4, m_oBackgroundColor, BackgroundColor)
 
 	protected:
 		// view matrix 相关
@@ -96,6 +99,10 @@ namespace browser
         RenderPathType m_eRenderPathType;
 		// 渲染纹理
 		RenderTexture* m_pRenderTexture;
+		// 相机深度
+		int m_iDepth;
+		// 背景颜色 (清除颜色)
+		glm::vec4 m_oBackgroundColor;
 	};
 }
 

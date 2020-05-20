@@ -1,6 +1,6 @@
 #include "RenderSystem.h"
 #include "CameraSystem.h"
-#include "Browser/Components/Render/Commands/RenderTextureCommand.h"
+#include "Browser/Components/Render/Commands/ChangeFrameBufferObjectCommand.h"
 #include "Browser/Components/Render/Commands/MeshRenderCommand.h"
 #include "Browser/Components/Render/Commands/SkinnedRenderCommand.h"
 #include "Browser/Components/Mesh/MeshFilter.h"
@@ -89,16 +89,15 @@ namespace browser
     
     void RenderSystem::flushRenders()
     {
-        //    清理FrameBuffer
-        glClearColor(0.45f, 0.55f, 0.60f, 1.00f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        
+		glClearColor(DEFAULT_GL_CLEAR_COLOR.r, DEFAULT_GL_CLEAR_COLOR.g, DEFAULT_GL_CLEAR_COLOR.b, DEFAULT_GL_CLEAR_COLOR.a);
+		glClear(DEFAULT_GL_CLEAR_BIT);
+
         // 开启深度测试
         GLStateCache::getInstance()->openDepthTest();
 
 		// 根据fbo拆分渲染命令
 		std::vector<BaseRenderCommand*>::iterator s_itor, e_itor;
-		e_itor = m_vRenderCommands.begin();
+		s_itor = e_itor = m_vRenderCommands.begin();
 
 		while (e_itor != m_vRenderCommands.end())
 		{
@@ -115,12 +114,8 @@ namespace browser
 					break;
 				}
 			}
-			else
-			{
-				// 切换默认fbo
-				glBindFramebuffer(GL_FRAMEBUFFER, 0);
-			}
 
+			e_itor = s_itor;
 			// 截取当前fbo的渲染命令  范围在[s_itor, e_itor)内，左闭右开
 			for (; e_itor != m_vRenderCommands.end(); ++e_itor)
 			{
@@ -133,7 +128,7 @@ namespace browser
 			std::stable_sort(s_itor, e_itor, [](BaseRenderCommand* c1, BaseRenderCommand* c2) {
 				return static_cast<MeshRenderCommand*>(c1)->getMaterial()->getSharedId() < static_cast<MeshRenderCommand*>(c2)->getMaterial()->getSharedId();
 			});
-			// 渲染
+			// 渲染	[start_itor, end_itor)
 			Material* lastMaterial = nullptr;
 			Material* curMaterial = nullptr;
 			MeshRenderCommand* command;
@@ -178,7 +173,11 @@ namespace browser
         m_uFaceCount = 0;
         
         // 渲染主相机场景
-        renderScene(CameraSystem::getInstance()->getMainCamera(), deltaTime);
+		auto cameras = CameraSystem::getInstance()->getActiveCameras();
+		for (auto itor = cameras.begin(); itor != cameras.end(); ++itor)
+		{
+			renderScene((*itor), deltaTime);
+		}
     }
     
 	void RenderSystem::update(float deltaTime)
@@ -206,12 +205,8 @@ namespace browser
 		// 4. 正向渲染透明物体
         if (camera)
         {         
-			// 相机渲染纹理对象
-			RenderTexture* rt = camera->getRenderTexture();
-			if (rt)
-			{
-				addCurFrameCommand(RenderTextureCommand::create(rt));
-			}
+			// 相机帧缓冲对象
+			addCurFrameCommand(ChangeFrameBufferObjectCommand::create(camera));
 
 			// 渲染
             switch(camera->getRenderPathType())

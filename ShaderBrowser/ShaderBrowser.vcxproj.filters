@@ -359,7 +359,7 @@
     </ClCompile>
     <ClCompile Include="src\GL\GPUOperateCommand\GPUOperateRenderTextureCommand.cpp" />
     <ClCompile Include="src\GL\GPUResource\Texture\RenderTexture.cpp" />
-    <ClCompile Include="src\Browser\Components\Render\Commands\RenderTextureCommand.cpp">
+    <ClCompile Include="src\Browser\Components\Render\Commands\ChangeFrameBufferObjectCommand.cpp">
       <Filter>src\Browser\Components\Render\Commands</Filter>
     </ClCompile>
   </ItemGroup>
@@ -645,7 +645,7 @@
     <ClInclude Include="src\Browser\Components\Render\Commands\BaseRenderCommand.h">
       <Filter>src\Browser\Components\Render\Commands</Filter>
     </ClInclude>
-    <ClInclude Include="src\Browser\Components\Render\Commands\RenderTextureCommand.h">
+    <ClInclude Include="src\Browser\Components\Render\Commands\ChangeFrameBufferObjectCommand.h">
       <Filter>src\Browser\Components\Render\Commands</Filter>
     </ClInclude>
   </ItemGroup>

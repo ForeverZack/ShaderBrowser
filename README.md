@@ -19,6 +19,10 @@
 13）内存的管理与检查。 <br>
 等等<br>
 
+## 2020.5.15~2020.5.20 <br>
+添加RenderTexture(还没正式使用过)；丰富Camera的属性，使用Depth来对Camera的渲染顺序进行排序，并允许多个Camera被渲染。
+(允许被渲染的相机必须符合以下规定，相机的渲染纹理不为空的相机；渲染纹理为空的相机列表中Depth最大的相机。) <br>
+
 ## 2020.5.2 <br>
 解决了fighter骨骼动画不正确的问题，原因是assimp生成的preserve pivots是会发生变换的，之前在使用Transform组件的变换来计算
 骨骼的变换，忽略了这个preserve pivots。现在将其算作骨骼(并非原始fbx的骨骼)。<br>

@@ -1,6 +1,7 @@
 #include "Camera.h"
 #include "GL/GLDefine.h"
 #include "Browser/Entitys/BaseEntity.h"
+#include "Browser/System/CameraSystem.h"
 
 namespace browser
 {
@@ -31,6 +32,8 @@ namespace browser
 		, m_oProjectionMatrix(GLM_MAT4_UNIT)
         , m_eRenderPathType(RenderPathType::Forward)
 		, m_pRenderTexture(nullptr)
+		, m_iDepth(0)
+		, m_oBackgroundColor(DEFAULT_GL_CLEAR_COLOR)
 	{
 		// 组件所属系统
 		m_eBelongSystem = SystemType::Camera;
@@ -50,6 +53,8 @@ namespace browser
 		, m_oProjectionMatrix(GLM_MAT4_UNIT)
         , m_eRenderPathType(RenderPathType::Forward)
 		, m_pRenderTexture(nullptr)
+		, m_iDepth(0)
+		, m_oBackgroundColor(DEFAULT_GL_CLEAR_COLOR)
 	{
 		// 组件所属系统
 		m_eBelongSystem = SystemType::Camera;
@@ -119,6 +124,12 @@ namespace browser
 			}
 			break;
 		}
+	}
+
+	void Camera::setDepth(int depth)
+	{
+		CameraSystem::getInstance()->setDirty(true);
+		m_iDepth = depth;
 	}
 
 	void Camera::handleEvent(ComponentEvent event, BaseComponentMessage* msg)
