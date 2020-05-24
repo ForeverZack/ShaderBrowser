@@ -49,10 +49,10 @@ namespace browser
         // 每帧刷新
         virtual void update(float deltaTime);
 
-		// 添加待处理光照的材质
+		// 添加待处理光照材质
 		void addPrepareLightMaterial(Material* material);
-		// 移除待处理光照的材质
-		void removePrepareLightMaterial(Material* material);
+		// 移除光照材质
+		void removeLightMaterial(Material* material);
 
     protected:
         // 接受事件

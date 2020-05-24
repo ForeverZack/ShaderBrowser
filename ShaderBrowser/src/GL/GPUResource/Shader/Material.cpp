@@ -85,8 +85,8 @@ namespace customGL
             (*itor)->release();
         }
 
-		// 从待处理的光照材质移除
-		LightSystem::getInstance()->removePrepareLightMaterial(this);
+		// 从LightSystem中移除
+		LightSystem::getInstance()->removeLightMaterial(this);
 		// 从MaterialCache移除
 		MaterialCache::getInstance()->removeMaterial(this);
 		// 从MaterialManager中移除

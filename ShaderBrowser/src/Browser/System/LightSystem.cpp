@@ -324,13 +324,20 @@ namespace browser
 		m_mPreLightMaterials[material->getMaterialId()] = material;
 	}
 
-	void LightSystem::removePrepareLightMaterial(Material* material)
+	void LightSystem::removeLightMaterial(Material* material)
 	{
+        // 待处理材质map中查找并移出
 		auto itor = m_mPreLightMaterials.find(material->getMaterialId());
 		if (itor != m_mPreLightMaterials.end())
 		{
 			m_mPreLightMaterials.erase(itor);
 		}
+        // 从已经记录的材质map中查找并移出
+        itor = m_mAllLightMaterials.find(material->getMaterialId());
+        if (itor != m_mAllLightMaterials.end())
+        {
+            m_mAllLightMaterials.erase(itor);
+        }
 	}
     
     void LightSystem::setAmbientColor(const glm::vec4& color)

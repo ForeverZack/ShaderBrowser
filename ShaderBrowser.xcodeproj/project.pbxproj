@@ -50,6 +50,7 @@
 		1486090622C8ED2600DD1B96 /* libflatbuffers.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1486090522C8ED2600DD1B96 /* libflatbuffers.a */; };
 		148C358F227AFC62008CB8B1 /* SkinnedRenderCommand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 148C358E227AFC62008CB8B1 /* SkinnedRenderCommand.cpp */; };
 		14941422221EF7B200A735DA /* libassimp.4.1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 14FF768421C4B6D80008462D /* libassimp.4.1.0.dylib */; };
+		1498954A247AB15C00C5E309 /* ChangeFrameBufferObjectCommand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14989549247AB15C00C5E309 /* ChangeFrameBufferObjectCommand.cpp */; };
 		149C01FF21F4AF910011DAE2 /* GLProgramCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 149C01FE21F4AF910011DAE2 /* GLProgramCache.cpp */; };
 		14A08F5D22FE9787009D7D71 /* AnimatorComputeProgram.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14A08F5B22FE9787009D7D71 /* AnimatorComputeProgram.cpp */; };
 		14A1A41123A61ADA0098977B /* TextureBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14A1A41023A61ADA0098977B /* TextureBuffer.cpp */; };
@@ -195,6 +196,9 @@
 		1486090522C8ED2600DD1B96 /* libflatbuffers.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libflatbuffers.a; path = ShaderBrowser/src/Plugins/flatbuffer/lib/mac/libflatbuffers.a; sourceTree = "<group>"; };
 		148C358D227AFC62008CB8B1 /* SkinnedRenderCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkinnedRenderCommand.h; sourceTree = "<group>"; };
 		148C358E227AFC62008CB8B1 /* SkinnedRenderCommand.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SkinnedRenderCommand.cpp; sourceTree = "<group>"; };
+		14989547247AB15C00C5E309 /* ChangeFrameBufferObjectCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChangeFrameBufferObjectCommand.h; sourceTree = "<group>"; };
+		14989548247AB15C00C5E309 /* BaseRenderCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseRenderCommand.h; sourceTree = "<group>"; };
+		14989549247AB15C00C5E309 /* ChangeFrameBufferObjectCommand.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ChangeFrameBufferObjectCommand.cpp; sourceTree = "<group>"; };
 		149C01FD21F4AA320011DAE2 /* GLProgramCache.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GLProgramCache.h; sourceTree = "<group>"; };
 		149C01FE21F4AF910011DAE2 /* GLProgramCache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GLProgramCache.cpp; sourceTree = "<group>"; };
 		149F476022D0C103001C4294 /* BaseFeedback.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BaseFeedback.h; sourceTree = "<group>"; };
@@ -452,6 +456,9 @@
 		148C3588227AC4E7008CB8B1 /* Commands */ = {
 			isa = PBXGroup;
 			children = (
+				14989548247AB15C00C5E309 /* BaseRenderCommand.h */,
+				14989549247AB15C00C5E309 /* ChangeFrameBufferObjectCommand.cpp */,
+				14989547247AB15C00C5E309 /* ChangeFrameBufferObjectCommand.h */,
 				145990EC247214BE00B20509 /* MeshRenderCommand.h */,
 				145990EB247214BE00B20509 /* MeshRenderCommand.cpp */,
 				148C358D227AFC62008CB8B1 /* SkinnedRenderCommand.h */,
@@ -932,6 +939,7 @@
 				14EB11852220185800D3C29D /* imgui.cpp in Sources */,
 				14C29E8D220FFB9E00A514BE /* PointLight.cpp in Sources */,
 				14232A5F239BEA320023C85C /* Mesh.cpp in Sources */,
+				1498954A247AB15C00C5E309 /* ChangeFrameBufferObjectCommand.cpp in Sources */,
 				14C1CCFF21FF517000470798 /* FileUtils.cpp in Sources */,
 				14B9068921BABC8F00554B0B /* Reference.cpp in Sources */,
 				14B9068621BABC8F00554B0B /* Utils.cpp in Sources */,
