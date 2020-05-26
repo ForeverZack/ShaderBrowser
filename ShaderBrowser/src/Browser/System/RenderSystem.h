@@ -38,9 +38,9 @@ namespace browser
         // 渲染 (渲染线程拷贝渲染命令队列，渲染线程执行渲染命令)
 		void update(float deltaTime);
 		// 绘制场景
-		void renderScene(Camera* camera, float deltaTime);
+		void renderScene(Camera* camera);
         // 前向渲染
-        void forwardRenderScene(Camera* camera, float deltaTime);
+        void forwardRenderScene(Camera* camera);
 
         
 		REGISTER_PROPERTY_GET_SET(unsigned int, m_uDrawCalls, DrawCalls)

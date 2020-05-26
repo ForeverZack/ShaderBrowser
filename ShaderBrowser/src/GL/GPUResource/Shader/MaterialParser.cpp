@@ -155,6 +155,7 @@ namespace customGL
 		Material结构:
 		{
 			"name": "Standard",
+			"renderQueue": 1000,
 			"uniforms": 
 			{
 				"CGL_TEXTURE0": 
@@ -196,6 +197,18 @@ namespace customGL
 		{
 			BROWSER_ASSERT(document["name"].IsString(), "Material's name must be string value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
 			parameters->name = document["name"].GetString();
+		}
+
+		// renderQueue
+		if (document.HasMember("renderQueue"))
+		{
+			BROWSER_ASSERT(document["renderQueue"].IsUint(), "Material's name must be unsigned int value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+			parameters->renderQueue = document["renderQueue"].GetUint();
+		}
+		else
+		{
+			// 默认值  Geometry(1000)
+			parameters->renderQueue = RenderQueue::Geometry;
 		}
 
 		// uniforms

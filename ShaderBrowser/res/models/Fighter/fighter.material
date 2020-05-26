@@ -1,5 +1,6 @@
 {
     "name": "FighterMat",
+	"renderQueue": 3000,
     "uniforms":
     {
 		"CGL_ALBEDO_COLOR":

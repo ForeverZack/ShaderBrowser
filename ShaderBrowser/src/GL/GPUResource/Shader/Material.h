@@ -86,7 +86,7 @@ namespace customGL
 		REGISTER_PROPERTY_CONSTREF_GET_SET(std::string, m_sFilePath, FilePath)
         REGISTER_PROPERTY_GET_SET(unsigned int, m_uSharedId, SharedId)
         REGISTER_PROPERTY_GET_SET(bool, m_bDefaultMaterialFlag, DefaultMaterialFlag)
-        REGISTER_PROPERTY_GET_SET(RenderQueue, m_eQueue, RenderQueue)
+        REGISTER_PROPERTY_GET_SET(unsigned int, m_eQueue, RenderQueue)
 		REGISTER_PROPERTY_GET_SET(browser::Camera*, m_oCurCamera, CurCamera)
 		REGISTER_PROPERTY_GET_SET(bool, m_bTransformDirty, TransformDirty)
 		const std::unordered_map<std::string, UniformValue>& getUniforms() 
@@ -102,7 +102,7 @@ namespace customGL
 		// 对应材质文件绝对路径
 		std::string m_sFilePath;
         // 渲染队列
-        RenderQueue m_eQueue;
+        unsigned int m_eQueue;
         // uniform数据
         std::unordered_map<std::string, UniformValue> m_mUniforms;
         // Pass队列

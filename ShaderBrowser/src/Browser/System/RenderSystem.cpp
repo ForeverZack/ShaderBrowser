@@ -6,7 +6,6 @@
 #include "Browser/Components/Mesh/MeshFilter.h"
 #include "Browser/Components/BoundBox/AABBBoundBox.h"
 #include "Browser/Components/Render/SkinnedMeshRenderer.h"
-#include "Browser/Components/Animation/Animator.h"
 #include "Common/System/Cache/GLProgramCache.h"
 #include "Core/LogicCore.h"
 #include "Core/RenderCore.h"
@@ -125,8 +124,21 @@ namespace browser
 				}
 			}
 			// 合批	std::stable_sort(start_itor, end_itor):   [start_itor, end_itor) 左闭右开
-			std::stable_sort(s_itor, e_itor, [](BaseRenderCommand* c1, BaseRenderCommand* c2) {
-				return static_cast<MeshRenderCommand*>(c1)->getMaterial()->getSharedId() < static_cast<MeshRenderCommand*>(c2)->getMaterial()->getSharedId();
+			Material* mat1 = nullptr;
+			Material* mat2 = nullptr;
+			std::stable_sort(s_itor, e_itor, [&mat1, &mat2](BaseRenderCommand* c1, BaseRenderCommand* c2) {
+				mat1 = static_cast<MeshRenderCommand*>(c1)->getMaterial();
+				mat2 = static_cast<MeshRenderCommand*>(c2)->getMaterial();
+
+				// RenderQueue > SharedId
+				if (mat1->getRenderQueue() != mat2->getRenderQueue())
+				{
+					return mat1->getRenderQueue() < mat2->getRenderQueue();
+				}
+				else
+				{
+					return mat1->getSharedId() < mat1->getSharedId();
+				}
 			});
 			// 渲染	[start_itor, end_itor)
 			Material* lastMaterial = nullptr;
@@ -176,7 +188,7 @@ namespace browser
 		auto cameras = CameraSystem::getInstance()->getActiveCameras();
 		for (auto itor = cameras.begin(); itor != cameras.end(); ++itor)
 		{
-			renderScene((*itor), deltaTime);
+			renderScene((*itor));
 		}
     }
     
@@ -195,7 +207,7 @@ namespace browser
 		renderAssistTools(camera);
 	}
 
-	void RenderSystem::renderScene(Camera* camera, float deltaTime)
+	void RenderSystem::renderScene(Camera* camera)
 	{
 		// TODO: 以后需要实现合批
 		// 思考：什么情况下才可以合批
@@ -219,7 +231,7 @@ namespace browser
 #endif
                         
                         // 前向渲染
-						forwardRenderScene(camera, deltaTime);
+						forwardRenderScene(camera);
 
 #ifdef _SHADER_BROWSER_RENDER_SYSTEM_DEBUG
 						float deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - timeRec).count() / 1000.0f;
@@ -392,7 +404,7 @@ namespace browser
         m_mWaitRenderCommands.erase(frameIndex);
     }
     
-    void RenderSystem::forwardRenderScene(Camera* camera, float deltaTime)
+    void RenderSystem::forwardRenderScene(Camera* camera)
     {
 #ifdef _SHADER_BROWSER_RENDER_SYSTEM_DEBUG
 		auto timeRec = std::chrono::steady_clock::now();
@@ -409,18 +421,14 @@ namespace browser
 #endif
 
         Material* material;
-        GLuint vao;
         size_t vertCount;
-        int indexCount;
         MeshRenderer* render;
         SkinnedMeshRenderer* skinRenderer;
         Transform* transform;
         MeshFilter* meshFilter;
         Mesh* mesh;
         BaseEntity* entity;
-		Animator* animator;
 		MeshRenderCommand* command;
-		bool verticesDirty;
         for (auto itor = m_mComponentsList.begin(); itor != m_mComponentsList.end(); ++itor)
         {
 			const std::list<BaseComponent*>& renderList = itor->second;

@@ -14,6 +14,9 @@ namespace customGL
     {
         Material* material = Material::createMaterial(parameters->name);
         
+		// render queue
+		material->setRenderQueue(parameters->renderQueue);
+		
         // pass
         GLProgram* program = nullptr;
         Pass* pass = nullptr;

@@ -90,6 +90,8 @@ namespace customGL
     public:
 		// 材质名称 
 		std::string name;
+		// renderQueue
+		unsigned int renderQueue;
 		// uniforms
 		std::vector<MaterialUniformParamter> uniforms;
 		// pass
