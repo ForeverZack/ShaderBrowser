@@ -16,7 +16,7 @@ namespace browser
     class ChangeFrameBufferObjectCommand : public BaseRenderCommand
 	{
 	public:
-		static ChangeFrameBufferObjectCommand * create(Camera* camera);
+		static ChangeFrameBufferObjectCommand * create(Camera* camera, GLbitfield clearBit = DEFAULT_GL_CLEAR_BIT);
 
 	public:
 		ChangeFrameBufferObjectCommand();
@@ -24,7 +24,7 @@ namespace browser
 
 	public:
         // 初始化渲染命令
-        void init(Camera* camera);
+        void init(Camera* camera, GLbitfield clearBit);
         
         // 执行
         virtual void execute();
@@ -34,6 +34,8 @@ namespace browser
 	protected:
 		// 相机
 		Camera* m_oCamera;
+		// 默认的清除标记
+		GLbitfield m_oClearBit;
 	};
     
 }

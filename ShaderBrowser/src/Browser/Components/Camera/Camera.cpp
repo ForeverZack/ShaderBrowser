@@ -34,6 +34,7 @@ namespace browser
 		, m_pRenderTexture(nullptr)
 		, m_iDepth(0)
 		, m_oBackgroundColor(DEFAULT_GL_CLEAR_COLOR)
+		, m_bIsRenderable(true)
 	{
 		// 组件所属系统
 		m_eBelongSystem = SystemType::Camera;
@@ -41,9 +42,9 @@ namespace browser
 
 	Camera::Camera()
 		: BaseComponent("Camera")
-        , m_oViewMatrix(GLM_MAT4_UNIT)
-        , m_oGlobalPosition(GLM_VEC3_ZERO)
-        , m_bTransDirty(true)
+		, m_oViewMatrix(GLM_MAT4_UNIT)
+		, m_oGlobalPosition(GLM_VEC3_ZERO)
+		, m_bTransDirty(true)
 		, m_eProjectionType(ProjectionType::Perspective)
 		, m_fFieldOfView(60.0f)
 		, m_fNearPlane(0.3f)
@@ -51,10 +52,11 @@ namespace browser
 		, m_iViewportWidth(800)
 		, m_iViewportHeight(600)
 		, m_oProjectionMatrix(GLM_MAT4_UNIT)
-        , m_eRenderPathType(RenderPathType::Forward)
+		, m_eRenderPathType(RenderPathType::Forward)
 		, m_pRenderTexture(nullptr)
 		, m_iDepth(0)
 		, m_oBackgroundColor(DEFAULT_GL_CLEAR_COLOR)
+		, m_bIsRenderable(true)
 	{
 		// 组件所属系统
 		m_eBelongSystem = SystemType::Camera;

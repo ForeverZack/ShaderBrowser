@@ -50,7 +50,7 @@ namespace browser
 				{
 					m_vActiveCameras.push_back(camera);
 				}
-				else if(!mainCamera || camera->getDepth()>=mainCamera->getDepth())
+				else if(camera->getIsRenderable() && (!mainCamera || camera->getDepth()>=mainCamera->getDepth()))
 				{
 					mainCamera = camera;
 				}

@@ -69,6 +69,7 @@ namespace browser
 		REGISTER_PROPERTY_GET(int, m_iDepth, Depth)
 		void setDepth(int depth);
 		REGISTER_PROPERTY_CONSTREF_GET(glm::vec4, m_oBackgroundColor, BackgroundColor)
+		REGISTER_PROPERTY_GET_SET(bool, m_bIsRenderable, IsRenderable)
 
 	protected:
 		// view matrix 相关
@@ -103,6 +104,8 @@ namespace browser
 		int m_iDepth;
 		// 背景颜色 (清除颜色)
 		glm::vec4 m_oBackgroundColor;
+		// 是否渲染 (用于特殊相机处理)
+		bool m_bIsRenderable;
 	};
 }
 
