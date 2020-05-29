@@ -27,7 +27,9 @@ namespace browser
     {
         // 设置光源类型
         m_eType = LightType::Point;
-        
+		// 光源数据
+		m_vLightData.resize(6);	// vec4:[1] + (float+position):[1] + mat4:[4]
+
         // 光照衰减纹理
         m_pLightTexture0 = TextureCache::getInstance()->getTexture("texture/default/light_atten_distance.png");
 	}
@@ -55,6 +57,32 @@ namespace browser
 			{
 				setRange(range);
 			}, false);
+	}
+
+	void PointLight::serialize()
+	{
+		//struct SpotLight
+		//{
+		//	vec4 color;
+		//	float intensity;
+		//	vec3 position;  // world-space
+		//	mat4 lightMatrix;   // world-space -> light-space
+		//};
+
+		// vec4:[1] + (float+position):[1] + mat4:[4]
+		m_vLightData.clear();
+		// color
+		m_vLightData[0] = m_oColor;
+		// intensity, position
+		m_vLightData[1].w = m_fIntensity;
+		m_vLightData[1].x = m_oGlobalPosition.x;
+		m_vLightData[1].y = m_oGlobalPosition.y;
+		m_vLightData[1].z = m_oGlobalPosition.z;
+		// lightMatrix
+		m_vLightData[2] = m_oLightMatrix[0];	// 第1列
+		m_vLightData[3] = m_oLightMatrix[1];	// 第2列
+		m_vLightData[4] = m_oLightMatrix[2];	// 第3列
+		m_vLightData[5] = m_oLightMatrix[3];	// 第4列
 	}
 
 	void PointLight::updateLight()

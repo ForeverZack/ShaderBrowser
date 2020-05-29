@@ -31,7 +31,9 @@ namespace browser
     private:
         // 重载属性面板显示方法
         virtual void onInspectorGUI(InspectorPanel* inspector);
-        
+		// 转换数据
+		virtual void serialize();
+
 	protected:
         // 阴影属性等
     

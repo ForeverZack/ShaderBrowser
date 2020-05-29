@@ -28,6 +28,8 @@ namespace browser
 	private:
 		// 重载属性面板显示方法
 		virtual void onInspectorGUI(InspectorPanel* inspector);
+		// 转换数据
+		virtual void serialize();
 
 	public:
 		REGISTER_PROPERTY_GET(float, m_fRange, Range)
