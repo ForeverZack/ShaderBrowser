@@ -63,14 +63,22 @@ namespace browser
             glBindVertexArray(0);
         }
         
-        // 4.使用材质
-        m_oMaterial->useMaterial(m_bTransformDirty, m_oModelMatrix, m_bCameraDirty, m_oCameraGlobalPosition, m_oViewMatrix, m_oProjectionMatrix, m_mUniforms);
-        
-        // 5.绘制
-        glBindVertexArray(vao);
-        //typedef void (APIENTRYP PFNGLDRAWELEMENTSPROC)(GLenum mode, GLsizei count, GLenum type, const void *indices);
-        glDrawElements(GL_TRIANGLES, m_uIndexCount, GL_UNSIGNED_SHORT, (void*)0);
-        //            glDrawArrays(GL_TRIANGLES, 0, vertCount);
+
+
+
+		// 遍历pass并绘制
+		glBindVertexArray(vao);
+		size_t pass_count = m_oMaterial->getPassCount();
+		for (int i = 0; i < pass_count; ++i)
+		{
+			// 使用材质
+			m_oMaterial->useMaterial(m_bTransformDirty, m_oModelMatrix, m_bCameraDirty, m_oCameraGlobalPosition, m_oViewMatrix, m_oProjectionMatrix, m_mUniforms, i);
+
+			// draw
+			//typedef void (APIENTRYP PFNGLDRAWELEMENTSPROC)(GLenum mode, GLsizei count, GLenum type, const void *indices);
+			glDrawElements(GL_TRIANGLES, m_uIndexCount, GL_UNSIGNED_SHORT, (void*)0);
+			//            glDrawArrays(GL_TRIANGLES, 0, vertCount);
+		}
         glBindVertexArray(0);
 
 

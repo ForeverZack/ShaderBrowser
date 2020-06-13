@@ -80,6 +80,8 @@ namespace customGL
         void resetUniformsDirty();  // 将所有UniformValue的dirty标记重置为false
         
 
+		REGISTER_PROPERTY_GET_SET(Pass*, m_pPrePass, PrePass)
+		REGISTER_PROPERTY_GET_SET(Pass*, m_pShadowPass, ShadowPass)
         REGISTER_PROPERTY_GET_SET(unsigned int, m_uMaterialId, MaterialId)
 		REGISTER_PROPERTY_CONSTREF_GET(std::vector<Pass*>, m_vPass, Pass)
 		REGISTER_PROPERTY_CONSTREF_GET(std::string, m_sMaterialName, MaterialName)
@@ -92,6 +94,10 @@ namespace customGL
 		const std::unordered_map<std::string, UniformValue>& getUniforms() 
 		{
 			return m_mUniforms;
+		}
+		size_t getPassCount()
+		{
+			return m_vPass.size();
 		}
 
 	private:
@@ -115,6 +121,13 @@ namespace customGL
         bool m_bDefaultMaterialFlag;
         // 是否透明
         bool m_bTransparentFlag;
+
+		// 以下是一些特殊Pass:
+		// pre-pass
+		Pass* m_pPrePass;
+		// shadow pass
+		Pass* m_pShadowPass;
+
         
         // 深度测试
         bool m_bOpenZTest;

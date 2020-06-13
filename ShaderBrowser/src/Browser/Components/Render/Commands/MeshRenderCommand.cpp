@@ -72,14 +72,22 @@ namespace browser
     void MeshRenderCommand::execute()
     {
         GLuint vao = m_oMesh->getVAO();
-        m_oMaterial->useMaterial(m_bTransformDirty, m_oModelMatrix, m_bCameraDirty, m_oCameraGlobalPosition, m_oViewMatrix, m_oProjectionMatrix, m_mUniforms);
+        
+		// 遍历pass并绘制
+		size_t pass_count = m_oMaterial->getPassCount();
+		glBindVertexArray(vao);
+		for (int i = 0; i < pass_count; ++i)
+		{
+			// 使用材质
+			m_oMaterial->useMaterial(m_bTransformDirty, m_oModelMatrix, m_bCameraDirty, m_oCameraGlobalPosition, m_oViewMatrix, m_oProjectionMatrix, m_mUniforms, i);
 
-        // 5.绘制
-        glBindVertexArray(vao);
-        //typedef void (APIENTRYP PFNGLDRAWELEMENTSPROC)(GLenum mode, GLsizei count, GLenum type, const void *indices);
-        glDrawElements(GL_TRIANGLES, m_uIndexCount, GL_UNSIGNED_SHORT, (void*)0);
-        //            glDrawArrays(GL_TRIANGLES, 0, vertCount);
-        glBindVertexArray(0);
+			// draw
+			//typedef void (APIENTRYP PFNGLDRAWELEMENTSPROC)(GLenum mode, GLsizei count, GLenum type, const void *indices);
+			glDrawElements(GL_TRIANGLES, m_uIndexCount, GL_UNSIGNED_SHORT, (void*)0);
+			//            glDrawArrays(GL_TRIANGLES, 0, vertCount);
+		}
+		glBindVertexArray(0);
+
 
 		// 渲染线程调用，加到释放队列中去，队列会在逻辑线程中刷新释放
 		AutoReleasePool::getInstance()->addReferenceFromRenderCore(m_oMaterial);

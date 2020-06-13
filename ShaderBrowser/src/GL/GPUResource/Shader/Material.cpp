@@ -72,6 +72,8 @@ namespace customGL
         , m_bTransparentFlag(false)
         , m_oCurCamera(nullptr)
 		, m_bTransformDirty(true)
+		, m_pPrePass(nullptr)
+		, m_pShadowPass(nullptr)
 	{
         m_vPass.clear();
 	
