@@ -13,3 +13,17 @@ uniform samplerBuffer CGL_BONES_MATRIX; // 骨骼矩阵纹理
 uniform mat4 CGL_DYNAMIC_BATCH_MODEL_MATRIX[MAX_DYNAMIC_BATCH_COUNT];   // 自动合并模型model矩阵
 uniform sampler2D CGL_LIGHT_TEXTURE0; // 光源衰减纹理(基于距离)
 uniform sampler2D CGL_LIGHT_TEXTUREB0; // 光源衰减纹理(基于距离)
+
+// pre-pass
+// 顶点着色其中需要加上[PreparePass]来告诉引擎这个pass可以当做pre-pass使用
+#ifdef OPEN_PRE_PASS
+	// 为了使同一个份着色器代码能作为PrePass的着色器代码使用，这里直接用宏定义了PrePass的处理函数：直接返回
+	// ，不再执行原始着色器代码复杂的计算（注意调用它们的位置，位置合理可以减少不必要的计算）
+	#define PRE_PASS_VERT()	\
+				return;
+	#define PRE_PASS_FRAGMENT()	\
+				return;
+#else
+	#define PRE_PASS_VERT() 
+	#define PRE_PASS_FRAGMENT() 
+#endif

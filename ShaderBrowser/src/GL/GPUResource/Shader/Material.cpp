@@ -49,7 +49,7 @@ namespace customGL
 		return material;
 	}
     
-    Material* Material::createMaterial(const std::string& programName, const std::string& materialName)
+    Material* Material::createMaterialByProgramName(const std::string& programName, const std::string& materialName)
     {
 		// 因为只有发生改变的UniformValue会在GPU中重新设置，所以每个Material对应的GLProgram都应该是独立的，可合并的应该是相同的material
         GLProgram* program = GLProgramCache::getInstance()->getGLProgramCopy(programName);

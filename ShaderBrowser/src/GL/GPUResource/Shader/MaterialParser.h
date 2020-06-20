@@ -83,6 +83,7 @@ namespace customGL
 //        std::string frag;
         std::string vert_program;
         std::string frag_program;
+		unsigned int tags;
     };
 
 	class MaterialParameters : public common::Reference

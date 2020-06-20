@@ -102,6 +102,16 @@ namespace customGL
             UNIFORM_MAX_COUNT
         };
 
+		// 预定义的标签枚举  (一般在顶点着色器中声明)
+		enum GLProgramTag
+		{
+			// [PreparePass]
+			GLProgramTag_PrePass = 0,
+			// [ShadowCaster]
+			GLProgramTag_ShadowCaster,
+		};
+
+
 		// 预定义的顶点着色器属性名称
 		static const char* ATTRIBUTE_NAME_POSITION;
 		static const char* ATTRIBUTE_NAME_COLOR;
@@ -120,9 +130,12 @@ namespace customGL
 		static GLProgram* create(const char* vertPath, const char* fragPath);
         static GLProgram* createBySource(const std::string& vertSource, const std::string& fragSource);
 
+		// 调用接口：解析shader，将自定义的一些语法规则转成标准的glsl
+		static unsigned int parseShaderSourceCode(std::string& source);
 		// 将shader源码中的include替换成对应代码
-		static std::string& convertSourceCodeInclude(std::string& source);
-		static std::string& traverseConvertSourceCodeInc(std::string& source, std::set<std::string>& includeFilesSet);
+		static void traverseConvertSourceCodeInc(std::string& source, std::set<std::string>& includeFilesSet);
+		// 将shader源码中的[XXX]标签替转成对应的代码或者属性标记等
+		static unsigned int convertSourceCodeTag(std::string& source);
 
 	public:
 		GLProgram();
@@ -168,11 +181,16 @@ namespace customGL
         // 获取uniform的位置
         GLint getUniformLocation(const std::string& uniformName);
         
+		// Tags
+		bool checkProgramTag(GLProgramTag tag);
+		bool isSupportPrePass();	// pre-pass
+		bool isSupportShadowCaster();	// shadow caster
         // property
         REGISTER_PROPERTY_GET_SET(std::string, m_sAddtionVertCode, AddtionVertCode)
         REGISTER_PROPERTY_GET_SET(std::string, m_sAddtionFragCode, AddtionFragCode)
         REGISTER_PROPERTY_GET_SET(std::string, m_sAddtionCompCode, AddtionCompCode)
         REGISTER_PROPERTY_GET_SET(std::string, m_sCompLocalGroupDefCode, CompLocalGroupDefCode)
+		REGISTER_PROPERTY_SET(unsigned int, m_uProgramTags, ProgramTags)
 
     protected:
         // 创建gpu资源
@@ -216,6 +234,9 @@ namespace customGL
 		// 纹理单元计数
 		GLuint m_uTextureUnitIndex;
         
+		// 着色器标签属性
+		unsigned int m_uProgramTags;
+
         // 附加顶点着色器代码（在预定义头和源码之间）
         std::string m_sAddtionVertCode;
         // 附加片段着色器代码（在预定义头和源码之间）

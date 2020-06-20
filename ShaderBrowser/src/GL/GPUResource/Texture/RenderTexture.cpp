@@ -39,6 +39,7 @@ namespace customGL
 		// 默认绑定一张纹理缓存
 		m_mAttachments[GL_COLOR_ATTACHMENT0] = RenderTextureAttachment();
 		
+		// 默认情况下会直接创建gpu资源，如果没有自动创建，则需要自己手动调用创建函数
 		if (autoCreateGPURes)
 		{
 			// 在gpu上创建

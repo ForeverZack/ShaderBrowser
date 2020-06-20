@@ -6,6 +6,7 @@
 #define VertOutStruct_Standard
 #include "CommonStruct.inc"
 
+[PreparePass]
 void main() 
 {
     vec4 worldPos = ObjectToWorldPosition(a_position);

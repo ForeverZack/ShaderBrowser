@@ -90,13 +90,16 @@ namespace customGL
         return program;
     }
 
-	std::string& GLProgram::convertSourceCodeInclude(std::string& source)
+	unsigned int GLProgram::parseShaderSourceCode(std::string& source)
 	{
+		// 替换include代码
 		std::set<std::string> includeSet;
-		return traverseConvertSourceCodeInc(source, includeSet);
+		traverseConvertSourceCodeInc(source, includeSet);
+		// 解析标签属性
+		return convertSourceCodeTag(source);
 	}
 
-	std::string& GLProgram::traverseConvertSourceCodeInc(std::string& source, std::set<std::string>& includeFilesSet)
+	void GLProgram::traverseConvertSourceCodeInc(std::string& source, std::set<std::string>& includeFilesSet)
 	{
 		int startIdx, endIdx;
 
@@ -109,7 +112,7 @@ namespace customGL
 
 			// include文件名
 			std::string inc_filename = source.substr(startIdx + 10, endIdx - startIdx - 10);    // std::string substr(pos, length)
-																								// 获取文件绝对路径
+			// 获取文件绝对路径
 			inc_filename = common::FileUtils::getInstance()->getAbsolutePathForFilename(inc_filename);
 			// 检测文件是否重复包含
 			if (includeFilesSet.find(inc_filename) == includeFilesSet.end())
@@ -131,8 +134,41 @@ namespace customGL
 
 			startIdx = source.find("#include \"");
 		}
+	}
 
-		return source;
+	unsigned int GLProgram::convertSourceCodeTag(std::string& source)
+	{
+		int startIdx, endIdx;
+
+		unsigned int tagInfo = 0;
+
+		// [PreparePass]
+		startIdx = source.find("[PreparePass]");    // int find(str);    -1:没找到
+		while (startIdx != -1)
+		{
+			endIdx = source.find("]", startIdx);		// int find(str, startPos);
+			// 设置tag信息
+			BROWSER_SET_BIT(tagInfo, GLProgram::GLProgramTag::GLProgramTag_PrePass);
+			// 从源码中删除
+			source.replace(startIdx, endIdx - startIdx + 1, "");    // std::string& replace(pos, length, str);
+			// 继续查找是否有相同标签
+			startIdx = source.find("[PreparePass]");    // int find(str);    -1:没找到
+		}
+
+		// [ShadowCaster]
+		startIdx = source.find("[ShadowCaster]");
+		while (startIdx != -1)
+		{
+			endIdx = source.find("]", startIdx);		// int find(str, startPos);
+			// 设置tag信息
+			BROWSER_SET_BIT(tagInfo, GLProgram::GLProgramTag::GLProgramTag_ShadowCaster);
+			// 从源码中删除
+			source.replace(startIdx, endIdx - startIdx + 1, "");    // std::string& replace(pos, length, str);
+			// 继续查找是否有相同标签
+			startIdx = source.find("[ShadowCaster]");
+		}
+
+		return tagInfo;
 	}
     
 	GLProgram::GLProgram()
@@ -141,7 +177,8 @@ namespace customGL
 		, m_uFragShader(0)
         , m_uCompShader(0)
 		, m_uTextureUnitIndex(0)
-        , m_sAddtionVertCode("")
+		, m_uProgramTags(0)
+		, m_sAddtionVertCode("")
         , m_sAddtionFragCode("")
         , m_sAddtionCompCode("")
         , m_sCompLocalGroupDefCode("")
@@ -257,8 +294,8 @@ namespace customGL
 			std::cerr << "shader src is empty: " << shaderPath << std::endl;
 			return false;
 		}
-		// 转换shader中的include文件内容
-		convertSourceCodeInclude(source);
+		// 解析shader中的自定义语法
+		m_uProgramTags |= parseShaderSourceCode(source);
 
         bool successFlag = createShaderBySource(type, shader, source.c_str());
 
@@ -680,5 +717,21 @@ namespace customGL
 		// 绑定纹理到opengl
 		GLStateCache::getInstance()->bindImageBuffer(textureUnit, textureId, access, format);
 	}
+
+	bool GLProgram::checkProgramTag(GLProgramTag tag)
+	{
+		return BROWSER_GET_BIT(m_uProgramTags, tag);
+	}
+
+	bool GLProgram::isSupportPrePass()
+	{
+		return checkProgramTag(GLProgramTag::GLProgramTag_PrePass);
+	}
+
+	bool GLProgram::isSupportShadowCaster()
+	{
+		return checkProgramTag(GLProgramTag::GLProgramTag_ShadowCaster);
+	}
+
     
 }
