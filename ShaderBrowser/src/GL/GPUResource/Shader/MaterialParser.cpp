@@ -461,7 +461,7 @@ namespace customGL
                     BROWSER_ASSERT(one_pass["vert_program"].IsString(), "Pass's vert_program is not a string value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
                     passParam.vert_program = one_pass["vert_program"].GetString();
                 }
-				passParam.tags = GLProgram::parseShaderSourceCode(passParam.vert_program);	// 替换shader中的inc
+				passParam.tags = GLProgram::parseShaderSourceCode(passParam.vert_program);	// 解析shader，将自定义的一些语法规则转成标准的glsl
 
                 // fragment shader
                 if (one_pass.HasMember("frag"))
@@ -477,7 +477,7 @@ namespace customGL
                     BROWSER_ASSERT(one_pass["frag_program"].IsString(), "Pass's frag_program is not a string value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
                     passParam.frag_program = one_pass["frag_program"].GetString();
                 }
-				passParam.tags |= GLProgram::parseShaderSourceCode(passParam.frag_program);	// 替换shader中的inc
+				passParam.tags |= GLProgram::parseShaderSourceCode(passParam.frag_program);	// 解析shader，将自定义的一些语法规则转成标准的glsl
 
                 parameters->passes.push_back(std::move(passParam));
             }
