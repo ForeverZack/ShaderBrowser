@@ -105,8 +105,10 @@ namespace customGL
 		// 预定义的标签枚举  (一般在顶点着色器中声明)
 		enum GLProgramTag
 		{
+			// 无
+			GLProgramTag_None = 0,
 			// [PreparePass]
-			GLProgramTag_PrePass = 0,
+			GLProgramTag_PrePass,
 			// [ShadowCaster]
 			GLProgramTag_ShadowCaster,
 		};
@@ -127,8 +129,8 @@ namespace customGL
         static const int SHADER_UNIFORM_NAME_MAX_LENGTH;
 
 	public:
-		static GLProgram* create(const char* vertPath, const char* fragPath);
-        static GLProgram* createBySource(const std::string& vertSource, const std::string& fragSource);
+		static GLProgram* create(const char* vertPath, const char* fragPath, unsigned int tags = 0);
+        static GLProgram* createBySource(const std::string& vertSource, const std::string& fragSource, unsigned int tags = 0);
 
 		// 调用接口：解析shader，将自定义的一些语法规则转成标准的glsl
 		static unsigned int parseShaderSourceCode(std::string& source);
@@ -143,7 +145,7 @@ namespace customGL
         friend class GPUOperateGLProgramCommand;
 
         // 拷贝glProgram
-        virtual GLProgram* clone();
+        virtual GLProgram* clone(unsigned int tags = 0);
 		// 使用着色器程序
 		void useProgram();
 		// 更新预定义uniform位置
@@ -185,6 +187,8 @@ namespace customGL
 		bool checkProgramTag(GLProgramTag tag);
 		bool isSupportPrePass();	// pre-pass
 		bool isSupportShadowCaster();	// shadow caster
+		// 将标签属性转为代码
+		void convertTags2GLSL(unsigned int openTags);
         // property
         REGISTER_PROPERTY_GET_SET(std::string, m_sAddtionVertCode, AddtionVertCode)
         REGISTER_PROPERTY_GET_SET(std::string, m_sAddtionFragCode, AddtionFragCode)
@@ -195,7 +199,6 @@ namespace customGL
     protected:
         // 创建gpu资源
         void createGPUResource(const char* vertPath, const char* fragPath);
-        void createGPUResourceBySource(const char* vertSource, const char* fragSource);
 		void createGPUResourceBySource(const string& vertSource, const string& fragSource);
 		// 更新gpu资源
 		void updateGPUResource(const std::unordered_map<std::string, UniformValue>& uniforms);
@@ -234,8 +237,14 @@ namespace customGL
 		// 纹理单元计数
 		GLuint m_uTextureUnitIndex;
         
-		// 着色器标签属性
+		// 着色器包含的标签属性
 		unsigned int m_uProgramTags;
+		// 着色器激活的标签属性
+		unsigned int m_uActiveProgramTags;
+		// 附加标签顶点着色器代码
+		std::string m_sAdditionTagsVertCode;
+		// 附加标签片段着色器代码
+		std::string m_sAdditionTagsFragCode;
 
         // 附加顶点着色器代码（在预定义头和源码之间）
         std::string m_sAddtionVertCode;

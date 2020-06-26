@@ -18,9 +18,9 @@ namespace common
         // 初始化
         void init();
         // 添加
-        void addGLProgram(const std::string& name, GLProgram* program);
-		void addGLProgram(const std::string& name, const std::string& vertFilename, const std::string& fragFilename);
-        void addGLProgramBySource(const std::string& name, const std::string& vertSource, const std::string& fragSource);
+		GLProgram* addGLProgram(const std::string& name, GLProgram* program);
+		GLProgram* addGLProgram(const std::string& name, const std::string& vertFilename, const std::string& fragFilename);
+		GLProgram* addGLProgramBySource(const std::string& name, const std::string& vertSource, const std::string& fragSource);
         // 获取
         GLProgram* getGLProgram(const std::string& name);
         // 获取GLProgram的拷贝

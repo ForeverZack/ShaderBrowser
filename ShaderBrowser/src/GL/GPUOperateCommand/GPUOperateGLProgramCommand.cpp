@@ -75,6 +75,9 @@ namespace customGL
         GLuint program = glCreateProgram();
         m_pGLProgram->m_uProgram = program;
 
+		// 处理Tags
+		m_pGLProgram->convertTags2GLSL(m_pGLProgram->m_uActiveProgramTags);
+
         // 2.创建shader
         // 顶点着色器
 		if (m_sVertShaderPath != "")

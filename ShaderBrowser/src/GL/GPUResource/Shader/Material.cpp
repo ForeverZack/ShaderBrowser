@@ -25,10 +25,10 @@ namespace customGL
             const MaterialPassParamter& passParam = *itor;
             if (!GLProgramCache::getInstance()->getGLProgram(passParam.name))
             {
-                GLProgramCache::getInstance()->addGLProgramBySource(passParam.name, passParam.vert_program, passParam.frag_program);
+				program = GLProgramCache::getInstance()->addGLProgramBySource(passParam.name, passParam.vert_program, passParam.frag_program);
+				program->setProgramTags(passParam.tags);
             }
 			program = GLProgramCache::getInstance()->getGLProgramCopy(passParam.name);
-			program->setProgramTags(passParam.tags);
 			pass = Pass::createPass(program);
             material->addPass(pass);
         }

@@ -76,18 +76,20 @@ namespace customGL
     // 预定义uniform变量名字的最大长度
     const int GLProgram::SHADER_UNIFORM_NAME_MAX_LENGTH = 100;
 
-    GLProgram* GLProgram::create(const char* vertPath, const char* fragPath)
+    GLProgram* GLProgram::create(const char* vertPath, const char* fragPath, unsigned int tags/* = 0*/)
     {
         GLProgram* program = new GLProgram();
         program->initProgram(vertPath, fragPath);
+		program->m_uActiveProgramTags = tags;
         return program;
     }
     
-    GLProgram* GLProgram::createBySource(const std::string& vertSource, const std::string& fragSource)
+    GLProgram* GLProgram::createBySource(const std::string& vertSource, const std::string& fragSource, unsigned int tags/* = 0*/)
     {
         GLProgram* program = new GLProgram();
-        program->initProgramBySource(vertSource.c_str(), fragSource.c_str());
-        return program;
+		program->initProgramBySource(vertSource.c_str(), fragSource.c_str());
+		program->m_uActiveProgramTags = tags;
+		return program;
     }
 
 	unsigned int GLProgram::parseShaderSourceCode(std::string& source)
@@ -178,6 +180,9 @@ namespace customGL
         , m_uCompShader(0)
 		, m_uTextureUnitIndex(0)
 		, m_uProgramTags(0)
+		, m_uActiveProgramTags(0)
+		, m_sAdditionTagsVertCode("")
+		, m_sAdditionTagsFragCode("")
 		, m_sAddtionVertCode("")
         , m_sAddtionFragCode("")
         , m_sAddtionCompCode("")
@@ -203,7 +208,7 @@ namespace customGL
 	{
 	}
     
-    GLProgram* GLProgram::clone()
+    GLProgram* GLProgram::clone(unsigned int tags/* = 0*/)
     {
         BROWSER_ASSERT(m_sVertexSource!="" || m_sFragSource!="" || m_sCompSource!="" || m_sFragFilePath!="" || m_sVertFilePath!="", "No shader source code in GLProgram obeject, you cannot use GLProgram::clone function.");
         
@@ -223,6 +228,9 @@ namespace customGL
 		{
 			program->cloneProgram(this);
 		}
+		program->m_uActiveProgramTags = tags;
+		program->setProgramTags(m_uProgramTags);
+
         return program;
     }
 
@@ -309,7 +317,7 @@ namespace customGL
             std::cerr << "shader source code pointer is empty: " << std::endl;
             return false;
         }
-        
+
         // 1.创建shader
         shader = glCreateShader(type);
         
@@ -320,7 +328,7 @@ namespace customGL
             case GL_VERTEX_SHADER:
                 {
 					// 顶点着色器
-                    additionCode = m_sAddtionVertCode;
+                    additionCode = m_sAdditionTagsVertCode + m_sAddtionVertCode;	// 标签定义代码 + 附加代码
 					const GLchar *sources[] =
 					{
 						"#version 330 core\n",    // 头
@@ -334,7 +342,7 @@ namespace customGL
             case GL_FRAGMENT_SHADER:
                 {
 					// 片段着色器
-                    additionCode = m_sAddtionFragCode;
+                    additionCode = m_sAdditionTagsFragCode + m_sAddtionFragCode;	// 标签定义代码 + 附加代码
 					const GLchar *sources[] =
 					{
 						"#version 330 core\n",    // 头
@@ -348,7 +356,7 @@ namespace customGL
             case GL_COMPUTE_SHADER:
                 {
 					// 计算着色器
-                    additionCode = m_sCompLocalGroupDefCode + m_sAddtionCompCode;
+                    additionCode = m_sCompLocalGroupDefCode + m_sAddtionCompCode;	// 计算着色器本地工作组定义 + 附加代码
 					const GLchar *sources[] =
 					{
 						"#version 430 core\n",    // 头
@@ -731,6 +739,32 @@ namespace customGL
 	bool GLProgram::isSupportShadowCaster()
 	{
 		return checkProgramTag(GLProgramTag::GLProgramTag_ShadowCaster);
+	}
+
+	void GLProgram::convertTags2GLSL(unsigned int openTags)
+	{
+		if (openTags == 0)
+		{
+			return;
+		}
+
+		if (BROWSER_GET_BIT(openTags, GLProgramTag_PrePass))
+		{
+			// pre-pass
+			BROWSER_ASSERT(isSupportPrePass(), "GLProgram is not support Pre-Pass Tag, please check your shader");
+			
+			m_sAdditionTagsVertCode = "#define OPEN_PRE_PASS";
+			m_sAdditionTagsFragCode = "#define OPEN_PRE_PASS";
+		}
+		else if (BROWSER_GET_BIT(openTags, GLProgramTag_ShadowCaster))
+		{
+			// shadow caster
+			BROWSER_ASSERT(isSupportShadowCaster(), "GLProgram is not support Shadow Caster Tag, please check your shader");
+
+			m_sAdditionTagsVertCode = "#define OPEN_SHADOW_CASTER";
+			m_sAdditionTagsFragCode = "#define OPEN_SHADOW_CASTER";
+		}
+
 	}
 
     
