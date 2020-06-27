@@ -27,6 +27,8 @@ namespace common
         void removeMaterial(unsigned int materialId);
         // 获取
         Material* getMaterial(const unsigned int materialId);
+		// 重置所有UniformValue的dirty标记重置为false
+		void resetAllMaterialsUniformsDirty();
 
 
     private:

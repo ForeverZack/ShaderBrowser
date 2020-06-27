@@ -392,8 +392,8 @@ namespace customGL
             
             switch(type)
             {
-                case GL_VERTEX_SHADER: BROWSER_LOG(m_sVertexSource); break;
-                case GL_FRAGMENT_SHADER: BROWSER_LOG(m_sFragSource); break;
+                case GL_VERTEX_SHADER: BROWSER_LOG("#version 330 core\n"+additionCode+m_sVertexSource); break;
+                case GL_FRAGMENT_SHADER: BROWSER_LOG("#version 330 core\n" + additionCode + m_sFragSource); break;
             }
             common::BROWSER_ASSERT(compiled, "shader program compiled error in function GLProgram::createShader");
             
@@ -753,16 +753,16 @@ namespace customGL
 			// pre-pass
 			BROWSER_ASSERT(isSupportPrePass(), "GLProgram is not support Pre-Pass Tag, please check your shader");
 			
-			m_sAdditionTagsVertCode = "#define OPEN_PRE_PASS";
-			m_sAdditionTagsFragCode = "#define OPEN_PRE_PASS";
+			m_sAdditionTagsVertCode = "#define OPEN_PRE_PASS\n";	// 记得换行！！不然会影响其他代码
+			m_sAdditionTagsFragCode = "#define OPEN_PRE_PASS\n";
 		}
 		else if (BROWSER_GET_BIT(openTags, GLProgramTag_ShadowCaster))
 		{
 			// shadow caster
 			BROWSER_ASSERT(isSupportShadowCaster(), "GLProgram is not support Shadow Caster Tag, please check your shader");
 
-			m_sAdditionTagsVertCode = "#define OPEN_SHADOW_CASTER";
-			m_sAdditionTagsFragCode = "#define OPEN_SHADOW_CASTER";
+			m_sAdditionTagsVertCode = "#define OPEN_SHADOW_CASTER\n";	// 记得换行！！不然会影响其他代码
+			m_sAdditionTagsFragCode = "#define OPEN_SHADOW_CASTER\n";
 		}
 
 	}

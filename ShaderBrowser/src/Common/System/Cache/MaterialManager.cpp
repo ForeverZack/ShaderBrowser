@@ -54,5 +54,12 @@ namespace common
         return material;
     }
 
+	void MaterialManager::resetAllMaterialsUniformsDirty()
+	{
+		for (auto itor = m_mContents.begin(); itor != m_mContents.end(); ++itor)
+		{
+			itor->second->resetUniformsDirty();
+		}
+	}
 
 }

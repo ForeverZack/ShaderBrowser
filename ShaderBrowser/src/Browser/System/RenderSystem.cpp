@@ -7,6 +7,7 @@
 #include "Browser/Components/BoundBox/AABBBoundBox.h"
 #include "Browser/Components/Render/SkinnedMeshRenderer.h"
 #include "Common/System/Cache/GLProgramCache.h"
+#include "Common/System/Cache/MaterialManager.h"
 #include "Core/LogicCore.h"
 #include "Core/RenderCore.h"
 #include "GL/GPUResource/Shader/Material.h"
@@ -201,6 +202,9 @@ namespace browser
 
 		// 递交渲染命令
 		flushRenders();
+
+		// 重置所有材质UniformValue的dirty标记重置为false
+		MaterialManager::getInstance()->resetAllMaterialsUniformsDirty();
 
 		Camera* camera = CameraSystem::getInstance()->getMainCamera();
 		// 渲染包围盒跟坐标轴

@@ -512,13 +512,15 @@ namespace customGL {
     
     void UniformValue::updateGLProgramUniformValue(GLProgram* glProgram, std::string uniformName, bool forceUpdate/* = false*/)
     {
-        // TODO: RenderCommand里的UniformValue哈希表还没有对dirty进行重置！！！
-        if(!m_bDirty && !isTexture())
+		/* 在渲染结束后通过MaterialManager::resetAllMaterialsUniformsDirty来重置所有UniformValue的dirty标记重置为false
+		，并且现在由于RenderCommand中的UniformValue都是材质UniformValue的副本(并非引用)，所以在这里设置dirty没用。
+		不过要注意Pass在第一次使用的时候要强制更新所有Uniforms，来做一次初始化 */
+        if(!forceUpdate && !m_bDirty && !isTexture())
         {
             return;
         }
-        
-        m_bDirty = false;
+
+        //m_bDirty = false;	
         switch (m_eType)
         {
             case UniformValueType_Int:

@@ -24,7 +24,8 @@ namespace common
         // 获取
         GLProgram* getGLProgram(const std::string& name);
         // 获取GLProgram的拷贝
-        GLProgram* getGLProgramCopy(const std::string& name);
+		GLProgram* getGLProgramCopy(const std::string& name);
+		GLProgram* getGLProgramCopy(const std::string& name, unsigned int tags);
 
 	};
 }

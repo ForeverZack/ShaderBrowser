@@ -81,7 +81,7 @@ namespace customGL
         
 
 		REGISTER_PROPERTY_GET_SET(Pass*, m_pPrePass, PrePass)
-		REGISTER_PROPERTY_GET_SET(Pass*, m_pShadowPass, ShadowPass)
+		REGISTER_PROPERTY_GET_SET(Pass*, m_pShadowCasterPass, ShadowCasterPass)
         REGISTER_PROPERTY_GET_SET(unsigned int, m_uMaterialId, MaterialId)
 		REGISTER_PROPERTY_CONSTREF_GET(std::vector<Pass*>, m_vPass, Pass)
 		REGISTER_PROPERTY_CONSTREF_GET(std::string, m_sMaterialName, MaterialName)
@@ -99,6 +99,8 @@ namespace customGL
 		{
 			return m_vPass.size();
 		}
+		bool isSupportPrePass();
+		bool isSupportShadowCaster();
 
 	private:
         // id
@@ -125,8 +127,8 @@ namespace customGL
 		// 以下是一些特殊Pass:
 		// pre-pass
 		Pass* m_pPrePass;
-		// shadow pass
-		Pass* m_pShadowPass;
+		// shadow caster pass
+		Pass* m_pShadowCasterPass;
 
         
         // 深度测试

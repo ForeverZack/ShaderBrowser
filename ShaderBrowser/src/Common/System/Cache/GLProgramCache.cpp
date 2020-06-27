@@ -88,6 +88,15 @@ namespace common
         
         return program->clone();
     }
+
+	GLProgram* GLProgramCache::getGLProgramCopy(const std::string& name, unsigned int tags)
+	{
+		GLProgram* program = get(name);
+
+		BROWSER_ASSERT(program, "GLProgram is not invalid in function GLProgramCache::getGLProgramCopy");
+
+		return program->clone(tags);
+	}
     
     
 }

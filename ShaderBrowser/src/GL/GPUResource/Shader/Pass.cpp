@@ -15,6 +15,7 @@ namespace customGL
 
 	Pass::Pass()
 		: m_oGLProgram(nullptr)
+		, m_bInitUniforms(false)
 	{
 	}
 
@@ -43,9 +44,10 @@ namespace customGL
 		m_oGLProgram->useProgram();
 
 		// 更新属性
+		bool forceUpdate = !m_bInitUniforms;	// 第一次使用pass的时候，要强制更新所有Uniform
 		for (auto itor = uniforms.begin(); itor != uniforms.end(); ++itor)
 		{
-			itor->second.updateGLProgramUniformValue(m_oGLProgram, itor->first);
+			itor->second.updateGLProgramUniformValue(m_oGLProgram, itor->first, forceUpdate);
 		}
 
 		// 更新mvp
@@ -60,6 +62,8 @@ namespace customGL
 			m_oGLProgram->setUniformWithMat4(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_PROJECTION_MATRIX], projectionMatrix);
 		}
 
+		// 初始化完成
+		m_bInitUniforms = true;
 	}
 
 

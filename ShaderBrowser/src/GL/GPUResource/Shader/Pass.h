@@ -41,6 +41,8 @@ namespace customGL
 	private:
 		// 对应的shader程序
 		GLProgram* m_oGLProgram;
+		// UniformValues是否被初始化
+		bool m_bInitUniforms;
 	};
 }
 
