@@ -34,8 +34,8 @@ namespace browser
 			camera->updateCamera(deltaTime);
 		}
 
-		// ¸üÐÂ¼¤»îµÄÏà»ú¶ÓÁÐ
-		// ¹æÔò£ºÏà»úµÄäÖÈ¾ÎÆÀí²»Îª¿ÕµÄÏà»ú£»äÖÈ¾ÎÆÀíÎª¿ÕµÄÏà»úÁÐ±íÖÐDepth×î´óµÄÏà»ú
+		// æ›´æ–°æ¿€æ´»çš„ç›¸æœºé˜Ÿåˆ—
+		// è§„åˆ™ï¼šç›¸æœºçš„æ¸²æŸ“çº¹ç†ä¸ä¸ºç©ºçš„ç›¸æœºï¼›æ¸²æŸ“çº¹ç†ä¸ºç©ºçš„ç›¸æœºåˆ—è¡¨ä¸­Depthæœ€å¤§çš„ç›¸æœº
 		if (m_bDirty)
 		{
 			m_bDirty = false;
@@ -61,7 +61,7 @@ namespace browser
 			}
 			m_oMainCamera = mainCamera;
 
-			// °´depth¶ÔÏà»ú½øÐÐÅÅÐò
+			// æŒ‰depthå¯¹ç›¸æœºè¿›è¡ŒæŽ’åº
 			std::stable_sort(std::begin(m_vActiveCameras), std::end(m_vActiveCameras), [](Camera* c1, Camera* c2) {
 				return c1->getDepth() < c2->getDepth();
 			});

@@ -24,7 +24,7 @@ namespace customGL
 		m_eResouceState = GRS_UnLoad; // default
 
 		m_mAttachments = attachments;
-		// ÔÚgpuÉÏ´´½¨
+		// åœ¨gpuä¸Šåˆ›å»º
 		createGPUResource();
 	}
 
@@ -36,13 +36,13 @@ namespace customGL
         m_eResourceType = GPUResourceType::GRT_FrameBuffer;
 		m_eResouceState = GRS_UnLoad; // default
 
-		// Ä¬ÈÏ°ó¶¨Ò»ÕÅÎÆÀí»º´æ
+		// é»˜è®¤ç»‘å®šä¸€å¼ çº¹ç†ç¼“å­˜
 		m_mAttachments[GL_COLOR_ATTACHMENT0] = RenderTextureAttachment();
 		
-		// Ä¬ÈÏÇé¿öÏÂ»áÖ±½Ó´´½¨gpu×ÊÔ´£¬Èç¹ûÃ»ÓĞ×Ô¶¯´´½¨£¬ÔòĞèÒª×Ô¼ºÊÖ¶¯µ÷ÓÃ´´½¨º¯Êı
+		// é»˜è®¤æƒ…å†µä¸‹ä¼šç›´æ¥åˆ›å»ºgpuèµ„æºï¼Œå¦‚æœæ²¡æœ‰è‡ªåŠ¨åˆ›å»ºï¼Œåˆ™éœ€è¦è‡ªå·±æ‰‹åŠ¨è°ƒç”¨åˆ›å»ºå‡½æ•°
 		if (autoCreateGPURes)
 		{
-			// ÔÚgpuÉÏ´´½¨
+			// åœ¨gpuä¸Šåˆ›å»º
 			createGPUResource();
 		}
 	}
@@ -61,7 +61,7 @@ namespace customGL
 	{
 		m_mAttachments[attachment] = data;
 
-		// ¸üĞÂgpu×ÊÔ´
+		// æ›´æ–°gpuèµ„æº
 		updateGPUResource();
 	}
 
