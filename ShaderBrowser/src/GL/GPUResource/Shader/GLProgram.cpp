@@ -3,6 +3,7 @@
 #include "Common/Tools/FileUtils.h"
 #include "GL/GLStateCache.h"
 #include "GL/GPUResource/Texture/Texture2D.h"
+#include "GL/GPUResource/Texture/RenderTexture.h"
 #include "GL/GPUResource/Texture/TextureBuffer.h"
 #include "GL/GPUOperateCommand/GPUOperateCommandPool.h"
 #include "GL/GPUOperateCommand/GPUOperateGLProgramCommand.h"
@@ -678,6 +679,30 @@ namespace customGL
 		
         // 绑定纹理到opengl
         GLStateCache::getInstance()->bindTexture2DN(textureUnit, texture->getTextureId());
+    }
+    
+    void GLProgram::setUniformWithTex2D(const std::string& uniformName, RenderTexture* renderTexture)
+    {
+        // 自动生成纹理单元
+        GLuint textureUnit;
+        if (m_mTextureUnits.find(uniformName) != m_mTextureUnits.end())
+        {
+            textureUnit = m_mTextureUnits[uniformName];
+        }
+        else
+        {
+            textureUnit = m_uTextureUnitIndex++;
+            m_mTextureUnits[uniformName] = textureUnit;
+            
+            // 注意！！！！ 还要通过使用glUniform1i设置每个采样器的方式告诉OpenGL每个着色器采样器属于哪个纹理单元。我们只需要设置一次即可
+            setUniformWithInt(uniformName, textureUnit);
+        }
+        
+        common::BROWSER_ASSERT(textureUnit<MAX_ACTIVE_TEXTURE, "texture unit value is too big, it is out off support range in function GLProgram::setUniformWithTex2d");
+        
+        // 绑定纹理到opengl
+        GLuint aa = renderTexture->getTextureId();
+        GLStateCache::getInstance()->bindTexture2DN(textureUnit, renderTexture->getTextureId());
     }
     
     void GLProgram::setUniformWithSamplerBuffer(const std::string& uniformName, TextureBuffer* textureBuffer)

@@ -281,6 +281,22 @@ namespace common
         }
     }
     
+    void Utils::setUniformTex2D(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, RenderTexture* texture)
+    {
+        auto itor = uniforms.find(uniformName);
+        if (itor == uniforms.end())
+        {
+            UniformValue uniformValue;
+            uniformValue.setTex2D(texture);
+            uniforms.emplace(uniformName, std::move(uniformValue));
+        }
+        else
+        {
+            UniformValue& uniformValue = itor->second;
+            uniformValue.setTex2D(texture);
+        }
+    }
+    
     void Utils::setUniformSamplerBuffer(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, TextureBuffer* textureBuffer)
     {
         auto itor = uniforms.find(uniformName);

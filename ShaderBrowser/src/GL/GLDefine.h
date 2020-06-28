@@ -14,6 +14,7 @@ namespace customGL
     
     class GLProgram;
 	class Texture2D;
+    class RenderTexture;
     class TextureBuffer;
     
     
@@ -341,6 +342,8 @@ namespace customGL
             UniformValueType_Mat3x4,
             // sampler2D
             UniformValueType_Sampler2D,
+            // renderTexture
+            UniformValueType_RenderTexture,
             // samplerBuffer
             UniformValueType_SamplerBuffer,
             
@@ -405,6 +408,7 @@ namespace customGL
         void setVec3(const glm::vec3& value);
         void setVec4(const glm::vec4& value);
         void setTex2D(Texture2D* texture);
+        void setTex2D(RenderTexture* texture);
         void setSamplerBuffer(TextureBuffer* textureBuffer);
         
         void setIntV(int count, const int* value);
@@ -460,6 +464,7 @@ namespace customGL
             struct {
 //                GLuint textureId;
                 Texture2D* texture;
+                RenderTexture* renderTexture;
             } tex2D;
             struct {
                 TextureBuffer* textureBuffer;

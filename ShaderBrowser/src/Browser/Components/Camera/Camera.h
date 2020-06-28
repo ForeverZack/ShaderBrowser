@@ -65,7 +65,7 @@ namespace browser
 		REGISTER_PROPERTY_CONSTREF_GET(glm::mat4, m_oProjectionMatrix, ProjectionMatrix)
 		REGISTER_PROPERTY_GET_SET(RenderPathType, m_eRenderPathType, RenderPathType)
 		REGISTER_PROPERTY_GET(bool, m_bTransDirty, TransDirty)
-		REGISTER_PROPERTY_GET(RenderTexture*, m_pRenderTexture, RenderTexture)
+		REGISTER_PROPERTY_GET_SET(RenderTexture*, m_pRenderTexture, RenderTexture)
 		REGISTER_PROPERTY_GET(int, m_iDepth, Depth)
 		void setDepth(int depth);
 		REGISTER_PROPERTY_CONSTREF_GET(glm::vec4, m_oBackgroundColor, BackgroundColor)

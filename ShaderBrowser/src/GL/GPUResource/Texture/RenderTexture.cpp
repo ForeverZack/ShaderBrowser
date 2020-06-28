@@ -5,7 +5,7 @@
 
 namespace customGL
 {
-	RenderTexture* create(unsigned int width, unsigned int height)
+	RenderTexture* RenderTexture::create(unsigned int width, unsigned int height)
 	{
 		RenderTexture* textureBuffer = new RenderTexture(width, height);
 		return textureBuffer;
@@ -69,7 +69,7 @@ namespace customGL
 	{
         auto cmd = GPUOperateCommandPool::getInstance()->popCommand<GPUOperateRenderTextureCommand>(GPUOperateCommandType::GOCT_RenderTexture);
         cmd->setRenderTexture(this);
-		cmd->setAttachments(m_mAttachments);
+		cmd->setAttachments(&m_mAttachments);
         cmd->ready(GPUOperateType::GOT_Create);
         GPUOperateSystem::getInstance()->addCommand(cmd);
 	}
@@ -78,7 +78,7 @@ namespace customGL
 	{
 		auto cmd = GPUOperateCommandPool::getInstance()->popCommand<GPUOperateRenderTextureCommand>(GPUOperateCommandType::GOCT_RenderTexture);
 		cmd->setRenderTexture(this);
-		cmd->setAttachments(m_mAttachments);
+		cmd->setAttachments(&m_mAttachments);
 		cmd->ready(GPUOperateType::GOT_Update);
 		GPUOperateSystem::getInstance()->addCommand(cmd);
 	}
@@ -92,6 +92,21 @@ namespace customGL
         cmd->ready(GPUOperateType::GOT_Delete);
         GPUOperateSystem::getInstance()->addCommand(cmd);
 	}
+    
+    GLuint RenderTexture::getTextureId()
+    {
+        // 返回第一个attachment类型为tbo 且 attachment.property1是GL_RGB/GL_RGBA的缓冲对象
+        for (auto itor=m_mAttachments.begin(); itor!=m_mAttachments.end(); ++itor)
+        {
+            const RenderTextureAttachment& attachment = itor->second;
+            if (attachment.type==RenderTextureAttachmentType::RTAttachmentType_TBO && (attachment.property1==GL_RGB || attachment.property1==GL_RGBA))
+            {
+                return attachment.buffer_object;
+            }
+        }
+        
+        return 0;
+    }
     
 
 }

@@ -56,9 +56,6 @@ namespace customGL
     // 结束执行 (渲染线程调用)
     void GPUOperateRenderTextureCommand::finish()
     {
-        // 清除
-		m_mAttachments.clear();
-        
         // 回收命令
         BaseGPUOperateCommand::finish();
         
@@ -81,7 +78,7 @@ namespace customGL
     {
 		glBindFramebuffer(GL_FRAMEBUFFER, m_pRenderTexture->m_uFrameBufferId);
 
-		for (auto itor = m_mAttachments.begin(); itor != m_mAttachments.end(); ++itor)
+		for (auto itor = m_mAttachments->begin(); itor != m_mAttachments->end(); ++itor)
 		{
 			const GLuint& attachment = itor->first;
 			RenderTextureAttachment& attachmentData = itor->second;
@@ -140,7 +137,7 @@ namespace customGL
     void GPUOperateRenderTextureCommand::deleteRenderTexture()
     {
 		// 删除缓冲附件
-		for (auto itor = m_mAttachments.begin(); itor != m_mAttachments.end(); ++itor)
+		for (auto itor = m_mAttachments->begin(); itor != m_mAttachments->end(); ++itor)
 		{
 			const GLuint& attachment = itor->first;
 			RenderTextureAttachment& attachmentData = itor->second;

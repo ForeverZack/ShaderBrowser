@@ -201,6 +201,11 @@ namespace customGL
         Utils::setUniformTex2D(m_mUniforms, uniformName, texture);
     }
     
+    void Material::setUniformTex2D(const std::string& uniformName, RenderTexture* texture)
+    {
+        Utils::setUniformTex2D(m_mUniforms, uniformName, texture);
+    }
+    
     void Material::setUniformSamplerBuffer(const std::string& uniformName, TextureBuffer* textureBuffer)
     {
         Utils::setUniformSamplerBuffer(m_mUniforms, uniformName, textureBuffer);

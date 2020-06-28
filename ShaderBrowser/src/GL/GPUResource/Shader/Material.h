@@ -13,8 +13,8 @@
 #include "Browser/Components/Transform/Transform.h"
 #include "Common/CommonDefine.h"
 #include "GL/GPUResource/Texture/Texture2D.h"
+#include "GL/GPUResource/Texture/RenderTexture.h"
 #include "GL/GPUResource/Texture/TextureBuffer.h"
-#
 
 using namespace std;
 using namespace browser;
@@ -62,6 +62,7 @@ namespace customGL
         void setUniformV3f(const std::string& uniformName, const glm::vec3& value);
         void setUniformV4f(const std::string& uniformName, const glm::vec4& value);
         void setUniformTex2D(const std::string& uniformName, Texture2D* texture);
+        void setUniformTex2D(const std::string& uniformName, RenderTexture* texture);
         void setUniformSamplerBuffer(const std::string& uniformName, TextureBuffer* textureBuffer);
         void setUniformIntV(const std::string& uniformName, int count, const int* value);
         void setUniformIVec2(const std::string& uniformName, const glm::ivec2& value);

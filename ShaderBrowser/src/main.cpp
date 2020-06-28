@@ -121,8 +121,8 @@ void testVal()
 	scene->retain();
 	browser::TransformSystem::getInstance()->setScene(scene);   //设置场景节点
 
-																//=============================创建相机===================================
-																// 相机Entity
+    //=============================创建相机===================================
+    // 相机Entity
 	BaseEntity* mainCameraEntity = BaseEntity::create("MainCamera");
 	scene->addChild(mainCameraEntity);
 	// 相机Camera组件
@@ -134,6 +134,22 @@ void testVal()
 	// 设置主相机
 	//CameraSystem::getInstance()->setMainCamera(mainCamera);
 	//=============================创建相机==================================
+    
+//    //=============================创建RT===================================
+//    // 相机Entity
+//    BaseEntity* rtCameraEntity = BaseEntity::create("RTCamera");
+//    scene->addChild(rtCameraEntity);
+//    // 相机Camera组件
+//    browser::Camera* rtCamera = Camera::create(Camera::ProjectionType::Perspective, 0.3f, 1000.0f, SCR_WIDTH, SCR_HEIGHT, 60.0f);
+//    rtCameraEntity->addComponent(rtCamera);
+//    // 设置相机位置
+//    rtCameraEntity->setPosition(0, 10, 10);
+//    rtCameraEntity->setEulerAngle(45, 180, 0);
+//    // 设置相机
+//    RenderTexture* renderTex = RenderTexture::create(SCR_WIDTH, SCR_HEIGHT);
+//    rtCamera->setRenderTexture(renderTex);
+//    rtCamera->setDepth(-1);
+//    //=============================创建相机==================================
 
 	//=============================创建平行光==================================
 	// 平行光
@@ -201,6 +217,7 @@ void testVal()
 	MeshRenderer* renderCom = MeshRenderer::createBaseRender();
 	Material* mat = renderCom->changeMaterial(0, mesh->getMaterialName(), "Triangles");   // 修改mesh的材质对应的shader
 	mat->setUniformTex2D("CGL_TEXTURE0", texture1);
+//    mat->setUniformTex2D("CGL_TEXTURE0", renderTex);
 	mat->setUniformV4f("CGL_ALBEDO_COLOR", glm::vec4(0, 0, 0, 1));
 	entity->addComponent(renderCom);
 	// 包围盒

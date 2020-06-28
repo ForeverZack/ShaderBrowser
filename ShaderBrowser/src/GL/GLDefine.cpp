@@ -466,6 +466,17 @@ namespace customGL {
         _value.tex2D.texture = texture;
     }
     
+    void UniformValue::setTex2D(RenderTexture* texture)
+    {
+        common::BROWSER_ASSERT(m_eType==UniformValueType::UniformValueType_Undefined
+                               || m_eType==UniformValueType::UniformValueType_RenderTexture,
+                               "UniformValueType has already defined, you cannot change it again in function UniformValue::setTex2D");
+        
+        m_bDirty = true;
+        m_eType = UniformValueType::UniformValueType_RenderTexture;
+        _value.tex2D.renderTexture = texture;
+    }
+    
     void UniformValue::setSamplerBuffer(TextureBuffer* textureBuffer)
     {
         common::BROWSER_ASSERT(m_eType==UniformValueType::UniformValueType_Undefined
@@ -502,7 +513,10 @@ namespace customGL {
 
 	bool UniformValue::isTexture() const
 	{
-		return m_eType == UniformValueType_ImageBuffer || m_eType == UniformValueType_SamplerBuffer || m_eType == UniformValueType_Sampler2D;
+		return m_eType == UniformValueType_ImageBuffer
+            || m_eType == UniformValueType_SamplerBuffer
+            || m_eType == UniformValueType_Sampler2D
+            || m_eType == UniformValueType_RenderTexture;
 	}
     
     void UniformValue::resetDirty()
@@ -576,6 +590,11 @@ namespace customGL {
             case UniformValueType_Sampler2D:
                 // texture2D
                 glProgram->setUniformWithTex2D(uniformName.c_str(), _value.tex2D.texture);
+                break;
+                
+            case UniformValueType_RenderTexture:
+                // renderTexture
+                glProgram->setUniformWithTex2D(uniformName.c_str(), _value.tex2D.renderTexture);
                 break;
                 
             case UniformValueType_SamplerBuffer:

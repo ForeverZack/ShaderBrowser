@@ -32,7 +32,7 @@ namespace customGL
         void deleteRenderTexture();
     
 		REGISTER_PROPERTY_SET(RenderTexture*, m_pRenderTexture, RenderTexture)
-		void setAttachments(const std::unordered_map<GLuint, RenderTextureAttachment>& attachments)
+		void setAttachments(std::unordered_map<GLuint, RenderTextureAttachment>* attachments)
 		{
 			m_mAttachments = attachments;
 		}
@@ -41,7 +41,7 @@ namespace customGL
         // 渲染纹理对象
 		RenderTexture* m_pRenderTexture;
 		// 帧缓冲附件
-		std::unordered_map<GLuint, RenderTextureAttachment> m_mAttachments;
+		std::unordered_map<GLuint, RenderTextureAttachment>* m_mAttachments;
 	};
 
 }

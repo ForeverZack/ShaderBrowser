@@ -30,17 +30,21 @@ namespace customGL
 			, type(RenderTextureAttachmentType::RTAttachmentType_TBO)
 			, buffer_object(0)
 			, property1(GL_RGBA)
-			, property2(GL_LINEAR)
-			, property3(GL_CLAMP_TO_BORDER)
+            , property2(GL_UNSIGNED_BYTE)
+            , property3(GL_RGBA)
+			, property4(GL_LINEAR)
+			, property5(GL_CLAMP_TO_BORDER)
 		{
 		}
-		RenderTextureAttachment(GLuint att, RenderTextureAttachmentType t = RenderTextureAttachmentType::RTAttachmentType_TBO, GLuint p1 = GL_RGBA, GLuint p2 = GL_LINEAR, GLuint p3 = GL_CLAMP_TO_BORDER)
+		RenderTextureAttachment(GLuint att, RenderTextureAttachmentType t = RenderTextureAttachmentType::RTAttachmentType_TBO, GLuint p1 = GL_RGBA, GLuint p2 = GL_RGBA, GLuint p3 = GL_UNSIGNED_BYTE, GLuint p4 = GL_LINEAR, GLuint p5 = GL_CLAMP_TO_BORDER)
 			: attachment(att)
 			, type(t)
 			, buffer_object(0)
 			, property1(p1)
 			, property2(p2)
 			, property3(p3)
+            , property4(p4)
+            , property5(p5)
 		{
 		}
 
@@ -55,6 +59,8 @@ namespace customGL
 			property1 = rt_attachment.property1;
 			property2 = rt_attachment.property2;
 			property3 = rt_attachment.property3;
+            property4 = rt_attachment.property4;
+            property5 = rt_attachment.property5;
 		}
 		RenderTextureAttachment& operator=(const RenderTextureAttachment& rt_attachment)
 		{
@@ -64,6 +70,8 @@ namespace customGL
 			property1 = rt_attachment.property1;
 			property2 = rt_attachment.property2;
 			property3 = rt_attachment.property3;
+            property4 = rt_attachment.property4;
+            property5 = rt_attachment.property5;
 			return *this;
 		};
 
@@ -76,6 +84,8 @@ namespace customGL
 			property1 = rt_attachment.property1;
 			property2 = rt_attachment.property2;
 			property3 = rt_attachment.property3;
+            property4 = rt_attachment.property4;
+            property5 = rt_attachment.property5;
 		}
 		// 注意：如果显式声明了复制赋值运算符或析构函数，则弃用复制构造函数的自动生成。
 		RenderTextureAttachment& operator=(const RenderTextureAttachment&& rt_attachment)
@@ -86,6 +96,8 @@ namespace customGL
 			property1 = rt_attachment.property1;
 			property2 = rt_attachment.property2;
 			property3 = rt_attachment.property3;
+            property4 = rt_attachment.property4;
+            property5 = rt_attachment.property5;
 			return *this;
 		};
 
@@ -136,6 +148,8 @@ namespace customGL
 		}
 		void setAttachment(GLuint attachment, const RenderTextureAttachment& data);
 		
+        // 获取颜色缓冲对象 (注意！！默认返回第一个attachment.type为TBO且attachment.property1为GL_RGB或者GL_RGBA的缓冲对象)
+        GLuint getTextureId();
 
 	protected:
 		// 创建gpu资源

@@ -18,6 +18,7 @@ namespace customGL
 	static const int MAX_BONES_COUNT = 100;
     
     class Texture2D;
+    class RenderTexture;
     class TextureBuffer;
     class GPUOperateGLProgramCommand;
     
@@ -172,7 +173,8 @@ namespace customGL
         void setUniformWithVec4V(const std::string& uniformName, int count, const GLfloat* fv);
         void setUniformWithIVec4V(const std::string& uniformName, int count, const int* iv);
         void setUniformWithTex2D(const std::string& uniformName, Texture2D* texture);
-		void setUniformWithSamplerBuffer(const std::string& uniformName, TextureBuffer* textureBuffer);
+        void setUniformWithTex2D(const std::string& uniformName, RenderTexture* renderTexture);
+        void setUniformWithSamplerBuffer(const std::string& uniformName, TextureBuffer* textureBuffer);
 		void setUniformWithImageBuffer(const std::string& uniformName, GLuint textureId, GLenum access, GLenum format);
         
         void setUniformWithMat3V(const std::string& uniformName, int count, const float* fv);
