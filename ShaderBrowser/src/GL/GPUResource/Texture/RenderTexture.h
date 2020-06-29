@@ -30,8 +30,8 @@ namespace customGL
 			, type(RenderTextureAttachmentType::RTAttachmentType_TBO)
 			, buffer_object(0)
 			, property1(GL_RGBA)
-            , property2(GL_UNSIGNED_BYTE)
-            , property3(GL_RGBA)
+            , property2(GL_RGBA)
+            , property3(GL_UNSIGNED_BYTE)
 			, property4(GL_LINEAR)
 			, property5(GL_CLAMP_TO_BORDER)
 		{

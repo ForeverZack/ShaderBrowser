@@ -10,8 +10,8 @@ const float gloss = 20;
 
 void main()
 {
-    vec4 albedo = CGL_ALBEDO_COLOR;
-//    vec4 albedo = texture(CGL_TEXTURE0, v2f.coord);
+    // vec4 albedo = CGL_ALBEDO_COLOR;
+    vec4 albedo = texture(CGL_TEXTURE0, v2f.coord);
     
     vec4 lightColor;
     float lightIntensity;

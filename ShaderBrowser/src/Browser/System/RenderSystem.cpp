@@ -178,6 +178,8 @@ namespace browser
     
     void RenderSystem::beforeUpdate(float deltaTime)
     {
+		// 此方法在逻辑线程中！！！！!
+
         // 重置draw call
         m_uDrawCalls = 0;
         // 重置顶点数量
@@ -191,10 +193,15 @@ namespace browser
 		{
 			renderScene((*itor));
 		}
+
+		// 重置所有材质UniformValue的dirty标记重置为false	(注意：材质的m_mUniforms应该都是在逻辑线程中修改的！！！)
+		MaterialManager::getInstance()->resetAllMaterialsUniformsDirty();
     }
     
 	void RenderSystem::update(float deltaTime)
 	{
+		// 此方法在渲染线程中！！！！!
+
 		// 从逻辑线程拷贝渲染命令队列
 		unsigned long frameIndex = core::RenderCore::getInstance()->getFrameIndex();
 		m_vRenderCommands = getCommands(frameIndex);
@@ -202,9 +209,6 @@ namespace browser
 
 		// 递交渲染命令
 		flushRenders();
-
-		// 重置所有材质UniformValue的dirty标记重置为false
-		MaterialManager::getInstance()->resetAllMaterialsUniformsDirty();
 
 		Camera* camera = CameraSystem::getInstance()->getMainCamera();
 		// 渲染包围盒跟坐标轴

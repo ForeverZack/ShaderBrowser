@@ -19,6 +19,10 @@
 13）内存的管理与检查。 <br>
 等等<br>
 
+## 2020.6.13~2020.6.29 <br>
+现在可以使用RenderTexture了，也添加了UniformValue对RT的支持；修改了UniformValue的脏标记使用，在每帧生成渲染命令结束后对他们的值进行重置
+，另外Pass第一次初始化时需要全部重新赋值(foreceUpdate);增加了shader的标签属性，为了让一份shader代码多种用途（如PrePass，ShadowCaster等）; <br>
+
 ## 2020.5.15~2020.5.20 <br>
 添加RenderTexture(还没正式使用过)；丰富Camera的属性，使用Depth来对Camera的渲染顺序进行排序，并允许多个Camera被渲染。
 (允许被渲染的相机必须符合以下规定，相机的渲染纹理不为空的相机；渲染纹理为空的相机列表中Depth最大的相机。) <br>
