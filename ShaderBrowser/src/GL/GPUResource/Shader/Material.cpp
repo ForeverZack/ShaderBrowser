@@ -10,6 +10,16 @@ namespace customGL
 	// 默认材质名称
 	const char* Material::DEFAULT_MATERIAL_NAME = "ShaderBrowser_DefaultMaterial";
 
+	Material* Material::createMaterial(const std::string& materialName /*= DEFAULT_MATERIAL_NAME*/)
+	{
+		Material* material = new Material(materialName);
+
+		material->init();
+		material->autorelease();
+
+		return material;
+	}
+
     Material* Material::create(const MaterialParameters* parameters)
     {
         Material* material = Material::createMaterial(parameters->name);
@@ -54,24 +64,31 @@ namespace customGL
         return material;
     }
     
-	Material* Material::createMaterial(const std::string& materialName /*= DEFAULT_MATERIAL_NAME*/)
-	{
-		Material* material = new Material(materialName);
-        
-		material->init();
-        material->autorelease();
-        
-		return material;
-	}
-    
     Material* Material::createMaterialByProgramName(const std::string& programName, const std::string& materialName)
     {
+		Material* material = Material::createMaterial(materialName);
+		GLProgram* program = nullptr;
+		Pass* pass = nullptr;
+
 		// 因为只有发生改变的UniformValue会在GPU中重新设置，所以每个Material对应的GLProgram都应该是独立的，可合并的应该是相同的material
-        GLProgram* program = GLProgramCache::getInstance()->getGLProgramCopy(programName);
-        Pass* pass = Pass::createPass(program);
-        
-        Material* material = Material::createMaterial(materialName);
+        program = GLProgramCache::getInstance()->getGLProgramCopy(programName);
+        pass = Pass::createPass(program);
         material->addPass(pass);
+
+		// pre-pass  (如果存在多个pass支持[PreparePass]标签，则只使用第一个支持的Pass)
+		if (program->isSupportPrePass())
+		{
+			program = GLProgramCache::getInstance()->getGLProgramCopy(programName, 1 << GLProgram::GLProgramTag::GLProgramTag_PrePass);
+			pass = Pass::createPass(program);
+			material->setPrePass(pass);
+		}
+		// shadow caster pass (如果存在多个pass支持[ShadowCaster]标签，则只使用第一个支持的Pass)
+		if (program->isSupportShadowCaster())
+		{
+			program = GLProgramCache::getInstance()->getGLProgramCopy(programName, 1 << GLProgram::GLProgramTag::GLProgramTag_ShadowCaster);
+			pass = Pass::createPass(program);
+			material->setShadowCasterPass(pass);
+		}
         
         return material;
     }
@@ -288,6 +305,20 @@ namespace customGL
             itor->second.resetDirty();
         }
     }
+
+	void Material::setPrePass(Pass* pass)
+	{
+		BROWSER_SAFE_RELEASE_REFERENCE(m_pPrePass);
+		m_pPrePass = pass;
+		pass->retain();
+	}
+
+	void Material::setShadowCasterPass(Pass* pass)
+	{
+		BROWSER_SAFE_RELEASE_REFERENCE(m_pShadowCasterPass);
+		m_pShadowCasterPass = pass;
+		pass->retain();
+	}
 
 	bool Material::isSupportPrePass()
 	{

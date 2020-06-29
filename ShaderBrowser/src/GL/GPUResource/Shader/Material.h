@@ -30,10 +30,9 @@ namespace customGL
 		static const char* DEFAULT_MATERIAL_NAME;
 
 	public:
-        static Material* create(const MaterialParameters* parameters);
 		static Material* createMaterial(const std::string& materialName = DEFAULT_MATERIAL_NAME);
+		static Material* create(const MaterialParameters* parameters);
         static Material* createMaterialByProgramName(const std::string& programName, const std::string& materialName);
-
 
 	public:
 		Material(const std::string& materialName);
@@ -81,8 +80,8 @@ namespace customGL
         void resetUniformsDirty();  // 将所有UniformValue的dirty标记重置为false
         
 
-		REGISTER_PROPERTY_GET_SET(Pass*, m_pPrePass, PrePass)
-		REGISTER_PROPERTY_GET_SET(Pass*, m_pShadowCasterPass, ShadowCasterPass)
+		REGISTER_PROPERTY_GET(Pass*, m_pPrePass, PrePass)
+		REGISTER_PROPERTY_GET(Pass*, m_pShadowCasterPass, ShadowCasterPass)
         REGISTER_PROPERTY_GET_SET(unsigned int, m_uMaterialId, MaterialId)
 		REGISTER_PROPERTY_CONSTREF_GET(std::vector<Pass*>, m_vPass, Pass)
 		REGISTER_PROPERTY_CONSTREF_GET(std::string, m_sMaterialName, MaterialName)
@@ -100,6 +99,8 @@ namespace customGL
 		{
 			return m_vPass.size();
 		}
+		void setPrePass(Pass* pass);
+		void setShadowCasterPass(Pass* pass);
 		bool isSupportPrePass();
 		bool isSupportShadowCaster();
 
