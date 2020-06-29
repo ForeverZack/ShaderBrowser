@@ -99,13 +99,23 @@ namespace browser
     
     void Camera::onInspectorGUI(InspectorPanel* inspector)
     {
+		// Background Color
+		inspector->addPropertyColor4("Background Color", &m_oBackgroundColor, [=](const glm::vec4& color)
+		{
+			m_oBackgroundColor = color;
+		}, false);
+
+		// Viewport
+		inspector->addPropertyText("Viewport Width:" + std::to_string(m_iViewportWidth));
+		inspector->addPropertyText("Viewport Height:" + std::to_string(m_iViewportHeight));
+		// Near Plane
+		inspector->addPropertyText("Near Plane:" + std::to_string(m_fNearPlane));
+		// Far Plane
+		inspector->addPropertyText("Far Plane:" + std::to_string(m_fFarPlane));
         // FOV
         inspector->addPropertyText("Field of view:"+std::to_string(m_fFieldOfView));
-
-//        inspector->addPropertyVector3("Position", &m_oObjectPos, [=](const glm::vec3& value)
-//            {
-//                setPosition(value);
-//            }, false);
+		// depth
+		inspector->addPropertyText("Depth:" + std::to_string(m_iDepth));
     }
 
 	void Camera::updateProjectionMatrix()

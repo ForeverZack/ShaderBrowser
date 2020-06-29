@@ -79,9 +79,6 @@
     <Filter Include="src\Browser\Components\Feedback">
       <UniqueIdentifier>{b4e24185-de44-4dbf-beaf-1fb1cac5c4f3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\Browser\Components\ComputePrgram">
-      <UniqueIdentifier>{6a1f2088-f497-4f4b-8c97-b5aea459ed23}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\Common\Tools\Thread">
       <UniqueIdentifier>{dbac6c91-c49f-44f1-91da-d38dab21ce53}</UniqueIdentifier>
     </Filter>
@@ -105,6 +102,9 @@
     </Filter>
     <Filter Include="src\GL\GPUResource\Model">
       <UniqueIdentifier>{60e84619-e659-483f-9c22-47fcb778b21b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Browser\Components\ComputeProgram">
+      <UniqueIdentifier>{6a1f2088-f497-4f4b-8c97-b5aea459ed23}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -250,10 +250,10 @@
       <Filter>src\GL</Filter>
     </ClCompile>
     <ClCompile Include="src\Browser\Components\ComputeProgram\BaseComputeProgram.cpp">
-      <Filter>src\Browser\Components\ComputePrgram</Filter>
+      <Filter>src\Browser\Components\ComputeProgram</Filter>
     </ClCompile>
     <ClCompile Include="src\Browser\Components\ComputeProgram\AnimatorComputeProgram.cpp">
-      <Filter>src\Browser\Components\ComputePrgram</Filter>
+      <Filter>src\Browser\Components\ComputeProgram</Filter>
     </ClCompile>
     <ClCompile Include="src\GL\AssimpConvert.cpp">
       <Filter>src\GL</Filter>
@@ -515,10 +515,10 @@
       <Filter>src\GL</Filter>
     </ClInclude>
     <ClInclude Include="src\Browser\Components\ComputeProgram\BaseComputeProgram.h">
-      <Filter>src\Browser\Components\ComputePrgram</Filter>
+      <Filter>src\Browser\Components\ComputeProgram</Filter>
     </ClInclude>
     <ClInclude Include="src\Browser\Components\ComputeProgram\AnimatorComputeProgram.h">
-      <Filter>src\Browser\Components\ComputePrgram</Filter>
+      <Filter>src\Browser\Components\ComputeProgram</Filter>
     </ClInclude>
     <ClInclude Include="src\GL\AssimpConvert.h">
       <Filter>src\GL</Filter>
