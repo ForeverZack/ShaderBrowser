@@ -116,7 +116,7 @@ namespace customGL
 					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, attachmentData.property4);
 					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, attachmentData.property5);
 					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, attachmentData.property5);
-					glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, GL_TEXTURE_2D, attachmentData.buffer_object, 0);
+					glFramebufferTexture(GL_FRAMEBUFFER, attachment, attachmentData.buffer_object, 0);
 				}
 				break;
 
