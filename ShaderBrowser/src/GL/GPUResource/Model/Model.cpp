@@ -717,7 +717,7 @@ namespace customGL
         
         if (!material)
         {
-            material = Material::createMaterialByProgramName(defaultProgramName, materialName);
+            material = Material::createMaterialByProgramName(materialName, defaultProgramName);
         }
         
         return material;

@@ -64,7 +64,7 @@ namespace customGL
         return material;
     }
     
-    Material* Material::createMaterialByProgramName(const std::string& programName, const std::string& materialName)
+    Material* Material::createMaterialByProgramName(const std::string& materialName, const std::string& programName)
     {
 		Material* material = Material::createMaterial(materialName);
 		GLProgram* program = nullptr;

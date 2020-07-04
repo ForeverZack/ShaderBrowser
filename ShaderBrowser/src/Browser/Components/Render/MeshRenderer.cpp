@@ -97,7 +97,7 @@ namespace browser
 
 	Material* MeshRenderer::createMaterial(const std::string& programName, const std::string& materialName /*= Material::DEFAULT_MATERIAL_NAME*/)
 	{
-		Material* material = Material::createMaterialByProgramName(programName, materialName);
+		Material* material = Material::createMaterialByProgramName(materialName, programName);
 
 		return material;
 	}
