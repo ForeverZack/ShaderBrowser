@@ -50,6 +50,15 @@ namespace customGL
 		{ "GL_LINEAR_MIPMAP_LINEAR", GL_LINEAR_MIPMAP_LINEAR },	// 在两个邻近的多级渐远纹理之间使用线性插值，并使用线性插值进行采样
 	};
 
+	// 字符串转RenderQueue
+	std::unordered_map<std::string, RenderQueue> MaterialParser::m_mString2RenderQueue
+	{
+		{ "Background", RenderQueue::Background },
+		{ "SkyBox", RenderQueue::SkyBox },
+		{ "Opaque", RenderQueue::Opaque },
+		{ "Transparent", RenderQueue::Transparent },
+	};
+
 
 	MaterialUniformParamter::MaterialUniformParamter()
 		: m_pString(nullptr)
@@ -155,7 +164,7 @@ namespace customGL
 		Material结构:
 		{
 			"name": "Standard",
-			"renderQueue": 1000,
+			"renderQueue": 1000,		// 或 "renderQueue": "Transparent",
 			"uniforms": 
 			{
 				"CGL_TEXTURE0": 
@@ -202,13 +211,22 @@ namespace customGL
 		// renderQueue
 		if (document.HasMember("renderQueue"))
 		{
-			BROWSER_ASSERT(document["renderQueue"].IsUint(), "Material's name must be unsigned int value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
-			parameters->renderQueue = document["renderQueue"].GetUint();
+			if (document["renderQueue"].IsString())
+			{
+				const std::string& strRenderQueue = document["renderQueue"].GetString();
+				BROWSER_ASSERT(m_mString2RenderQueue.find(strRenderQueue) != m_mString2RenderQueue.end(), "Material's renderQueue is not declared in RenderQueue in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+				parameters->renderQueue = m_mString2RenderQueue[strRenderQueue];
+			}
+			else
+			{
+				BROWSER_ASSERT(document["renderQueue"].IsUint(), "Material's renderQueue must be unsigned int value or RenderQueue string in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+				parameters->renderQueue = document["renderQueue"].GetUint();
+			}
 		}
 		else
 		{
-			// 默认值  Geometry(1000)
-			parameters->renderQueue = RenderQueue::Geometry;
+			// 默认值  Opaque(1000)
+			parameters->renderQueue = RenderQueue::Opaque;
 		}
 
 		// uniforms

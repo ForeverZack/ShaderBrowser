@@ -120,11 +120,14 @@ namespace customGL
 	protected:
 		// 内置uniform对应类型
 		static std::unordered_map<std::string, std::string> m_mBuiltinUniforms;
-		// 字符串对应GLenum
-		static std::unordered_map<std::string, GLenum> m_mString2GLenum;
+		// 对应enum
 		// 字符串类型 转 UniformValueType
         static std::unordered_map<std::string, UniformValue::UniformValueType> m_mStrType2UniformValueType;
-        // 未定义GLProgram名称id
+		// 字符串对应GLenum
+		static std::unordered_map<std::string, GLenum> m_mString2GLenum;
+        // 字符串对应RenderQueue
+		static std::unordered_map<std::string, RenderQueue> m_mString2RenderQueue;
+		// 未定义GLProgram名称id
         static unsigned long m_uGeneratorId;
 	};
 }

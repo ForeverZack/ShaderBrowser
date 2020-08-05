@@ -28,6 +28,7 @@ namespace common
 	};
     
     // 渲染队列
+	// 注意：添加修改RenderQueue后，MaterialParser::m_mString2RenderQueue也需要修改
     enum RenderQueue
     {
         // 背景
@@ -35,8 +36,8 @@ namespace common
         // 天空盒
         SkyBox = 5,
         
-        // 几何
-        Geometry = 1000,
+        // 不透明
+        Opaque = 1000,
         
         // 透明
         Transparent = 3000,

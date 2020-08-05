@@ -97,7 +97,7 @@ namespace customGL
 		: m_sMaterialName(materialName)
 		, m_sFilePath("")
         , m_uMaterialId(0)
-        , m_eQueue(RenderQueue::Geometry)
+        , m_eQueue(RenderQueue::Opaque)
         , m_bGpuInstance(false)
         , m_uSharedId(0)
         , m_bDefaultMaterialFlag(false)

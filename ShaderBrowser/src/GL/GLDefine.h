@@ -316,6 +316,7 @@ namespace customGL
     class UniformValue
     {
     public:
+		// 注意：添加修改UniformValueType后，MaterialParser::m_mStrType2UniformValueType也需要修改
         enum UniformValueType
         {
             // 未定义

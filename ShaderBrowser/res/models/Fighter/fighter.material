@@ -1,6 +1,6 @@
 {
     "name": "FighterMat",
-	"renderQueue": 3000,
+	"renderQueue": "Opaque",
     "uniforms":
     {
 		"CGL_ALBEDO_COLOR":
@@ -23,6 +23,7 @@
         {
             "type": "sampler2D",
 			"wrap": "GL_REPEAT",
+			"filter": "GL_LINEAR",
             "value": "texture/fighterNormal.png"
         },
 		"gloss":

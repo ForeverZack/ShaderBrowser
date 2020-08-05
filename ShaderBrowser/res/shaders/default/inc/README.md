@@ -2,6 +2,8 @@
 1.可以使用关键字#include "XXX"来在shader中使用后缀为inc的库(理论上支持任何后缀的文本)；<br>
 2.被包含进来的库会在FileUtils的SearchPath列表中搜索；<br>
 3.包含库文件之后，如果库文件中存在#ifdef或#ifndef，必须要先定义这些宏；<br>
+4.可以使用[PreparePass]、[ShadowCaster]等标签，这些标签会根据材质的使用方式(常规/pre-pass/阴影等)来导入对应的代码及方法，
+使用的时候需要注意调用对应标签宏的位置，正确的位置可以减少GPU的计算；<br>
 
 
 ## StandardVertexAttr.inc<br>
