@@ -30,7 +30,6 @@ namespace customGL
 		static const char* DEFAULT_MATERIAL_NAME;
 
 	public:
-		static Material* createMaterial(const std::string& materialName = DEFAULT_MATERIAL_NAME);
 		static Material* create(const MaterialParameters* parameters);
         static Material* createMaterialByProgramName(const std::string& materialName, const std::string& programName);
 

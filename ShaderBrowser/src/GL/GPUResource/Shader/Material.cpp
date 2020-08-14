@@ -10,19 +10,12 @@ namespace customGL
 	// 默认材质名称
 	const char* Material::DEFAULT_MATERIAL_NAME = "ShaderBrowser_DefaultMaterial";
 
-	Material* Material::createMaterial(const std::string& materialName /*= DEFAULT_MATERIAL_NAME*/)
-	{
-		Material* material = new Material(materialName);
-
-		material->init();
-		material->autorelease();
-
-		return material;
-	}
-
     Material* Material::create(const MaterialParameters* parameters)
     {
-        Material* material = Material::createMaterial(parameters->name);
+		// create material
+		Material* material = new Material(parameters->name);
+		material->init();
+		material->autorelease();
         
 		// render queue
 		material->setRenderQueue(parameters->renderQueue);
@@ -66,7 +59,11 @@ namespace customGL
     
     Material* Material::createMaterialByProgramName(const std::string& materialName, const std::string& programName)
     {
-		Material* material = Material::createMaterial(materialName);
+		// create material
+		Material* material = new Material(materialName);
+		material->init();
+		material->autorelease();
+
 		GLProgram* program = nullptr;
 		Pass* pass = nullptr;
 

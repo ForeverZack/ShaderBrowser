@@ -587,15 +587,16 @@ namespace browser
 		RotateDelay(parentMMatrix);
 
 		// 这里阅读顺序是反的，因为实际乘法当中使用的是左乘
+		// 这里为什么要反过来？M_model = M_parent_model * M_translate * M_rotate * M_scale;
 		// 4.父节点的model
 		m_oModelMatrix = parentMMatrix;
 		// 3.位移
-		m_oModelMatrix = glm::translate(m_oModelMatrix, m_oObjectPos);
+		m_oModelMatrix = glm::translate(m_oModelMatrix, m_oObjectPos);	// m_oModelMatrix = M_parent_model * M_translate;
 		// 2.旋转 y-x-z
-		m_oModelMatrix = m_oModelMatrix * glm::toMat4(m_oQuaternion);
+		m_oModelMatrix = m_oModelMatrix * glm::toMat4(m_oQuaternion);		// m_oModelMatrix = M_parent_model * M_translate * m_rotate;
         m_oNoScaleModelMatrix = m_oModelMatrix; //这里记录下不包含缩放的model矩阵
 		// 1.缩放
-		m_oModelMatrix = glm::scale(m_oModelMatrix, m_oScale);
+		m_oModelMatrix = glm::scale(m_oModelMatrix, m_oScale);		// m_oModelMatrix = M_parent_model * M_translate * M_rotate * M_scale;
 
 //                    BROWSER_LOG_MAT4(m_oModelMatrix);
         
