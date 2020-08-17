@@ -264,6 +264,8 @@ namespace common
 	public:
 		// 设置窗口样式颜色
 		void setWindowStyleColor(ImGuiCol_ style, float red, float green, float blue, float alpha);
+		// 设置视口大小
+		void setViewportSize(int width, int height);
 		// 每帧更新
 		void update(float deltaTime);
         

@@ -6,6 +6,8 @@ namespace browser
 	CameraSystem::CameraSystem()
         : m_bDirty(true)
 		, m_oMainCamera(nullptr)
+		, m_iViewportWidth(1280)
+		, m_iViewportHeight(720)
 	{
 		m_iPriority = 0;
 		m_eSystemType = common::SystemType::Camera;
@@ -22,6 +24,13 @@ namespace browser
 	{
 		m_bDirty = true;
 		return BaseSystem::removeComponent(entity, component);
+	}
+
+	void CameraSystem::setViewportSize(int width, int height)
+	{
+		m_iViewportWidth = width;
+		m_iViewportHeight = height;
+		m_bDirty = true;
 	}
 
 	void CameraSystem::update(float deltaTime)
@@ -48,15 +57,18 @@ namespace browser
 				camera = dynamic_cast<Camera*>(*(cameraList.begin()));
 				if (camera->getRenderTexture())
 				{
+					// 含渲染纹理相机
 					m_vActiveCameras.push_back(camera);
 				}
 				else if(camera->getIsRenderable() && (!mainCamera || camera->getDepth()>=mainCamera->getDepth()))
 				{
+					// 当前Depth最大的相机
 					mainCamera = camera;
 				}
 			}
 			if (mainCamera)
 			{
+				mainCamera->setViewportSize(m_iViewportWidth, m_iViewportHeight);
 				m_vActiveCameras.push_back(mainCamera);
 			}
 			m_oMainCamera = mainCamera;

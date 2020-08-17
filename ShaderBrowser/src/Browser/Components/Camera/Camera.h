@@ -20,6 +20,8 @@ namespace browser
 		static EnumComponentClass ComponentClass;
 
 	public:
+		// 脏标记数值范围
+		#define VALUE_DIRTY_TAG_MAX 255
 		// 投影类型
 		enum ProjectionType
 		{
@@ -38,7 +40,7 @@ namespace browser
         };
 
 	public:
-		static Camera* create(ProjectionType type=ProjectionType::Ortho, float nearPlane=0.3f, float farPlane=1000.0f, int viewportWidth=800, int viewportHeight=600, float FOV=60.0f);
+		static Camera* create(ProjectionType type=ProjectionType::Ortho, float nearPlane=0.3f, float farPlane=1000.0f, float FOV = 60.0f, int viewportWidth=800, int viewportHeight=600);
 
 	public:
 		Camera();
@@ -59,17 +61,25 @@ namespace browser
 		// 刷新projection matrix
 		void updateProjectionMatrix();
 
+		// 计算脏标记
+		void generateViewMatrixDirtyTag();
+		void generateProjectionMatrixDirtyTag();
 
 		REGISTER_PROPERTY_CONSTREF_GET(glm::vec3, m_oGlobalPosition, GlobalPosition)
 		REGISTER_PROPERTY_CONSTREF_GET(glm::mat4, m_oViewMatrix, ViewMatrix)
 		REGISTER_PROPERTY_CONSTREF_GET(glm::mat4, m_oProjectionMatrix, ProjectionMatrix)
 		REGISTER_PROPERTY_GET_SET(RenderPathType, m_eRenderPathType, RenderPathType)
-		REGISTER_PROPERTY_GET(bool, m_bTransDirty, TransDirty)
-		REGISTER_PROPERTY_GET_SET(RenderTexture*, m_pRenderTexture, RenderTexture)
+		REGISTER_PROPERTY_GET(unsigned short, m_uViewMatrixDirtyTag, ViewMatrixDirtyTag)
+		REGISTER_PROPERTY_GET(unsigned short, m_uProjectionMatrixDirtyTag, ProjectionMatrixDirtyTag)
+		REGISTER_PROPERTY_GET(RenderTexture*, m_pRenderTexture, RenderTexture)
 		REGISTER_PROPERTY_GET(int, m_iDepth, Depth)
+		REGISTER_PROPERTY_GET(int, m_iViewportWidth, ViewportWidth)
+		REGISTER_PROPERTY_GET(int, m_iViewportHeight, ViewportHeight)
 		void setDepth(int depth);
 		REGISTER_PROPERTY_CONSTREF_GET(glm::vec4, m_oBackgroundColor, BackgroundColor)
 		REGISTER_PROPERTY_GET_SET(bool, m_bIsRenderable, IsRenderable)
+		void setRenderTexture(RenderTexture* rt);
+		void setViewportSize(int width, int height);
 
 	protected:
 		// view matrix 相关
@@ -77,8 +87,8 @@ namespace browser
 		glm::mat4 m_oViewMatrix;
         // 相机世界位置
         glm::vec3 m_oGlobalPosition;
-        // 本帧是否发生了移动
-        bool m_bTransDirty;
+		// view matrix脏标记 (包含 m_oViewMatrix 和 m_oGlobalPosition 的变动)
+		unsigned short m_uViewMatrixDirtyTag;
         
 		// projection matrix 相关
 		// 投影类型
@@ -95,6 +105,8 @@ namespace browser
 		int m_iViewportHeight;
 		// projection matrix
 		glm::mat4 m_oProjectionMatrix;
+		// projection matrix脏标记 (包含 m_oProjectionMatrix 的变动)
+		unsigned short m_uProjectionMatrixDirtyTag;
         
         // 渲染路径
         RenderPathType m_eRenderPathType;

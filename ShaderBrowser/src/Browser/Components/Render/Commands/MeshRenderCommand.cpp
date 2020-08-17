@@ -11,6 +11,8 @@ namespace browser
 		, m_uIndexCount(0)
 		, m_bTransformDirty(false)
 		, m_bCameraDirty(false)
+		, m_uViewMatrixDirtyTag(0)
+		, m_uProjectionDirtyTag(0)
 	{
 		m_oRenderType = MeshRenderer::RendererType::RendererType_Mesh;
 	}
@@ -45,9 +47,12 @@ namespace browser
 			material->setTransformDirty(false);
 			m_oModelMatrix = transform->getModelMatrix();
 		}
-		m_bCameraDirty = camera != material->getCurCamera() || camera->getTransDirty();
+		m_bCameraDirty = camera!=material->getCurCamera() || m_uViewMatrixDirtyTag!=camera->getViewMatrixDirtyTag() || m_uProjectionDirtyTag!=camera->getProjectionMatrixDirtyTag();
 		if (m_bCameraDirty)
 		{
+			m_uViewMatrixDirtyTag = camera->getViewMatrixDirtyTag();
+			m_uProjectionDirtyTag = camera->getProjectionMatrixDirtyTag();
+
 			material->setCurCamera(camera);
             m_oCameraGlobalPosition = camera->getGlobalPosition();
 			m_oViewMatrix = camera->getViewMatrix();

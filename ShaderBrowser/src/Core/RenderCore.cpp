@@ -3,6 +3,7 @@
 #include "Common/Tools/UI/GUIFramework.h"
 #include "Common/Tools/UI/GameStatusPanel.h"
 #include "Browser/System/RenderSystem.h"
+#include "Browser/System/CameraSystem.h"
 #include "GL/GLStateCache.h"
 #include "GL/System/GPUOperateSystem.h"
 #include "Core/LogicCore.h"
@@ -142,7 +143,9 @@ namespace core
 		ECSManager::getInstance()->registerSystem(browser::RenderSystem::getInstance());
         // 初始化渲染系统
 		ECSManager::getInstance()->initSystem(SystemType::RenderSystem);
-
+		
+		// 设置视口大小
+		browser::CameraSystem::getInstance()->setViewportSize(SCR_WIDTH, SCR_HEIGHT);
         // 初始化调试GUI框架
 		common::GUIFramework::getInstance()->init(SCR_WIDTH, SCR_HEIGHT);
 	}
@@ -249,7 +252,7 @@ namespace core
     {
         // make sure the viewport matches the new window dimensions; note that width and
         // height will be significantly larger than specified on retina displays.
-        glViewport(0, 0, width, height);
+		CameraSystem::getInstance()->setViewportSize(width, height);
     }
     
     void RenderCore::mouse_callback(GLFWwindow* window, double xpos, double ypos)

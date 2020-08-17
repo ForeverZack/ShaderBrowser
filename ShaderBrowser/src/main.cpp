@@ -126,7 +126,7 @@ void testVal()
 	BaseEntity* mainCameraEntity = BaseEntity::create("MainCamera");
 	scene->addChild(mainCameraEntity);
 	// 相机Camera组件
-	browser::Camera* mainCamera = Camera::create(Camera::ProjectionType::Perspective, 0.3f, 1000.0f, SCR_WIDTH, SCR_HEIGHT, 60.0f);
+	browser::Camera* mainCamera = Camera::create(Camera::ProjectionType::Perspective, 0.3f, 1000.0f, 60.0f);
 	mainCameraEntity->addComponent(mainCamera);
 	// 设置相机位置
 	mainCameraEntity->setPosition(0, 10, 10);
@@ -140,13 +140,13 @@ void testVal()
     BaseEntity* rtCameraEntity = BaseEntity::create("RTCamera");
     scene->addChild(rtCameraEntity);
     // 相机Camera组件
-    browser::Camera* rtCamera = Camera::create(Camera::ProjectionType::Perspective, 0.3f, 1000.0f, SCR_WIDTH, SCR_HEIGHT, 60.0f);
+    browser::Camera* rtCamera = Camera::create(Camera::ProjectionType::Perspective, 0.3f, 1000.0f, 60.0f);
     rtCameraEntity->addComponent(rtCamera);
     // 设置相机位置
     rtCameraEntity->setPosition(0, 10, 10);
     rtCameraEntity->setEulerAngle(45, 180, 0);
     // 设置相机
-    RenderTexture* renderTex = RenderTexture::create(SCR_WIDTH, SCR_HEIGHT);
+    RenderTexture* renderTex = RenderTexture::create(4096, 4096);
     rtCamera->setRenderTexture(renderTex);
     rtCamera->setDepth(-1);
     //=============================创建相机==================================

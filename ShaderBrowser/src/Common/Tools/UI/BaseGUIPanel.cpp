@@ -562,6 +562,11 @@ namespace common
 			itor->second = ImVec4(red, green, blue, alpha);
 		}
 	}
+
+	void BaseGUIPanel::setViewportSize(int width, int height)
+	{
+
+	}
     
     void BaseGUIPanel::cleanContent()
     {

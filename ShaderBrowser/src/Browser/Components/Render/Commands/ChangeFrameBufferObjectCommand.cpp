@@ -37,6 +37,9 @@ namespace browser
     
     void ChangeFrameBufferObjectCommand::execute()
     {
+		// 如果你想将你的屏幕渲染到一个更小或更大的纹理上，你需要（在渲染到你的帧缓冲之前）再次调用glViewport，使用纹理的新维度作为参数，否则只有一小部分的纹理或屏幕会被渲染到这个纹理上。
+		glViewport(0, 0, m_oCamera->getViewportWidth(), m_oCamera->getViewportHeight());
+
 		// 使用渲染纹理
 		RenderTexture* rt = m_oCamera->getRenderTexture();
 		if (rt)

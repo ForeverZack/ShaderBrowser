@@ -7,8 +7,8 @@ namespace browser
 {
 	EnumComponentClass Camera::ComponentClass = EnumComponentClass::ECC_Camera;
 
-	Camera* Camera::create(ProjectionType type /*= ProjectionType::Ortho*/, float nearPlane /*= 0.3f*/, float farPlane /*= 1000.0f*/, int viewportWidth /*= 800*/
-							, int viewportHeight /*= 600*/, float FOV /*= 60.0f*/)
+	Camera* Camera::create(ProjectionType type /*= ProjectionType::Ortho*/, float nearPlane /*= 0.3f*/, float farPlane /*= 1000.0f*/, float FOV /*= 60.0f*/, int viewportWidth /*= 800*/
+							, int viewportHeight /*= 600*/)
 	{
 		Camera* camera = new Camera(type, nearPlane, farPlane, viewportWidth, viewportHeight, FOV);
 
@@ -22,7 +22,7 @@ namespace browser
 		: BaseComponent("Camera")
         , m_oViewMatrix(GLM_MAT4_UNIT)
         , m_oGlobalPosition(GLM_VEC3_ZERO)
-        , m_bTransDirty(true)
+		, m_uViewMatrixDirtyTag(0)
 		, m_eProjectionType(type)
 		, m_fFieldOfView(FOV)
 		, m_fNearPlane(nearPlane)
@@ -30,6 +30,7 @@ namespace browser
 		, m_iViewportWidth(viewportWidth)
 		, m_iViewportHeight(viewportHeight)
 		, m_oProjectionMatrix(GLM_MAT4_UNIT)
+		, m_uProjectionMatrixDirtyTag(0)
         , m_eRenderPathType(RenderPathType::Forward)
 		, m_pRenderTexture(nullptr)
 		, m_iDepth(0)
@@ -44,7 +45,7 @@ namespace browser
 		: BaseComponent("Camera")
 		, m_oViewMatrix(GLM_MAT4_UNIT)
 		, m_oGlobalPosition(GLM_VEC3_ZERO)
-		, m_bTransDirty(true)
+		, m_uViewMatrixDirtyTag(0)
 		, m_eProjectionType(ProjectionType::Perspective)
 		, m_fFieldOfView(60.0f)
 		, m_fNearPlane(0.3f)
@@ -52,6 +53,7 @@ namespace browser
 		, m_iViewportWidth(800)
 		, m_iViewportHeight(600)
 		, m_oProjectionMatrix(GLM_MAT4_UNIT)
+		, m_uProjectionMatrixDirtyTag(0)
 		, m_eRenderPathType(RenderPathType::Forward)
 		, m_pRenderTexture(nullptr)
 		, m_iDepth(0)
@@ -70,7 +72,7 @@ namespace browser
 	void Camera::updateCamera(float deltaTime)
 	{
 		Transform* transform = m_oBelongEntity ? m_oBelongEntity->getComponent<Transform>() : nullptr;
-		if (transform)
+		if (transform && transform->getCurFrameDirty())
 		{
 			// 获取相机的model矩阵
 			const glm::mat4& matrix_model = transform->getModelMatrix();
@@ -93,7 +95,8 @@ namespace browser
 			m_oViewMatrix = glm::lookAt(camera_position, camera_target, camera_up);
             m_oGlobalPosition = transform->getGlobalPosition();
 
-            m_bTransDirty = transform->getCurFrameDirty();
+			// 更新脏标记
+			generateViewMatrixDirtyTag();
 		}
 	}
     
@@ -136,12 +139,39 @@ namespace browser
 			}
 			break;
 		}
+
+		// 更新脏标记
+		generateProjectionMatrixDirtyTag();
+	}
+
+	void Camera::generateViewMatrixDirtyTag()
+	{
+		m_uViewMatrixDirtyTag = (m_uViewMatrixDirtyTag + 1) % VALUE_DIRTY_TAG_MAX;
+	}
+
+	void Camera::generateProjectionMatrixDirtyTag()
+	{
+		m_uProjectionMatrixDirtyTag = (m_uProjectionMatrixDirtyTag + 1) % VALUE_DIRTY_TAG_MAX;
 	}
 
 	void Camera::setDepth(int depth)
 	{
 		CameraSystem::getInstance()->setDirty(true);
 		m_iDepth = depth;
+	}
+
+	void Camera::setRenderTexture(RenderTexture* rt)
+	{
+		m_pRenderTexture = rt;
+
+		setViewportSize(rt->getWidth(), rt->getHeight());
+	}
+
+	void Camera::setViewportSize(int width, int height)
+	{
+		m_iViewportWidth = width;
+		m_iViewportHeight = height;
+		updateProjectionMatrix();
 	}
 
 	void Camera::handleEvent(ComponentEvent event, BaseComponentMessage* msg)

@@ -27,6 +27,9 @@ namespace browser
 		REGISTER_PROPERTY_GET_SET(bool, m_bDirty, Dirty)
 		REGISTER_PROPERTY_GET(Camera*, m_oMainCamera, MainCamera)
 		REGISTER_PROPERTY_CONSTREF_GET(std::vector<Camera*>, m_vActiveCameras, ActiveCameras)
+		REGISTER_PROPERTY_GET(int, m_iViewportWidth, ViewportWidth)
+		REGISTER_PROPERTY_GET(int, m_iViewportHeight, ViewportHeight)
+		void setViewportSize(int width, int height);
 
 	private:
 		// 相机渲染顺序发生变动
@@ -34,6 +37,11 @@ namespace browser
 		// 当前帧激活相机队列
 		// 规则：相机的渲染纹理不为空的相机；渲染纹理为空的相机列表中Depth最大的相机
 		std::vector<Camera*> m_vActiveCameras;
+
+		// 视口宽
+		int m_iViewportWidth;
+		// 视口高
+		int m_iViewportHeight;
 
 		// 主摄像机
 		Camera* m_oMainCamera;
