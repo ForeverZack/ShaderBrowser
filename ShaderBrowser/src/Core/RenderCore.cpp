@@ -253,6 +253,7 @@ namespace core
         // make sure the viewport matches the new window dimensions; note that width and
         // height will be significantly larger than specified on retina displays.
 		CameraSystem::getInstance()->setViewportSize(width, height);
+		GUIFramework::getInstance()->setViewportSize(width, height);
     }
     
     void RenderCore::mouse_callback(GLFWwindow* window, double xpos, double ypos)

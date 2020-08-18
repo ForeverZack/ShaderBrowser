@@ -11,8 +11,6 @@ namespace browser
 		, m_uIndexCount(0)
 		, m_bTransformDirty(false)
 		, m_bCameraDirty(false)
-		, m_uViewMatrixDirtyTag(0)
-		, m_uProjectionDirtyTag(0)
 	{
 		m_oRenderType = MeshRenderer::RendererType::RendererType_Mesh;
 	}
@@ -41,23 +39,25 @@ namespace browser
 		m_uVertexCount = mesh->getVertexCount();
 		m_uIndexCount = mesh->getIndexCount();
 
-		m_bTransformDirty = transform->getCurFrameDirty() || material->getTransformDirty();
+		// 物体发生形变、位移、旋转；材质参数需要更新  （这些情况下都需要更新材质中的下列属性）
+		m_bTransformDirty = transform->getCurFrameDirty() || material->getDirty();
 		if (m_bTransformDirty)
 		{
-			material->setTransformDirty(false);
 			m_oModelMatrix = transform->getModelMatrix();
 		}
-		m_bCameraDirty = camera!=material->getCurCamera() || m_uViewMatrixDirtyTag!=camera->getViewMatrixDirtyTag() || m_uProjectionDirtyTag!=camera->getProjectionMatrixDirtyTag();
+		// 材质相机跟当前不同；材质参数需要更新；相机位置、视口发生改变  （这些情况下都需要更新材质中的下列属性）
+		m_bCameraDirty = camera!=material->getCurCamera() || material->getDirty() || material->getViewMatrixDirtyTag()!=camera->getViewMatrixDirtyTag() || material->getProjectionMatrixDirtyTag()!=camera->getProjectionMatrixDirtyTag();
 		if (m_bCameraDirty)
 		{
-			m_uViewMatrixDirtyTag = camera->getViewMatrixDirtyTag();
-			m_uProjectionDirtyTag = camera->getProjectionMatrixDirtyTag();
+			material->setViewMatrixDirtyTag(camera->getViewMatrixDirtyTag());
+			material->setProjectionMatrixDirtyTag(camera->getProjectionMatrixDirtyTag());
 
 			material->setCurCamera(camera);
             m_oCameraGlobalPosition = camera->getGlobalPosition();
 			m_oViewMatrix = camera->getViewMatrix();
 			m_oProjectionMatrix = camera->getProjectionMatrix();
 		}
+		material->setDirty(false);	// 材质更新完成
         
         // 记录uniform    TODO: 这里的uniform是复制的，在所有的所有渲染命令都拷贝完material之后，应该将材质UniformValue的dirty重置为false (Tips: 可以试试独立了渲染线程之后，还需不需要这个dirty了)
 		const std::unordered_map<std::string, UniformValue>& uniforms = material->getUniforms();

@@ -72,9 +72,6 @@ namespace browser
 		// view, projection矩阵
 		glm::mat4 m_oViewMatrix;
 		glm::mat4 m_oProjectionMatrix;
-		// view, projection 脏标记
-		unsigned short m_uViewMatrixDirtyTag;
-		unsigned short m_uProjectionDirtyTag;
 		// 材质属性
 		std::unordered_map<std::string, UniformValue> m_mUniforms;
 	};

@@ -19,13 +19,11 @@
 13）内存的管理与检查。 <br>
 等等<br>
 
-## 2020.8.18 <br>
-GUIFramework适配。
 
-## 2020.8.17 <br>
-相机需要根据RenderTexture的大小来改变视口大小（注意，需要通过glViewport来告诉opengl当前帧缓冲对应渲染的视口大小(默认帧缓存，渲染纹理)）。
-另外，之前对Camera的脏标记处理有问题（当RenderCommand缓存池存在多个富余的时候，Camera相关信息会不更新）。视口的大小也要记录
-到CameraSystem中去，更新时相机都需要更新。 <br>
+## 2020.8.17~2020.8.18 <br>
+相机需要根据RenderTexture的大小来改变视口大小（注意，需要通过glViewport来告诉opengl当前帧缓冲对应渲染的视口大小(默认帧缓存
+，渲染纹理)）。GUIFramework适配。另外，之前对Camera的脏标记处理有问题（脏标记需要记录在Material中，才能得到正确的结果）。
+视口的大小也要记录到CameraSystem中去，更新时相机都需要更新。<br>
 
 ## 2020.6.13~2020.6.29 <br>
 现在可以使用RenderTexture了，也添加了UniformValue对RT的支持；修改了UniformValue的脏标记使用，在每帧生成渲染命令结束后对他们的值进行重置

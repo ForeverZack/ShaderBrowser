@@ -14,6 +14,14 @@ using namespace customGL;
 
 namespace browser
 {
+	/*
+		相机只有两种情况下会被启用：1.相机的渲染纹理不为空的相机；2.渲染纹理为空的相机列表中Depth最大的相机。
+		第1种情况下，相机的视口大小与渲染纹理大小保持一致；第2种情况下，相机的视口大小为游戏窗口的大小。
+	*/
+
+	/*
+		相机的脏标记是以unsigned short来处理的，每当相机的位置或者视口发生变化时，脏标记都会更新。这样Material可以记录下来，对比Camera跟Material的脏标记，来判断需不需要更新Material的参数。
+	*/
 	class Camera : public BaseComponent
 	{
 	public:

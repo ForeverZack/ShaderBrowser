@@ -89,7 +89,9 @@ namespace customGL
         REGISTER_PROPERTY_GET_SET(bool, m_bDefaultMaterialFlag, DefaultMaterialFlag)
         REGISTER_PROPERTY_GET_SET(unsigned int, m_eQueue, RenderQueue)
 		REGISTER_PROPERTY_GET_SET(browser::Camera*, m_oCurCamera, CurCamera)
-		REGISTER_PROPERTY_GET_SET(bool, m_bTransformDirty, TransformDirty)
+		REGISTER_PROPERTY_GET_SET(bool, m_bDirty, Dirty)
+		REGISTER_PROPERTY_GET_SET(unsigned short, m_uViewMatrixDirtyTag, ViewMatrixDirtyTag)
+		REGISTER_PROPERTY_GET_SET(unsigned short, m_uProjectionMatrixDirtyTag, ProjectionMatrixDirtyTag)
 		const std::unordered_map<std::string, UniformValue>& getUniforms() 
 		{
 			return m_mUniforms;
@@ -148,8 +150,11 @@ namespace customGL
         // 一些其他属性
         // 当前渲染用的相机
         browser::Camera* m_oCurCamera;
-		// Transform脏标记
-		bool m_bTransformDirty;
+		// 材质脏标记	(处理材质修改时，重新传入通用参数)
+		bool m_bDirty;
+		// view, projection 脏标记 (处理Camera)
+		unsigned short m_uViewMatrixDirtyTag;
+		unsigned short m_uProjectionMatrixDirtyTag;
         
         
         

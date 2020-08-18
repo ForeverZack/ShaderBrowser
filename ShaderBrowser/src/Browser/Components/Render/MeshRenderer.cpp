@@ -83,7 +83,7 @@ namespace browser
             addMaterial(material);
         }
 		// 重置脏标记
-		material->setTransformDirty(true);
+		material->setDirty(true);
 
 		return material;
 	}

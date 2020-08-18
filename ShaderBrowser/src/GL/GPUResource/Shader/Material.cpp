@@ -100,9 +100,11 @@ namespace customGL
         , m_bDefaultMaterialFlag(false)
         , m_bTransparentFlag(false)
         , m_oCurCamera(nullptr)
-		, m_bTransformDirty(true)
+		, m_bDirty(true)
 		, m_pPrePass(nullptr)
 		, m_pShadowCasterPass(nullptr)
+		, m_uViewMatrixDirtyTag(0)
+		, m_uProjectionMatrixDirtyTag(0)
 	{
         m_vPass.clear();
 	

@@ -29,7 +29,9 @@ namespace common
 
 	public:
 		// 初始化
-		void init(int winWidth, int winHeight);
+		void init(int viewportWidth, int viewportHeight);
+		// 设置视口大小
+		void setViewportSize(int width, int height);
 		// 每帧更新 (逻辑线程)
 		void update(float deltaTime);
 

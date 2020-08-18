@@ -522,7 +522,7 @@ namespace common
 			}
 		}
 		// 第二个参数将显示一个关闭按钮，如果点击了关闭按钮，则第二个参数将被置为false
-		ImGui::SetNextWindowSize(m_oSize, ImGuiCond_Appearing);
+		ImGui::SetNextWindowSize(m_oSize, ImGuiCond_Always);	// 注意第二个参数是控制size啥时被使用(第一次创建；显示隐藏；总是；。。。)。
 		ImGui::SetNextWindowBgAlpha(m_fBgAlpha);
 		if (m_bShowClose)
 		{
@@ -563,9 +563,16 @@ namespace common
 		}
 	}
 
-	void BaseGUIPanel::setViewportSize(int width, int height)
+	void BaseGUIPanel::setPosition(float x, float y)
 	{
+		m_oPosition.x = x;
+		m_oPosition.y = y;
+	}
 
+	void BaseGUIPanel::setSize(float width, float height)
+	{
+		m_oSize.x = width;
+		m_oSize.y = height;
 	}
     
     void BaseGUIPanel::cleanContent()
