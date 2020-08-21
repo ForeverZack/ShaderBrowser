@@ -42,10 +42,6 @@ namespace customGL
 //        int indexCount;
 //    };
     
-    // 默认的GLProgram名称
-    //extern const char* DEFAULT_GLPROGRAM_NAME;
-    // 默认材质名称
-    //extern const char* DEFAULT_MATERIAL_NAME;
     // 圆周率PI
     extern const float PI;
     // 坐标轴X
@@ -218,17 +214,55 @@ namespace customGL
         // 数据大小
         GLint data_size;
     };
+
+	// 模板测试方法参数
+	class StencilFuncParameter
+	{
+	public:
+		StencilFuncParameter(GLint re, GLuint ma)
+			: func(GL_EQUAL)
+			, ref(re)
+			, mask(ma)
+		{
+		}
+		StencilFuncParameter(GLenum fun, GLint re, GLuint ma)
+			: func(fun)
+			, ref(re)
+			, mask(ma)
+		{
+		}
+	public:
+		GLenum func;
+		GLint ref;
+		GLuint mask;
+	};
+
+	// 模板缓冲更新参数
+	class StencilOpParameter
+	{
+	public:
+		StencilOpParameter(GLenum sf, GLenum df, GLenum dp)
+			: sfail(sf)
+			, dpfail(df)
+			, dppass(dp)
+		{
+		}
+	public:
+		GLenum sfail;
+		GLenum dpfail;
+		GLenum dppass;
+	};
     
     // Transform feedback输出buffer属性
     class FeedbackBufferDeclaration
     {
     public:
         FeedbackBufferDeclaration()
-        : type(BufferType::BT_ArrayBuffer)
-        , varying("")
-        , bindIdx(0)
-        , size(0)
-        , internalFormat(GL_RGBA32F)
+			: type(BufferType::BT_ArrayBuffer)
+			, varying("")
+			, bindIdx(0)
+			, size(0)
+			, internalFormat(GL_RGBA32F)
         {
             for (int i=0; i<EXCHANGE_BUFFERS_COUNT; ++i)
             {

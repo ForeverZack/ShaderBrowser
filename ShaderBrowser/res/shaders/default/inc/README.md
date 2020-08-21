@@ -14,7 +14,7 @@
 define XXX必须放在#include "CommonStruct.inc"之前，不然shader编译不会创建这些结构体。<br>
 
 ## Standard.inc<br>
-包含引擎内部的所有标准uniform参数，必须包含。<br>
+包含引擎内部的所有标准uniform参数，以及对标签的定义，必须包含。<br>
 
 ## Math.inc<br>
 通用的数学计算方法库，便于代码简洁。 <br>

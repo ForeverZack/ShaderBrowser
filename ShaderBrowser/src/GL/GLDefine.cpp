@@ -4,11 +4,6 @@
 
 namespace customGL {
     
-    // 默认GLProgram名称
-    //extern const char* DEFAULT_GLPROGRAM_NAME = "ShaderBrowser_DefaultGLProgram";
-    
-    // 默认材质名称
-    //extern const char* DEFAULT_MATERIAL_NAME = "ShaderBrowser_DefaultMaterial";
     // 圆周率
     extern const float PI = 3.141592454f;
     // 坐标轴X

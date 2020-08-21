@@ -49,10 +49,10 @@ namespace browser
 		m_bCameraDirty = camera!=material->getCurCamera() || material->getDirty() || material->getViewMatrixDirtyTag()!=camera->getViewMatrixDirtyTag() || material->getProjectionMatrixDirtyTag()!=camera->getProjectionMatrixDirtyTag();
 		if (m_bCameraDirty)
 		{
+			material->setCurCamera(camera);
 			material->setViewMatrixDirtyTag(camera->getViewMatrixDirtyTag());
 			material->setProjectionMatrixDirtyTag(camera->getProjectionMatrixDirtyTag());
 
-			material->setCurCamera(camera);
             m_oCameraGlobalPosition = camera->getGlobalPosition();
 			m_oViewMatrix = camera->getViewMatrix();
 			m_oProjectionMatrix = camera->getProjectionMatrix();

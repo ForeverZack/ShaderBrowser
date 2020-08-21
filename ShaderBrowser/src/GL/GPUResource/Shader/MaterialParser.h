@@ -84,6 +84,8 @@ namespace customGL
         std::string vert_program;
         std::string frag_program;
 		unsigned int tags;		// 标签属性
+		// TODO: Blend
+		// TODO: Stencil
     };
 
 	class MaterialParameters : public common::Reference
@@ -93,6 +95,8 @@ namespace customGL
 		std::string name;
 		// renderQueue
 		unsigned int renderQueue;
+		// TODO: Blend
+		// TODO: Stencil
 		// uniforms
 		std::vector<MaterialUniformParamter> uniforms;
 		// pass
