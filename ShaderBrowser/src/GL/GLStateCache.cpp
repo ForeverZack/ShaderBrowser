@@ -9,6 +9,9 @@ namespace customGL
 		: m_bEnableZTest(false)
 		, m_eZTestFunc(GL_NONE)
 		, m_bZWrite(false)
+		, m_bEnableStencilTest(false)
+		, m_bEnableBlend(false)
+		, m_eBlendEquation(GL_FUNC_ADD)
     {
 
     }
@@ -89,6 +92,85 @@ namespace customGL
 			}
 		}
     }
+
+	void GLStateCache::setStencilEnable(bool enable)
+	{
+		if (m_bEnableStencilTest != enable)
+		{
+			m_bEnableStencilTest = enable;
+			if (enable)
+			{
+				glEnable(GL_STENCIL_TEST);
+			}
+			else
+			{
+				glDisable(GL_STENCIL_TEST);
+			}
+		}
+	}
+
+	void GLStateCache::setStencilFuncParameter(GLenum func, GLint ref, GLuint mask)
+	{
+		if (m_oStencilFuncParam.func!=func || m_oStencilFuncParam.ref!=ref || m_oStencilFuncParam.mask!=mask)
+		{
+			m_oStencilFuncParam.func = func;
+			m_oStencilFuncParam.ref = ref;
+			m_oStencilFuncParam.mask = mask;
+
+			glStencilFunc(func, ref, mask);
+		}
+	}
+
+	void GLStateCache::setStencilOpParameter(GLenum sfail, GLenum dpfail, GLenum dppass)
+	{
+		if (m_oStencilOpParam.sfail!=sfail || m_oStencilOpParam.dpfail!=dpfail || m_oStencilOpParam.dppass!=dppass)
+		{
+			m_oStencilOpParam.sfail = sfail;
+			m_oStencilOpParam.dpfail = dpfail;
+			m_oStencilOpParam.dppass = dppass;
+
+			glStencilOp(sfail, dpfail, dppass);
+		}
+	}
+
+	void GLStateCache::setBlendEnalbe(bool enable)
+	{
+		if (m_bEnableBlend != enable)
+		{
+			m_bEnableBlend = enable;
+			if (enable)
+			{
+				glEnable(GL_BLEND);
+			}
+			else
+			{
+				glDisable(GL_BLEND);
+			}
+		}
+	}
+
+	void GLStateCache::setBlendFuncParameter(GLenum sfactor, GLenum dfactor, GLenum safactor, GLenum dafactor)
+	{
+		if (m_oBlendFuncParam.sfactor!=sfactor || m_oBlendFuncParam.dfactor!=dfactor || m_oBlendFuncParam.safactor!=safactor || m_oBlendFuncParam.dafactor!=dafactor)
+		{
+			m_oBlendFuncParam.sfactor = sfactor;
+			m_oBlendFuncParam.dfactor = dfactor;
+			m_oBlendFuncParam.safactor = safactor;
+			m_oBlendFuncParam.dafactor = dafactor;
+
+			glBlendFuncSeparate(sfactor, dfactor, safactor, dafactor);
+		}
+	}
+
+	void GLStateCache::setBlendEquation(GLenum equation)
+	{
+		if (m_eBlendEquation != equation)
+		{
+			m_eBlendEquation = equation;
+
+			glBlendEquation(equation);
+		}
+	}
     
     
 }

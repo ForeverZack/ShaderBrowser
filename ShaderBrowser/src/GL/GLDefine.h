@@ -219,6 +219,12 @@ namespace customGL
 	class StencilFuncParameter
 	{
 	public:
+		StencilFuncParameter()
+			: func(GL_NONE)
+			, ref(GL_NONE)
+			, mask(GL_NONE)
+		{
+		}
 		StencilFuncParameter(GLint re, GLuint ma)
 			: func(GL_EQUAL)
 			, ref(re)
@@ -240,6 +246,12 @@ namespace customGL
 	class StencilOpParameter
 	{
 	public:
+		StencilOpParameter()
+			: sfail(GL_NONE)
+			, dpfail(GL_NONE)
+			, dppass(GL_NONE)
+		{
+		}
 		StencilOpParameter(GLenum sf, GLenum df, GLenum dp)
 			: sfail(sf)
 			, dpfail(df)
@@ -256,6 +268,13 @@ namespace customGL
 	class BlendFuncParameter
 	{
 	public:
+		BlendFuncParameter()
+			: sfactor(GL_NONE)
+			, dfactor(GL_NONE)
+			, safactor(GL_NONE)
+			, dafactor(GL_NONE)
+		{
+		}
 		BlendFuncParameter(GLenum sf, GLenum df)
 			: sfactor(sf)
 			, dfactor(df)

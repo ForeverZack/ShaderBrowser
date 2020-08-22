@@ -190,6 +190,7 @@ namespace customGL
 		}
 		else
 		{
+			m_pStencilFuncParam->func = GL_EQUAL;
 			m_pStencilFuncParam->ref = ref;
 			m_pStencilFuncParam->mask = mask;
 		}
