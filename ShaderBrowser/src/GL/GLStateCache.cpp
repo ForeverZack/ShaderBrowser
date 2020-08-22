@@ -5,6 +5,10 @@ namespace customGL
 {    
 
     GLStateCache::GLStateCache()
+		// depth test
+		: m_bEnableZTest(false)
+		, m_eZTestFunc(GL_NONE)
+		, m_bZWrite(false)
     {
 
     }
@@ -52,18 +56,38 @@ namespace customGL
 		}
 	}
     
-    void GLStateCache::openDepthTest(GLenum depthFunc/* = GL_LESS*/, GLenum depthMask/* = GL_TRUE*/)
+    void GLStateCache::setZTest(bool enable, GLenum depthFunc/* = GL_LESS*/, GLenum depthMask/* = GL_TRUE*/)
     {
-        // 开启深度测试
-        glEnable(GL_DEPTH_TEST);
-        glDepthFunc(depthFunc);     // 默认值:深度小于当前深度缓存值时可通过深度测试
-        glDepthMask(depthMask);     // 默认值:表示深度缓存可写,如果为GL_FALSE则表示深度缓存为只读
-    }
-    
-    void GLStateCache::closeDepthTest()
-    {
-        // 关闭深度缓存测试
-        glDisable(GL_DEPTH_TEST);
+        // 深度测试开关
+		if (m_bEnableZTest != enable)
+		{
+			m_bEnableZTest = enable;
+			if (enable)
+			{
+				glEnable(GL_DEPTH_TEST);
+			}
+			else
+			{
+				glDisable(GL_DEPTH_TEST);
+
+			}
+		}
+
+		if (enable)
+		{
+			// 深度测试方法
+			if (m_eZTestFunc != depthFunc)
+			{
+				m_eZTestFunc = depthFunc;
+				glDepthFunc(depthFunc);     // 默认值:深度小于当前深度缓存值时可通过深度测试
+			}
+			// 深度缓存写入开关
+			if (m_bZWrite != depthMask)
+			{
+				m_bZWrite = depthMask;
+				glDepthMask(depthMask);     // 默认值:表示深度缓存可写,如果为GL_FALSE则表示深度缓存为只读
+			}
+		}
     }
     
     

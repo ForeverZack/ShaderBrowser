@@ -381,6 +381,7 @@ namespace customGL
 			const shared_ptr<Assimp::Importer>& importer = (*itor);
 			importer->FreeScene();
 		}
+		m_vImporters.clear();
         // 释放骨骼动画数据
         for (auto itor=m_mSkeletonAnimations.begin(); itor!=m_mSkeletonAnimations.end(); ++itor)
         {

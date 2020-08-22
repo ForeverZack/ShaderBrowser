@@ -3,6 +3,7 @@
 
 #include <glad/glad.h>
 #include <glm/glm.hpp>
+#include <memory>
 #include <vector>
 #include "GL/GPUResource/BaseGPUResource.h"
 #include "GL/GPUResource/Shader/Pass.h"
@@ -111,6 +112,20 @@ namespace customGL
 		bool isSupportPrePass();
 		bool isSupportShadowCaster();
 
+		// depth test
+		REGISTER_PROPERTY_SET(bool, m_bEnableZTest, EnableZTest)
+		REGISTER_PROPERTY_SET(GLenum, m_eZTestFunc, ZTestFunc)
+		REGISTER_PROPERTY_SET(bool, m_bZWrite, ZWrite)
+		// stencil test
+		void setEnableStencilTest(bool enable);
+		void setStencilFuncParameter(GLint ref, GLuint mask);
+		void setStencilFuncParameter(GLenum func, GLint ref, GLuint mask);
+		void setStencilOpParameter(GLenum sfail, GLenum dpfail, GLenum dppass);
+		// blend
+		void setEnableBlend(bool enable);
+		void setBlendFuncParameter(GLenum sfactor, GLenum dfactor);
+		void setBlendFuncParameter(GLenum sfactor, GLenum dfactor, GLenum safactor, GLenum dafactor);
+
 	private:
         // id
         unsigned int m_uMaterialId;
@@ -155,13 +170,13 @@ namespace customGL
 			GL_NOTEQUAL	在片段深度值不等于缓冲区的深度值时通过测试
 			GL_GEQUAL			在片段深度值大于等于缓冲区的深度值时通过测试
 		*/
-        GLuint m_uZTestFunc;
+		GLenum m_eZTestFunc;
 		// 深度写入		开启：glDepthMask(GL_TRUE);	关闭：glDepthMask(GL_FALSE);
 		bool m_bZWrite;
         
 		// stencil
         // 模板测试开关
-        bool m_bEnableStencil;
+        bool m_bEnableStencilTest;
 		// 模板测试方法		glStencilFunc(GLenum func, GLint ref, GLuint mask)
 		/*
 			一共包含三个参数：
@@ -169,7 +184,7 @@ namespace customGL
 					ref：设置了模板测试的参考值(Reference Value)。模板缓冲的内容将会与这个值进行比较。
 					mask：设置一个掩码，它将会与参考值和储存的模板值在测试比较它们之前进行与(AND)运算。初始情况下所有位都为1。
 		*/
-		StencilFuncParameter* m_pStencilFuncParam;
+		std::shared_ptr<StencilFuncParameter> m_pStencilFuncParam;
 		// 模板缓冲更新		glStencilOp(GLenum sfail, GLenum dpfail, GLenum dppass)
 		/*
 			一共包含三个选项，我们能够设定每个选项应该采取的行为：
@@ -187,7 +202,7 @@ namespace customGL
 			GL_DECR_WRAP	与GL_DECR一样，但如果模板值小于0则将其设置为最大值
 			GL_INVERT			按位翻转当前的模板缓冲值
 		*/
-		StencilOpParameter* m_pStencilOpParam;
+		std::shared_ptr<StencilOpParameter> m_pStencilOpParam;
 
 		// Blend
         // 混合开关
@@ -221,6 +236,7 @@ namespace customGL
 			GL_CONSTANT_ALPHA	因子等于C¯constant的alpha分量
 			GL_ONE_MINUS_CONSTANT_ALPHA	因子等于1− C¯constant的alpha分量
 		*/
+		std::shared_ptr<BlendFuncParameter> m_pBlendFuncParam;
 		// 混合操作(运算符)		glBlendEquation(GLenum mode)允许我们设置运算符，默认选项为GL_FUNC_ADD
 		/*
 			它提供了三个选项：
@@ -228,6 +244,7 @@ namespace customGL
 				GL_FUNC_SUBTRACT：将两个分量相减： C_result=Src−Dst。
 				GL_FUNC_REVERSE_SUBTRACT：将两个分量相减，但顺序相反：C_result=Dst−Src。
 		*/
+		GLenum m_eBlendEquation;
         
         
         

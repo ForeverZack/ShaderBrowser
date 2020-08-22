@@ -236,7 +236,6 @@ namespace customGL
 		GLint ref;
 		GLuint mask;
 	};
-
 	// 模板缓冲更新参数
 	class StencilOpParameter
 	{
@@ -251,6 +250,31 @@ namespace customGL
 		GLenum sfail;
 		GLenum dpfail;
 		GLenum dppass;
+	};
+
+	// 混合因子参数
+	class BlendFuncParameter
+	{
+	public:
+		BlendFuncParameter(GLenum sf, GLenum df)
+			: sfactor(sf)
+			, dfactor(df)
+			, safactor(sf)
+			, dafactor(df)
+		{
+		}
+		BlendFuncParameter(GLenum sf, GLenum df, GLenum saf, GLenum daf)
+			: sfactor(sf)
+			, dfactor(df)
+			, safactor(saf)
+			, dafactor(daf)
+		{
+		}
+	public:
+		GLenum sfactor;
+		GLenum dfactor;
+		GLenum safactor;
+		GLenum dafactor;
 	};
     
     // Transform feedback输出buffer属性

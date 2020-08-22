@@ -93,7 +93,7 @@ namespace browser
 		glClear(DEFAULT_GL_CLEAR_BIT);
 
         // 开启深度测试
-        GLStateCache::getInstance()->openDepthTest();
+        GLStateCache::getInstance()->setZTest(true);
 
 		// 根据fbo拆分渲染命令
 		std::vector<BaseRenderCommand*>::iterator s_itor, e_itor;
@@ -268,7 +268,7 @@ namespace browser
         // 绘制调试信息
         // 1.包围盒
         // 开启深度测试
-        GLStateCache::getInstance()->openDepthTest();
+        GLStateCache::getInstance()->setZTest(true);
         {
             SkinnedMeshRenderer* skinnedRenderer = nullptr;
             BaseBoundBox* boundBox = nullptr;
@@ -335,7 +335,7 @@ namespace browser
         
         // 2.坐标轴
         // 关闭深度测试
-        GLStateCache::getInstance()->closeDepthTest();
+        GLStateCache::getInstance()->setZTest(false);
         {
             GLProgram* linesProgram = GLProgramCache::getInstance()->getGLProgram(GLProgram::DEFAULT_LINES_GLPROGRAM_NAME);
             for(auto itor = m_mComponentsList.begin(); itor!=m_mComponentsList.end(); ++itor)
