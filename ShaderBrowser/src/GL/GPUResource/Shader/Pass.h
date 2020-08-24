@@ -38,11 +38,50 @@ namespace customGL
 
 		REGISTER_PROPERTY_GET(GLProgram*, m_oGLProgram, GLProgram)
 
+		// depth test
+		REGISTER_PROPERTY_SET(bool, m_bEnableZTest, EnableZTest)
+		REGISTER_PROPERTY_SET(GLenum, m_eZTestFunc, ZTestFunc)
+		REGISTER_PROPERTY_SET(bool, m_bZWrite, ZWrite)
+		// stencil test
+		void setEnableStencilTest(bool enable);
+		void setStencilFuncParameter(GLint ref, GLuint mask);
+		void setStencilFuncParameter(GLenum func, GLint ref, GLuint mask);
+		void setStencilOpParameter(GLenum sfail, GLenum dpfail, GLenum dppass);
+		// blend
+		void setEnableBlend(bool enable);
+		void setBlendFuncParameter(GLenum sfactor, GLenum dfactor);
+		void setBlendFuncParameter(GLenum sfactor, GLenum dfactor, GLenum safactor, GLenum dafactor);
+		REGISTER_PROPERTY_SET(GLenum, m_eBlendEquation, BlendEquation)
+
 	private:
 		// 对应的shader程序
 		GLProgram* m_oGLProgram;
 		// UniformValues是否被初始化
 		bool m_bInitUniforms;
+
+		// depth
+		// 深度测试开关
+		bool m_bEnableZTest;
+		// 深度测试方法
+		GLenum m_eZTestFunc;
+		// 深度写入
+		bool m_bZWrite;
+
+		// stencil
+		// 模板测试开关
+		bool m_bEnableStencilTest;
+		// 模板测试方法
+		std::shared_ptr<StencilFuncParameter> m_pStencilFuncParam;
+		// 模板缓冲更新
+		std::shared_ptr<StencilOpParameter> m_pStencilOpParam;
+
+		// Blend
+		// 混合开关
+		bool m_bEnableBlend;
+		// 混合因子		
+		std::shared_ptr<BlendFuncParameter> m_pBlendFuncParam;
+		// 混合操作(运算符)
+		GLenum m_eBlendEquation;
 	};
 }
 

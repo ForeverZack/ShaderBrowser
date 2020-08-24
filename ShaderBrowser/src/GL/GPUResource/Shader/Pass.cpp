@@ -16,6 +16,18 @@ namespace customGL
 	Pass::Pass()
 		: m_oGLProgram(nullptr)
 		, m_bInitUniforms(false)
+		// depth test
+		, m_bEnableZTest(true)
+		, m_eZTestFunc(GL_LESS)
+		, m_bZWrite(true)
+		// stencil test
+		, m_bEnableStencilTest(false)
+		, m_pStencilFuncParam(nullptr)
+		, m_pStencilOpParam(nullptr)
+		// blend
+		, m_bEnableBlend(false)
+		, m_pBlendFuncParam(nullptr)
+		, m_eBlendEquation(GL_FUNC_ADD)
 	{
 	}
 
@@ -64,6 +76,106 @@ namespace customGL
 
 		// 初始化完成
 		m_bInitUniforms = true;
+	}
+
+	void Pass::setEnableStencilTest(bool enable)
+	{
+		m_bEnableStencilTest = enable;
+		if (enable)
+		{
+			if (!m_pStencilFuncParam)
+			{
+				m_pStencilFuncParam = make_shared<StencilFuncParameter>(0, 0xFF);
+			}
+			if (!m_pStencilOpParam)
+			{
+				m_pStencilOpParam = make_shared<StencilOpParameter>(GL_KEEP, GL_KEEP, GL_REPLACE);
+			}
+		}
+	}
+
+	void Pass::setStencilFuncParameter(GLint ref, GLuint mask)
+	{
+		if (!m_pStencilFuncParam)
+		{
+			m_pStencilFuncParam = make_shared<StencilFuncParameter>(ref, mask);
+		}
+		else
+		{
+			m_pStencilFuncParam->func = GL_EQUAL;
+			m_pStencilFuncParam->ref = ref;
+			m_pStencilFuncParam->mask = mask;
+		}
+	}
+
+	void Pass::setStencilFuncParameter(GLenum func, GLint ref, GLuint mask)
+	{
+		if (!m_pStencilFuncParam)
+		{
+			m_pStencilFuncParam = make_shared<StencilFuncParameter>(func, ref, mask);
+		}
+		else
+		{
+			m_pStencilFuncParam->func = func;
+			m_pStencilFuncParam->ref = ref;
+			m_pStencilFuncParam->mask = mask;
+		}
+	}
+
+	void Pass::setStencilOpParameter(GLenum sfail, GLenum dpfail, GLenum dppass)
+	{
+		if (!m_pStencilOpParam)
+		{
+			m_pStencilOpParam = make_shared<StencilOpParameter>(sfail, dpfail, dppass);
+		}
+		else
+		{
+			m_pStencilOpParam->sfail = sfail;
+			m_pStencilOpParam->dpfail = dpfail;
+			m_pStencilOpParam->dppass = dppass;
+		}
+	}
+
+	void Pass::setEnableBlend(bool enable)
+	{
+		m_bEnableBlend = enable;
+		if (enable)
+		{
+			if (!m_pBlendFuncParam)
+			{
+				m_pBlendFuncParam = std::make_shared<BlendFuncParameter>(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			}
+		}
+	}
+
+	void Pass::setBlendFuncParameter(GLenum sfactor, GLenum dfactor)
+	{
+		if (!m_pBlendFuncParam)
+		{
+			m_pBlendFuncParam = std::make_shared<BlendFuncParameter>(sfactor, dfactor);
+		}
+		else
+		{
+			m_pBlendFuncParam->sfactor = sfactor;
+			m_pBlendFuncParam->dfactor = dfactor;
+			m_pBlendFuncParam->safactor = sfactor;
+			m_pBlendFuncParam->dafactor = dfactor;
+		}
+	}
+
+	void Pass::setBlendFuncParameter(GLenum sfactor, GLenum dfactor, GLenum safactor, GLenum dafactor)
+	{
+		if (!m_pBlendFuncParam)
+		{
+			m_pBlendFuncParam = std::make_shared<BlendFuncParameter>(sfactor, dfactor, safactor, dafactor);
+		}
+		else
+		{
+			m_pBlendFuncParam->sfactor = sfactor;
+			m_pBlendFuncParam->dfactor = dfactor;
+			m_pBlendFuncParam->safactor = safactor;
+			m_pBlendFuncParam->dafactor = dafactor;
+		}
 	}
 
 
