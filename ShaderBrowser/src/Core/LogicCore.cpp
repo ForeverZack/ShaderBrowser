@@ -216,6 +216,36 @@ namespace core
                     browser::Transform* transform = camera->getBelongEntity()->getComponent<browser::Transform>();
                     transform->Rotate(glm::vec3(0, 1.0f, 0), Space::World);
                 }
+                
+                if (Input::isKeyDown(GLFW_KEY_H))
+                {
+                    // screen space -> world space
+                    {
+                        glm::vec4 world_position(10, 5, 9, 1);
+                        browser::Camera* mainCamera = CameraSystem::getInstance()->getMainCamera();
+                        mainCamera->updateCamera(0.1);
+                        glm::vec4 frag_position = mainCamera->getProjectionMatrix() * mainCamera->getViewMatrix() * world_position;
+                        BROWSER_LOG("==========VP * world_pos=============");
+                        BROWSER_LOG_VEC4(frag_position);    // 9.74279, -4.89898, 3.64501, 4.24264
+                        frag_position.x /= frag_position.w;
+                        frag_position.y /= frag_position.w;
+                        frag_position.z /= frag_position.w;
+                        frag_position.w /= frag_position.w;
+                        BROWSER_LOG("==========perspective division (/w)=============");
+                        BROWSER_LOG_VEC4(frag_position);    // 2.2964, -1.1547, 0.859136, 1
+                        
+                        glm::mat4 vp_inverse = glm::inverse(mainCamera->getProjectionMatrix() * mainCamera->getViewMatrix());
+                        glm::vec4 convert_world_pos = vp_inverse * frag_position;
+                        BROWSER_LOG("========VP_inverse * frag_pos==========");
+                        BROWSER_LOG_VEC4(convert_world_pos);
+                        convert_world_pos.x /= convert_world_pos.w;
+                        convert_world_pos.y /= convert_world_pos.w;
+                        convert_world_pos.z /= convert_world_pos.w;
+                        convert_world_pos.w /= convert_world_pos.w;
+                        BROWSER_LOG("========calculate world pos==========");
+                        BROWSER_LOG_VEC4(convert_world_pos);
+                    }
+                }
             }
             
     //            else if(glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS)
