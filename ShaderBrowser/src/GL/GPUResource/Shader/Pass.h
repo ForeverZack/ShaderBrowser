@@ -18,6 +18,75 @@ using namespace std;
 
 namespace customGL
 {
+	// depth
+	class PassZTestParameter
+	{
+	public:
+		PassZTestParameter()
+			: enableZTest(true)
+			, ZTestFunc(GL_LESS)
+			, ZWrite(true)
+		{
+		}
+		~PassZTestParameter()
+		{
+		}
+
+	public:
+		// 深度测试开关
+		bool enableZTest;
+		// 深度测试方法
+		GLenum ZTestFunc;
+		// 深度写入
+		bool ZWrite;
+	};
+
+	// stencil
+	class PassStencilParameter
+	{
+	public:
+		PassStencilParameter()
+			: enableStencilTest(false)
+		{
+			stencilFuncParam = make_shared<StencilFuncParameter>(0, 0xFF);
+			stencilOpParam = make_shared<StencilOpParameter>(GL_KEEP, GL_KEEP, GL_REPLACE);
+		}
+		~PassStencilParameter()
+		{
+		}
+
+	public:
+		// 模板测试开关
+		bool enableStencilTest;
+		// 模板测试方法
+		std::shared_ptr<StencilFuncParameter> stencilFuncParam;
+		// 模板缓冲更新
+		std::shared_ptr<StencilOpParameter> stencilOpParam;
+	};
+
+	// blend
+	class PassBlendParameter
+	{
+	public:
+		PassBlendParameter()
+			: enableBlend(false)
+			, blendEquation(GL_FUNC_ADD)
+		{
+			blendFuncParam = std::make_shared<BlendFuncParameter>(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		}
+		~PassBlendParameter()
+		{
+		}
+
+	public:
+		// 混合开关
+		bool enableBlend;
+		// 混合因子		
+		std::shared_ptr<BlendFuncParameter> blendFuncParam;
+		// 混合操作(运算符)
+		GLenum blendEquation;
+	};
+
     class Pass : public common::Reference
 	{
 	public:
@@ -33,15 +102,18 @@ namespace customGL
 		void init(GLProgram* program);
 		// 使用材质
 		void usePass(bool transformDirty, const glm::mat4& modelMatrix, bool cameraDirty, const glm::vec3& cameraGlobalPos, const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix, std::unordered_map<std::string, UniformValue>& uniforms);
+		void usePass(bool transformDirty, const glm::mat4& modelMatrix, bool cameraDirty, const glm::vec3& cameraGlobalPos, const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix, std::unordered_map<std::string, UniformValue>& uniforms
+							, bool enableZTest, GLenum ZTestFunc, bool ZWrite, bool enableStencilTest, std::shared_ptr<StencilFuncParameter> stencilFuncParam, std::shared_ptr<StencilOpParameter> stencilOpParam
+							, bool enableBlend, std::shared_ptr<BlendFuncParameter> blendFuncParam, GLenum blendEquation);
 		// GLProgram是否在GPU中加载完成
 		bool isGPUResourceLoaded();
 
 		REGISTER_PROPERTY_GET(GLProgram*, m_oGLProgram, GLProgram)
 
 		// depth test
-		REGISTER_PROPERTY_SET(bool, m_bEnableZTest, EnableZTest)
-		REGISTER_PROPERTY_SET(GLenum, m_eZTestFunc, ZTestFunc)
-		REGISTER_PROPERTY_SET(bool, m_bZWrite, ZWrite)
+		void setEnableZTest(bool enableZTest);
+		void setZTestFunc(GLenum ZTestFunc);
+		void setZWrite(bool ZWrite);
 		// stencil test
 		void setEnableStencilTest(bool enable);
 		void setStencilFuncParameter(GLint ref, GLuint mask);
@@ -51,7 +123,7 @@ namespace customGL
 		void setEnableBlend(bool enable);
 		void setBlendFuncParameter(GLenum sfactor, GLenum dfactor);
 		void setBlendFuncParameter(GLenum sfactor, GLenum dfactor, GLenum safactor, GLenum dafactor);
-		REGISTER_PROPERTY_SET(GLenum, m_eBlendEquation, BlendEquation)
+		void setBlendEquation(GLenum blendEquation);
 
 	private:
 		// 对应的shader程序
@@ -60,28 +132,13 @@ namespace customGL
 		bool m_bInitUniforms;
 
 		// depth
-		// 深度测试开关
-		bool m_bEnableZTest;
-		// 深度测试方法
-		GLenum m_eZTestFunc;
-		// 深度写入
-		bool m_bZWrite;
+		std::shared_ptr<PassZTestParameter> m_pZTestParameter;
 
 		// stencil
-		// 模板测试开关
-		bool m_bEnableStencilTest;
-		// 模板测试方法
-		std::shared_ptr<StencilFuncParameter> m_pStencilFuncParam;
-		// 模板缓冲更新
-		std::shared_ptr<StencilOpParameter> m_pStencilOpParam;
+		std::shared_ptr<PassStencilParameter> m_pStencilParameter;
 
 		// Blend
-		// 混合开关
-		bool m_bEnableBlend;
-		// 混合因子		
-		std::shared_ptr<BlendFuncParameter> m_pBlendFuncParam;
-		// 混合操作(运算符)
-		GLenum m_eBlendEquation;
+		std::shared_ptr<PassBlendParameter> m_pBlendParameter;
 	};
 }
 

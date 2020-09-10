@@ -22,7 +22,7 @@ namespace customGL
 		void bindImageBuffer(GLuint textureUnit, GLuint textureId, GLenum access, GLenum format);
         
         // 设置深度测试
-        void setZTest(bool enable, GLenum depthFunc = GL_LESS, GLenum depthMask = GL_TRUE);
+        void setZTest(bool enable, GLenum depthFunc = GL_LESS, GLenum zwrite = GL_TRUE);
 		// 设置模板测试
 		void setStencilEnable(bool enable);
 		void setStencilFuncParameter(GLenum func, GLint ref, GLuint mask);
