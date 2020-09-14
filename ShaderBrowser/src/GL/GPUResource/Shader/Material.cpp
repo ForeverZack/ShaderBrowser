@@ -109,6 +109,10 @@ namespace customGL
 		, m_bEnableZTest(true)
 		, m_eZTestFunc(GL_LESS)
 		, m_bZWrite(true)
+		// cull face
+		, m_bEnableCull(true)
+		, m_eCullFace(GL_FRONT)
+		, m_eFrontFace(GL_CCW)
 		// stencil test
 		, m_bEnableStencilTest(false)
 		, m_pStencilFuncParam(nullptr)
@@ -164,7 +168,10 @@ namespace customGL
         
         // 使用glProgram		TODO: usePass会改变UniformValue的dirty状态，如果是多个pass会出问题的！！
         //m_vPass[index]->usePass(transformDirty, modelMatrix, cameraDirty, cameraGlobalPos, viewMatrix, projectionMatrix, uniforms);
-		m_vPass[index]->usePass(transformDirty, modelMatrix, cameraDirty, cameraGlobalPos, viewMatrix, projectionMatrix, uniforms, m_bEnableZTest, m_eZTestFunc, m_bZWrite, m_bEnableStencilTest, m_pStencilFuncParam, m_pStencilOpParam
+		m_vPass[index]->usePass(transformDirty, modelMatrix, cameraDirty, cameraGlobalPos, viewMatrix, projectionMatrix, uniforms
+												, m_bEnableZTest, m_eZTestFunc, m_bZWrite
+												, m_bEnableCull, m_eCullFace, m_eFrontFace
+												, m_bEnableStencilTest, m_pStencilFuncParam, m_pStencilOpParam
 												, m_bEnableBlend, m_pBlendFuncParam, m_eBlendEquation);
 	}
 

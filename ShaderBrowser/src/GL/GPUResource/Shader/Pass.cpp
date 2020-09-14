@@ -18,6 +18,8 @@ namespace customGL
 		, m_bInitUniforms(false)
 		// depth test
 		, m_pZTestParameter(nullptr)
+		// cull face
+		, m_pCullParameter(nullptr)
 		// stencil test
 		, m_pStencilParameter(nullptr)
 		// blend
@@ -73,7 +75,9 @@ namespace customGL
 	}
 
 	void Pass::usePass(bool transformDirty, const glm::mat4& modelMatrix, bool cameraDirty, const glm::vec3& cameraGlobalPos, const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix, std::unordered_map<std::string, UniformValue>& uniforms
-		, bool enableZTest, GLenum ZTestFunc, bool ZWrite, bool enableStencilTest, std::shared_ptr<StencilFuncParameter> stencilFuncParam, std::shared_ptr<StencilOpParameter> stencilOpParam
+		, bool enableZTest, GLenum ZTestFunc, bool ZWrite
+		, bool enableCull, GLenum cullFace, GLenum frontFace
+		, bool enableStencilTest, std::shared_ptr<StencilFuncParameter> stencilFuncParam, std::shared_ptr<StencilOpParameter> stencilOpParam
 		, bool enableBlend, std::shared_ptr<BlendFuncParameter> blendFuncParam, GLenum blendEquation)
 	{
 		// base
@@ -90,6 +94,17 @@ namespace customGL
 		{
 			// 否则，默认使用material的参数
 			GLStateCache::getInstance()->setZTest(enableZTest, ZTestFunc, ZWrite);
+		}
+		// cull face
+		if (m_pCullParameter)
+		{
+			// 如果pass设置了cull相关参数
+			GLStateCache::getInstance()->setCull(m_pCullParameter->enableCull, m_pCullParameter->cullFace, m_pCullParameter->frontFace);
+		}
+		else
+		{
+			// 否则，默认使用material的参数
+			GLStateCache::getInstance()->setCull(enableCull, cullFace, frontFace);
 		}
 		// stencil test
 		if (m_pStencilParameter)
@@ -169,6 +184,33 @@ namespace customGL
 			m_pZTestParameter = std::make_shared<PassZTestParameter>();
 		}
 		m_pZTestParameter->ZWrite = ZWrite;
+	}
+
+	void Pass::setEnableCull(bool enable)
+	{
+		if (!m_pCullParameter)
+		{
+			m_pCullParameter = std::make_shared<PassCullParameter>();
+		}
+		m_pCullParameter->enableCull = enable;
+	}
+
+	void Pass::setCullFace(GLenum cullFace)
+	{
+		if (!m_pCullParameter)
+		{
+			m_pCullParameter = std::make_shared<PassCullParameter>();
+		}
+		m_pCullParameter->cullFace = cullFace;
+	}
+
+	void Pass::setFrontFace(GLenum frontFace)
+	{
+		if (!m_pCullParameter)
+		{
+			m_pCullParameter = std::make_shared<PassCullParameter>();
+		}
+		m_pCullParameter->frontFace = frontFace;
 	}
 
 	void Pass::setEnableStencilTest(bool enableStencilTest)

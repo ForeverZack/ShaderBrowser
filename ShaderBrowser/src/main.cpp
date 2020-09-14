@@ -86,8 +86,8 @@ glm::vec3 coords[] = {
 };
 // indices
 GLushort indices[] = {
-	0, 1, 2,
-	0, 2, 3
+	2, 1, 0,
+	3, 2, 0
 };
 
 Model* m_oModel = nullptr;	//纳米装

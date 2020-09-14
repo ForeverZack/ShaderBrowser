@@ -9,6 +9,9 @@ namespace customGL
 		: m_bEnableZTest(false)
 		, m_eZTestFunc(GL_NONE)
 		, m_bZWrite(false)
+		, m_bEnableCull(false)
+		, m_eCullFace(GL_NONE)
+		, m_eFrontFace(GL_CCW)
 		, m_bEnableStencilTest(false)
 		, m_bEnableBlend(false)
 		, m_eBlendEquation(GL_FUNC_ADD)
@@ -91,6 +94,39 @@ namespace customGL
 			}
 		}
     }
+
+	void GLStateCache::setCull(bool enable, GLenum cullFace/* = GL_BACK*/, GLenum frontFace/* = GL_CCW*/)
+	{
+		// 面剔除开关
+		if (m_bEnableCull != enable)
+		{
+			m_bEnableCull = enable;
+			if (enable)
+			{
+				glEnable(GL_CULL_FACE);
+			}
+			else
+			{
+				glDisable(GL_CULL_FACE);
+			}
+		}
+
+		if (enable)
+		{
+			// 设置剔除面
+			if (m_eCullFace != cullFace)
+			{
+				m_eCullFace = cullFace;
+				glCullFace(cullFace);
+			}
+			// 设置正面是逆时针还是顺时针 
+			if (m_eFrontFace != frontFace)
+			{
+				m_eFrontFace = frontFace;
+				glFrontFace(frontFace);
+			}
+		}
+	}
 
 	void GLStateCache::setStencilEnable(bool enable)
 	{

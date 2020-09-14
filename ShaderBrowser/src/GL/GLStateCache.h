@@ -23,6 +23,8 @@ namespace customGL
         
         // 设置深度测试
         void setZTest(bool enable, GLenum depthFunc = GL_LESS, GLenum zwrite = GL_TRUE);
+		// 设置面剔除
+		void setCull(bool enable, GLenum cullFace = GL_BACK, GLenum frontFace = GL_CCW);
 		// 设置模板测试
 		void setStencilEnable(bool enable);
 		void setStencilFuncParameter(GLenum func, GLint ref, GLuint mask);
@@ -54,6 +56,23 @@ namespace customGL
 		GLenum m_eZTestFunc;
 		// 深度写入		开启：glDepthMask(GL_TRUE);	关闭：glDepthMask(GL_FALSE);
 		bool m_bZWrite;
+
+		// cull
+		// 面剔除开关
+		bool m_bEnableCull;
+		// 剔除面的类型	glCullFace(GL_FRONT);
+		/*
+			GL_BACK：只剔除背向面。
+			GL_FRONT：只剔除正向面。
+			GL_FRONT_AND_BACK：剔除正向面和背向面。
+		*/
+		GLenum m_eCullFace;
+		// 正面是顺时针还是逆时针 (默认值是逆时针)		glFrontFace(GL_CCW);
+		/*
+			GL_CCW: 逆时针
+			GL_CW: 顺时针
+		*/
+		GLenum m_eFrontFace;
 
 
 		// stencil

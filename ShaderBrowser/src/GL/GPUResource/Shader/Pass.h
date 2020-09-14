@@ -41,6 +41,29 @@ namespace customGL
 		bool ZWrite;
 	};
 
+	// cull
+	class PassCullParameter
+	{
+	public:
+		PassCullParameter()
+			: enableCull(true)
+			, cullFace(GL_FRONT)
+			, frontFace(GL_CCW)
+		{
+		}
+		~PassCullParameter()
+		{
+		}
+
+	public:
+		// 面剔除开关
+		bool enableCull;
+		// 剔除面的类型
+		GLenum cullFace;
+		// 正面是顺时针还是逆时针 (默认值是逆时针)	
+		GLenum frontFace;
+	};
+
 	// stencil
 	class PassStencilParameter
 	{
@@ -103,7 +126,9 @@ namespace customGL
 		// 使用材质
 		void usePass(bool transformDirty, const glm::mat4& modelMatrix, bool cameraDirty, const glm::vec3& cameraGlobalPos, const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix, std::unordered_map<std::string, UniformValue>& uniforms);
 		void usePass(bool transformDirty, const glm::mat4& modelMatrix, bool cameraDirty, const glm::vec3& cameraGlobalPos, const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix, std::unordered_map<std::string, UniformValue>& uniforms
-							, bool enableZTest, GLenum ZTestFunc, bool ZWrite, bool enableStencilTest, std::shared_ptr<StencilFuncParameter> stencilFuncParam, std::shared_ptr<StencilOpParameter> stencilOpParam
+							, bool enableZTest, GLenum ZTestFunc, bool ZWrite
+							, bool enableCull, GLenum cullFace, GLenum frontFace
+							, bool enableStencilTest, std::shared_ptr<StencilFuncParameter> stencilFuncParam, std::shared_ptr<StencilOpParameter> stencilOpParam
 							, bool enableBlend, std::shared_ptr<BlendFuncParameter> blendFuncParam, GLenum blendEquation);
 		// GLProgram是否在GPU中加载完成
 		bool isGPUResourceLoaded();
@@ -114,6 +139,10 @@ namespace customGL
 		void setEnableZTest(bool enableZTest);
 		void setZTestFunc(GLenum ZTestFunc);
 		void setZWrite(bool ZWrite);
+		// cull face
+		void setEnableCull(bool enable);
+		void setCullFace(GLenum cullFace);
+		void setFrontFace(GLenum frontFace);
 		// stencil test
 		void setEnableStencilTest(bool enable);
 		void setStencilFuncParameter(GLint ref, GLuint mask);
@@ -133,6 +162,9 @@ namespace customGL
 
 		// depth
 		std::shared_ptr<PassZTestParameter> m_pZTestParameter;
+
+		// cull
+		std::shared_ptr<PassCullParameter> m_pCullParameter;
 
 		// stencil
 		std::shared_ptr<PassStencilParameter> m_pStencilParameter;

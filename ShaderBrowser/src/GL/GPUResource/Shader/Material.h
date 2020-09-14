@@ -116,6 +116,10 @@ namespace customGL
 		REGISTER_PROPERTY_SET(bool, m_bEnableZTest, EnableZTest)
 		REGISTER_PROPERTY_SET(GLenum, m_eZTestFunc, ZTestFunc)
 		REGISTER_PROPERTY_SET(bool, m_bZWrite, ZWrite)
+		// cull face
+		REGISTER_PROPERTY_SET(bool, m_bEnableCull, EnableCull)
+		REGISTER_PROPERTY_SET(GLenum, m_eCullFace, CullFace)
+		REGISTER_PROPERTY_SET(GLenum, m_eFrontFace, FrontFace)
 		// stencil test
 		void setEnableStencilTest(bool enable);
 		void setStencilFuncParameter(GLint ref, GLuint mask);
@@ -163,6 +167,14 @@ namespace customGL
 		GLenum m_eZTestFunc;
 		// 深度写入
 		bool m_bZWrite;
+
+		// cull
+		// 面剔除开关
+		bool m_bEnableCull;
+		// 剔除面的类型
+		GLenum m_eCullFace;
+		// 正面是顺时针还是逆时针 (默认值是逆时针)	
+		GLenum m_eFrontFace;
         
 		// stencil
         // 模板测试开关
