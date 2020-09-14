@@ -47,7 +47,7 @@ namespace customGL
 	public:
 		PassCullParameter()
 			: enableCull(true)
-			, cullFace(GL_FRONT)
+			, cullFace(GL_BACK)
 			, frontFace(GL_CCW)
 		{
 		}

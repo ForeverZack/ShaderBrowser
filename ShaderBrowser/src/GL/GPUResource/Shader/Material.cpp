@@ -111,7 +111,7 @@ namespace customGL
 		, m_bZWrite(true)
 		// cull face
 		, m_bEnableCull(true)
-		, m_eCullFace(GL_FRONT)
+		, m_eCullFace(GL_BACK)
 		, m_eFrontFace(GL_CCW)
 		// stencil test
 		, m_bEnableStencilTest(false)

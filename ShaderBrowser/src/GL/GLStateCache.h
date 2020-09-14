@@ -60,7 +60,7 @@ namespace customGL
 		// cull
 		// 面剔除开关
 		bool m_bEnableCull;
-		// 剔除面的类型	glCullFace(GL_FRONT);
+		// 剔除面的类型	glCullFace(GL_BACK);
 		/*
 			GL_BACK：只剔除背向面。
 			GL_FRONT：只剔除正向面。
