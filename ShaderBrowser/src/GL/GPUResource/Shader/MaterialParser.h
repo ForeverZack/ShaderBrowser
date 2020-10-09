@@ -84,8 +84,14 @@ namespace customGL
         std::string vert_program;
         std::string frag_program;
 		unsigned int tags;		// 标签属性
-		// TODO: Blend
-		// TODO: Stencil
+		// Depth
+		PassZTestParameter ztest;
+		// Cull
+		PassCullParameter cull;
+		// Stencil
+		PassStencilParameter stencil;
+		// Blend
+		PassBlendParameter blend;
     };
 
 	class MaterialParameters : public common::Reference
@@ -95,8 +101,14 @@ namespace customGL
 		std::string name;
 		// renderQueue
 		unsigned int renderQueue;
-		// TODO: Blend
-		// TODO: Stencil
+		// Depth
+		PassZTestParameter ztest;
+		// Cull
+		PassCullParameter cull;
+		// Stencil
+		PassStencilParameter stencil;
+		// Blend
+		PassBlendParameter blend;
 		// uniforms
 		std::vector<MaterialUniformParamter> uniforms;
 		// pass

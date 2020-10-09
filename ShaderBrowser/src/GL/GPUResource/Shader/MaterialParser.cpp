@@ -38,6 +38,8 @@ namespace customGL
 	// 字符串转OpenGL内部枚举
 	std::unordered_map<std::string, GLenum> MaterialParser::m_mString2GLenum
 	{
+		{ "GL_NONE", GL_NONE },	// None
+		// texture
 		{ "GL_REPEAT", GL_REPEAT },	// 对纹理的默认行为。重复纹理图像。
 		{ "GL_MIRRORED_REPEAT", GL_MIRRORED_REPEAT },	// 和GL_REPEAT一样，但每次重复图片是镜像放置的。
 		{ "GL_CLAMP_TO_EDGE", GL_CLAMP_TO_EDGE },	// 纹理坐标会被约束在0到1之间，超出的部分会重复纹理坐标的边缘，产生一种边缘被拉伸的效果。
@@ -48,6 +50,48 @@ namespace customGL
 		{ "GL_LINEAR_MIPMAP_NEAREST", GL_LINEAR_MIPMAP_NEAREST },	// 使用最邻近的多级渐远纹理级别，并使用线性插值进行采样
 		{ "GL_NEAREST_MIPMAP_LINEAR", GL_NEAREST_MIPMAP_LINEAR },	// 在两个最匹配像素大小的多级渐远纹理之间进行线性插值，使用邻近插值进行采样
 		{ "GL_LINEAR_MIPMAP_LINEAR", GL_LINEAR_MIPMAP_LINEAR },	// 在两个邻近的多级渐远纹理之间使用线性插值，并使用线性插值进行采样
+		// z test
+		{ "GL_ALWAYS", GL_ALWAYS },	// 永远通过深度测试
+		{ "GL_NEVER", GL_NEVER },	// 永远不通过深度测试
+		{ "GL_LESS", GL_LESS },	// 在片段深度值小于缓冲的深度值时通过测试
+		{ "GL_EQUAL", GL_EQUAL },	// 在片段深度值等于缓冲区的深度值时通过测试
+		{ "GL_LEQUAL", GL_LEQUAL },	// 在片段深度值小于等于缓冲区的深度值时通过测试
+		{ "GL_GREATER", GL_GREATER },	// 在片段深度值大于缓冲区的深度值时通过测试
+		{ "GL_NOTEQUAL", GL_NOTEQUAL },	// 在片段深度值不等于缓冲区的深度值时通过测试
+		{ "GL_GEQUAL", GL_GEQUAL },	// 在片段深度值大于等于缓冲区的深度值时通过测试
+		// cull
+		{ "GL_BACK", GL_BACK },	// 只剔除背向面
+		{ "GL_FRONT", GL_FRONT },	// 只剔除正向面
+		{ "GL_FRONT_AND_BACK", GL_FRONT_AND_BACK },	// 剔除正向面和背向面
+		{ "GL_CCW", GL_CCW },	// 逆时针
+		{ "GL_CW", GL_CW },	// 顺时针
+		// stencil
+		{ "GL_KEEP", GL_KEEP },	// 保持当前储存的模板值
+		{ "GL_ZERO", GL_ZERO },	// 将模板值设置为0
+		{ "GL_REPLACE", GL_REPLACE },	// 将模板值设置为glStencilFunc函数设置的ref值
+		{ "GL_INCR", GL_INCR },	// 如果模板值小于最大值则将模板值加1
+		{ "GL_INCR_WRAP", GL_INCR_WRAP },	// 与GL_INCR一样，但如果模板值超过了最大值则归零
+		{ "GL_DECR", GL_DECR },	// 如果模板值大于最小值则将模板值减1
+		{ "GL_DECR_WRAP", GL_DECR_WRAP },	// 与GL_DECR一样，但如果模板值小于0则将其设置为最大值
+		{ "GL_INVERT", GL_INVERT },	// 按位翻转当前的模板缓冲值
+		// blend		C_result = C_source∗F_source + C_destination∗F_destination
+		{ "GL_ZERO", GL_ZERO },	// 因子等于0
+		{ "GL_ONE", GL_ONE },	// 因子等于1
+		{ "GL_SRC_COLOR", GL_SRC_COLOR },	// 因子等于源颜色向量C¯source
+		{ "GL_ONE_MINUS_SRC_COLOR", GL_ONE_MINUS_SRC_COLOR },	// 因子等于1−C¯source
+		{ "GL_DST_COLOR", GL_DST_COLOR },	// 因子等于目标颜色向量C¯destination
+		{ "GL_ONE_MINUS_DST_COLOR", GL_ONE_MINUS_DST_COLOR },	// 因子等于1−C¯destination
+		{ "GL_SRC_ALPHA", GL_SRC_ALPHA },	// 因子等于C¯source的alpha分量
+		{ "GL_ONE_MINUS_SRC_ALPHA", GL_ONE_MINUS_SRC_ALPHA },	// 因子等于1− C¯source的alpha分量
+		{ "GL_DST_ALPHA", GL_DST_ALPHA },	// 因子等于C¯destination的alpha分量
+		{ "GL_ONE_MINUS_DST_ALPHA", GL_ONE_MINUS_DST_ALPHA },	// 因子等于1− C¯destination的alpha分量
+		{ "GL_CONSTANT_COLOR", GL_CONSTANT_COLOR },	// 因子等于常数颜色向量C¯constant
+		{ "GL_ONE_MINUS_CONSTANT_COLOR", GL_ONE_MINUS_CONSTANT_COLOR },	// 因子等于1−C¯constant
+		{ "GL_CONSTANT_ALPHA", GL_CONSTANT_ALPHA },	// 因子等于C¯constant的alpha分量
+		{ "GL_ONE_MINUS_CONSTANT_ALPHA", GL_ONE_MINUS_CONSTANT_ALPHA },	// 因子等于1− C¯constant的alpha分量
+		{ "GL_FUNC_ADD", GL_FUNC_ADD },	// 默认选项，将两个分量相加：C_result = Src + Dst。
+		{ "GL_FUNC_SUBTRACT", GL_FUNC_SUBTRACT },	// 将两个分量相减： C_result = Src−Dst。
+		{ "GL_FUNC_REVERSE_SUBTRACT", GL_FUNC_REVERSE_SUBTRACT },	// 将两个分量相减，但顺序相反：C_result = Dst−Src。
 	};
 
 	// 字符串转RenderQueue
@@ -165,6 +209,58 @@ namespace customGL
 		{
 			"name": "Standard",
 			"renderQueue": 1000,		// 或 "renderQueue": "Transparent",
+
+			// 深度测试
+			"ztest": 
+			{
+				"enable": true,
+				"func": "GL_LESS"
+			},
+			"ztest": false,
+			"zwrite": true,
+			// 裁切
+			"cull": 
+			{
+				"enable": true,
+				"cullface": "GL_BACK",
+				"frontface": "GL_CCW"
+			},
+			"cull": 
+			{
+				"enable": true,
+				"cullface": "GL_BACK"
+			},
+			"cull": false,
+			// 模板
+			"stencil": 
+			{
+				"enable": true,
+				"func": "GL_EQUAL",
+				"ref": 1,
+				"mask": 255,
+				"sfail": "GL_KEEP",
+				"dpfail": "GL_KEEP",
+				"dppass": "GL_REPLACE"
+			},
+			// 混合
+			"blend":
+			{
+				"enable": true,
+				"sfactor": "GL_SRC_ALPHA",
+				"dfactor": "GL_ONE_MINUS_SRC_ALPHA",
+				"safactor": "GL_SRC_ALPHA",
+				"dafactor": "GL_ONE_MINUS_SRC_ALPHA",
+				"equation": "GL_FUNC_ADD"
+			},
+			"blend":
+			{
+				"enable": true,
+				"sfactor": "GL_SRC_ALPHA",
+				"dfactor": "GL_ONE_MINUS_SRC_ALPHA"
+			},
+			"blend": true,
+
+
 			"uniforms": 
 			{
 				"CGL_TEXTURE0": 
@@ -187,6 +283,55 @@ namespace customGL
 					"frag": "shader/default/xx.frag",	
 					"vert_program": "代码代码",
 					"frag_program": "代码代码",
+					// 深度测试
+					"ztest":
+					{
+					"enable": true,
+					"func": "GL_LESS"
+					},
+					"ztest": false,
+					"zwrite": true,
+					// 裁切
+					"cull":
+					{
+					"enable": true,
+					"cullface": "GL_BACK",
+					"frontface": "GL_CCW"
+					},
+					"cull":
+					{
+					"enable": true,
+					"cullface": "GL_BACK"
+					},
+					"cull": false,
+					// 模板
+					"stencil":
+					{
+					"enable": true,
+					"func": "GL_EQUAL",
+					"ref": 1,
+					"mask": 255,
+					"sfail": "GL_KEEP",
+					"dpfail": "GL_KEEP",
+					"dppass": "GL_REPLACE"
+					},
+					// 混合
+					"blend":
+					{
+					"enable": true,
+					"sfactor": "GL_SRC_ALPHA",
+					"dfactor": "GL_ONE_MINUS_SRC_ALPHA",
+					"safactor": "GL_SRC_ALPHA",
+					"dafactor": "GL_ONE_MINUS_SRC_ALPHA",
+					"equation": "GL_FUNC_ADD"
+					},
+					"blend":
+					{
+					"enable": true,
+					"sfactor": "GL_SRC_ALPHA",
+					"dfactor": "GL_ONE_MINUS_SRC_ALPHA"
+					},
+					"blend": true,
 				},
 			],
 		}
@@ -227,6 +372,158 @@ namespace customGL
 		{
 			// 默认值  Opaque(1000)
 			parameters->renderQueue = RenderQueue::Opaque;
+		}
+
+		// depth
+		if (document.HasMember("ztest"))
+		{
+			if (document["ztest"].IsBool())
+			{
+				bool enable = document["ztest"].GetBool();
+				parameters->ztest.enableZTest = enable;
+			}
+			else
+			{
+				BROWSER_ASSERT(document["ztest"].IsObject(), "Material's ztest must be object value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+				if (document["ztest"].HasMember("enable"))
+				{
+					BROWSER_ASSERT(document["ztest"]["enable"].IsBool(), "Material's ztest enable must be bool value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+					parameters->ztest.enableZTest = document["ztest"]["enable"].GetBool();
+				}
+				if (document["ztest"].HasMember("func"))
+				{
+					BROWSER_ASSERT(document["ztest"]["func"].IsString(), "Material's ztest enable must be string value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+					parameters->ztest.ZTestFunc = convertString2GLenum(document["ztest"]["func"].GetString(), parameters->ztest.ZTestFunc);
+				}
+			}
+		}
+		if (document.HasMember("zwrite"))
+		{
+			if (document["zwrite"].IsBool())
+			{
+				bool enable = document["zwrite"].GetBool();
+				parameters->ztest.ZWrite = enable;
+			}
+		}
+
+		// cull
+		if (document.HasMember("cull"))
+		{
+			if (document["cull"].IsBool())
+			{
+				bool enable = document["cull"].GetBool();
+				parameters->cull.enableCull = enable;
+			}
+			else
+			{
+				BROWSER_ASSERT(document["cull"].IsObject(), "Material's cull must be object value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+				if (document["cull"].HasMember("enable"))
+				{
+					BROWSER_ASSERT(document["cull"]["enable"].IsBool(), "Material's cull enable must be bool value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+					parameters->cull.enableCull = document["cull"]["enable"].GetBool();
+				}
+				if (document["cull"].HasMember("cullface"))
+				{
+					BROWSER_ASSERT(document["cull"]["cullface"].IsString(), "Material's cull cullface must be string value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+					parameters->cull.cullFace = convertString2GLenum(document["cull"]["cullface"].GetString(), parameters->cull.cullFace);
+				}
+				if (document["cull"].HasMember("frontface"))
+				{
+					BROWSER_ASSERT(document["cull"]["frontface"].IsString(), "Material's cull frontface must be string value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+					parameters->cull.frontFace = convertString2GLenum(document["cull"]["frontface"].GetString(), parameters->cull.frontFace);
+				}
+			}
+		}
+
+		// stencil
+		if (document.HasMember("stencil"))
+		{
+			BROWSER_ASSERT(document["stencil"].IsObject(), "Material's stencil must be object value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+			BROWSER_ASSERT(document["stencil"].HasMember("enable"), "Material's stencil must has enable property in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+			BROWSER_ASSERT(document["stencil"].HasMember("func"), "Material's stencil must has func property in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+			BROWSER_ASSERT(document["stencil"].HasMember("ref"), "Material's stencil must has ref property in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+			BROWSER_ASSERT(document["stencil"].HasMember("mask"), "Material's stencil must has mask property in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+			BROWSER_ASSERT(document["stencil"].HasMember("sfail"), "Material's stencil must has sfail property in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+			BROWSER_ASSERT(document["stencil"].HasMember("dpfail"), "Material's stencil must has dpfail property in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+			BROWSER_ASSERT(document["stencil"].HasMember("dppass"), "Material's stencil must has dppass property in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+			
+			{
+				BROWSER_ASSERT(document["stencil"]["enable"].IsBool(), "Material's stencil enable must be bool value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+				parameters->stencil.enableStencilTest = document["stencil"]["enable"].GetBool();
+			}
+			{
+				BROWSER_ASSERT(document["stencil"]["func"].IsString(), "Material's stencil func must be string value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+				parameters->stencil.stencilFuncParam->func = convertString2GLenum(document["stencil"]["func"].GetString(), parameters->stencil.stencilFuncParam->func);
+			}
+			{
+				BROWSER_ASSERT(document["stencil"]["ref"].IsInt(), "Material's stencil ref must be int value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+				parameters->stencil.stencilFuncParam->ref = document["stencil"]["ref"].GetInt();
+			}
+			{
+				BROWSER_ASSERT(document["stencil"]["mask"].IsUint(), "Material's stencil mask must be uint value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+				parameters->stencil.stencilFuncParam->mask = document["stencil"]["mask"].GetUint();
+			}
+			{
+				BROWSER_ASSERT(document["stencil"]["sfail"].IsString(), "Material's stencil sfail must be string value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+				parameters->stencil.stencilOpParam->sfail = convertString2GLenum(document["stencil"]["sfail"].GetString(), parameters->stencil.stencilOpParam->sfail);
+			}
+			{
+				BROWSER_ASSERT(document["stencil"]["dpfail"].IsString(), "Material's stencil dpfail must be string value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+				parameters->stencil.stencilOpParam->dpfail = convertString2GLenum(document["stencil"]["dpfail"].GetString(), parameters->stencil.stencilOpParam->dpfail);
+			}
+			{
+				BROWSER_ASSERT(document["stencil"]["dppass"].IsString(), "Material's stencil dppass must be string value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+				parameters->stencil.stencilOpParam->dppass = convertString2GLenum(document["stencil"]["dppass"].GetString(), parameters->stencil.stencilOpParam->dppass);
+			}
+
+		}
+
+		// blend
+		if (document.HasMember("blend"))
+		{
+			if (document["blend"].IsBool())
+			{
+				bool enable = document["blend"].GetBool();
+				parameters->blend.enableBlend = enable;
+			}
+			else
+			{
+				BROWSER_ASSERT(document["blend"].IsObject(), "Material's blend must be object value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+				BROWSER_ASSERT(document["blend"].HasMember("enable"), "Material's blend must has enable property in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+				BROWSER_ASSERT(document["blend"].HasMember("sfactor"), "Material's blend must has sfactor property in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+				BROWSER_ASSERT(document["blend"].HasMember("dfactor"), "Material's blend must has dfactor property in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+
+				{
+					BROWSER_ASSERT(document["blend"]["enable"].IsBool(), "Material's blend enable must be bool value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+					parameters->blend.enableBlend = document["blend"]["enable"].GetBool();
+				}
+				if (!document["blend"].HasMember("safactor") || !document["blend"].HasMember("dafactor"))
+				{
+					BROWSER_ASSERT(document["blend"]["sfactor"].IsString(), "Material's blend sfactor must be string value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+					BROWSER_ASSERT(document["blend"]["dfactor"].IsString(), "Material's blend dfactor must be string value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+					parameters->blend.blendFuncParam->sfactor = parameters->blend.blendFuncParam->safactor = document["blend"]["sfactor"].GetBool();
+					parameters->blend.blendFuncParam->dfactor = parameters->blend.blendFuncParam->dafactor = document["blend"]["dfactor"].GetBool();
+				}
+				else
+				{
+					BROWSER_ASSERT(document["blend"].HasMember("safactor"), "Material's blend must has safactor property in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+					BROWSER_ASSERT(document["blend"].HasMember("dafactor"), "Material's blend must has dafactor property in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+					BROWSER_ASSERT(document["blend"]["sfactor"].IsString(), "Material's blend sfactor must be string value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+					BROWSER_ASSERT(document["blend"]["dfactor"].IsString(), "Material's blend dfactor must be string value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+					BROWSER_ASSERT(document["blend"]["safactor"].IsString(), "Material's blend safactor must be string value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+					BROWSER_ASSERT(document["blend"]["dafactor"].IsString(), "Material's blend dafactor must be string value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+					parameters->blend.blendFuncParam->sfactor = convertString2GLenum(document["blend"]["sfactor"].GetString(), parameters->blend.blendFuncParam->sfactor);
+					parameters->blend.blendFuncParam->dfactor = convertString2GLenum(document["blend"]["dfactor"].GetString(), parameters->blend.blendFuncParam->dfactor);
+					parameters->blend.blendFuncParam->safactor = convertString2GLenum(document["blend"]["safactor"].GetString(), parameters->blend.blendFuncParam->safactor);
+					parameters->blend.blendFuncParam->dafactor = convertString2GLenum(document["blend"]["dafactor"].GetString(), parameters->blend.blendFuncParam->dafactor);
+				}
+				if (document["blend"].HasMember("equation"))
+				{
+					BROWSER_ASSERT(document["blend"]["equation"].IsString(), "Material's blend equation must be string value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+					parameters->blend.blendEquation = convertString2GLenum(document["blend"]["equation"].GetString(), parameters->blend.blendEquation);
+				}
+
+			}
 		}
 
 		// uniforms

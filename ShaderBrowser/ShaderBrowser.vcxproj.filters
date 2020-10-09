@@ -357,10 +357,14 @@
     <ClCompile Include="src\Browser\Components\Render\Commands\MeshRenderCommand.cpp">
       <Filter>src\Browser\Components\Render\Commands</Filter>
     </ClCompile>
-    <ClCompile Include="src\GL\GPUOperateCommand\GPUOperateRenderTextureCommand.cpp" />
-    <ClCompile Include="src\GL\GPUResource\Texture\RenderTexture.cpp" />
     <ClCompile Include="src\Browser\Components\Render\Commands\ChangeFrameBufferObjectCommand.cpp">
       <Filter>src\Browser\Components\Render\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GL\GPUResource\Texture\RenderTexture.cpp">
+      <Filter>src\GL\GPUResource\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GL\GPUOperateCommand\GPUOperateRenderTextureCommand.cpp">
+      <Filter>src\GL\GPUOperateCommand</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -640,13 +644,17 @@
     <ClInclude Include="src\Browser\Components\Render\Commands\MeshRenderCommand.h">
       <Filter>src\Browser\Components\Render\Commands</Filter>
     </ClInclude>
-    <ClInclude Include="src\GL\GPUOperateCommand\GPUOperateRenderTextureCommand.h" />
-    <ClInclude Include="src\GL\GPUResource\Texture\RenderTexture.h" />
     <ClInclude Include="src\Browser\Components\Render\Commands\BaseRenderCommand.h">
       <Filter>src\Browser\Components\Render\Commands</Filter>
     </ClInclude>
     <ClInclude Include="src\Browser\Components\Render\Commands\ChangeFrameBufferObjectCommand.h">
       <Filter>src\Browser\Components\Render\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GL\GPUResource\Texture\RenderTexture.h">
+      <Filter>src\GL\GPUResource\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GL\GPUOperateCommand\GPUOperateRenderTextureCommand.h">
+      <Filter>src\GL\GPUOperateCommand</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
