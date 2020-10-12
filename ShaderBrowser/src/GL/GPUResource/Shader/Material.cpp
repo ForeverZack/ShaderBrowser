@@ -19,6 +19,23 @@ namespace customGL
         
 		// render queue
 		material->setRenderQueue(parameters->renderQueue);
+
+		// depth
+		material->setEnableZTest(parameters->ztest.enableZTest);
+		material->setZTestFunc(parameters->ztest.ZTestFunc);
+		material->setZWrite(parameters->ztest.ZWrite);
+		// cull
+		material->setEnableCull(parameters->cull.enableCull);
+		material->setCullFace(parameters->cull.cullFace);
+		material->setFrontFace(parameters->cull.frontFace);
+		// stencil
+		material->setEnableStencilTest(parameters->stencil.enableStencilTest);
+		material->setStencilFuncParameter(parameters->stencil.stencilFuncParam->func, parameters->stencil.stencilFuncParam->ref, parameters->stencil.stencilFuncParam->mask);
+		material->setStencilOpParameter(parameters->stencil.stencilOpParam->sfail, parameters->stencil.stencilOpParam->dpfail, parameters->stencil.stencilOpParam->dppass);
+		// blend
+		material->setEnableBlend(parameters->blend.enableBlend);
+		material->setBlendFuncParameter(parameters->blend.blendFuncParam->sfactor, parameters->blend.blendFuncParam->dfactor, parameters->blend.blendFuncParam->safactor, parameters->blend.blendFuncParam->dafactor);
+		material->setBlendEquation(parameters->blend.blendEquation);
 		
         // pass
         GLProgram* program = nullptr;
@@ -33,6 +50,23 @@ namespace customGL
             }
 			program = GLProgramCache::getInstance()->getGLProgramCopy(passParam.name);
 			pass = Pass::createPass(program);
+			// depth
+			pass->setEnableZTest(passParam.ztest.enableZTest);
+			pass->setZTestFunc(passParam.ztest.ZTestFunc);
+			pass->setZWrite(passParam.ztest.ZWrite);
+			// cull
+			pass->setEnableCull(passParam.cull.enableCull);
+			pass->setCullFace(passParam.cull.cullFace);
+			pass->setFrontFace(passParam.cull.frontFace);
+			// stencil
+			pass->setEnableStencilTest(passParam.stencil.enableStencilTest);
+			pass->setStencilFuncParameter(passParam.stencil.stencilFuncParam->func, passParam.stencil.stencilFuncParam->ref, passParam.stencil.stencilFuncParam->mask);
+			pass->setStencilOpParameter(passParam.stencil.stencilOpParam->sfail, passParam.stencil.stencilOpParam->dpfail, passParam.stencil.stencilOpParam->dppass);
+			// blend
+			pass->setEnableBlend(passParam.blend.enableBlend);
+			pass->setBlendFuncParameter(passParam.blend.blendFuncParam->sfactor, passParam.blend.blendFuncParam->dfactor, passParam.blend.blendFuncParam->safactor, passParam.blend.blendFuncParam->dafactor);
+			pass->setBlendEquation(passParam.blend.blendEquation);
+
             material->addPass(pass);
 
 			// pre-pass  (如果存在多个pass支持[PreparePass]标签，则只使用第一个支持的Pass)

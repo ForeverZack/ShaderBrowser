@@ -794,6 +794,155 @@ namespace customGL
                 }
 				passParam.tags |= GLProgram::parseShaderSourceCode(passParam.frag_program);	// 解析shader，将自定义的一些语法规则转成标准的glsl
 
+				// depth
+				if (one_pass.HasMember("ztest"))
+				{
+					if (one_pass["ztest"].IsBool())
+					{
+						bool enable = one_pass["ztest"].GetBool();
+						passParam.ztest.enableZTest = enable;
+					}
+					else
+					{
+						BROWSER_ASSERT(one_pass["ztest"].IsObject(), "Pass's ztest must be object value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+						if (one_pass["ztest"].HasMember("enable"))
+						{
+							BROWSER_ASSERT(one_pass["ztest"]["enable"].IsBool(), "Pass's ztest enable must be bool value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+							passParam.ztest.enableZTest = one_pass["ztest"]["enable"].GetBool();
+						}
+						if (one_pass["ztest"].HasMember("func"))
+						{
+							BROWSER_ASSERT(one_pass["ztest"]["func"].IsString(), "Pass's ztest enable must be string value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+							passParam.ztest.ZTestFunc = convertString2GLenum(one_pass["ztest"]["func"].GetString(), passParam.ztest.ZTestFunc);
+						}
+					}
+				}
+				if (one_pass.HasMember("zwrite"))
+				{
+					if (one_pass["zwrite"].IsBool())
+					{
+						bool enable = one_pass["zwrite"].GetBool();
+						passParam.ztest.ZWrite = enable;
+					}
+				}
+				// cull
+				if (one_pass.HasMember("cull"))
+				{
+					if (one_pass["cull"].IsBool())
+					{
+						bool enable = one_pass["cull"].GetBool();
+						passParam.cull.enableCull = enable;
+					}
+					else
+					{
+						BROWSER_ASSERT(one_pass["cull"].IsObject(), "Pass's cull must be object value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+						if (one_pass["cull"].HasMember("enable"))
+						{
+							BROWSER_ASSERT(one_pass["cull"]["enable"].IsBool(), "Pass's cull enable must be bool value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+							passParam.cull.enableCull = one_pass["cull"]["enable"].GetBool();
+						}
+						if (one_pass["cull"].HasMember("cullface"))
+						{
+							BROWSER_ASSERT(one_pass["cull"]["cullface"].IsString(), "Pass's cull cullface must be string value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+							passParam.cull.cullFace = convertString2GLenum(one_pass["cull"]["cullface"].GetString(), passParam.cull.cullFace);
+						}
+						if (one_pass["cull"].HasMember("frontface"))
+						{
+							BROWSER_ASSERT(one_pass["cull"]["frontface"].IsString(), "Pass's cull frontface must be string value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+							passParam.cull.frontFace = convertString2GLenum(one_pass["cull"]["frontface"].GetString(), passParam.cull.frontFace);
+						}
+					}
+				}
+				// stencil
+				if (one_pass.HasMember("stencil"))
+				{
+					BROWSER_ASSERT(one_pass["stencil"].IsObject(), "Pass's stencil must be object value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+					BROWSER_ASSERT(one_pass["stencil"].HasMember("enable"), "Pass's stencil must has enable property in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+					BROWSER_ASSERT(one_pass["stencil"].HasMember("func"), "Pass's stencil must has func property in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+					BROWSER_ASSERT(one_pass["stencil"].HasMember("ref"), "Pass's stencil must has ref property in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+					BROWSER_ASSERT(one_pass["stencil"].HasMember("mask"), "Pass's stencil must has mask property in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+					BROWSER_ASSERT(one_pass["stencil"].HasMember("sfail"), "Pass's stencil must has sfail property in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+					BROWSER_ASSERT(one_pass["stencil"].HasMember("dpfail"), "Pass's stencil must has dpfail property in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+					BROWSER_ASSERT(one_pass["stencil"].HasMember("dppass"), "Pass's stencil must has dppass property in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+
+					{
+						BROWSER_ASSERT(one_pass["stencil"]["enable"].IsBool(), "Pass's stencil enable must be bool value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+						passParam.stencil.enableStencilTest = one_pass["stencil"]["enable"].GetBool();
+					}
+					{
+						BROWSER_ASSERT(one_pass["stencil"]["func"].IsString(), "Pass's stencil func must be string value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+						passParam.stencil.stencilFuncParam->func = convertString2GLenum(one_pass["stencil"]["func"].GetString(), passParam.stencil.stencilFuncParam->func);
+					}
+					{
+						BROWSER_ASSERT(one_pass["stencil"]["ref"].IsInt(), "Pass's stencil ref must be int value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+						passParam.stencil.stencilFuncParam->ref = one_pass["stencil"]["ref"].GetInt();
+					}
+					{
+						BROWSER_ASSERT(one_pass["stencil"]["mask"].IsUint(), "Pass's stencil mask must be uint value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+						passParam.stencil.stencilFuncParam->mask = one_pass["stencil"]["mask"].GetUint();
+					}
+					{
+						BROWSER_ASSERT(one_pass["stencil"]["sfail"].IsString(), "Pass's stencil sfail must be string value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+						passParam.stencil.stencilOpParam->sfail = convertString2GLenum(one_pass["stencil"]["sfail"].GetString(), passParam.stencil.stencilOpParam->sfail);
+					}
+					{
+						BROWSER_ASSERT(one_pass["stencil"]["dpfail"].IsString(), "Pass's stencil dpfail must be string value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+						passParam.stencil.stencilOpParam->dpfail = convertString2GLenum(one_pass["stencil"]["dpfail"].GetString(), passParam.stencil.stencilOpParam->dpfail);
+					}
+					{
+						BROWSER_ASSERT(one_pass["stencil"]["dppass"].IsString(), "Pass's stencil dppass must be string value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+						passParam.stencil.stencilOpParam->dppass = convertString2GLenum(one_pass["stencil"]["dppass"].GetString(), passParam.stencil.stencilOpParam->dppass);
+					}
+
+				}
+				// blend
+				if (one_pass.HasMember("blend"))
+				{
+					if (one_pass["blend"].IsBool())
+					{
+						bool enable = one_pass["blend"].GetBool();
+						passParam.blend.enableBlend = enable;
+					}
+					else
+					{
+						BROWSER_ASSERT(one_pass["blend"].IsObject(), "Pass's blend must be object value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+						BROWSER_ASSERT(one_pass["blend"].HasMember("enable"), "Pass's blend must has enable property in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+						BROWSER_ASSERT(one_pass["blend"].HasMember("sfactor"), "Pass's blend must has sfactor property in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+						BROWSER_ASSERT(one_pass["blend"].HasMember("dfactor"), "Pass's blend must has dfactor property in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+
+						{
+							BROWSER_ASSERT(one_pass["blend"]["enable"].IsBool(), "Pass's blend enable must be bool value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+							passParam.blend.enableBlend = one_pass["blend"]["enable"].GetBool();
+						}
+						if (!one_pass["blend"].HasMember("safactor") || !one_pass["blend"].HasMember("dafactor"))
+						{
+							BROWSER_ASSERT(one_pass["blend"]["sfactor"].IsString(), "Pass's blend sfactor must be string value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+							BROWSER_ASSERT(one_pass["blend"]["dfactor"].IsString(), "Pass's blend dfactor must be string value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+							passParam.blend.blendFuncParam->sfactor = passParam.blend.blendFuncParam->safactor = one_pass["blend"]["sfactor"].GetBool();
+							passParam.blend.blendFuncParam->dfactor = passParam.blend.blendFuncParam->dafactor = one_pass["blend"]["dfactor"].GetBool();
+						}
+						else
+						{
+							BROWSER_ASSERT(one_pass["blend"].HasMember("safactor"), "Pass's blend must has safactor property in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+							BROWSER_ASSERT(one_pass["blend"].HasMember("dafactor"), "Pass's blend must has dafactor property in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+							BROWSER_ASSERT(one_pass["blend"]["sfactor"].IsString(), "Pass's blend sfactor must be string value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+							BROWSER_ASSERT(one_pass["blend"]["dfactor"].IsString(), "Pass's blend dfactor must be string value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+							BROWSER_ASSERT(one_pass["blend"]["safactor"].IsString(), "Pass's blend safactor must be string value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+							BROWSER_ASSERT(one_pass["blend"]["dafactor"].IsString(), "Pass's blend dafactor must be string value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+							passParam.blend.blendFuncParam->sfactor = convertString2GLenum(one_pass["blend"]["sfactor"].GetString(), passParam.blend.blendFuncParam->sfactor);
+							passParam.blend.blendFuncParam->dfactor = convertString2GLenum(one_pass["blend"]["dfactor"].GetString(), passParam.blend.blendFuncParam->dfactor);
+							passParam.blend.blendFuncParam->safactor = convertString2GLenum(one_pass["blend"]["safactor"].GetString(), passParam.blend.blendFuncParam->safactor);
+							passParam.blend.blendFuncParam->dafactor = convertString2GLenum(one_pass["blend"]["dafactor"].GetString(), passParam.blend.blendFuncParam->dafactor);
+						}
+						if (one_pass["blend"].HasMember("equation"))
+						{
+							BROWSER_ASSERT(one_pass["blend"]["equation"].IsString(), "Pass's blend equation must be string value in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+							passParam.blend.blendEquation = convertString2GLenum(one_pass["blend"]["equation"].GetString(), passParam.blend.blendEquation);
+						}
+
+					}
+				}
+
                 parameters->passes.push_back(std::move(passParam));
             }
         }
