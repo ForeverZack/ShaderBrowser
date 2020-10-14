@@ -16,6 +16,10 @@ namespace browser
 
 		// 环境光颜色
 		m_oAmbientColor = glm::vec4(54/255.f, 58/255.f, 66/255.f, 1);
+
+		//// 光源数据
+		//m_pLightsTextureBuffer = TextureBuffer::create();
+		//m_pLightsTextureBuffer->retain();
 	}
     
     bool LightSystem::addComponent(BaseEntity* entity, BaseComponent* component)
@@ -367,10 +371,6 @@ namespace browser
                 {
                     case BaseLight::LightType::Directional:
                         {
-                            if (light->isLightSystemDirty())
-                            {
-                                BROWSER_SET_BIT(m_uDirectionalDirty, LightChangeType::LCT_Intensity);
-                            }
                             BROWSER_SET_BIT(m_uDirectionalDirty, LightChangeType::LCT_Directional);
                         }
                         break;

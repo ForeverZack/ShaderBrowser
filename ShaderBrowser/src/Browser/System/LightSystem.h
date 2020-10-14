@@ -4,6 +4,7 @@
 #include "Common/System/BaseSystem.h"
 #include "Common/Tools/BaseSingleton.h"
 #include "Browser/Components/Light/BaseLight.h"
+#include "GL/GPUResource/Texture/TextureBuffer.h"
 
 using namespace common;
 
@@ -25,8 +26,6 @@ namespace browser
             LCT_NewLight = 0,
             // 删除光源
             LCT_DeleteLight,
-            // 光源强度发生改变
-            LCT_Intensity,
             // 平行光数据发生改变
             LCT_Directional,
             // 点光源数据发生改变
@@ -84,5 +83,11 @@ namespace browser
         std::unordered_map<unsigned int, Material*> m_mAllLightMaterials;
 		// 待处理材质队列
 		std::unordered_map<unsigned int, Material*> m_mPreLightMaterials;
+
+		//// 光源数据
+		//std::vector<glm::vec4> m_vLightsData;
+		//// 光源数据tbo
+		//TextureBuffer* m_pLightsTextureBuffer;
+		
 	};
 }
