@@ -5,6 +5,7 @@
 #include "Common/Tools/Utils.h"
 #include "GL/GPUResource/Texture/RenderTexture.h"
 
+#include <vector>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -24,6 +25,29 @@ namespace browser
 	*/
 	class Camera : public BaseComponent
 	{
+		enum EnumFrustumVertices
+		{
+			// 近平面4个顶点
+			// 左上
+			Near_LT = 0,
+			// 左下
+			Near_LB,
+			// 右下
+			Near_RB,
+			// 右上
+			Near_RT,
+
+			// 远平面4个顶点
+			// 左上
+			Far_LT,
+			// 左下
+			Far_LB,
+			// 右下
+			Far_RB,
+			// 右上
+			Far_RT
+		};
+
 	public:
 		static EnumComponentClass ComponentClass;
 
@@ -58,6 +82,9 @@ namespace browser
 	public:
 		// 刷新
 		void updateCamera(float deltaTime);
+
+		// 计算绘制顶点
+		void calculateDisplayVertices();
         
 	protected:
 		// 处理组件事件
@@ -68,6 +95,9 @@ namespace browser
         
 		// 刷新projection matrix
 		void updateProjectionMatrix();
+
+		// 更新视锥顶点
+		void updateFrustumVertices();
 
 		// 计算脏标记
 		void generateViewMatrixDirtyTag();
@@ -88,6 +118,7 @@ namespace browser
 		REGISTER_PROPERTY_GET_SET(bool, m_bIsRenderable, IsRenderable)
 		void setRenderTexture(RenderTexture* rt);
 		void setViewportSize(int width, int height);
+		REGISTER_PROPERTY_CONSTREF_GET(std::vector<glm::vec3>, m_vDisplayVertices, DisplayVertices)
 
 	protected:
 		// view matrix 相关
@@ -126,6 +157,13 @@ namespace browser
 		glm::vec4 m_oBackgroundColor;
 		// 是否渲染 (用于特殊相机处理)
 		bool m_bIsRenderable;
+
+
+		// 视锥绘制数组
+		std::vector<glm::vec3> m_vDisplayVertices;
+		// 相机视锥顶点 (世界坐标系下)
+		glm::vec4 m_vVertices[8];
+
 	};
 }
 

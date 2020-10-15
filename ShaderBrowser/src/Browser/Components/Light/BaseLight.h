@@ -79,7 +79,6 @@ namespace browser
         REGISTER_PROPERTY_CONSTREF_GET(glm::vec4, m_oColor, Color)
         REGISTER_PROPERTY_GET(float, m_fIntensity, Intensity)
 		REGISTER_PROPERTY_CONSTREF_GET(glm::vec3, m_oGlobalPosition, GlobalPosition)
-		REGISTER_PROPERTY_CONSTREF_GET(std::vector<glm::vec4>, m_vLightData, LightData)
         void setColor(const glm::vec4& color);
         void setColor(float r, float g, float b, float a);
         void setIntensity(float intensity);
@@ -91,8 +90,6 @@ namespace browser
         virtual void handleEvent(ComponentEvent event, BaseComponentMessage* msg);
         // 设置脏标记
         virtual void setDirty(LightPropertyType type);
-		// 转换数据
-		virtual void serialize() {};
         
 		void recordDirection(const glm::vec3& direction);
         void recordGlobalPosition(const glm::vec3& position);
@@ -130,8 +127,6 @@ namespace browser
 	protected:
         // 光源类型
         LightType m_eType;
-		// 光源数据
-		std::vector<glm::vec4> m_vLightData;
         
         // 光源数据脏标记
         unsigned int m_uPropertiesDirty;

@@ -30,6 +30,8 @@ namespace common
         void traverseNode(browser::Transform* node, bool isParentExpand);
         
 
+		REGISTER_PROPERTY_GET(browser::Transform*, m_oSelectTreeNodeTrans, SelectTreeNodeTrans)
+
 	protected:
         
         // 当前场景节点

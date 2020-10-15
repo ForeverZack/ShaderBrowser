@@ -8,6 +8,8 @@
 #include "Browser/Components/Render/SkinnedMeshRenderer.h"
 #include "Common/System/Cache/GLProgramCache.h"
 #include "Common/System/Cache/MaterialManager.h"
+#include "Common/Tools/UI/GUIFramework.h"
+#include "Common/Tools/UI/HierarchyPanel.h"
 #include "Core/LogicCore.h"
 #include "Core/RenderCore.h"
 #include "GL/GPUResource/Shader/Material.h"
@@ -57,6 +59,8 @@ namespace browser
     // 包围盒
     // 包围盒默认颜色
     #define SHOW_BOUND_BOX_COLOR glm::vec4(1.0f, 1.0f, 1.0f, 1.0f)
+	// 包围盒LINE宽度
+	#define SHOW_BOUND_BOX_LINE_WIDTH 2
     
     
 	RenderSystem::RenderSystem()
@@ -270,6 +274,7 @@ namespace browser
         // 开启深度测试
         GLStateCache::getInstance()->setZTest(true);
         {
+			// 模型包围盒
             SkinnedMeshRenderer* skinnedRenderer = nullptr;
             BaseBoundBox* boundBox = nullptr;
             GLProgram* linesProgram = GLProgramCache::getInstance()->getGLProgram(GLProgram::DEFAULT_LINES_GLPROGRAM_NAME);
@@ -301,7 +306,10 @@ namespace browser
                         trans_vertices[i] = glm::vec4(vertices[i], 1.0f);
                         trans_colors[i] = SHOW_BOUND_BOX_COLOR;
                     }
-                    
+
+					// 包围盒线宽度
+					glLineWidth(SHOW_BOUND_BOX_LINE_WIDTH);
+
                     // 1.绑定对应的vao
                     glBindVertexArray(vao);
                     
@@ -331,6 +339,65 @@ namespace browser
                     delete[] trans_colors;
                 }
             }
+
+			// 相机视锥
+			{
+				shared_ptr<HierarchyPanel> hierarchyPanel = GUIFramework::getInstance()->getHierarchyPanel();
+				transform = hierarchyPanel->getSelectTreeNodeTrans();
+				Camera* selCamera = transform != nullptr ? transform->getBelongEntity()->getComponent<Camera>() : nullptr;
+				if (selCamera)
+				{
+					vao = m_oAxisMesh->getVAO();    // TODO: 这里使用的是模型坐标轴的vao,后面看看要不要换掉
+					vbos = m_oAxisMesh->getVBOs();
+
+					// 显示包围盒的顶点
+					selCamera->calculateDisplayVertices();
+
+					// 顶点属性
+					const std::vector<glm::vec3>& vertices = selCamera->getDisplayVertices();
+					vertCount = vertices.size();
+
+					// 在CPU中处理顶点位置
+					glm::vec4* trans_vertices = new glm::vec4[vertCount];
+					glm::vec4* trans_colors = new glm::vec4[vertCount];
+					for (int i = 0; i < vertCount; ++i)
+					{
+						trans_vertices[i] = glm::vec4(vertices[i], 1.0f);
+						trans_colors[i] = SHOW_BOUND_BOX_COLOR;
+					}
+
+					// 包围盒线宽度
+					glLineWidth(SHOW_BOUND_BOX_LINE_WIDTH);
+
+					// 1.绑定对应的vao
+					glBindVertexArray(vao);
+
+					// 2.传递顶点数据
+					glBindBuffer(GL_ARRAY_BUFFER, vbos[GLProgram::VERTEX_ATTR::VERTEX_ATTR_POSITION]);
+					glBufferData(GL_ARRAY_BUFFER, vertCount * sizeof(glm::vec4), &trans_vertices[0], GL_STATIC_DRAW);
+					glBindBuffer(GL_ARRAY_BUFFER, vbos[GLProgram::VERTEX_ATTR::VERTEX_ATTR_COLOR]);
+					glBufferData(GL_ARRAY_BUFFER, vertCount * sizeof(glm::vec4), &trans_colors[0], GL_STATIC_DRAW);
+
+
+					glBindBuffer(GL_ARRAY_BUFFER, 0);
+					glBindVertexArray(0);
+
+					// 4.绘制
+					linesProgram->useProgram();
+					if (camera)
+					{
+						linesProgram->setUniformWithMat4(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_VIEW_MATRIX], camera->getViewMatrix());
+						linesProgram->setUniformWithMat4(GLProgram::SHADER_UNIFORMS_ARRAY[GLProgram::UNIFORM_CGL_PROJECTION_MATRIX], camera->getProjectionMatrix());
+					}
+					glBindVertexArray(vao);
+					glDrawArrays(GL_LINES, 0, (int)vertCount);
+					glBindVertexArray(0);
+
+					// 释放cpu的顶点数组
+					delete[] trans_vertices;
+					delete[] trans_colors;
+				}
+			}
         }
         
         // 2.坐标轴
