@@ -200,13 +200,37 @@ namespace customGL
 	{
         common::BROWSER_ASSERT(m_vPass.size()>index && m_vPass[index], "cannot found pass in function Material::useMaterial");
         
-        // 使用glProgram		TODO: usePass会改变UniformValue的dirty状态，如果是多个pass会出问题的！！
+        // 使用glProgram	
         //m_vPass[index]->usePass(transformDirty, modelMatrix, cameraDirty, cameraGlobalPos, viewMatrix, projectionMatrix, uniforms);
 		m_vPass[index]->usePass(transformDirty, modelMatrix, cameraDirty, cameraGlobalPos, viewMatrix, projectionMatrix, uniforms
 												, m_bEnableZTest, m_eZTestFunc, m_bZWrite
 												, m_bEnableCull, m_eCullFace, m_eFrontFace
 												, m_bEnableStencilTest, m_pStencilFuncParam, m_pStencilOpParam
 												, m_bEnableBlend, m_pBlendFuncParam, m_eBlendEquation);
+	}
+
+	void Material::useMaterial_PrePass(bool transformDirty, const glm::mat4& modelMatrix, bool cameraDirty, const glm::vec3& cameraGlobalPos, const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix, std::unordered_map<std::string, UniformValue>& uniforms)
+	{
+		common::BROWSER_ASSERT(m_pPrePass, "cannot found pass in function Material::useMaterial_PrePass");
+
+		// 使用glProgram	
+		m_pPrePass->usePass(transformDirty, modelMatrix, cameraDirty, cameraGlobalPos, viewMatrix, projectionMatrix, uniforms
+			, m_bEnableZTest, m_eZTestFunc, m_bZWrite
+			, m_bEnableCull, m_eCullFace, m_eFrontFace
+			, m_bEnableStencilTest, m_pStencilFuncParam, m_pStencilOpParam
+			, m_bEnableBlend, m_pBlendFuncParam, m_eBlendEquation);
+	}
+
+	void Material::useMaterial_ShadowCasterPass(bool transformDirty, const glm::mat4& modelMatrix, bool cameraDirty, const glm::vec3& cameraGlobalPos, const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix, std::unordered_map<std::string, UniformValue>& uniforms)
+	{
+		common::BROWSER_ASSERT(m_pShadowCasterPass, "cannot found pass in function Material::useMaterial_ShadowCasterPass");
+
+		// 使用glProgram	
+		m_pShadowCasterPass->usePass(transformDirty, modelMatrix, cameraDirty, cameraGlobalPos, viewMatrix, projectionMatrix, uniforms
+			, m_bEnableZTest, m_eZTestFunc, m_bZWrite
+			, m_bEnableCull, m_eCullFace, m_eFrontFace
+			, m_bEnableStencilTest, m_pStencilFuncParam, m_pStencilOpParam
+			, m_bEnableBlend, m_pBlendFuncParam, m_eBlendEquation);
 	}
 
 	void Material::setEnableStencilTest(bool enable)
