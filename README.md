@@ -1,6 +1,8 @@
 # ShaderBrowser
 
 ## 后续工作 <br>
+-6)利用cbuffer去处理光源
+-5)gama矫正
 -4)阴影(Shadow Map(SM),Cascaded Shadow Map(CSM: 级联阴影);延迟渲染考虑一下?)
 -3)sharedMesh的实现，个人理解是MeshFilter的Mesh是shared类型的，而SkinnedMeshRenderer是非share的(或者可以通过useGPU来判断)，
 -1) 切分动画，以及切分动画之间的混合等操作 <br>
