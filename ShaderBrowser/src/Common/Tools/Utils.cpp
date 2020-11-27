@@ -539,6 +539,7 @@ namespace common
     
     void Utils::parseMatrix(const glm::mat4& matrix, glm::vec3& position, glm::quat& rotation, glm::vec3& scale)
     {
+		// 注意！！！该方法要求缩放分量L0,L1,L2没有0才成立
         /* 假设有列主序矩阵M（其变换顺序为M=Translate*Rotate*Scale=Translate*Scale*Rotate）
                       m00, m10, m20, m30
                 M = { m01, m11, m21, m31 }
