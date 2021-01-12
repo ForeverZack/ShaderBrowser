@@ -2,7 +2,6 @@
 
 ## 后续工作 <br>
 -6)利用cbuffer去处理光源
--5)gama矫正
 -4)阴影(Shadow Map(SM),Cascaded Shadow Map(CSM: 级联阴影);延迟渲染考虑一下?)
 -3)sharedMesh的实现，个人理解是MeshFilter的Mesh是shared类型的，而SkinnedMeshRenderer是非share的(或者可以通过useGPU来判断)，
 -1) 切分动画，以及切分动画之间的混合等操作 <br>
@@ -20,6 +19,9 @@
 12）对VAO生成和mesh合批的处理(是否可以将mesh作为最基本的渲染单元)。 <br>
 13）内存的管理与检查。 <br>
 等等<br>
+
+## 2021.1.12 <br>
+将项目改到线性空间。	<br>
 
 ## 2020.10.15 <br>
 添加Camera视锥的显示和计算，方便后面计算视锥和平行光的相交包围盒，从而得到阴影相机的相关参数。

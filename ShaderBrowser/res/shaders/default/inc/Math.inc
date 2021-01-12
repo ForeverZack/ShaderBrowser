@@ -49,3 +49,21 @@ vec3 UnpackNormal(vec3 n)
 	// [0,1] -> [-1,1]
 	return normalize(n * 2 - 1); 
 }
+
+// 计算视差贴图(深度贴图Depth)的offset
+/*	
+Example:
+	uniform float _Parallax;	// height
+	...
+	float h = tex2D (_ParallaxMap, IN.uv_BumpMap).w;
+	vec2 offset = ParallaxOffset (h, _Parallax, IN.viewDir);
+	IN.uv_MainTex += offset;
+	IN.uv_BumpMap += offset;
+*/
+vec2 ParallaxOffset(float h, float height, vec3 viewDir)
+{
+    h = h * height - height/2.0;
+    vec3 v = normalize(viewDir);
+    v.z += 0.42f;
+    return h * (v.xy / v.z);
+}
