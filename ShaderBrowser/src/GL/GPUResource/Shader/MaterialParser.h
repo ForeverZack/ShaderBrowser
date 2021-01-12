@@ -123,7 +123,7 @@ namespace customGL
 	{
 	public:
         // 通过材质文件路径解析材质
-        static MaterialParameters* parseMaterialFile(const std::string& filepath, shared_ptr<const char*> extra = nullptr);
+        static MaterialParameters* parseMaterialFile(const std::string& filepath);
         // 通过材质文件内容解析材质
 		static MaterialParameters* parseMaterialFileByContent(const std::string& content, const std::string& directory);
         // 将MaterialUniformParamter设置到Material上

@@ -19,7 +19,7 @@ namespace customGL
     }
     
     
-	Image* Image::create(const std::string& fileName, shared_ptr<const char*> extra /*= nullptr*/)
+	Image* Image::create(const std::string& fileName)
 	{
 		Image* image = new Image();
 		if (!image->initWithFile(fileName.c_str()))

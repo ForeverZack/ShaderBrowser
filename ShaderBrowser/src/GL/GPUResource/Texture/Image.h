@@ -22,7 +22,7 @@ namespace customGL
 	class Image
 	{
 	public:
-		static Image* create(const std::string& fileName, shared_ptr<const char*> extra = nullptr);
+		static Image* create(const std::string& fileName);
 	public:
 		Image();
         Image(const Image& image);  // copy

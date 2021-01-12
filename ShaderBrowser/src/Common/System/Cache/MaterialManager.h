@@ -1,7 +1,6 @@
 #pragma once
 
 #include "BaseCache.h"
-#include "BaseAsyncLoader.h"
 #include "GL/GPUResource/Shader/Material.h"
 #include "GL/GPUResource/Shader/MaterialParser.h"
 

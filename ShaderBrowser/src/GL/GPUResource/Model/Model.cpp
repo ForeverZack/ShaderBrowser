@@ -998,15 +998,17 @@ namespace customGL
             MeshTextureData textureData(mesh, "texture/default/default_white.png", type, uniformName, false);
             m_vMeshTextureData.push_back(std::move(textureData));
         }
-        
-        for(int i=0; i<textureCount; ++i)
-        {
-            aiString filename;
-            material->GetTexture(type, i, &filename);
-            
-            MeshTextureData textureData(mesh, filename.C_Str(), type, uniformName);
-            m_vMeshTextureData.push_back(std::move(textureData));
-        }
+		else
+		{
+			for (int i = 0; i < textureCount; ++i)
+			{
+				aiString filename;
+				material->GetTexture(type, i, &filename);
+
+				MeshTextureData textureData(mesh, filename.C_Str(), type, uniformName);
+				m_vMeshTextureData.push_back(std::move(textureData));
+			}
+		}
     }
 
 	void Model::loadAnimations(const aiScene*& scene)

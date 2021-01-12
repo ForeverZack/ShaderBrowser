@@ -197,7 +197,7 @@ namespace customGL
     
     unsigned long MaterialParser::m_uGeneratorId = 0;
     
-    MaterialParameters* MaterialParser::parseMaterialFile(const std::string& filepath, shared_ptr<const char*> extra/* = nullptr*/)
+    MaterialParameters* MaterialParser::parseMaterialFile(const std::string& filepath)
     {
 		std::string directory;
 		const std::string full_path = FileUtils::getInstance()->getAbsolutePathForFilename(filepath, directory);
