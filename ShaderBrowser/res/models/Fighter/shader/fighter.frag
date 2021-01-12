@@ -1,5 +1,6 @@
 #include "Standard.inc"
 #include "Light.inc"
+#include "GammaCorrection.inc"
 
 #define FragInStruct_StandardTBN
 #include "CommonStruct.inc"
@@ -63,5 +64,5 @@ void main()
 	// 环境光 (ambient)
 	result += vec3(CGL_AMBIENT_COLOR * albedo);
 
-    fColor = vec4(result.rgb, albedo.a);
+    fColor = vec4(LinearToGammaSpace(result.rgb), albedo.a);
 }

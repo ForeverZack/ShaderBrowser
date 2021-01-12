@@ -6,6 +6,7 @@ namespace customGL
 	GPUOperateTexture2DCommand::GPUOperateTexture2DCommand()
         : m_pTexture(nullptr)
         , m_pImage(nullptr)
+		, m_bSRGB(false)
     {
         m_eCommandType = GOCT_Texture2D;
         m_eOperateType = GOT_Update;
@@ -64,6 +65,8 @@ namespace customGL
     // 结束执行 (渲染线程调用)
     void GPUOperateTexture2DCommand::finish()
     {
+		m_bSRGB = false;
+
         // 回收命令
         BaseGPUOperateCommand::finish();
         
@@ -94,7 +97,7 @@ namespace customGL
         第七第八个参数定义了源图的格式和数据类型。我们使用RGB值加载这个图像，并把它们储存为char(byte)数组，我们将会传入对应值。
         最后一个参数是真正的图像数据。
         */
-        glTexImage2D(GL_TEXTURE_2D, 0, m_pImage->getType(), m_pImage->getWidth(), m_pImage->getHeight(), 0, m_pImage->getType(), GL_UNSIGNED_BYTE, m_pImage->getData());
+        glTexImage2D(GL_TEXTURE_2D, 0, convertInternalFormatBySRGB(m_pImage->getType()), m_pImage->getWidth(), m_pImage->getHeight(), 0, m_pImage->getType(), GL_UNSIGNED_BYTE, m_pImage->getData());
 
         // 为当前绑定的纹理自动生成所有需要的多级渐远纹理
         //glGenerateMipmap(GL_TEXTURE_2D);
@@ -111,7 +114,7 @@ namespace customGL
         BROWSER_ASSERT(m_pImage, "GPUOperateTexture2DCommand does not have Image object, please check your program in function GPUOperateTexture2DCommand::updateTexture2D");
         
         glBindTexture(GL_TEXTURE_2D, m_pTexture->m_uTextureId);
-        glTexImage2D(GL_TEXTURE_2D, 0, m_pImage->getType(), m_pImage->getWidth(), m_pImage->getHeight(), 0, m_pImage->getType(), GL_UNSIGNED_BYTE, m_pImage->getData());
+        glTexImage2D(GL_TEXTURE_2D, 0, convertInternalFormatBySRGB(m_pImage->getType()), m_pImage->getWidth(), m_pImage->getHeight(), 0, m_pImage->getType(), GL_UNSIGNED_BYTE, m_pImage->getData());
         
         delete m_pImage;
         m_pImage = nullptr;
@@ -136,6 +139,27 @@ namespace customGL
 		// 设置GPU删除标记
 		m_pTexture->setGPUDeleted(true);
     }
+
+	GLenum GPUOperateTexture2DCommand::convertInternalFormatBySRGB(GLenum internalFormat)
+	{
+		if (m_bSRGB)
+		{
+			switch (internalFormat)
+			{
+			case GL_RGB: 
+				return GL_SRGB;
+			case GL_RGBA: 
+				return GL_SRGB_ALPHA;
+			}
+
+			BROWSER_WARNING(false, "Cannot convert internalFormat in function GPUOperateTexture2DCommand::convertInternalFormatBySRGB(GLenum internalFormat)");
+			return internalFormat;
+		}
+		else
+		{
+			return internalFormat;
+		}
+	}
     
     void GPUOperateTexture2DCommand::setImage(Image* image)
     {

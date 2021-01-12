@@ -32,6 +32,7 @@ namespace customGL {
     // 单位四元数
     extern const glm::quat GLM_QUAT_UNIT = glm::quat(1.0f, 0, 0, 0);
 	// 纹理默认参数
+	extern const GLenum TexParameters_DefaultSRGB = false;
 	extern const GLenum TexParameters_DefaultWrap = GL_CLAMP_TO_EDGE;
 	extern const GLenum TexParameters_DefaultFilter = GL_LINEAR;
 	// GL默认清除位

@@ -42,7 +42,7 @@ namespace common
 	};
 
 	// 加载器
-	// CreateFunc: 资源读取函数类型(通过构造函数将读取方法传入进来); DataType: 数据类型; CallbackFunc: 回调类型; 额外的创建参数类型
+	// CreateFunc: 资源读取函数类型(通过构造函数将读取方法传入进来); DataType: 数据类型; CallbackFunc: 回调类型;
 	template <typename DataType, typename CallbackFunc>
 	class BaseAsyncLoader
 	{

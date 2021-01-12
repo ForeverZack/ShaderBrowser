@@ -32,6 +32,7 @@ namespace customGL
 	Texture2D::Texture2D()
 		: m_uTextureId(0)
 		, m_oImage(nullptr)
+		, m_bSRGB(false)
         , m_eWrapTypeS(TexParameters_DefaultWrap)
         , m_eWrapTypeT(TexParameters_DefaultWrap)
         //, m_eFilterMin(GL_LINEAR_MIPMAP_LINEAR)
@@ -61,6 +62,7 @@ namespace customGL
         auto cmd = GPUOperateCommandPool::getInstance()->popCommand<GPUOperateTexture2DCommand>(GPUOperateCommandType::GOCT_Texture2D);
         cmd->setTexture(this);
         cmd->setImage(m_oImage);
+		cmd->setSRGB(m_bSRGB);
         cmd->setTexParameters(m_eWrapTypeS, m_eWrapTypeT, m_eFilterMin, m_eFilterMag);
         cmd->ready(GPUOperateType::GOT_Create);
         GPUOperateSystem::getInstance()->addCommand(cmd);
@@ -71,7 +73,8 @@ namespace customGL
         auto cmd = GPUOperateCommandPool::getInstance()->popCommand<GPUOperateTexture2DCommand>(GPUOperateCommandType::GOCT_Texture2D);
         cmd->setTexture(this);
         cmd->setImage(m_oImage);
-        cmd->ready(GPUOperateType::GOT_Update);
+		cmd->setSRGB(m_bSRGB);
+		cmd->ready(GPUOperateType::GOT_Update);
         GPUOperateSystem::getInstance()->addCommand(cmd);
 	}
 
@@ -117,6 +120,17 @@ namespace customGL
 		// 纹理数据 TODO: 从cache中获得
 		m_oImage = Image::create(fileName.c_str());
 		return initWithImage(m_oImage);
+	}
+
+	void Texture2D::setSRGB(bool sRBG)
+	{
+		if (m_bSRGB == sRBG)
+		{
+			return;
+		}
+		m_bSRGB = sRBG;
+
+		updateGPUResource();
 	}
     
     void Texture2D::setTexParameters(GLenum wrapS, GLenum wrapT, GLenum filterMin, GLenum filterMag)

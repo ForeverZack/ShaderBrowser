@@ -70,6 +70,7 @@ namespace customGL
     // 单位四元数
     extern const glm::quat GLM_QUAT_UNIT;
 	// 纹理默认参数
+	extern const GLenum TexParameters_DefaultSRGB;
 	extern const GLenum TexParameters_DefaultWrap;
 	extern const GLenum TexParameters_DefaultFilter;
 	// GL默认fbo清除位

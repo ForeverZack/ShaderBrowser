@@ -32,9 +32,13 @@ namespace customGL
         void updateTexture2DProperties();
         // 删除纹理
         void deleteTexture2D();
+
+		// 根据sRGB的设置转换internalformat
+		GLenum convertInternalFormatBySRGB(GLenum internalFormat);
         
         REGISTER_PROPERTY_SET(Texture2D*, m_pTexture, Texture)
-        REGISTER_PROPERTY_SET(GLenum, m_eWrapTypeS, WrapTypeS)
+		REGISTER_PROPERTY_SET(bool, m_bSRGB, SRGB)
+		REGISTER_PROPERTY_SET(GLenum, m_eWrapTypeS, WrapTypeS)
         REGISTER_PROPERTY_SET(GLenum, m_eWrapTypeT, WrapTypeT)
         REGISTER_PROPERTY_SET(GLenum, m_eFilterMin, FilterMin)
         REGISTER_PROPERTY_SET(GLenum, m_eFilterMag, FilterMag)
@@ -47,6 +51,9 @@ namespace customGL
         
         // 纹理数据来源 (注意，这个数据必须是拷贝过来的！！)
         Image* m_pImage;
+
+		// 是否是sRGB纹理 (Color Space)
+		bool m_bSRGB;
         
         // 纹理环绕方式
         /*

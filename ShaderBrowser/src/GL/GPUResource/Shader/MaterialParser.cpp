@@ -266,6 +266,7 @@ namespace customGL
 				"CGL_TEXTURE0": 
 				{             
 					"type": "sampler2D",             // 内置参数(m_mBuiltinUniforms)可省略type
+					"sRGB": true,	// 纹理颜色空间
 					"wrap": "GL_REPEAT",	// 纹理环绕方式，默认为GL_CLAMP_TO_EDGE
 					"filter": "GL_LINEAR",		// 纹理过滤方式，默认为GL_LINEAR
 					"value": "res/texture/xxx.png"			// 或者缩写 "xxx.png"(当前目录下)  或 "./xxx.png"
@@ -640,19 +641,26 @@ namespace customGL
                             uniformParam.value.tex2D.path = &(*uniformParam.m_pString)[0];
 							BROWSER_ASSERT(FileUtils::getInstance()->isDirectoryOrFileExist(*uniformParam.m_pString), "Uniform's texture file is not found in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
 							parameters->textures_path.push_back(*(uniformParam.m_pString));	// 记录纹理路径，方便统一异步加载所有图片
+							// sRGB
+							uniformParam.value.tex2D.sRGB = TexParameters_DefaultSRGB;
+							if (uniformValue.HasMember("sRGB"))
+							{
+								BROWSER_ASSERT(uniformValue["sRGB"].IsBool(), "Sampler2D's sRGB property is not bool (type sampler2D) in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
+								uniformParam.value.tex2D.sRGB = uniformValue["sRGB"].GetBool();
+							}
 							// wrap
 							uniformParam.value.tex2D.wrap = TexParameters_DefaultWrap;
 							if (uniformValue.HasMember("wrap"))
 							{
 								BROWSER_ASSERT(uniformValue["wrap"].IsString(), "Sampler2D's wrap property is not string (type sampler2D) in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
-								convertString2GLenum(uniformValue["wrap"].GetString(), TexParameters_DefaultWrap);
+								uniformParam.value.tex2D.wrap = convertString2GLenum(uniformValue["wrap"].GetString(), TexParameters_DefaultWrap);
 							}
 							// filter
-							uniformParam.value.tex2D.wrap = TexParameters_DefaultFilter;
+							uniformParam.value.tex2D.filter = TexParameters_DefaultFilter;
 							if (uniformValue.HasMember("filter"))
 							{
 								BROWSER_ASSERT(uniformValue["filter"].IsString(), "Sampler2D's filter property is not string (type sampler2D) in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
-								convertString2GLenum(uniformValue["filter"].GetString(), TexParameters_DefaultFilter);
+								uniformParam.value.tex2D.filter = convertString2GLenum(uniformValue["filter"].GetString(), TexParameters_DefaultFilter);
 							}
 						}
                         break;
@@ -1008,6 +1016,7 @@ namespace customGL
                 case UniformValue::UniformValueType::UniformValueType_Sampler2D:
                     {
                         Texture2D* texture = TextureCache::getInstance()->getTexture(uniformParam.value.tex2D.path);
+						texture->setSRGB(uniformParam.value.tex2D.sRGB);
 						texture->setTexWrapParams(uniformParam.value.tex2D.wrap, uniformParam.value.tex2D.wrap);
 						texture->setTexFilterParams(uniformParam.value.tex2D.filter, uniformParam.value.tex2D.filter);
                         material->setUniformTex2D(uniformParam.name, texture);

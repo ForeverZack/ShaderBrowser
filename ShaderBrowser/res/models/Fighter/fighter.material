@@ -11,6 +11,7 @@
         "CGL_TEXTURE0":
         {
             "type": "sampler2D",
+			"sRGB": true,
             "value": "texture/Fighter.png"
         },
 		"CGL_TEXTURE1":

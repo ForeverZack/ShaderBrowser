@@ -47,6 +47,7 @@ namespace customGL
 			} floatv, v2fv, v3fv, v4fv, mat4v, mat4x3v, mat3v, mat3x4v;
 			struct {
 				const char* path;
+				bool sRGB;	// 颜色空间
 				GLenum wrap;	// 纹理环绕方式
 				GLenum filter;	// 纹理过滤方式
 			} tex2D;

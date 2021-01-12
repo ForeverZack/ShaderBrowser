@@ -25,13 +25,14 @@ namespace customGL
         friend class GPUOperateTexture2DCommand;
         
     public:
+		// 设置sRGB
+		void setSRGB(bool sRBG);
         // 设置纹理参数（环绕方式、过滤方式）
         void setTexParameters(GLenum wrapS, GLenum wrapT, GLenum filterMin, GLenum filterMag);
         // 设置纹理参数（环绕方式）
         void setTexWrapParams(GLenum wrapS, GLenum wrapT);
         // 设置纹理参数（过滤方式）
         void setTexFilterParams(GLenum filterMin, GLenum filterMag);
-        
         
         
         REGISTER_PROPERTY_GET(unsigned int, m_uTextureId, TextureId);
@@ -55,6 +56,9 @@ namespace customGL
 		GLuint m_uTextureId;
 		// Image
 		Image* m_oImage;
+
+		// 是否是sRGB纹理 (Color Space)
+		bool m_bSRGB;
         
         // 纹理环绕方式
         /*
