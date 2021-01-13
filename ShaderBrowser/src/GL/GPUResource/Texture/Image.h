@@ -22,15 +22,12 @@ namespace customGL
 	class Image
 	{
 	public:
-		static Image* create(const std::string& fileName);
+		static Image* create(const std::string& fileName, shared_ptr<bool> sRGB = nullptr);
 	public:
 		Image();
         Image(const Image& image);  // copy
 		~Image();
 
-		// 释放Image
-		void deleteImage();
-	
 
 		REGISTER_PROPERTY_GET(int, m_iWidth, Width)
 		REGISTER_PROPERTY_GET(int, m_iHeight, Height)

@@ -7,7 +7,7 @@ namespace common
 {    
 
 	TextureCache::TextureCache()
-		: BaseAsyncLoader<Image, std::function<void(Texture2D*)>>(Image::create, MAX_TEXTURECACHE_THREAD_COUNT)
+		: BaseAsyncLoaderExt<Image, std::function<void(Texture2D*)>, bool>(Image::create, MAX_TEXTURECACHE_THREAD_COUNT)
     {
     }
     
@@ -20,11 +20,11 @@ namespace common
 		addTexture("texture/default/default_white.png");
     }
     
-	void TextureCache::addTexture(const std::string& filepath)
+	void TextureCache::addTexture(const std::string& filepath, bool sRGB/* = false*/)
 	{
 		const std::string full_path = FileUtils::getInstance()->getAbsolutePathForFilename(filepath);
 	
-		Texture2D* texture = Texture2D::create(full_path);
+		Texture2D* texture = Texture2D::create(full_path, sRGB);
         texture->retain();
 
 		add(full_path, texture);
@@ -36,7 +36,7 @@ namespace common
 		return get(full_path);
 	}
 
-	void TextureCache::addTextureAsync(const std::string& filepath, std::function<void(Texture2D*)> callback)
+	void TextureCache::addTextureAsync(const std::string& filepath, bool sRGB/* = false*/, std::function<void(Texture2D*)> callback/* = nullptr*/)
 	{
 		const std::string full_path = FileUtils::getInstance()->getAbsolutePathForFilename(filepath);
 
@@ -62,28 +62,36 @@ namespace common
 			return;
 		}
 
-		loadResourceAsync(full_path, callback);
+		loadResourceAsync(full_path, callback, make_shared<bool>(sRGB));
 	}
 
 	void TextureCache::addTexturesAsync(const std::vector<std::string>& filepaths, std::function<void(Texture2D*)> callback)
 	{
 		for (int i = 0; i < filepaths.size(); ++i)
 		{
-			addTextureAsync(filepaths[i], callback);
+			addTextureAsync(filepaths[i], false, callback);
+		}
+	}
+
+	void TextureCache::addSRGBTexturesAsync(const std::vector<std::string>& filepaths, std::function<void(Texture2D*)> callback)
+	{
+		for (int i = 0; i < filepaths.size(); ++i)
+		{
+			addTextureAsync(filepaths[i], true, callback);
 		}
 	}
 
 	void TextureCache::update(float dt)
 	{
-		const std::vector<AsyncData<Image, std::function<void(Texture2D*)>>*>& responses = getResponseQueue();
+		const std::vector<AsyncData<Image, std::function<void(Texture2D*)>, bool>*>& responses = getResponseQueue();
 
-		AsyncData<Image, std::function<void(Texture2D*)>>* asyncData = nullptr;
+		AsyncData<Image, std::function<void(Texture2D*)>, bool>* asyncData = nullptr;
 		for (int i = 0; i < responses.size(); ++i)
 		{
 			asyncData = responses[i];
 			if (asyncData->loadSuccess)
 			{
-				Texture2D* texture = Texture2D::create(responses[i]->data);
+				Texture2D* texture = Texture2D::create(asyncData->data, *asyncData->extradata);
                 texture->retain();
 				add(asyncData->fullpath, texture);
 

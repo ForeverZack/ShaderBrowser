@@ -7,10 +7,11 @@
 namespace customGL
 {
 
-	Texture2D* Texture2D::create(std::string fileName)
+	Texture2D* Texture2D::create(std::string fileName, bool sRGB/* = false*/)
 	{
 		Texture2D* texture = new Texture2D();
-        if (texture->initWithFile(fileName))
+		texture->m_bSRGB = sRGB;
+		if (texture->initWithFile(fileName))
         {
             return texture;
         }
@@ -18,9 +19,10 @@ namespace customGL
 		return nullptr;
 	}
 
-	Texture2D* Texture2D::create(Image* image)
+	Texture2D* Texture2D::create(Image* image, bool sRGB/* = false*/)
 	{
 		Texture2D* texture = new Texture2D();
+		texture->m_bSRGB = sRGB;
 		if (texture->initWithImage(image))
 		{
 			return texture;

@@ -640,13 +640,20 @@ namespace customGL
 							*(uniformParam.m_pString) = FileUtils::getInstance()->tryGetAbsolutePathForFilename(*(uniformParam.m_pString), directory);
                             uniformParam.value.tex2D.path = &(*uniformParam.m_pString)[0];
 							BROWSER_ASSERT(FileUtils::getInstance()->isDirectoryOrFileExist(*uniformParam.m_pString), "Uniform's texture file is not found in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
-							parameters->textures_path.push_back(*(uniformParam.m_pString));	// 记录纹理路径，方便统一异步加载所有图片
 							// sRGB
 							uniformParam.value.tex2D.sRGB = TexParameters_DefaultSRGB;
 							if (uniformValue.HasMember("sRGB"))
 							{
 								BROWSER_ASSERT(uniformValue["sRGB"].IsBool(), "Sampler2D's sRGB property is not bool (type sampler2D) in function MaterialParser::parseMaterialFileByContent(const std::string& content)");
 								uniformParam.value.tex2D.sRGB = uniformValue["sRGB"].GetBool();
+							}
+							if (uniformParam.value.tex2D.sRGB)
+							{
+								parameters->sRGB_textures_path.push_back(*(uniformParam.m_pString));	// 记录sRGB纹理路径，方便统一异步加载所有sRGB图片
+							}
+							else
+							{
+								parameters->textures_path.push_back(*(uniformParam.m_pString));	// 记录纹理路径，方便统一异步加载所有图片
 							}
 							// wrap
 							uniformParam.value.tex2D.wrap = TexParameters_DefaultWrap;

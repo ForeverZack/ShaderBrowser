@@ -116,6 +116,8 @@ namespace customGL
         std::vector<MaterialPassParamter> passes;
         // 所有纹理的路径(方便异步加载)
         std::vector<std::string> textures_path;
+		// 所有sRGB纹理的路径(方便异步加载)
+		std::vector<std::string> sRGB_textures_path;
 		// 材质文件所在目录
 		std::string directory;
 	};

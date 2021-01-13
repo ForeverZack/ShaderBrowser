@@ -10,6 +10,7 @@
 
 using namespace common;
 
+// 注意：当前如果是sRGB纹理，是先当做普通纹理载入了一遍，然后又当做sRGB纹理载入了一遍，这样很浪费！！
 namespace customGL
 {
     class GPUOperateTexture2DCommand;
@@ -17,8 +18,8 @@ namespace customGL
 	class Texture2D : public BaseGPUResource
 	{
 	public:
-		static Texture2D* create(std::string fileName);
-		static Texture2D* create(Image* image);
+		static Texture2D* create(std::string fileName, bool sRGB = false);
+		static Texture2D* create(Image* image, bool sRGB = false);
 	public:
 		Texture2D();
 		~Texture2D();

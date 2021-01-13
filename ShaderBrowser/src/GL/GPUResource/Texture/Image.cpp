@@ -19,7 +19,7 @@ namespace customGL
     }
     
     
-	Image* Image::create(const std::string& fileName)
+	Image* Image::create(const std::string& fileName, shared_ptr<bool> sRGB)
 	{
 		Image* image = new Image();
 		if (!image->initWithFile(fileName.c_str()))
@@ -48,7 +48,7 @@ namespace customGL
         , m_iChannels(image.m_iChannels)
         , m_eType(image.m_eType)
         , name(image.name)
-    {
+	{
         m_pData = image.m_pData;
         m_pData->retain();
     }
