@@ -20,6 +20,11 @@
 13）内存的管理与检查。 <br>
 等等<br>
 
+## 2021.1.13 <br>
+修改sRGB纹理的加载。升级imgui到1.79。(注意每次升级都要将imgui_impl_opengl3.h中
+末尾的IMGUI_IMPL_OPENGL_LOADER_GL3W  // Default to GL3W embedded in our repository
+改为IMGUI_IMPL_OPENGL_LOADER_GLAD)	<br>
+
 ## 2021.1.12 <br>
 将项目改到线性空间。	<br>
 
