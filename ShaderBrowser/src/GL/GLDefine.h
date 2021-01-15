@@ -98,11 +98,17 @@ namespace customGL
     {
         // vbo
         BT_ArrayBuffer = 0,
-        // tbo
+        // tbo (texture buffer object)
         BT_TextureBuffer,
-		// storage buffer	(unifor块和着色器存储缓存的最大区别在于，着色器存储缓存可以在着色器中读写)	eg: layout (std430, binding = 0) buffer BufferObject { int mode; vec4 points[]; };
-		// glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, buf);
+		// ssbo (shader storage buffer object)	(uniform块和着色器存储缓存的最大区别在于，着色器存储缓存可以在着色器中读写)	eg: layout (std430, binding = 0) buffer BufferObject { int mode; vec4 points[]; };
+		// 1. 着色器程序初始化的时候，将uniform和ShaderStorageBuffer绑定点相关联 (初始化时执行一次即可)
+		// GLunit block_index = glGetProgramResourceIndex(program, GL_SHADER_STORAGE_BLOCK, "shader_data");	
+		// glShaderStorageBlockBinding(program, block_index, ssbo_binding_point_index);
+		// 2. 将buffer绑定到指定的ShaderStorageBuffer绑定点(类似于将纹理绑定到指定纹理单元，每次切换都需要设置)
+		// glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, buf);	
 		BT_StorageBuffer,
+		// image buffer
+		BT_ImageBuffer,
     };
     
     // 单个顶点数据结构

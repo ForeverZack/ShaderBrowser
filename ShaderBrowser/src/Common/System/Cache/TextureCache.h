@@ -37,7 +37,6 @@ namespace common
         void removeFromCache(Texture2D* texture);
 
 
-		// TODO: 临时
 		void update(float dt);
 
 	};

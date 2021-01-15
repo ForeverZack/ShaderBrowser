@@ -701,7 +701,6 @@ namespace customGL
         common::BROWSER_ASSERT(textureUnit<MAX_ACTIVE_TEXTURE, "texture unit value is too big, it is out off support range in function GLProgram::setUniformWithTex2d");
         
         // 绑定纹理到opengl
-        GLuint aa = renderTexture->getTextureId();
         GLStateCache::getInstance()->bindTexture2DN(textureUnit, renderTexture->getTextureId());
     }
     

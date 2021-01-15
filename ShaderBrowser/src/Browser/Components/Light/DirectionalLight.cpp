@@ -30,6 +30,8 @@ namespace browser
         m_eType = LightType::Directional;
         // 设置光源颜色
         m_oColor = glm::vec4(1, 0.9569f, 0.8392f, 1);
+		// 光源数据
+		m_vLightData.resize(6);	// vec4:[1] + (float+direction):[1] + mat4:[4]
         
 		// 设置脏标记
 		m_uPropertiesDirty = LPT_Color | LPT_Intensity | LPT_Direction | LPT_LightMatrix;
@@ -61,6 +63,32 @@ namespace browser
 		//	aaa = color;
 		//	BROWSER_LOG(color);
 		//}, false);
+	}
+
+	void DirectionalLight::serialize()
+	{
+		//struct DirectionalLight
+		//{
+		//	vec4 color;
+		//	float intensity;
+		//	vec3 direction; // world-space (normalized)
+		//	mat4 lightMatrix;	// world-space -> light-space
+		//};
+
+		// vec4:[1] + (float+direction):[1] + mat4:[4]
+		m_vLightData.clear();
+		// color
+		m_vLightData[0] = m_oColor;
+		// intensity, direction
+		m_vLightData[1].w = m_fIntensity;
+		m_vLightData[1].x = m_oLightDirection.x;
+		m_vLightData[1].y = m_oLightDirection.y;
+		m_vLightData[1].z = m_oLightDirection.z;
+		// lightMatrix
+		m_vLightData[2] = m_oLightMatrix[0];	// 第1列
+		m_vLightData[3] = m_oLightMatrix[1];	// 第2列
+		m_vLightData[4] = m_oLightMatrix[2];	// 第3列
+		m_vLightData[5] = m_oLightMatrix[3];	// 第4列
 	}
 
     void DirectionalLight::updateLight()
