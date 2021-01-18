@@ -315,9 +315,9 @@ namespace browser
                     
                     // 2.传递顶点数据
                     glBindBuffer(GL_ARRAY_BUFFER, vbos[GLProgram::VERTEX_ATTR::VERTEX_ATTR_POSITION]);
-                    glBufferData(GL_ARRAY_BUFFER, vertCount * sizeof(glm::vec4), &trans_vertices[0], GL_STATIC_DRAW);
+                    glBufferData(GL_ARRAY_BUFFER, vertCount * sizeof(glm::vec4), &trans_vertices[0], GL_DYNAMIC_DRAW);
                     glBindBuffer(GL_ARRAY_BUFFER, vbos[GLProgram::VERTEX_ATTR::VERTEX_ATTR_COLOR]);
-                    glBufferData(GL_ARRAY_BUFFER, vertCount * sizeof(glm::vec4), &trans_colors[0], GL_STATIC_DRAW);
+                    glBufferData(GL_ARRAY_BUFFER, vertCount * sizeof(glm::vec4), &trans_colors[0], GL_DYNAMIC_DRAW);
                     
                     
                     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -374,9 +374,9 @@ namespace browser
 
 					// 2.传递顶点数据
 					glBindBuffer(GL_ARRAY_BUFFER, vbos[GLProgram::VERTEX_ATTR::VERTEX_ATTR_POSITION]);
-					glBufferData(GL_ARRAY_BUFFER, vertCount * sizeof(glm::vec4), &trans_vertices[0], GL_STATIC_DRAW);
+					glBufferData(GL_ARRAY_BUFFER, vertCount * sizeof(glm::vec4), &trans_vertices[0], GL_DYNAMIC_DRAW);
 					glBindBuffer(GL_ARRAY_BUFFER, vbos[GLProgram::VERTEX_ATTR::VERTEX_ATTR_COLOR]);
-					glBufferData(GL_ARRAY_BUFFER, vertCount * sizeof(glm::vec4), &trans_colors[0], GL_STATIC_DRAW);
+					glBufferData(GL_ARRAY_BUFFER, vertCount * sizeof(glm::vec4), &trans_colors[0], GL_DYNAMIC_DRAW);
 
 
 					glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -436,9 +436,9 @@ namespace browser
                     
                     // 2.传递顶点数据
                     glBindBuffer(GL_ARRAY_BUFFER, vbos[GLProgram::VERTEX_ATTR::VERTEX_ATTR_POSITION]);
-                    glBufferData(GL_ARRAY_BUFFER, vertCount * sizeof(glm::vec4), &trans_vertices[0], GL_STATIC_DRAW);
+                    glBufferData(GL_ARRAY_BUFFER, vertCount * sizeof(glm::vec4), &trans_vertices[0], GL_DYNAMIC_DRAW);
                     glBindBuffer(GL_ARRAY_BUFFER, vbos[GLProgram::VERTEX_ATTR::VERTEX_ATTR_COLOR]);
-                    glBufferData(GL_ARRAY_BUFFER, vertCount * sizeof(glm::vec4), &trans_colors[0], GL_STATIC_DRAW);
+                    glBufferData(GL_ARRAY_BUFFER, vertCount * sizeof(glm::vec4), &trans_colors[0], GL_DYNAMIC_DRAW);
                     
                     glBindBuffer(GL_ARRAY_BUFFER, 0);
                     glBindVertexArray(0);

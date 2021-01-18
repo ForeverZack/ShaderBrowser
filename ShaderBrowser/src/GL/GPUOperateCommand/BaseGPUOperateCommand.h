@@ -17,6 +17,16 @@ namespace customGL
 		3. GPU资源在删除过后，一定要设置BaseGPUResource的delete标记！！！BaseGPUResource会根据这个标记来判断是调用析构函数还是删除GPUResource(BaseGPUResource::deleteGPUResource);
         4. 按照现在的设计，逻辑线程只可以比渲染线程领先1帧。必须等渲染线程拿到全部的GPU操作指令，才可以执行下一帧的逻辑循环；
      */
+
+	 /*
+		关于缓存用途标识符的说明(如GL_STATIC_DRAW, GL_DYNAMIC_DRAW等):
+		_STATIC_: 数据存储内容只写入一次，然后多次使用;
+		_DYNAMIC_: 数据存储内容会被反复写入和反复使用;
+		_STREAM_: 数据存储内容只写入一次，然后也不会被频繁使用;
+		_DRAW: 数据存储内容由应用程序负责写入，并且作为OpenGL绘制和图像命令的数据源 (即CPU->GPU);
+		_READ: 数据存储内容通过OpenGL反馈的数据写入，然后在应用程序进行查询时返回这些数据 (即GPU->CPU);
+		_COPY: 数据存储内容通过OpenGL反馈的数据写入，并且作为OpenGL绘制和图像命令的数据源 (即GPU->GPU);
+	 */
     
     // GPU操作命令类型(也可以理解为操作对象类型)
 	enum GPUOperateCommandType

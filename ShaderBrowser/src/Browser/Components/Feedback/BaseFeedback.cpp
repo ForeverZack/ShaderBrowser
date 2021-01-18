@@ -190,7 +190,7 @@ namespace browser
                         {
                             // data
                             glBindBuffer(GL_ARRAY_BUFFER, declaration->vbos[i]);
-                            glBufferData(GL_ARRAY_BUFFER, declaration->size, nullptr, GL_DYNAMIC_COPY);
+                            glBufferData(GL_ARRAY_BUFFER, declaration->size, nullptr, GL_DYNAMIC_READ);
                         }
                             break;
                             
@@ -198,7 +198,7 @@ namespace browser
                         {
                             // tbo
                             glBindBuffer(GL_TEXTURE_BUFFER, declaration->vbos[i]);
-                            glBufferData(GL_TEXTURE_BUFFER, declaration->size, nullptr, GL_DYNAMIC_COPY);
+                            glBufferData(GL_TEXTURE_BUFFER, declaration->size, nullptr, GL_DYNAMIC_READ);
                             glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, declaration->bindIdx, declaration->vbos[i]);
                             glBindTexture(GL_TEXTURE_BUFFER,m_vOutTexs[i][texIdx]);
                             // 将缓存区关联到纹理对象上tbo
