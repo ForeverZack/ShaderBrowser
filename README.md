@@ -1,25 +1,5 @@
 # ShaderBrowser
 
-## 后续工作 <br>
--6)利用cbuffer去处理光源
--4)阴影(Shadow Map(SM),Cascaded Shadow Map(CSM: 级联阴影);延迟渲染考虑一下?)
--3)sharedMesh的实现，个人理解是MeshFilter的Mesh是shared类型的，而SkinnedMeshRenderer是非share的(或者可以通过useGPU来判断)，
--1) 切分动画，以及切分动画之间的混合等操作 <br>
-0）骨骼的显示，包围盒的旋转问题，GLProgram的缓存机制问题，实体Visible的问题，骨骼动画的优化(例如看不见的模型，是不需要更新计算骨骼矩阵的)。优化重构代码，减轻组件之间的耦合，看看ogre中如何实现和优化的。<br>
-1）MeshFitter的AABB包围盒的生成,以及可见性检测。关于可见性检测,可能会需要添加四叉树或者八叉树来管理场景 <br>
-3)  OpenGL不同状态的处理,深度测试,模板测试, 面剔除等(考虑到有这些状态,似乎命令模式时最好的选择,只需在相应的位置插入命令即可。unity是在他自己的shader中通过设置标签等属性来控制这个的,也可以考虑这样处理。) <br>
-4)  文字的显示处理(freetype库?) <br>
-5)  事件系统(包括键盘,鼠标事件和普通的用户自定义等)<br>
-6）引擎更新的帧率，sleep，以及对deltaTime的计算<br>
-7）Custom（用户逻辑层面）等<br>
-8）各种工具方法的完善<br>
-9）通过引用计数，看看是否可以写出一个通过引用计数来做内存分析的Profile工具类<br>
-10）实现延迟渲染，以及Light和阴影等。<br>
-11）多级渐远纹理的实现。<br>
-12）对VAO生成和mesh合批的处理(是否可以将mesh作为最基本的渲染单元)。 <br>
-13）内存的管理与检查。 <br>
-等等<br>
-
 ## 2021.1.13 <br>
 修改sRGB纹理的加载。升级imgui到1.79。(注意每次升级都要将imgui_impl_opengl3.h中
 末尾的IMGUI_IMPL_OPENGL_LOADER_GL3W  // Default to GL3W embedded in our repository
