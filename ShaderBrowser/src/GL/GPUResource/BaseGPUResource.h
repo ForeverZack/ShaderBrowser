@@ -38,6 +38,8 @@ namespace customGL
 		GRT_GLProgram,
 		// 帧缓存
 		GRT_FrameBuffer,
+		// Uniform缓存
+		GRT_UniformBuffer,
 	};
 
 	// GPU资源基类

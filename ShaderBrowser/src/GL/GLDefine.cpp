@@ -209,7 +209,7 @@ namespace customGL {
         _value.mat3x4 = value;
     }
     
-    void UniformValue::setMat4(const glm::mat4x4& value)
+    void UniformValue::setMat4(const glm::mat4& value)
     {
         common::BROWSER_ASSERT(m_eType==UniformValueType::UniformValueType_Undefined
                                || m_eType==UniformValueType::UniformValueType_Mat4,

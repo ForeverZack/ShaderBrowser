@@ -43,7 +43,8 @@ namespace customGL
 		GOCT_Mesh,
 		// 渲染纹理
 		GOCT_RenderTexture,
-        
+        // Uniform缓存
+		GOCT_UniformBuffer,
     };
     
     // GPU操作

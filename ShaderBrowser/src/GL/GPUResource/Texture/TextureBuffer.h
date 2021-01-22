@@ -25,6 +25,8 @@ namespace customGL
         // 设置数据
         void setData(const std::vector<float>& data);
         void setData(const std::vector<glm::mat4>& data);
+		// 设置部分数据 (updateGpuData用来控制设置完所有数据之后一次性更新)
+		void setSubData(std::function<void(std::vector<float>&)> callback, bool updateGpuData = true);
 
         REGISTER_PROPERTY_GET(unsigned int, m_uTextureId, TextureId);
 
@@ -32,7 +34,7 @@ namespace customGL
 		// 创建gpu资源
 		virtual void createGPUResource();
 		// 更新gpu资源
-//		virtual void updateGPUResource();
+		virtual void updateGPUResource();
 		// 删除gpu资源
 		virtual void deleteGPUResource();
         // 更新gpu资源属性
@@ -47,6 +49,9 @@ namespace customGL
 
 		// 纹理format
 		GLenum m_eInternalFormat;
+
+		// data
+		std::vector<float> m_vData;
 	};
 }
 
