@@ -110,6 +110,8 @@ namespace customGL
 		// image buffer
 		BT_ImageBuffer,
     };
+    // 获取GLSL类型转换为存储大小
+    extern size_t GLSLTypeSize(GLenum type);
     
     // 单个顶点数据结构
     class VertexData
@@ -220,6 +222,40 @@ namespace customGL
         GLvoid* data;
         // 数据大小
         GLint data_size;
+    };
+    
+    class BufferData
+    {
+    public:
+        BufferData();
+        BufferData(size_t offset);
+        ~BufferData();
+        
+    public:
+        void setData(const bool& value, const size_t offset = 0)
+        {
+            m_pValue = new bool(value);
+            m_uSize = sizeof(bool);
+            m_uOffset = offset;
+        }
+        void setData(const int& value, const size_t offset = 0)
+        {
+            m_pValue = new int(value);
+            m_uSize = sizeof(int);
+            m_uOffset = offset;
+        }
+        void setData(const float& value, const size_t offset = 0)
+        {
+            m_pValue = new float(value);
+            m_uSize = sizeof(float);
+            m_uOffset = offset;
+        }
+        
+        
+    private:
+        void* m_pValue;
+        size_t m_uSize;
+        size_t m_uOffset;
     };
 
 	// 模板测试方法参数

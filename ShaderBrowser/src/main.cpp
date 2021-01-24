@@ -146,7 +146,7 @@ void testVal()
     rtCameraEntity->setPosition(0, 10, 10);
     rtCameraEntity->setEulerAngle(45, 180, 0);
     // 设置相机
-    RenderTexture* renderTex = RenderTexture::create(4096, 4096);
+    RenderTexture* renderTex = RenderTexture::create(1024, 1024); //mac没显卡，RT设置太大掉帧严重
     rtCamera->setRenderTexture(renderTex);
     rtCamera->setDepth(-1);
     //=============================创建相机==================================

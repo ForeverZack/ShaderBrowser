@@ -62,6 +62,13 @@ namespace common
     // 打印quaternion
     #define BROWSER_LOG_QUATERNION(quat) std::cout<<quat.x<<", "<<quat.y<<", "<<quat.z<<", "<<quat.w<<endl;
     
+    // 安全释放指针
+    #define BROWSER_SAFE_FREE_POINTER(pointerName)   \
+        if (pointerName)    \
+        {   \
+            free(pointerName); \
+            pointerName = nullptr;  \
+        }
     // 安全删除指针
     #define BROWSER_SAFE_RELEASE_POINTER(pointerName)   \
         if (pointerName)    \

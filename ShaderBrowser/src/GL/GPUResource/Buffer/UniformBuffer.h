@@ -9,7 +9,7 @@ using namespace common;
 
 namespace customGL
 {
-    // class GPUOperateTextureBufferCommand;
+     class GPUOperateUniformBufferCommand;
     
 	/*
 		std140:
@@ -51,7 +51,7 @@ namespace customGL
 	public:
 		UniformBuffer();
 		~UniformBuffer();
-		// friend class GPUOperateTextureBufferCommand;
+		 friend class GPUOperateUniformBufferCommand;
 
     public:
         // 设置数据
@@ -72,6 +72,12 @@ namespace customGL
 	private:
         // vbo
 		GLuint m_uVBO;
+        
+        // data
+        std::vector<string> m_vVariableNames;
+        std::vector<GLint> m_vVariableIndices;
+        std::vector<GLint> m_vVariableTypes;
+        std::vector<BufferData> m_vVariableDatas;
 	};
 }
 

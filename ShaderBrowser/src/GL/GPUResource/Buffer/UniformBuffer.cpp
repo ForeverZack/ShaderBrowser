@@ -1,13 +1,13 @@
 #include "UniformBuffer.h"
 #include "GL/GPUOperateCommand/GPUOperateCommandPool.h"
-#include "GL/GPUOperateCommand/GPUOperateTextureBufferCommand.h"
+#include "GL/GPUOperateCommand/GPUOperateUniformBufferCommand.h"
 #include "GL/System/GPUOperateSystem.h"
 
 namespace customGL
-{
+{    
 	UniformBuffer* UniformBuffer::create()
 	{
-		UniformBuffer* uniformBuffer = new UniformBuffer(internalFormat);
+		UniformBuffer* uniformBuffer = new UniformBuffer();
 		return uniformBuffer;
 	}
 
