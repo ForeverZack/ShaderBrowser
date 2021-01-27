@@ -85,19 +85,33 @@ namespace customGL {
         , m_uOffset(0)
     {
     }
-    
-    BufferData::BufferData(size_t offset)
-        : m_pValue(nullptr)
-        , m_uSize(0)
-        , m_uOffset(offset)
-    {
-    }
+
+	BufferData::BufferData(const BufferData& bufferData)
+		: m_uSize(bufferData.m_uSize)
+		, m_uOffset(bufferData.m_uOffset)
+	{
+		// 注意！！！：这里使用malloc的话，无法调用到数据对象的构造函数
+		// 不过这里指使用一些简单的数据类型，不会又什么影响
+		m_pValue = malloc(m_uSize);
+		memcpy(m_pValue, bufferData.m_pValue, m_uSize);
+	}
+
+	BufferData::BufferData(BufferData&& bufferData)
+	{
+		m_pValue = bufferData.m_pValue;
+		m_uSize = bufferData.m_uSize;
+		m_uOffset = bufferData.m_uOffset;
+
+		bufferData.m_pValue = nullptr;
+	}
     
     BufferData::~BufferData()
     {
+		// 注意！！！：释放void类型的指针并不安全，因为不知道确切的对象类型，无法调用它的析构函数（只会释放对象本身的内存，如果对象中含有其他指针，则无法释放）
+		// 不过这里只使用一些简单的数据类型，不会造成内存泄漏
         BROWSER_SAFE_RELEASE_POINTER(m_pValue);
     }
-    
+
     
     
 // ===================================UniformValue::UniformValue()================================================

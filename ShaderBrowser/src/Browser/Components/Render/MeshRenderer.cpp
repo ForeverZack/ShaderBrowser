@@ -5,8 +5,6 @@
 
 namespace browser
 {
-	EnumComponentClass MeshRenderer::ComponentClass = EnumComponentClass::ECC_MeshRenderer;
-
 	MeshRenderer* MeshRenderer::createBaseRender(const std::string& materialName /*= Material::DEFAULT_MATERIAL_NAME*/, const std::string& programeName /*= GLProgram::DEFAULT_GLPROGRAM_NAME*/)
 	{
 		MeshRenderer* renderer = new MeshRenderer();

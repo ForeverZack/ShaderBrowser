@@ -4,8 +4,6 @@
 
 namespace browser
 {
-	EnumComponentClass BaseComponent::ComponentClass = EnumComponentClass::ECC_BaseComponent;
-
 	BaseComponent::BaseComponent()
         : m_oTransform(nullptr)
         , m_eBelongSystem(SystemType::CustomSystem)

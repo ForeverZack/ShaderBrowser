@@ -5,8 +5,6 @@
 
 namespace browser
 {
-	EnumComponentClass SkinnedMeshRenderer::ComponentClass = EnumComponentClass::ECC_SkinnedMeshRenderer;
-
     SkinnedMeshRenderer* SkinnedMeshRenderer::createSkinnedMeshRenderer(const std::string& materialName /*= Material::DEFAULT_MATERIAL_NAME*/, const std::string& programeName /*= GLProgram::DEFAULT_SKELETON_GLPROGRAM_NAME*/)
     {
         SkinnedMeshRenderer* renderer = new SkinnedMeshRenderer();

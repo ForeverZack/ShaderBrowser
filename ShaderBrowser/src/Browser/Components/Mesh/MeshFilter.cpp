@@ -6,8 +6,6 @@ using namespace customGL;
 
 namespace browser
 {
-	EnumComponentClass MeshFilter::ComponentClass = EnumComponentClass::ECC_MeshFilter;
-
     MeshFilter* MeshFilter::create()
     {
         MeshFilter* meshFilter = new MeshFilter();

@@ -20,9 +20,17 @@ namespace common
 		void addReference(Reference* ref);
         // 添加渲染线程代释放的对象
         void addReferenceFromRenderCore(Reference* ref);
-        
+		// 移除逻辑线程待释放的对象
+		void removeReference(Reference* ref);
+
 		// 每帧结束时调用刷新，用来对队列中所有的refence对象进行一次release操作
 		void update();
+
+	private:
+		// 释放逻辑线程中待释放的对象
+		void releaseReferencesFromLogicCore();
+		// 释放渲染线程中待释放的对象
+		void releaseReferencesFromRenderCore();
 
 	private:
         // 待释放对象队列 (逻辑线程)

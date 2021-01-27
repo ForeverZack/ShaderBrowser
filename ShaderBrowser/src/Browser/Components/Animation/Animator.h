@@ -52,9 +52,6 @@ namespace browser
     
 	class Animator : public BaseComponent
 	{
-	public:
-		static EnumComponentClass ComponentClass;
-
     public:
         static Animator* create(unsigned int boneNum);
         

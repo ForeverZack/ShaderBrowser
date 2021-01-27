@@ -1,5 +1,10 @@
 # ShaderBrowser
 
+## 2021.1.27 <br>
+发现对Reference的autorelease()方法使用存在一些错误，当这个对象在栈上或者被手动提前释放，再在AutoReleasePool::update里释放
+肯定会出问题。另外autorelease()方法应该只在逻辑线程中使用，渲染线程中不应该创建autorelease的资源或调用它。优化了getComponent
+的写法等。<br>
+
 ## 2021.1.13 <br>
 修改sRGB纹理的加载。升级imgui到1.79。(注意每次升级都要将imgui_impl_opengl3.h中
 末尾的IMGUI_IMPL_OPENGL_LOADER_GL3W  // Default to GL3W embedded in our repository

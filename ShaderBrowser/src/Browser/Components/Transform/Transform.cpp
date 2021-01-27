@@ -10,8 +10,6 @@ using namespace customGL;
 
 namespace browser
 {
-	EnumComponentClass Transform::ComponentClass = EnumComponentClass::ECC_Transform;
-
 	Transform::Transform()
         : BaseComponent("Transform")
         , m_oParent(nullptr)

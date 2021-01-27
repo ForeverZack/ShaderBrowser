@@ -20,9 +20,6 @@ namespace browser
 	class MeshRenderer : public BaseComponent
 	{
 	public:
-		static EnumComponentClass ComponentClass;
-
-	public:
 		static MeshRenderer* createBaseRender(const std::string& materialName = customGL::Material::DEFAULT_MATERIAL_NAME, const std::string& programeName = GLProgram::DEFAULT_GLPROGRAM_NAME);
         static MeshRenderer* createBaseRender(Material* material);
     

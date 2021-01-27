@@ -55,8 +55,27 @@ namespace customGL
 
     public:
         // 设置数据
-        void setData(const std::vector<float>& data);
-        void setData(const std::vector<glm::mat4>& data);
+		void setData(const string& varname, const float& value, bool updateGpuData = true);
+		void setData(const string& varname, const glm::vec2& value, bool updateGpuData = true);
+		void setData(const string& varname, const glm::vec3& value, bool updateGpuData = true);
+		void setData(const string& varname, const glm::vec4& value, bool updateGpuData = true);
+		void setData(const string& varname, const int& value, bool updateGpuData = true);
+		void setData(const string& varname, const glm::ivec2& value, bool updateGpuData = true);
+		void setData(const string& varname, const glm::ivec3& value, bool updateGpuData = true);
+		void setData(const string& varname, const glm::ivec4& value, bool updateGpuData = true);
+		void setData(const string& varname, const bool& value, bool updateGpuData = true);
+		void setData(const string& varname, const glm::bvec2& value, bool updateGpuData = true);
+		void setData(const string& varname, const glm::bvec3& value, bool updateGpuData = true);
+		void setData(const string& varname, const glm::bvec4& value, bool updateGpuData = true);
+		void setData(const string& varname, const glm::mat2& value, bool updateGpuData = true);
+		void setData(const string& varname, const glm::mat2x3& value, bool updateGpuData = true);
+		void setData(const string& varname, const glm::mat2x4& value, bool updateGpuData = true);
+		void setData(const string& varname, const glm::mat3& value, bool updateGpuData = true);
+		void setData(const string& varname, const glm::mat3x2& value, bool updateGpuData = true);
+		void setData(const string& varname, const glm::mat3x4& value, bool updateGpuData = true);
+		void setData(const string& varname, const glm::mat4& value, bool updateGpuData = true);
+		void setData(const string& varname, const glm::mat4x2& value, bool updateGpuData = true);
+		void setData(const string& varname, const glm::mat4x3& value, bool updateGpuData = true);
 
 
 
@@ -68,16 +87,41 @@ namespace customGL
 		// 删除gpu资源
 		virtual void deleteGPUResource();
        
+		// 
+		template <typename T>
+		void setBufferData(const string& varname, const T& value, bool updateGpuData)
+		{
+			auto itor = m_mVariableDatas.find(varname);
+			if (itor == m_mVariableDatas.end())
+			{
+				BufferData bufferData;
+				bufferData.setData(value);
+				m_mVariableDatas.emplace(varname, std::move(bufferData));
+			}
+			else
+			{
+				BufferData& bufferData = itor->second;
+				bufferData.setData(value);
+			}
+
+			if (updateGpuData)
+			{
+				updateGPUResource();
+			}
+		}
 
 	private:
         // vbo
 		GLuint m_uVBO;
         
-        // data
+        // gpu data info
+		bool m_bGpuDataInit;
         std::vector<string> m_vVariableNames;
         std::vector<GLint> m_vVariableIndices;
         std::vector<GLint> m_vVariableTypes;
-        std::vector<BufferData> m_vVariableDatas;
+
+		// cpu data
+        std::unordered_map<string, BufferData> m_mVariableDatas;
 	};
 }
 

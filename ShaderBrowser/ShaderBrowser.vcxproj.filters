@@ -106,6 +106,9 @@
     <Filter Include="src\Browser\Components\ComputeProgram">
       <UniqueIdentifier>{6a1f2088-f497-4f4b-8c97-b5aea459ed23}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\GL\GPUResource\Buffer">
+      <UniqueIdentifier>{9346dae6-1452-472a-98b3-c9feecb1035f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -364,6 +367,12 @@
       <Filter>src\GL\GPUResource\Texture</Filter>
     </ClCompile>
     <ClCompile Include="src\GL\GPUOperateCommand\GPUOperateRenderTextureCommand.cpp">
+      <Filter>src\GL\GPUOperateCommand</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GL\GPUResource\Buffer\UniformBuffer.cpp">
+      <Filter>src\GL\GPUResource\Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GL\GPUOperateCommand\GPUOperateUniformBufferCommand.cpp">
       <Filter>src\GL\GPUOperateCommand</Filter>
     </ClCompile>
   </ItemGroup>
@@ -654,6 +663,12 @@
       <Filter>src\GL\GPUResource\Texture</Filter>
     </ClInclude>
     <ClInclude Include="src\GL\GPUOperateCommand\GPUOperateRenderTextureCommand.h">
+      <Filter>src\GL\GPUOperateCommand</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GL\GPUResource\Buffer\UniformBuffer.h">
+      <Filter>src\GL\GPUResource\Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GL\GPUOperateCommand\GPUOperateUniformBufferCommand.h">
       <Filter>src\GL\GPUOperateCommand</Filter>
     </ClInclude>
   </ItemGroup>

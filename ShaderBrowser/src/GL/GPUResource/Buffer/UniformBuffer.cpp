@@ -13,6 +13,7 @@ namespace customGL
 
 	UniformBuffer::UniformBuffer()
 		: m_uVBO(0)
+		, m_bGpuDataInit(false)
 	{
         m_eResourceType = GPUResourceType::GRT_UniformBuffer;
 //        m_eResouceState = GRS_UnLoad; // default
@@ -24,24 +25,112 @@ namespace customGL
 	{
         deleteGPUResource();
     }
+
+	void UniformBuffer::setData(const string& varname, const float& value, bool updateGpuData/* = true*/)
+	{
+		setBufferData(varname, value, updateGpuData);
+	}
+
+	void UniformBuffer::setData(const string& varname, const glm::vec2& value, bool updateGpuData/* = true*/)
+	{
+		setBufferData(varname, value, updateGpuData);
+	}
+
+	void UniformBuffer::setData(const string& varname, const glm::vec3& value, bool updateGpuData/* = true*/)
+	{
+		setBufferData(varname, value, updateGpuData);
+	}
+
+	void UniformBuffer::setData(const string& varname, const glm::vec4& value, bool updateGpuData/* = true*/)
+	{
+		setBufferData(varname, value, updateGpuData);
+	}
+
+	void UniformBuffer::setData(const string& varname, const int& value, bool updateGpuData/* = true*/)
+	{
+		setBufferData(varname, value, updateGpuData);
+	}
+
+	void UniformBuffer::setData(const string& varname, const glm::ivec2& value, bool updateGpuData/* = true*/)
+	{
+		setBufferData(varname, value, updateGpuData);
+	}
+
+	void UniformBuffer::setData(const string& varname, const glm::ivec3& value, bool updateGpuData/* = true*/)
+	{
+		setBufferData(varname, value, updateGpuData);
+	}
+
+	void UniformBuffer::setData(const string& varname, const glm::ivec4& value, bool updateGpuData/* = true*/)
+	{
+		setBufferData(varname, value, updateGpuData);
+	}
+
+	void UniformBuffer::setData(const string& varname, const bool& value, bool updateGpuData/* = true*/)
+	{
+		setBufferData(varname, value, updateGpuData);
+	}
+
+	void UniformBuffer::setData(const string& varname, const glm::bvec2& value, bool updateGpuData/* = true*/)
+	{
+		setBufferData(varname, value, updateGpuData);
+	}
+
+	void UniformBuffer::setData(const string& varname, const glm::bvec3& value, bool updateGpuData/* = true*/)
+	{
+		setBufferData(varname, value, updateGpuData);
+	}
+
+	void UniformBuffer::setData(const string& varname, const glm::bvec4& value, bool updateGpuData/* = true*/)
+	{
+		setBufferData(varname, value, updateGpuData);
+	}
+
+	void UniformBuffer::setData(const string& varname, const glm::mat2& value, bool updateGpuData/* = true*/)
+	{
+		setBufferData(varname, value, updateGpuData);
+	}
+
+	void UniformBuffer::setData(const string& varname, const glm::mat2x3& value, bool updateGpuData/* = true*/)
+	{
+		setBufferData(varname, value, updateGpuData);
+	}
+
+	void UniformBuffer::setData(const string& varname, const glm::mat2x4& value, bool updateGpuData/* = true*/)
+	{
+		setBufferData(varname, value, updateGpuData);
+	}
+
+	void UniformBuffer::setData(const string& varname, const glm::mat3& value, bool updateGpuData/* = true*/)
+	{
+		setBufferData(varname, value, updateGpuData);
+	}
+
+	void UniformBuffer::setData(const string& varname, const glm::mat3x2& value, bool updateGpuData/* = true*/)
+	{
+		setBufferData(varname, value, updateGpuData);
+	}
+
+	void UniformBuffer::setData(const string& varname, const glm::mat3x4& value, bool updateGpuData/* = true*/)
+	{
+		setBufferData(varname, value, updateGpuData);
+	}
+
     
-    void UniformBuffer::setData(const std::vector<float>& data)
-    {
-        // auto cmd = GPUOperateCommandPool::getInstance()->popCommand<GPUOperateTextureBufferCommand>(GPUOperateCommandType::GOCT_TextureBuffer);
-        // cmd->setTextureBuffer(this);
-        // cmd->setData(data);
-        // cmd->ready(GPUOperateType::GOT_Update);
-        // GPUOperateSystem::getInstance()->addCommand(cmd);
+	void UniformBuffer::setData(const string& varname, const glm::mat4& value, bool updateGpuData/* = true*/)
+	{
+		setBufferData(varname, value, updateGpuData);
     }
-    
-    void UniformBuffer::setData(const std::vector<glm::mat4>& data)
-    {
-        // auto cmd = GPUOperateCommandPool::getInstance()->popCommand<GPUOperateTextureBufferCommand>(GPUOperateCommandType::GOCT_TextureBuffer);
-        // cmd->setTextureBuffer(this);
-        // cmd->setData(data);
-        // cmd->ready(GPUOperateType::GOT_Update);
-        // GPUOperateSystem::getInstance()->addCommand(cmd);
-    }
+
+	void UniformBuffer::setData(const string& varname, const glm::mat4x2& value, bool updateGpuData/* = true*/)
+	{
+		setBufferData(varname, value, updateGpuData);
+	}
+
+	void UniformBuffer::setData(const string& varname, const glm::mat4x3& value, bool updateGpuData/* = true*/)
+	{
+		setBufferData(varname, value, updateGpuData);
+	}
 
 	void UniformBuffer::createGPUResource()
 	{
@@ -55,14 +144,14 @@ namespace customGL
 	{
 		// auto cmd = GPUOperateCommandPool::getInstance()->popCommand<GPUOperateTextureBufferCommand>(GPUOperateCommandType::GOCT_TextureBuffer);
 		// cmd->setTextureBuffer(this);
-		// cmd->setData(m_vData);
+		// cmd->setData(data);
 		// cmd->ready(GPUOperateType::GOT_Update);
 		// GPUOperateSystem::getInstance()->addCommand(cmd);
 	}
 
 	void UniformBuffer::deleteGPUResource()
 	{
-        BROWSER_ASSERT(m_eResouceState==GRS_Loaded, "UniformBuffer state must be GRS_Loaded, then it can be destroyed on gpu");
+        //BROWSER_ASSERT(m_eResouceState==GRS_Loaded, "UniformBuffer state must be GRS_Loaded, then it can be destroyed on gpu");
         
         // auto cmd = GPUOperateCommandPool::getInstance()->popCommand<GPUOperateTextureBufferCommand>(GPUOperateCommandType::GOCT_TextureBuffer);
         // cmd->setTextureBuffer(this);

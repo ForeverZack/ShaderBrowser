@@ -7,6 +7,9 @@
 #include <string>
 #include <vector>
 
+using namespace std;
+#include <iostream>
+
 namespace customGL
 {
     // 交换缓冲数量
@@ -228,35 +231,52 @@ namespace customGL
     {
     public:
         BufferData();
-        BufferData(size_t offset);
+		// 拷贝构造
+		BufferData(const BufferData& bufferData);
+		// 移动构造
+		BufferData(BufferData&& bufferData);
         ~BufferData();
         
     public:
-        void setData(const bool& value, const size_t offset = 0)
-        {
-            m_pValue = new bool(value);
-            m_uSize = sizeof(bool);
-            m_uOffset = offset;
-        }
-        void setData(const int& value, const size_t offset = 0)
-        {
-            m_pValue = new int(value);
-            m_uSize = sizeof(int);
-            m_uOffset = offset;
-        }
-        void setData(const float& value, const size_t offset = 0)
-        {
-            m_pValue = new float(value);
-            m_uSize = sizeof(float);
-            m_uOffset = offset;
-        }
-        
+		// 设置数据
+		template <typename T>
+		void setData(const T& value)
+		{
+			std::cout << "void setData(const T& value)" << std::endl;
+			m_pValue = new T(value);
+			m_uSize = sizeof(T);
+		}
+		template <typename T>
+		void setData(const std::vector<T>& value)
+		{
+			std::cout << "void setData(const std::vector<T>& value)" << std::endl;
+			m_pValue = new std::vector<T>(value);
+			m_uSize = sizeof(T) * value.size();
+		}
+		//// 特例化
+		//// 
+		//template <>	// 特例化这里空着，不然会识别为声明
+		//void setData<std::vector<glm::vec3>>(const std::vector<glm::vec3>& value)
+		//{
+		//	std::cout << "void setData(const std::vector<glm::vec3>& value)" << std::endl;
+		//}
+		//template <>	
+		//void setData(const std::vector<float>& value)
+		//{
+		//	std::cout << "void setData(const std::vector<float>& value)" << std::endl;
+		//	m_pValue = new std::vector<float>(value);
+		//	m_uSize = sizeof(float)*value.size();
+		//}
+
+		size_t getOffset() { return m_uOffset; }
+		void setOffset(size_t offset) { m_uOffset = offset; }
         
     private:
         void* m_pValue;
         size_t m_uSize;
-        size_t m_uOffset;
+        size_t m_uOffset;	// gpu使用
     };
+
 
 	// 模板测试方法参数
 	class StencilFuncParameter

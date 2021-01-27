@@ -115,54 +115,58 @@ namespace browser
 		template <typename T>
 		T* getComponent()
 		{
-			switch (T::ComponentClass)
+			/*
+				typeid有两种模式，编译期获取类型和运行时获取类型。而如何选择模式，取决于typeid对象是不是静态类型。
+				以本问题中的i为例，当使用typeid(i).name()获取i类型时，编译器会首先检查i是不是静态类型，如果是，则使用编译期模式。
+				但如果i是一个多态继承的类，并且还有一个指针，则typeid就会真的传入一个地址值，以便程序在运行时求出i类型。
+
+				1.当typeid操作符的操作数是不带有虚函数的类类型时，typeid操作符会指出操作数的类型，而不是底层对象的类型。
+				2.如果typeid操作符的操作数是至少包含一个虚拟函数的类类型时，并且该表达式是一个基类的引用，则typeid操作符指出底层对象的派生类类型。
+			*/
+			//const type_info& T_info = typeid(T);
+			//if (T_info == typeid(Transform))
+			//{
+			//	return static_cast<T*>(m_oTransform);
+			//}
+			//else if (T_info == typeid(MeshRenderer))
+			//{
+			//	if (m_oRenderer && static_cast<MeshRenderer*>(m_oRenderer)->getRendererType() == MeshRenderer::RendererType::RendererType_Mesh)
+			//	{
+			//		return static_cast<T*>(m_oRenderer);
+			//	}
+			//}
+			//else if (T_info == typeid(SkinnedMeshRenderer))
+			//{
+			//	if (m_oRenderer && static_cast<MeshRenderer*>(m_oRenderer)->getRendererType() == MeshRenderer::RendererType::RendererType_Skinned)
+			//	{
+			//		return static_cast<T*>(m_oRenderer);
+			//	}
+			//}
+			//else if (T_info == typeid(MeshFilter))
+			//{
+			//	return static_cast<T*>(m_oMeshFilter);
+			//}
+			//else if (T_info == typeid(AABBBoundBox))
+			//{
+			//	return static_cast<T*>(m_oBoundBox);
+			//}
+			//else if (T_info == typeid(Animator))
+			//{
+			//	return static_cast<T*>(m_oAnimator);
+			//}
+			//else if (T_info == typeid(Camera))
+			//{
+			//	return static_cast<T*>(m_oCamera);
+			//}
+
+			T* component = nullptr;
+			for (auto itor = m_vComponents.begin(); itor != m_vComponents.end(); ++itor)
 			{
-			case EnumComponentClass::ECC_Transform:
+				component = dynamic_cast<T*>(*itor);
+				if (component)
 				{
-					return static_cast<T*>(m_oTransform);
+					return component;
 				}
-				break;
-
-			case EnumComponentClass::ECC_MeshRenderer:
-				{
-					if (m_oRenderer && static_cast<MeshRenderer*>(m_oRenderer)->getRendererType()==MeshRenderer::RendererType::RendererType_Mesh)
-					{
-						return static_cast<T*>(m_oRenderer);
-					}
-				}
-				break;
-			case EnumComponentClass::ECC_SkinnedMeshRenderer:
-				{
-					if (m_oRenderer && static_cast<MeshRenderer*>(m_oRenderer)->getRendererType()==MeshRenderer::RendererType::RendererType_Skinned)
-					{
-						return static_cast<T*>(m_oRenderer);
-					}
-				}
-				break;
-
-			case EnumComponentClass::ECC_MeshFilter:
-				{
-					return static_cast<T*>(m_oMeshFilter);
-				}
-				break;
-
-			case EnumComponentClass::ECC_AABBBoundBox:
-				{
-					return static_cast<T*>(m_oBoundBox);
-				}
-				break;
-
-			case EnumComponentClass::ECC_Animator:
-				{
-					return static_cast<T*>(m_oAnimator);
-				}
-				break;
-
-			case EnumComponentClass::ECC_Camera:
-				{
-					return static_cast<T*>(m_oCamera);
-				}
-				break;
 			}
 
 			return nullptr;

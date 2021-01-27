@@ -8,8 +8,6 @@
 
 namespace browser
 {
-	EnumComponentClass AABBBoundBox::ComponentClass = EnumComponentClass::ECC_AABBBoundBox;
-
 	AABBBoundBox::AABBBoundBox()
         : m_oInUseMeshFilter(nullptr)
         , m_oMinVertex(GLM_VEC3_ZERO)

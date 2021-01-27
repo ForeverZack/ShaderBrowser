@@ -368,6 +368,7 @@ void testVal()
 
 }
 
+#include "GL/GPUResource/Buffer/UniformBuffer.h"
 int main()
 {
 	Application* app = new Application();

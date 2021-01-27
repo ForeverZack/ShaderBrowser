@@ -14,8 +14,6 @@ namespace customGL
     {
 		// create material
 		Material* material = new Material(parameters->name);
-		material->init();
-		material->autorelease();
         
 		// render queue
 		material->setRenderQueue(parameters->renderQueue);
@@ -95,8 +93,6 @@ namespace customGL
     {
 		// create material
 		Material* material = new Material(materialName);
-		material->init();
-		material->autorelease();
 
 		GLProgram* program = nullptr;
 		Pass* pass = nullptr;
@@ -156,6 +152,8 @@ namespace customGL
 		, m_pBlendFuncParam(nullptr)
 		, m_eBlendEquation(GL_FUNC_ADD)
 	{
+		this->autorelease();
+
         m_vPass.clear();
 	
 		// 新的材质加入MaterialCache
@@ -182,12 +180,6 @@ namespace customGL
 		MaterialCache::getInstance()->removeMaterial(this);
 		// 从MaterialManager中移除
 		MaterialManager::getInstance()->removeMaterial(this);
-	}
-
-	void Material::init()
-	{
-        m_mUniforms.clear();
-        m_vPass.clear();
 	}
 
     void Material::addPass(Pass* pass)

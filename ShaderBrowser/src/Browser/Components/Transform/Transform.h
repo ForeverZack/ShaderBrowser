@@ -45,7 +45,6 @@ namespace browser
 	{
 	public:
 		//static Transform* create();
-		static EnumComponentClass ComponentClass;
         
         // 定义脏标记赋值方法
         #define TRANS_DIRTY(trans, dirty) trans->m_bTransDirty = dirty; trans->m_bCurFrameDirty = dirty | m_bCurFrameDirty;

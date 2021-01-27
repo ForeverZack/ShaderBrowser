@@ -39,8 +39,6 @@ namespace customGL
 		~Material();
 
 	public:
-		// 初始化材质
-		void init();
         // 添加pass
         void addPass(Pass* pass);
 		// 使用材质的第几个Pass (渲染线程调用)

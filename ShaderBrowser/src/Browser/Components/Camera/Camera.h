@@ -49,9 +49,6 @@ namespace browser
 		};
 
 	public:
-		static EnumComponentClass ComponentClass;
-
-	public:
 		// 脏标记数值范围
 		#define VALUE_DIRTY_TAG_MAX 255
 		// 投影类型

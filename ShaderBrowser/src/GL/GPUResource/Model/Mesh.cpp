@@ -45,7 +45,6 @@ namespace customGL
         , m_uPropertiesDirty(0)
         , m_bCreated(false)
 	{
-		this->autorelease();
 		if (isRetain)
 		{
 			this->retain();

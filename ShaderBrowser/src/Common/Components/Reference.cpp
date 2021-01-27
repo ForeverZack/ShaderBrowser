@@ -7,11 +7,18 @@ namespace common
 
 	Reference::Reference()
 		: m_iRefenceCount(0)
+		, m_iAutoRelease(0)
+		, m_bHeapMemory(false)
 	{
 	}
 
 	Reference::~Reference()
 	{
+		// 对象被提前释放(如在栈上的对象，或者自己手动释放)
+		if (m_iAutoRelease > 0)
+		{
+			AutoReleasePool::getInstance()->removeReference(this);
+		}
 	}
     
     Reference* Reference::clone()

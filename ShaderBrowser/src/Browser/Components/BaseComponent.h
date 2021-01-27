@@ -14,26 +14,9 @@ namespace browser
 	class BaseEntity;
     class Transform;
 
-	// 组件类枚举
-	enum EnumComponentClass
-	{
-		ECC_BaseComponent = 0,
-		ECC_Transform,
-		ECC_MeshRenderer,
-		ECC_SkinnedMeshRenderer,
-		ECC_MeshFilter,
-		ECC_AABBBoundBox,
-		ECC_Animator,
-		ECC_Camera,
-	};
-
     // 注意：BaseCompoent如果被new出来没有及时使用，应该在每帧结束被release掉
 	class BaseComponent : public common::Reference
 	{
-	public:
-		// 每个组件都需要定义组件类型，方便通过Entity来查找组件
-		static EnumComponentClass ComponentClass;
-
 	public:
         BaseComponent();
         BaseComponent(const std::string& name);
