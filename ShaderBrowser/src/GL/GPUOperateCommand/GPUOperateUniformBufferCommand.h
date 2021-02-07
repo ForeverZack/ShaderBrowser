@@ -31,27 +31,16 @@ namespace customGL
         void deleteBuffer();
     
 		REGISTER_PROPERTY_SET(UniformBuffer*, m_pBuffer, UniformBuffer)
-        void setData(const std::vector<glm::mat4>& data);
-        void setData(const std::vector<float>& data);
+        void setData(BufferData& data);
+		void setData(const size_t size, const vector<string>& varnames, unordered_map<string, BufferData>& variables);
         
 	protected:
         // 缓存对象
 		UniformBuffer* m_pBuffer;
         
         // 缓存数据
-        union U {
-            std::vector<glm::mat4> val_mat4;
-            std::vector<float> val_float;
-            
-            U() { memset(this, 0, sizeof(*this)); }
-            ~U() {}
-            U& operator=(const U& other) {
-                memcpy(this, &other, sizeof(*this));
-                return *this;
-            }
-        } m_uValue;
-        void* m_pData;
-        unsigned int m_uSize;
+		void* m_pData;
+		size_t m_uSize;
 	};
 
 }

@@ -313,6 +313,22 @@ namespace common
         }
     }
 
+	void Utils::setUniformUniformBuffer(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, UniformBuffer* uniformBuffer)
+	{
+		auto itor = uniforms.find(uniformName);
+		if (itor == uniforms.end())
+		{
+			UniformValue uniformValue;
+			uniformValue.setUniformBuffer(uniformBuffer);
+			uniforms.emplace(uniformName, std::move(uniformValue));
+		}
+		else
+		{
+			UniformValue& uniformValue = itor->second;
+			uniformValue.setUniformBuffer(uniformBuffer);
+		}
+	}
+
     void Utils::setUniformIntV(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, int count, const int* value)
     {
         auto itor = uniforms.find(uniformName);

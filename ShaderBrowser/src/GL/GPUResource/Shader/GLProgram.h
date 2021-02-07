@@ -14,12 +14,15 @@ namespace customGL
 {
     // 最大支持的纹理单元数量
     static const int MAX_ACTIVE_TEXTURE = 16;
+	// 最大支持的Uniform缓冲数量
+	static const int MAX_ACTIVE_UNIFORM_BLOCK = 10;
 	// 最大支持骨骼矩阵数量
 	static const int MAX_BONES_COUNT = 100;
     
     class Texture2D;
     class RenderTexture;
     class TextureBuffer;
+	class UniformBuffer;
     class GPUOperateGLProgramCommand;
     
     class GLProgram : public BaseGPUResource
@@ -175,7 +178,8 @@ namespace customGL
         void setUniformWithTex2D(const std::string& uniformName, Texture2D* texture);
         void setUniformWithTex2D(const std::string& uniformName, RenderTexture* renderTexture);
         void setUniformWithSamplerBuffer(const std::string& uniformName, TextureBuffer* textureBuffer);
-		void setUniformWithImageBuffer(const std::string& uniformName, GLuint textureId, GLenum access, GLenum format);
+		void setUniformWithUniformBuffer(const std::string& uniformName, UniformBuffer* uniformBuffer);
+		void setUniformWithImageBuffer(const std::string& uniformName, GLuint textureId, GLenum access, GLenum format);	// #420以上
         
         void setUniformWithMat3V(const std::string& uniformName, int count, const float* fv);
         void setUniformWithMat3x4V(const std::string& uniformName, int count, const float* fv);
@@ -232,12 +236,14 @@ namespace customGL
         GLuint m_uCompShader;
         // uniform位置  注意:char*不可以用来做key值，除非自己重写他的比较方法和hash方法。
         std::unordered_map<std::string, GLint> m_mUniformLocations;
-        // textureId队列
-        GLuint m_vTexIds[MAX_ACTIVE_TEXTURE];
 		// 纹理单元
 		std::unordered_map<std::string, GLuint> m_mTextureUnits;
 		// 纹理单元计数
 		GLuint m_uTextureUnitIndex;
+		// uniform缓冲绑定点
+		std::unordered_map<std::string, GLuint> m_mUniformBufferBindings;
+		// uniform缓冲绑定点计数
+		GLuint m_uUniformBufferBindingIndex;
         
 		// 着色器包含的标签属性
 		unsigned int m_uProgramTags;

@@ -78,39 +78,109 @@ namespace customGL {
         
         return size;
     }
+	// std140布局下类型的对齐值
+	extern const std::unordered_map<size_t, size_t> STD140_BaseAlignments
+	{
+		{ typeid(float).hash_code(), sizeof(float) },
+		{ typeid(int).hash_code(), sizeof(float) },
+		{ typeid(bool).hash_code(), sizeof(float) },
+		{ typeid(glm::vec2).hash_code(), sizeof(float) * 2 },
+		{ typeid(glm::vec3).hash_code(), sizeof(float) * 4 },
+		{ typeid(glm::vec4).hash_code(), sizeof(float) * 4 },
+		{ typeid(glm::ivec2).hash_code(), sizeof(float) * 2 },
+		{ typeid(glm::ivec3).hash_code(), sizeof(float) * 4 },
+		{ typeid(glm::ivec4).hash_code(), sizeof(float) * 4 },
+		{ typeid(glm::uvec2).hash_code(), sizeof(float) * 2 },
+		{ typeid(glm::uvec3).hash_code(), sizeof(float) * 4 },
+		{ typeid(glm::uvec4).hash_code(), sizeof(float) * 4 },
+		{ typeid(glm::mat2).hash_code(), sizeof(float) * 4 },
+		{ typeid(glm::mat2x3).hash_code(), sizeof(float) * 4 },
+		{ typeid(glm::mat2x4).hash_code(), sizeof(float) * 4 },
+		{ typeid(glm::mat3).hash_code(), sizeof(float) * 4 },
+		{ typeid(glm::mat3x2).hash_code(), sizeof(float) * 4 },
+		{ typeid(glm::mat3x4).hash_code(), sizeof(float) * 4 },
+		{ typeid(glm::mat4).hash_code(), sizeof(float) * 4 },
+		{ typeid(glm::mat4x2).hash_code(), sizeof(float) * 4 },
+		{ typeid(glm::mat4x3).hash_code(), sizeof(float) * 4 },
+	};
+	// std140布局下类型的大小
+	extern const std::unordered_map<size_t, size_t> STD140_BaseSizes
+	{
+		{ typeid(float).hash_code(), sizeof(float) },
+		{ typeid(int).hash_code(), sizeof(float) },
+		{ typeid(bool).hash_code(), sizeof(float) },
+		{ typeid(glm::vec2).hash_code(), sizeof(float) * 2 },
+		{ typeid(glm::vec3).hash_code(), sizeof(float) * 4 },
+		{ typeid(glm::vec4).hash_code(), sizeof(float) * 4 },
+		{ typeid(glm::ivec2).hash_code(), sizeof(float) * 2 },
+		{ typeid(glm::ivec3).hash_code(), sizeof(float) * 4 },
+		{ typeid(glm::ivec4).hash_code(), sizeof(float) * 4 },
+		{ typeid(glm::uvec2).hash_code(), sizeof(float) * 2 },
+		{ typeid(glm::uvec3).hash_code(), sizeof(float) * 4 },
+		{ typeid(glm::uvec4).hash_code(), sizeof(float) * 4 },
+		{ typeid(glm::mat2).hash_code(), sizeof(float) * 8 },
+		{ typeid(glm::mat2x3).hash_code(), sizeof(float) * 8 },
+		{ typeid(glm::mat2x4).hash_code(), sizeof(float) * 8 },
+		{ typeid(glm::mat3).hash_code(), sizeof(float) * 12 },
+		{ typeid(glm::mat3x2).hash_code(), sizeof(float) * 12 },
+		{ typeid(glm::mat3x4).hash_code(), sizeof(float) * 12 },
+		{ typeid(glm::mat4).hash_code(), sizeof(float) * 16 },
+		{ typeid(glm::mat4x2).hash_code(), sizeof(float) * 16 },
+		{ typeid(glm::mat4x3).hash_code(), sizeof(float) * 16 },
+	};
     
     BufferData::BufferData()
-        : m_pValue(nullptr)
-        , m_uSize(0)
-        , m_uOffset(0)
+        : m_pData(nullptr)
+        , m_uElementSize(0)
+        , m_uLength(0)
+		, m_uRealSize(0)
     {
     }
 
 	BufferData::BufferData(const BufferData& bufferData)
-		: m_uSize(bufferData.m_uSize)
-		, m_uOffset(bufferData.m_uOffset)
+		: m_uElementSize(bufferData.m_uElementSize)
+		, m_uLength(bufferData.m_uLength)
+		, m_uRealSize(bufferData.m_uRealSize)
 	{
 		// 注意！！！：这里使用malloc的话，无法调用到数据对象的构造函数
 		// 不过这里指使用一些简单的数据类型，不会又什么影响
-		m_pValue = malloc(m_uSize);
-		memcpy(m_pValue, bufferData.m_pValue, m_uSize);
+		m_pData = malloc(m_uRealSize);
+		memcpy(m_pData, bufferData.m_pData, m_uRealSize);
 	}
 
 	BufferData::BufferData(BufferData&& bufferData)
 	{
-		m_pValue = bufferData.m_pValue;
-		m_uSize = bufferData.m_uSize;
-		m_uOffset = bufferData.m_uOffset;
+		m_pData = bufferData.m_pData;
+		m_uElementSize = bufferData.m_uElementSize;
+		m_uLength = bufferData.m_uLength;
+		m_uRealSize = bufferData.m_uRealSize;
 
-		bufferData.m_pValue = nullptr;
+		bufferData.m_pData = nullptr;
 	}
     
     BufferData::~BufferData()
     {
 		// 注意！！！：释放void类型的指针并不安全，因为不知道确切的对象类型，无法调用它的析构函数（只会释放对象本身的内存，如果对象中含有其他指针，则无法释放）
 		// 不过这里只使用一些简单的数据类型，不会造成内存泄漏
-        BROWSER_SAFE_RELEASE_POINTER(m_pValue);
+        BROWSER_SAFE_RELEASE_POINTER(m_pData);
     }
+
+	void BufferData::initData(size_t elementSize, size_t length)
+	{
+		m_uElementSize = elementSize;
+		m_uLength = length;
+		m_uRealSize = elementSize * length;
+		m_pData = malloc(m_uRealSize);
+	}
+
+	void BufferData::setData(void* data, size_t index, size_t dataSize)
+	{
+		BROWSER_ASSERT(m_pData, "BufferData has not been inited !");
+
+		size_t offset = index * m_uElementSize;
+		BROWSER_ASSERT(offset + dataSize < m_uRealSize, "BufferData's cache is not bigger enough !");
+		memcpy((BYTE*)m_pData + offset, data, dataSize);
+	}
 
     
     
@@ -571,6 +641,17 @@ namespace customGL {
 		_value.imageBuffer.access = access;
 		_value.imageBuffer.format = format;
 	}
+
+	void UniformValue::setUniformBuffer(UniformBuffer* buffer)
+	{
+		common::BROWSER_ASSERT(m_eType == UniformValueType::UniformValueType_Undefined
+			|| m_eType == UniformValueType::UniformValueType_UniformBuffer,
+			"UniformValueType has already defined, you cannot change it again in function UniformValue::setUniformBuffer");
+
+		m_bDirty = true;
+		m_eType = UniformValueType::UniformValueType_UniformBuffer;
+		_value.uniformBuffer.buffer = buffer;
+	}
     
     const glm::mat4& UniformValue::getMat4()
     {
@@ -747,6 +828,11 @@ namespace customGL {
 			case UniformValueType_ImageBuffer:
 				// imageBuffer
 				glProgram->setUniformWithImageBuffer(uniformName.c_str(), _value.imageBuffer.textureId, _value.imageBuffer.access, _value.imageBuffer.format);
+				break;
+
+			case UniformValueType_UniformBuffer:
+				// uniformBuffer
+				glProgram->setUniformWithUniformBuffer(uniformName.c_str(), _value.uniformBuffer.buffer);
 				break;
                 
             default:

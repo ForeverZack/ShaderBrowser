@@ -6,6 +6,7 @@
 #include <glm/gtc/quaternion.hpp>
 #include <string>
 #include <vector>
+#include <unordered_map>
 
 using namespace std;
 #include <iostream>
@@ -19,7 +20,18 @@ namespace customGL
 	class Texture2D;
     class RenderTexture;
     class TextureBuffer;
+	class UniformBuffer;
     
+
+	/*
+		关于缓存用途标识符的说明(如GL_STATIC_DRAW, GL_DYNAMIC_DRAW等):
+		_STATIC_: 数据存储内容只写入一次，然后多次使用;
+		_DYNAMIC_: 数据存储内容会被反复写入和反复使用;
+		_STREAM_: 数据存储内容只写入一次，然后也不会被频繁使用;
+		_DRAW: 数据存储内容由应用程序负责写入，并且作为OpenGL绘制和图像命令的数据源 (即CPU->GPU);
+		_READ: 数据存储内容通过OpenGL反馈的数据写入，然后在应用程序进行查询时返回这些数据 (即GPU->CPU);
+		_COPY: 数据存储内容通过OpenGL反馈的数据写入，并且作为OpenGL绘制和图像命令的数据源 (即GPU->GPU);
+	*/
     
 //    // 顶点数据结构体
 //    struct V3F_C4F_T2F
@@ -115,7 +127,11 @@ namespace customGL
     };
     // 获取GLSL类型转换为存储大小
     extern size_t GLSLTypeSize(GLenum type);
-    
+	// std140布局下类型的对齐值
+	extern const std::unordered_map<size_t, size_t> STD140_BaseAlignments;
+	// std140布局下类型的大小
+	extern const std::unordered_map<size_t, size_t> STD140_BaseSizes;
+
     // 单个顶点数据结构
     class VertexData
     {
@@ -238,43 +254,24 @@ namespace customGL
         ~BufferData();
         
     public:
+		// 初始化
+		void initData(size_t elementSize, size_t length);
 		// 设置数据
-		template <typename T>
-		void setData(const T& value)
-		{
-			std::cout << "void setData(const T& value)" << std::endl;
-			m_pValue = new T(value);
-			m_uSize = sizeof(T);
-		}
-		template <typename T>
-		void setData(const std::vector<T>& value)
-		{
-			std::cout << "void setData(const std::vector<T>& value)" << std::endl;
-			m_pValue = new std::vector<T>(value);
-			m_uSize = sizeof(T) * value.size();
-		}
-		//// 特例化
-		//// 
-		//template <>	// 特例化这里空着，不然会识别为声明
-		//void setData<std::vector<glm::vec3>>(const std::vector<glm::vec3>& value)
-		//{
-		//	std::cout << "void setData(const std::vector<glm::vec3>& value)" << std::endl;
-		//}
-		//template <>	
-		//void setData(const std::vector<float>& value)
-		//{
-		//	std::cout << "void setData(const std::vector<float>& value)" << std::endl;
-		//	m_pValue = new std::vector<float>(value);
-		//	m_uSize = sizeof(float)*value.size();
-		//}
+		void setData(void* data, size_t index, size_t dataSize);
 
-		size_t getOffset() { return m_uOffset; }
-		void setOffset(size_t offset) { m_uOffset = offset; }
+		void* getData() { return m_pData; }
+		size_t getLength() { return m_uLength; }
+		size_t getRealSize() { return m_uRealSize; }
         
     private:
-        void* m_pValue;
-        size_t m_uSize;
-        size_t m_uOffset;	// gpu使用
+		// 数据
+        void* m_pData;
+		// 单个元素所占内存的大小
+        size_t m_uElementSize;
+		// 数组长度
+		size_t m_uLength;
+		// 数据所占内存
+		size_t m_uRealSize;
     };
 
 
@@ -519,6 +516,9 @@ namespace customGL
 
 			// imageBuffer
 			UniformValueType_ImageBuffer,
+
+			// uniformBuffer
+			UniformValueType_UniformBuffer,
         };
     public:
         // 构造函数
@@ -569,6 +569,7 @@ namespace customGL
 
 		void setImageBuffer(GLuint textureId, GLenum access, GLenum format);
         
+		void setUniformBuffer(UniformBuffer* buffer);
         
         const glm::mat4& getMat4();
         const UniformValueType& getUniformValueType() const;
@@ -614,7 +615,7 @@ namespace customGL
                 const int* pointer;
                 GLsizei count;
             } intv,ivec2v,ivec3v,ivec4v;
-            struct{
+            struct {
                 const float* pointer;
                 GLsizei count;
             } floatv,v2fv,v3fv,v4fv,mat4v,mat4x3v,mat3v,mat3x4v;
@@ -623,6 +624,9 @@ namespace customGL
 				GLenum access;
 				GLenum format;
 			} imageBuffer;
+			struct {
+				UniformBuffer* buffer;
+			} uniformBuffer;
             
             
 //        如果在Union中的类型添加了构造函数，或者添加析构函数，就会发现程序会出现错误。由于union里面的东西共享内存，所以不能定义静态、引用类型的变量。由于在union里也不允许存放带有构造函数、析构函数和复制构造函数等的类的对象，但是可以存放对应的类对象指针。编译器无法保证类的构造函数和析构函数得到正确的调用，由此，就可能出现内存泄漏。所以，在C++中使用union时，尽量保持C语言中使用union的风格，尽量不要让union带有对象。

@@ -20,6 +20,8 @@ namespace customGL
         void bindTexture2DN(GLuint textureUnit, GLuint textureId);
 		void bindSamplerBuffer(GLuint textureUnit, GLuint textureId);
 		void bindImageBuffer(GLuint textureUnit, GLuint textureId, GLenum access, GLenum format);
+		// 绑定Uniform缓冲到UniformBuffer绑定点
+		void bindUniformBuffer(GLuint uboBinding, GLuint bufferId);
         
         // 设置深度测试
         void setZTest(bool enable, GLenum depthFunc = GL_LESS, GLenum zwrite = GL_TRUE);
@@ -37,6 +39,8 @@ namespace customGL
     private:
         // textureId队列
         GLuint m_vTexIds[MAX_ACTIVE_TEXTURE];
+		// ubo绑定点
+		GLuint m_vUBOIds[MAX_ACTIVE_UNIFORM_BLOCK];
 
 		// depth
 		// 深度测试开关		开启：glEnable(GL_DEPTH_TEST);		关闭：glDisable(GL_DEPTH_TEST);

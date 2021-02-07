@@ -398,6 +398,11 @@ namespace customGL
         Utils::setUniformSamplerBuffer(m_mUniforms, uniformName, textureBuffer);
     }
 
+	void Material::setUniformUniformBuffer(const std::string& uniformName, UniformBuffer* uniformBuffer)
+	{
+		Utils::setUniformUniformBuffer(m_mUniforms, uniformName, uniformBuffer);
+	}
+
     void Material::setUniformIntV(const std::string& uniformName, int count, const int* value)
     {
         Utils::setUniformIntV(m_mUniforms, uniformName, count, value);

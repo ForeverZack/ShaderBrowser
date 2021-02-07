@@ -31,6 +31,11 @@ namespace customGL
 		{
 			m_vTexIds[i] = 0;
 		}
+		// 重置uboId队列
+		for (int i = 0; i < MAX_ACTIVE_UNIFORM_BLOCK; ++i)
+		{
+			m_vUBOIds[i] = 0;
+		}
 	}
     
     void GLStateCache::bindTexture2DN(GLuint textureUnit, GLuint textureId)
@@ -59,6 +64,17 @@ namespace customGL
 		{
             //void (*aaa)(GLuint, GLuint, GLint, GLboolean, GLint, GLenum, GLenum) = glBindImageTexture;	// mac上不支持opengl4.3，所以根本没有glBindImageTexture
             glBindImageTexture(textureUnit, textureId, 0, GL_FALSE, 0, access, format);
+			m_vTexIds[textureUnit] = textureId;
+		}
+	}
+
+	void GLStateCache::bindUniformBuffer(GLuint uboBinding, GLuint bufferId)
+	{
+		if (m_vUBOIds[uboBinding] != bufferId)
+		{
+			m_vUBOIds[uboBinding] = bufferId;
+			// 绑定Uniform缓冲对象到对应的绑定点上
+			glBindBufferBase(GL_UNIFORM_BUFFER, uboBinding, bufferId);
 		}
 	}
     

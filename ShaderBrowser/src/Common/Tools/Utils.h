@@ -136,7 +136,8 @@ namespace common
         static void setUniformV4f(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, const glm::vec4& value);
         static void setUniformTex2D(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, Texture2D* texture);
         static void setUniformTex2D(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, RenderTexture* texture);
-        static void setUniformSamplerBuffer(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, TextureBuffer* textureBuffer);
+		static void setUniformSamplerBuffer(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, TextureBuffer* textureBuffer);
+		static void setUniformUniformBuffer(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, UniformBuffer* uniformBuffer);
         static void setUniformIntV(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, int count, const int* value);
         static void setUniformIVec2(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, const glm::ivec2& value);
         static void setUniformVec2V(std::unordered_map<std::string, UniformValue>& uniforms, const std::string& uniformName, int count, const float* value);

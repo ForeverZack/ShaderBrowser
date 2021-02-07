@@ -6,7 +6,7 @@ namespace customGL
 	GPUOperateUniformBufferCommand::GPUOperateUniformBufferCommand()
         : m_pBuffer(nullptr)
         , m_pData(nullptr)
-        , m_uSize(0)
+		, m_uSize(0)
     {
         m_eCommandType = GOCT_UniformBuffer;
         m_eOperateType = GOT_Update;
@@ -14,7 +14,7 @@ namespace customGL
     
 	GPUOperateUniformBufferCommand::~GPUOperateUniformBufferCommand()
     {
-        
+		BROWSER_SAFE_FREE_POINTER(m_pData);
     }
     
     void GPUOperateUniformBufferCommand::ready(GPUOperateType operateType)
@@ -60,13 +60,12 @@ namespace customGL
     {
         // 清除
 		m_pBuffer = nullptr;
-        m_pData = nullptr;
-        m_uSize = 0;
         if (m_eCommandType == GPUOperateType::GOT_Update)
         {
-            std::vector<float> vec;
-            m_uValue.val_float.swap(vec);
-        }
+			BROWSER_SAFE_FREE_POINTER(m_pData);
+			m_uSize = 0;
+		}
+		m_pData = nullptr;
         
         // 回收命令
         BaseGPUOperateCommand::finish();
@@ -108,36 +107,32 @@ namespace customGL
 		m_pBuffer->setGPUDeleted(true);
     }
     
-    void GPUOperateUniformBufferCommand::setData(const std::vector<glm::mat4>& data)
+    void GPUOperateUniformBufferCommand::setData(BufferData& data)
     {
-        // (glm::mat4)会按照列主序的顺序传入，即第一列第二列第三列
-        m_uValue.val_mat4 = data;
-        if (data.size() > 0)
-        {
-            m_pData = &m_uValue.val_mat4[0];
-            m_uSize = sizeof(glm::mat4) * data.size();
-        }
-        else
-        {
-            m_pData = nullptr;
-            m_uSize = 0;
-        }
+		m_uSize = data.getRealSize();
+		if (m_uSize > 0)
+		{
+			m_pData = malloc(m_uSize);
+			memcpy(m_pData, data.getData(), m_uSize);
+		}
     }
     
-    void GPUOperateUniformBufferCommand::setData(const std::vector<float>& data)
-    {
-        m_uValue.val_float = data;
-        if (data.size() > 0)
-        {
-            m_pData = &m_uValue.val_float[0];
-            m_uSize = sizeof(float) * data.size();
-        }
-        else
-        {
-            m_pData = nullptr;
-            m_uSize = 0;
-        }
-    }
-    
+	void GPUOperateUniformBufferCommand::setData(const size_t size, const vector<string>& varnames, unordered_map<string, BufferData>& variables)
+	{
+		m_uSize = size;
+		if (m_uSize > 0)
+		{
+			m_pData = malloc(m_uSize);
+			size_t offset = 0;
+			for (auto itor = varnames.begin(); itor != varnames.end(); ++itor)
+			{
+				const string& name = (*itor);
+				BufferData& buffer = (variables.find(name))->second;
+				memcpy((BYTE*)m_pData + offset, buffer.getData(), buffer.getRealSize());
+
+				offset += buffer.getRealSize();
+			}
+		}
+	}
 
 }

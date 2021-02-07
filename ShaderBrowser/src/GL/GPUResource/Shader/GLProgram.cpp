@@ -5,6 +5,7 @@
 #include "GL/GPUResource/Texture/Texture2D.h"
 #include "GL/GPUResource/Texture/RenderTexture.h"
 #include "GL/GPUResource/Texture/TextureBuffer.h"
+#include "GL/GPUResource/Buffer/UniformBuffer.h"
 #include "GL/GPUOperateCommand/GPUOperateCommandPool.h"
 #include "GL/GPUOperateCommand/GPUOperateGLProgramCommand.h"
 #include "GL/System/GPUOperateSystem.h"
@@ -180,6 +181,7 @@ namespace customGL
 		, m_uFragShader(0)
         , m_uCompShader(0)
 		, m_uTextureUnitIndex(0)
+		, m_uUniformBufferBindingIndex(0)
 		, m_uProgramTags(0)
 		, m_uActiveProgramTags(0)
 		, m_sAdditionTagsVertCode("")
@@ -194,15 +196,15 @@ namespace customGL
 	{
         m_eResourceType = GPUResourceType::GRT_GLProgram;
         
-        for (int i=0; i<MAX_ACTIVE_TEXTURE; ++i)
-        {
-            /*
-             当你打印的时候，printf（"%d",number）则 number是当成一个又符号的数来处理。输出-1
-             当你这样打印的时候，printf（"%u",number）则number当成一个无符号的数来处理。输出65535
-             小结：-1 这个数在内存中存着，究竟是有符号的还是无符号的，取决于程序眼对他的操作。另外，对于一个unsigned的数和一个int型的混合计算，则int型的会自动转换成unsigned型的。
-            */
-            m_vTexIds[i] = (GLuint)(-1);
-        }
+        //for (int i=0; i<MAX_ACTIVE_TEXTURE; ++i)
+        //{
+        //    /*
+        //     当你打印的时候，printf（"%d",number）则 number是当成一个又符号的数来处理。输出-1
+        //     当你这样打印的时候，printf（"%u",number）则number当成一个无符号的数来处理。输出65535
+        //     小结：-1 这个数在内存中存着，究竟是有符号的还是无符号的，取决于程序眼对他的操作。另外，对于一个unsigned的数和一个int型的混合计算，则int型的会自动转换成unsigned型的。
+        //    */
+        //    m_vTexIds[i] = (GLuint)(-1);
+        //}
 	}
 
 	GLProgram::~GLProgram()
@@ -726,6 +728,31 @@ namespace customGL
         // 绑定纹理到opengl
         GLStateCache::getInstance()->bindSamplerBuffer(textureUnit, textureBuffer->getTextureId());
     }
+
+	void GLProgram::setUniformWithUniformBuffer(const std::string& uniformName, UniformBuffer* uniformBuffer)
+	{
+		// 自动生成UniformBuffer绑定点
+		GLuint uboBindingIndex;
+		if (m_mUniformBufferBindings.find(uniformName) != m_mUniformBufferBindings.end())
+		{
+			uboBindingIndex = m_mUniformBufferBindings[uniformName];
+		}
+		else
+		{
+			uboBindingIndex = m_uUniformBufferBindingIndex++;
+			m_mUniformBufferBindings[uniformName] = uboBindingIndex;
+
+			// Uniform块索引(Uniform Block Index)是着色器中已定义Uniform块的位置值索引。这可以通过调用glGetUniformBlockIndex来获取，它接受一个程序对象和Uniform块的名称。
+			GLuint blockIndex = glGetUniformBlockIndex(m_uProgram, uniformName.c_str());
+			// 为了将Uniform块绑定到一个特定的绑定点中，我们需要调用glUniformBlockBinding函数，它的第一个参数是一个程序对象，之后是一个Uniform块索引和链接到的绑定点。
+			glUniformBlockBinding(m_uProgram, blockIndex, uboBindingIndex);
+		}
+
+		common::BROWSER_ASSERT(uboBindingIndex < MAX_ACTIVE_UNIFORM_BLOCK, "UniformBuffer binding value is too big, it is out off support range in function GLProgram::setUniformWithUniformBuffer");
+
+		// 绑定uniform缓冲到绑定点
+		GLStateCache::getInstance()->bindUniformBuffer(uboBindingIndex, uniformBuffer->getBuffer());
+	}
 
 	void GLProgram::setUniformWithImageBuffer(const std::string& uniformName, GLuint textureId, GLenum access, GLenum format)
 	{
