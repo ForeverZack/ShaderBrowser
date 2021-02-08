@@ -66,15 +66,15 @@ namespace customGL
 		void setData(const string& varname, glm::ivec3& value, bool updateGpuData = true);
 		void setData(const string& varname, glm::ivec4& value, bool updateGpuData = true);
 		void setData(const string& varname, bool& value, bool updateGpuData = true);
-		void setData(const string& varname, glm::mat2& value, bool updateGpuData = true);
-		void setData(const string& varname, glm::mat2x3& value, bool updateGpuData = true);
+		void setData(const string& varname, const glm::mat2& value, bool updateGpuData = true);
+		void setData(const string& varname, const glm::mat2x3& value, bool updateGpuData = true);
 		void setData(const string& varname, glm::mat2x4& value, bool updateGpuData = true);
-		void setData(const string& varname, glm::mat3& value, bool updateGpuData = true);
-		void setData(const string& varname, glm::mat3x2& value, bool updateGpuData = true);
+		void setData(const string& varname, const glm::mat3& value, bool updateGpuData = true);
+		void setData(const string& varname, const glm::mat3x2& value, bool updateGpuData = true);
 		void setData(const string& varname, glm::mat3x4& value, bool updateGpuData = true);
+		void setData(const string& varname, const glm::mat4x2& value, bool updateGpuData = true);
+		void setData(const string& varname, const glm::mat4x3& value, bool updateGpuData = true);
 		void setData(const string& varname, glm::mat4& value, bool updateGpuData = true);
-		void setData(const string& varname, glm::mat4x2& value, bool updateGpuData = true);
-		void setData(const string& varname, glm::mat4x3& value, bool updateGpuData = true);
 
 		REGISTER_PROPERTY_GET(GLuint, m_uVBO, Buffer)
 		REGISTER_PROPERTY_GET(size_t, m_uSize, Size)

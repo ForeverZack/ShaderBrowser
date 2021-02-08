@@ -119,14 +119,14 @@ namespace customGL {
 		{ typeid(glm::uvec3).hash_code(), sizeof(float) * 4 },
 		{ typeid(glm::uvec4).hash_code(), sizeof(float) * 4 },
 		{ typeid(glm::mat2).hash_code(), sizeof(float) * 8 },
-		{ typeid(glm::mat2x3).hash_code(), sizeof(float) * 8 },
-		{ typeid(glm::mat2x4).hash_code(), sizeof(float) * 8 },
+		{ typeid(glm::mat2x3).hash_code(), sizeof(float) * 8 },		// 2列3行
+		{ typeid(glm::mat2x4).hash_code(), sizeof(float) * 8 },		// 2列4行
 		{ typeid(glm::mat3).hash_code(), sizeof(float) * 12 },
-		{ typeid(glm::mat3x2).hash_code(), sizeof(float) * 12 },
-		{ typeid(glm::mat3x4).hash_code(), sizeof(float) * 12 },
+		{ typeid(glm::mat3x2).hash_code(), sizeof(float) * 12 },	// 3列2行
+		{ typeid(glm::mat3x4).hash_code(), sizeof(float) * 12 },	// 3列4行
 		{ typeid(glm::mat4).hash_code(), sizeof(float) * 16 },
-		{ typeid(glm::mat4x2).hash_code(), sizeof(float) * 16 },
-		{ typeid(glm::mat4x3).hash_code(), sizeof(float) * 16 },
+		{ typeid(glm::mat4x2).hash_code(), sizeof(float) * 16 },	// 4列2行
+		{ typeid(glm::mat4x3).hash_code(), sizeof(float) * 16 },	// 4列3行
 	};
     
     BufferData::BufferData()

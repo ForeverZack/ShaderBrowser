@@ -128,9 +128,10 @@ namespace customGL
 		}
 	}
 
-	void UniformBuffer::setData(const string& varname, glm::mat2& value, bool updateGpuData/* = true*/)
+	void UniformBuffer::setData(const string& varname, const glm::mat2& value, bool updateGpuData/* = true*/)
 	{
-		setBufferData(varname, &value, sizeof(glm::mat2));
+		// align: mat2 -> mat2x4
+		setBufferData(varname, &glm::mat2x4(value), sizeof(glm::mat2x4));
 
 		if (updateGpuData)
 		{
@@ -138,9 +139,10 @@ namespace customGL
 		}
 	}
 
-	void UniformBuffer::setData(const string& varname, glm::mat2x3& value, bool updateGpuData/* = true*/)
+	void UniformBuffer::setData(const string& varname, const glm::mat2x3& value, bool updateGpuData/* = true*/)
 	{
-		setBufferData(varname, &value, sizeof(glm::mat2x3));
+		// align: mat2x3 -> mat2x4
+		setBufferData(varname, &glm::mat2x4(value), sizeof(glm::mat2x4));
 
 		if (updateGpuData)
 		{
@@ -158,9 +160,10 @@ namespace customGL
 		}
 	}
 
-	void UniformBuffer::setData(const string& varname, glm::mat3& value, bool updateGpuData/* = true*/)
+	void UniformBuffer::setData(const string& varname, const glm::mat3& value, bool updateGpuData/* = true*/)
 	{
-		setBufferData(varname, &value, sizeof(glm::mat3));
+		// align: mat3 -> mat3x4
+		setBufferData(varname, &glm::mat3x4(value), sizeof(glm::mat3x4));
 
 		if (updateGpuData)
 		{
@@ -168,9 +171,10 @@ namespace customGL
 		}
 	}
 
-	void UniformBuffer::setData(const string& varname, glm::mat3x2& value, bool updateGpuData/* = true*/)
+	void UniformBuffer::setData(const string& varname, const glm::mat3x2& value, bool updateGpuData/* = true*/)
 	{
-		setBufferData(varname, &value, sizeof(glm::mat3x2));
+		// align: mat3x2 -> mat3x4
+		setBufferData(varname, &glm::mat3x4(value), sizeof(glm::mat3x4));
 
 		if (updateGpuData)
 		{
@@ -188,20 +192,10 @@ namespace customGL
 		}
 	}
 
-    
-	void UniformBuffer::setData(const string& varname, glm::mat4& value, bool updateGpuData/* = true*/)
+	void UniformBuffer::setData(const string& varname, const glm::mat4x2& value, bool updateGpuData/* = true*/)
 	{
-		setBufferData(varname, &value, sizeof(glm::mat4));
-
-		if (updateGpuData)
-		{
-			updateGPUResource();
-		}
-    }
-
-	void UniformBuffer::setData(const string& varname, glm::mat4x2& value, bool updateGpuData/* = true*/)
-	{
-		setBufferData(varname, &value, sizeof(glm::mat4x2));
+		// align: mat4x2 -> mat4
+		setBufferData(varname, &glm::mat4(value), sizeof(glm::mat4));
 
 		if (updateGpuData)
 		{
@@ -209,9 +203,20 @@ namespace customGL
 		}
 	}
 
-	void UniformBuffer::setData(const string& varname, glm::mat4x3& value, bool updateGpuData/* = true*/)
+	void UniformBuffer::setData(const string& varname, const glm::mat4x3& value, bool updateGpuData/* = true*/)
 	{
-		setBufferData(varname, &value, sizeof(glm::mat4x3));
+		// align: mat4x3 -> mat4
+		setBufferData(varname, &glm::mat4(value), sizeof(glm::mat4));
+
+		if (updateGpuData)
+		{
+			updateGPUResource();
+		}
+	}
+
+	void UniformBuffer::setData(const string& varname, glm::mat4& value, bool updateGpuData/* = true*/)
+	{
+		setBufferData(varname, &value, sizeof(glm::mat4));
 
 		if (updateGpuData)
 		{
