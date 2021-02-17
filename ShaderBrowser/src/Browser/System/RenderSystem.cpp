@@ -66,6 +66,7 @@ namespace browser
 	RenderSystem::RenderSystem()
 		: m_uDrawCalls(0)
 		, m_uVerticesCount(0)
+        , m_pCameraInfoBuffer(nullptr)
 	{
 		m_iPriority = 0;
 		m_eSystemType = common::SystemType::RenderSystem;
@@ -79,7 +80,10 @@ namespace browser
 	void RenderSystem::init()
 	{
         m_vRenderCommands.clear();
-       
+        
+        // 生成相机信息buffer
+        m_pCameraInfoBuffer = UniformBuffer::create();
+        m_pCameraInfoBuffer->addVariable("VIEW_MATRIX", sizeof(glm::mat4), sizeof(glm::mat4));
 
         // 生成坐标轴模型
         m_oAxisMesh = Mesh::create(6);

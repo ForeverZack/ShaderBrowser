@@ -33,7 +33,6 @@ namespace customGL
 		BufferData buffer;
 		buffer.initData(elementSize, length);
 
-		m_uSize += buffer.getRealSize();
 		m_vVariableNames.push_back(varname);
 		m_mVariableDatas.emplace(varname, std::move(buffer));
 	}
@@ -131,7 +130,8 @@ namespace customGL
 	void UniformBuffer::setData(const string& varname, const glm::mat2& value, bool updateGpuData/* = true*/)
 	{
 		// align: mat2 -> mat2x4
-		setBufferData(varname, &glm::mat2x4(value), sizeof(glm::mat2x4));
+        glm::mat2x4 temp = glm::mat2x4(value);
+		setBufferData(varname, &temp, sizeof(glm::mat2x4));
 
 		if (updateGpuData)
 		{
@@ -142,7 +142,8 @@ namespace customGL
 	void UniformBuffer::setData(const string& varname, const glm::mat2x3& value, bool updateGpuData/* = true*/)
 	{
 		// align: mat2x3 -> mat2x4
-		setBufferData(varname, &glm::mat2x4(value), sizeof(glm::mat2x4));
+        glm::mat2x4 temp = glm::mat2x4(value);
+		setBufferData(varname, &temp, sizeof(glm::mat2x4));
 
 		if (updateGpuData)
 		{
@@ -163,7 +164,8 @@ namespace customGL
 	void UniformBuffer::setData(const string& varname, const glm::mat3& value, bool updateGpuData/* = true*/)
 	{
 		// align: mat3 -> mat3x4
-		setBufferData(varname, &glm::mat3x4(value), sizeof(glm::mat3x4));
+        glm::mat3x4 temp = glm::mat3x4(value);
+		setBufferData(varname, &temp, sizeof(glm::mat3x4));
 
 		if (updateGpuData)
 		{
@@ -174,7 +176,8 @@ namespace customGL
 	void UniformBuffer::setData(const string& varname, const glm::mat3x2& value, bool updateGpuData/* = true*/)
 	{
 		// align: mat3x2 -> mat3x4
-		setBufferData(varname, &glm::mat3x4(value), sizeof(glm::mat3x4));
+        glm::mat3x4 temp = glm::mat3x4(value);
+		setBufferData(varname, &temp, sizeof(glm::mat3x4));
 
 		if (updateGpuData)
 		{
@@ -195,7 +198,8 @@ namespace customGL
 	void UniformBuffer::setData(const string& varname, const glm::mat4x2& value, bool updateGpuData/* = true*/)
 	{
 		// align: mat4x2 -> mat4
-		setBufferData(varname, &glm::mat4(value), sizeof(glm::mat4));
+        glm::mat4 temp = glm::mat4(value);
+		setBufferData(varname, &temp, sizeof(glm::mat4));
 
 		if (updateGpuData)
 		{
@@ -206,7 +210,8 @@ namespace customGL
 	void UniformBuffer::setData(const string& varname, const glm::mat4x3& value, bool updateGpuData/* = true*/)
 	{
 		// align: mat4x3 -> mat4
-		setBufferData(varname, &glm::mat4(value), sizeof(glm::mat4));
+        glm::mat4 temp = glm::mat4(value);
+		setBufferData(varname, &temp, sizeof(glm::mat4));
 
 		if (updateGpuData)
 		{
@@ -223,6 +228,84 @@ namespace customGL
 			updateGPUResource();
 		}
 	}
+    
+    void UniformBuffer::setData(const string& varname, std::vector<glm::vec2>& value, bool updateGpuData/* = true*/)
+    {
+        auto itor = m_mVariableDatas.find(varname);
+        BROWSER_ASSERT(itor != m_mVariableDatas.end(), "UniformBuffer's variable has not been added !");
+        
+        BufferData& bufferData = itor->second;
+        for (size_t i=0; i<value.size(); ++i)
+        {
+            setVectorBufferData(bufferData, &value[i], i, sizeof(glm::vec2));
+        }
+        
+        if (updateGpuData)
+        {
+            updateGPUResource();
+        }
+    }
+    
+    void UniformBuffer::setData(const string& varname, std::vector<glm::vec3>& value, bool updateGpuData/* = true*/)
+    {
+        auto itor = m_mVariableDatas.find(varname);
+        BROWSER_ASSERT(itor != m_mVariableDatas.end(), "UniformBuffer's variable has not been added !");
+        
+        BufferData& bufferData = itor->second;
+        for (size_t i=0; i<value.size(); ++i)
+        {
+            setVectorBufferData(bufferData, &value[i], i, sizeof(glm::vec3));
+        }
+        
+        if (updateGpuData)
+        {
+            updateGPUResource();
+        }
+    }
+    
+    void UniformBuffer::setData(const string& varname, std::vector<glm::vec4>& value, bool updateGpuData/* = true*/)
+    {
+        // vec4类型可以简写
+        setBufferData(varname, &value, sizeof(glm::vec4)*value.size());
+        
+        if (updateGpuData)
+        {
+            updateGPUResource();
+        }
+    }
+    
+    void UniformBuffer::setData(const string& varname, std::vector<glm::mat4x2>& value, bool updateGpuData/* = true*/)
+    {
+        // mat4x2类型可以简写
+        setBufferData(varname, &value, sizeof(glm::mat4x2)*value.size());
+        
+        if (updateGpuData)
+        {
+            updateGPUResource();
+        }
+    }
+    
+    void UniformBuffer::setData(const string& varname, std::vector<glm::mat4x3>& value, bool updateGpuData/* = true*/)
+    {
+        // mat4x3类型可以简写
+        setBufferData(varname, &value, sizeof(glm::mat4x3)*value.size());
+        
+        if (updateGpuData)
+        {
+            updateGPUResource();
+        }
+    }
+    
+    void UniformBuffer::setData(const string& varname, std::vector<glm::mat4>& value, bool updateGpuData/* = true*/)
+    {
+        // mat4类型可以简写
+        setBufferData(varname, &value, sizeof(glm::mat4)*value.size());
+        
+        if (updateGpuData)
+        {
+            updateGPUResource();
+        }
+    }
 
 	void UniformBuffer::createGPUResource()
 	{

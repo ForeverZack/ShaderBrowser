@@ -54,7 +54,7 @@ namespace customGL
 		 friend class GPUOperateUniformBufferCommand;
 
     public:
-		// 添加数据成员 (注意elementSize取决于自身对象类型以及下一个)
+		// 添加数据成员 (注意elementSize取决于自身对象类型以及下一个对象类型的对齐值)
 		void addVariable(const string& varname, const size_t elementSize, const size_t length);
         // 设置数据
 		void setData(const string& varname, float& value, bool updateGpuData = true);
@@ -75,6 +75,12 @@ namespace customGL
 		void setData(const string& varname, const glm::mat4x2& value, bool updateGpuData = true);
 		void setData(const string& varname, const glm::mat4x3& value, bool updateGpuData = true);
 		void setData(const string& varname, glm::mat4& value, bool updateGpuData = true);
+        void setData(const string& varname, std::vector<glm::vec2>& value, bool updateGpuData = true);
+        void setData(const string& varname, std::vector<glm::vec3>& value, bool updateGpuData = true);
+        void setData(const string& varname, std::vector<glm::vec4>& value, bool updateGpuData = true);
+        void setData(const string& varname, std::vector<glm::mat4x2>& value, bool updateGpuData = true);    // 4列2行
+        void setData(const string& varname, std::vector<glm::mat4x3>& value, bool updateGpuData = true);    // 4列3行
+        void setData(const string& varname, std::vector<glm::mat4>& value, bool updateGpuData = true);
 
 		REGISTER_PROPERTY_GET(GLuint, m_uVBO, Buffer)
 		REGISTER_PROPERTY_GET(size_t, m_uSize, Size)
@@ -96,14 +102,10 @@ namespace customGL
 			BufferData& bufferData = itor->second;
 			bufferData.setData(data, 0, dataSize);
 		}
-		void setVectorBufferData(const string& varname, void* data, size_t index, size_t dataSize)
-		{
-			auto itor = m_mVariableDatas.find(varname);
-			BROWSER_ASSERT(itor != m_mVariableDatas.end(), "UniformBuffer's variable has not been added !");
-
-			BufferData& bufferData = itor->second;
-			bufferData.setData(data, index, dataSize);
-		}
+        void setVectorBufferData(BufferData& bufferData, void* data, size_t index, size_t dataSize)
+        {
+            bufferData.setData(data, index, dataSize);
+        }
 
 	private:
         // vbo

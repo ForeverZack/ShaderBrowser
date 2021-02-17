@@ -13,6 +13,11 @@ uniform samplerBuffer CGL_BONES_MATRIX; // 骨骼矩阵纹理
 uniform mat4 CGL_DYNAMIC_BATCH_MODEL_MATRIX[MAX_DYNAMIC_BATCH_COUNT];   // 自动合并模型model矩阵
 uniform sampler2D CGL_LIGHT_TEXTURE0; // 光源衰减纹理(基于距离)
 uniform sampler2D CGL_LIGHT_TEXTUREB0; // 光源衰减纹理(基于距离)
+//layout (std140) uniform;  // 后面所有的uniform块都会使用这种话布局方式
+uniform CameraInfo
+{
+    mat4 VIEW_MATRIX;
+};
 
 // pre-pass
 // 顶点着色其中需要加上[PreparePass]来告诉引擎这个pass可以当做pre-pass使用

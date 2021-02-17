@@ -18,6 +18,8 @@ using namespace customGL;
 
 namespace common
 {
+    typedef unsigned char BYTE;
+    
 	// 注册读/写方法
 	#define REGISTER_PROPERTY_GET_SET(varType, varName, funName)\
 	public: virtual varType get##funName(void)	{return varName;}\

@@ -8,6 +8,7 @@
 #include "Browser/Components/Render/MeshRenderer.h"
 
 #include "GL/GPUResource/Shader/GLProgram.h"
+#include "GL/GPUResource/Buffer/UniformBuffer.h"
 #include "Common/Tools/BaseSingleton.h"
 
 namespace browser
@@ -46,6 +47,7 @@ namespace browser
 		REGISTER_PROPERTY_GET_SET(unsigned int, m_uDrawCalls, DrawCalls)
 		REGISTER_PROPERTY_GET_SET(unsigned long, m_uVerticesCount, VerticesCount)
 		REGISTER_PROPERTY_GET_SET(unsigned long, m_uFaceCount, FaceCount)
+        REGISTER_PROPERTY_GET(UniformBuffer*, m_pCameraInfoBuffer, CameraInfoBuffer)
         
     private:
         // 画出辅助工具
@@ -75,6 +77,9 @@ namespace browser
         Mesh* m_oAxisMesh;
         // 坐标轴缩放矩阵
         glm::mat4 m_oAxisScaleMatrix;
+        
+        // 相机信息buffer
+        UniformBuffer* m_pCameraInfoBuffer;
 	};
 }
 
