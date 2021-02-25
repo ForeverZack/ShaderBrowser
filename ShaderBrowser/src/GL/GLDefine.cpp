@@ -179,7 +179,7 @@ namespace customGL {
 
 		size_t offset = index * m_uElementSize;
 		BROWSER_ASSERT(offset + dataSize < m_uRealSize, "BufferData's cache is not bigger enough !");
-		memcpy((BYTE*)m_pData + offset, data, dataSize);
+		memcpy((common::BYTE*)m_pData + offset, data, dataSize);
 	}
 
     

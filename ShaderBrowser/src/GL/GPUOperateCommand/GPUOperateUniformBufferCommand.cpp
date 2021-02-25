@@ -128,7 +128,7 @@ namespace customGL
 			{
 				const string& name = (*itor);
 				BufferData& buffer = (variables.find(name))->second;
-				memcpy((BYTE*)m_pData + offset, buffer.getData(), buffer.getRealSize());
+				memcpy((common::BYTE*)m_pData + offset, buffer.getData(), buffer.getRealSize());
 
 				offset += buffer.getRealSize();
 			}
