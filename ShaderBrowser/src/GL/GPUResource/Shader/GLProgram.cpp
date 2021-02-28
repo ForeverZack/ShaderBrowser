@@ -220,18 +220,15 @@ namespace customGL
 		{
 			if (m_sVertexSource != "" || m_sFragSource != "")
 			{
-				BROWSER_LOG("====GLProgram::clone==1==" + m_sVertFilePath);
 				program->initProgramBySource(m_sVertexSource.c_str(), m_sFragSource.c_str());
 			}
 			else
 			{
-				BROWSER_LOG("====GLProgram::clone==2==" + m_sVertFilePath);
 				program->initProgram(m_sVertFilePath.c_str(), m_sFragFilePath.c_str());
 			}
 		}
 		else
 		{
-			BROWSER_LOG("====GLProgram::clone==3=="+m_sVertFilePath);
 			program->cloneProgram(this);
 		}
 		program->m_uActiveProgramTags = tags;

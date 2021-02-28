@@ -16,11 +16,11 @@ namespace browser
 
     void SkinnedRenderCommand::init(BaseEntity* entity, Material* material, Mesh* mesh, Transform* transform, Camera* camera, bool gpuInstance /*= false*/)
     {
+        // 更新骨骼矩阵samplerBuffer (注意！！这里会修改Material的Uniforms，而MeshRenderCommand::init会拷贝材质所有uniforms的数据，所以一定要先调用这个)
+        entity->useBonesMatrix(material);
+        
+        // 初始化 (如果要修改uniforms数据，请在init之前！！)
 		MeshRenderCommand::init(material, mesh, transform, camera, gpuInstance);
-
-
-		// 更新骨骼矩阵samplerBuffer
-		entity->useBonesMatrix(material);
 
 		// 更新顶点数据 (TODO: 顶点数据应该在Mesh中更新，不要在渲染命令中检测)
 		m_vVertices.clear();

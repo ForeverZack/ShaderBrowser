@@ -1,5 +1,9 @@
 # ShaderBrowser
 
+## 2021.2.28 <br>
+加入UniformBuffer，还没有测试。另外发现之前骨骼TBO的数据赋值顺序存在问题(修改uniforms的数据应该放在MeshRenderCommand::init之前)，
+mac和pc的画面表现还有些不一致，RT中模型的位置有时也会错位，需要好好检查。 <br>
+
 ## 2021.1.27 <br>
 发现对Reference的autorelease()方法使用存在一些错误，当这个对象在栈上或者被手动提前释放，再在AutoReleasePool::update里释放
 肯定会出问题。另外autorelease()方法应该只在逻辑线程中使用，渲染线程中不应该创建autorelease的资源或调用它。优化了getComponent
