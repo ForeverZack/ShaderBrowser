@@ -83,7 +83,7 @@ namespace browser
         
         // 生成相机信息buffer
         m_pCameraInfoBuffer = UniformBuffer::create();
-        m_pCameraInfoBuffer->addVariable("VIEW_MATRIX", sizeof(glm::mat4), sizeof(glm::mat4));
+        m_pCameraInfoBuffer->addVariable("VIEW_MATRIX", sizeof(glm::mat4), 1);
 
         // 生成坐标轴模型
         m_oAxisMesh = Mesh::create(6);

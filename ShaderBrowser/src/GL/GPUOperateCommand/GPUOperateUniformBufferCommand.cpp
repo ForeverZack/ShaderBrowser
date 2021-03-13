@@ -60,7 +60,7 @@ namespace customGL
     {
         // 清除
 		m_pBuffer = nullptr;
-        if (m_eCommandType == GPUOperateType::GOT_Update)
+        if (m_eOperateType == GPUOperateType::GOT_Update)
         {
 			BROWSER_SAFE_FREE_POINTER(m_pData);
 			m_uSize = 0;

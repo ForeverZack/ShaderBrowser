@@ -178,7 +178,7 @@ namespace customGL {
 		BROWSER_ASSERT(m_pData, "BufferData has not been inited !");
 
 		size_t offset = index * m_uElementSize;
-		BROWSER_ASSERT(offset + dataSize < m_uRealSize, "BufferData's cache is not bigger enough !");
+		BROWSER_ASSERT(offset + dataSize <= m_uRealSize, "BufferData's cache is not bigger enough !");
 		memcpy((common::BYTE*)m_pData + offset, data, dataSize);
 	}
 

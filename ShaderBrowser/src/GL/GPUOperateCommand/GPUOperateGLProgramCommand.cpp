@@ -144,6 +144,28 @@ namespace customGL
 //#endif /* DEBUG */
             common::BROWSER_ASSERT(linked, "shader program linked error in function GLProgram::initProgram");
         }
+
+		//// ubo对齐值测试
+		//{
+		//	const int NumUniforms = 3;
+		//	const char* names[NumUniforms] = {
+		//		"aaa",
+		//		"bbb",
+		//		"ccc"
+		//	};
+		//	GLuint indices[NumUniforms];
+		//	GLint sizes[NumUniforms];
+		//	GLint offset[NumUniforms];
+		//	GLint type[NumUniforms];
+
+		//	glGetUniformIndices(program, NumUniforms, names, indices);
+		//	glGetActiveUniformsiv(program, NumUniforms, indices, GL_UNIFORM_OFFSET, offset);
+		//	glGetActiveUniformsiv(program, NumUniforms, indices, GL_UNIFORM_SIZE, sizes);
+		//	glGetActiveUniformsiv(program, NumUniforms, indices, GL_UNIFORM_TYPE, type);
+
+		//	int bb = 0;
+		//}
+
         
 		m_pGLProgram->m_eResouceState = GRS_Loaded;
     }

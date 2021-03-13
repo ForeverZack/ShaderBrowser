@@ -32,6 +32,7 @@ namespace customGL
 
 		BufferData buffer;
 		buffer.initData(elementSize, length);
+		m_uSize += buffer.getRealSize();
 
 		m_vVariableNames.push_back(varname);
 		m_mVariableDatas.emplace(varname, std::move(buffer));
@@ -274,10 +275,10 @@ namespace customGL
         }
     }
     
-    void UniformBuffer::setData(const string& varname, std::vector<glm::mat4x2>& value, bool updateGpuData/* = true*/)
+    void UniformBuffer::setData(const string& varname, std::vector<glm::mat2x4>& value, bool updateGpuData/* = true*/)
     {
-        // mat4x2类型可以简写
-        setBufferData(varname, &value, sizeof(glm::mat4x2)*value.size());
+        // mat2x4类型可以简写
+        setBufferData(varname, &value, sizeof(glm::mat2x4)*value.size());
         
         if (updateGpuData)
         {
@@ -285,10 +286,10 @@ namespace customGL
         }
     }
     
-    void UniformBuffer::setData(const string& varname, std::vector<glm::mat4x3>& value, bool updateGpuData/* = true*/)
+    void UniformBuffer::setData(const string& varname, std::vector<glm::mat3x4>& value, bool updateGpuData/* = true*/)
     {
-        // mat4x3类型可以简写
-        setBufferData(varname, &value, sizeof(glm::mat4x3)*value.size());
+        // mat3x4类型可以简写
+        setBufferData(varname, &value, sizeof(glm::mat3x4)*value.size());
         
         if (updateGpuData)
         {

@@ -50,7 +50,7 @@ namespace common
 	// 打印日志
 	#define BROWSER_LOG(content) std::cout<<content<<endl;
     
-    // 打印矩阵 (列主序，第一个维度代表列号) (OpenGL和glm中矩阵的第一个维度都代表列号)
+    // 打印矩阵 (列主序，第一个维度代表列号) (OpenGL和glm中矩阵的第一个维度都代表列号，即glm::mat2x4和glsl的mat2x4都表示2列4行)
     #define BROWSER_LOG_MAT4(mat4) std::cout<<mat4[0][0]<<", "<<mat4[1][0]<<", "<<mat4[2][0]<<", "<<mat4[3][0]<<endl;\
         std::cout<<mat4[0][1]<<", "<<mat4[1][1]<<", "<<mat4[2][1]<<", "<<mat4[3][1]<<endl;\
         std::cout<<mat4[0][2]<<", "<<mat4[1][2]<<", "<<mat4[2][2]<<", "<<mat4[3][2]<<endl;\

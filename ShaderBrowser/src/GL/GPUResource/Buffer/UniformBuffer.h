@@ -29,15 +29,19 @@ namespace customGL
 							 // base alignment ----------  // aligned offset
 			float value;     // 4                          // 0
 			vec3 vector;     // 16                         // 16 (必须是16的倍数，因此 4->16)
-			mat4 matrix;     // 16                         // 32  (第 0 行)
-							 // 16                         // 48  (第 1 行)
-							 // 16                         // 64  (第 2 行)
-							 // 16                         // 80  (第 3 行)
+			mat4 matrix;     // 16                         // 32  (第 0 列)
+							 // 16                         // 48  (第 1 列)
+							 // 16                         // 64  (第 2 列)
+							 // 16                         // 80  (第 3 列)
 			float values[3]; // 16 (数组中的标量与vec4相同)//96 (values[0])
 							 // 16                        // 112 (values[1])
 							 // 16                        // 128 (values[2])
 			bool boolean;    // 4                         // 144
 			int integer;     // 4                         // 148
+			mat4x2 mat;	// 16				// 160	(第 0 列)
+									// 16				// 176	(第 1 列)
+									// 16				// 192	(第 2 列)
+									// 16				// 208	(第 3 列)
 		};
 		
 		注意:std140既可以用于UBO，也可用于SSBO；而std430仅可用于SSBO！！！
@@ -54,32 +58,46 @@ namespace customGL
 		 friend class GPUOperateUniformBufferCommand;
 
     public:
-		// 添加数据成员 (注意elementSize取决于自身对象类型以及下一个对象类型的对齐值)
+		// 添加数据成员 
+		// params说明:
+		// elementSize: 元素大小 (注意elementSize取决于自身对象类型以及下一个对象类型的对齐值)
+		// length: 数组长度
 		void addVariable(const string& varname, const size_t elementSize, const size_t length);
-        // 设置数据
+        // 设置数据 
+		// (tips: 矩阵类型的第一个数字表示列数，)
+		// aligned -> float
 		void setData(const string& varname, float& value, bool updateGpuData = true);
+		void setData(const string& varname, int& value, bool updateGpuData = true);
+		void setData(const string& varname, bool& value, bool updateGpuData = true);
+		// aligned -> vec2
 		void setData(const string& varname, glm::vec2& value, bool updateGpuData = true);
+		void setData(const string& varname, glm::ivec2& value, bool updateGpuData = true);
+		// aligned -> vec4
 		void setData(const string& varname, glm::vec3& value, bool updateGpuData = true);
 		void setData(const string& varname, glm::vec4& value, bool updateGpuData = true);
-		void setData(const string& varname, int& value, bool updateGpuData = true);
-		void setData(const string& varname, glm::ivec2& value, bool updateGpuData = true);
 		void setData(const string& varname, glm::ivec3& value, bool updateGpuData = true);
 		void setData(const string& varname, glm::ivec4& value, bool updateGpuData = true);
-		void setData(const string& varname, bool& value, bool updateGpuData = true);
+		// aligned -> mat2x4
 		void setData(const string& varname, const glm::mat2& value, bool updateGpuData = true);
 		void setData(const string& varname, const glm::mat2x3& value, bool updateGpuData = true);
 		void setData(const string& varname, glm::mat2x4& value, bool updateGpuData = true);
+		// aligned -> mat3x4
 		void setData(const string& varname, const glm::mat3& value, bool updateGpuData = true);
 		void setData(const string& varname, const glm::mat3x2& value, bool updateGpuData = true);
 		void setData(const string& varname, glm::mat3x4& value, bool updateGpuData = true);
+		// aligned -> mat4x4
 		void setData(const string& varname, const glm::mat4x2& value, bool updateGpuData = true);
 		void setData(const string& varname, const glm::mat4x3& value, bool updateGpuData = true);
 		void setData(const string& varname, glm::mat4& value, bool updateGpuData = true);
+		// aligned -> vec4
         void setData(const string& varname, std::vector<glm::vec2>& value, bool updateGpuData = true);
         void setData(const string& varname, std::vector<glm::vec3>& value, bool updateGpuData = true);
         void setData(const string& varname, std::vector<glm::vec4>& value, bool updateGpuData = true);
-        void setData(const string& varname, std::vector<glm::mat4x2>& value, bool updateGpuData = true);    // 4列2行
-        void setData(const string& varname, std::vector<glm::mat4x3>& value, bool updateGpuData = true);    // 4列3行
+		// aligned -> mat2x4
+        void setData(const string& varname, std::vector<glm::mat2x4>& value, bool updateGpuData = true);    // 4行2列
+		// aligned -> mat3x4
+		void setData(const string& varname, std::vector<glm::mat3x4>& value, bool updateGpuData = true);    // 4行3列
+		// aligned -> mat4
         void setData(const string& varname, std::vector<glm::mat4>& value, bool updateGpuData = true);
 
 		REGISTER_PROPERTY_GET(GLuint, m_uVBO, Buffer)
