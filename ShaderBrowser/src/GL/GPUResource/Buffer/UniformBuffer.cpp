@@ -324,6 +324,17 @@ namespace customGL
 		 cmd->ready(GPUOperateType::GOT_Update);
 		 GPUOperateSystem::getInstance()->addCommand(cmd);
 	}
+    
+    void UniformBuffer::updateGPUResourceImmediate()
+    {
+        auto cmd = GPUOperateCommandPool::getInstance()->popCommand<GPUOperateUniformBufferCommand>(GPUOperateCommandType::GOCT_UniformBuffer);
+        cmd->setUniformBuffer(this);
+        cmd->setData(m_uSize, m_vVariableNames, m_mVariableDatas);
+        cmd->ready(GPUOperateType::GOT_Update);
+        // 直接执行
+        cmd->execute();
+        cmd->finish();
+    }
 
 	void UniformBuffer::deleteGPUResource()
 	{
@@ -334,6 +345,7 @@ namespace customGL
          cmd->ready(GPUOperateType::GOT_Delete);
          GPUOperateSystem::getInstance()->addCommand(cmd);
 	}
+
     
 
 }

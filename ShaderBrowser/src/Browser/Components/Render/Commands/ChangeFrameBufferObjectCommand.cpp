@@ -61,7 +61,8 @@ namespace browser
         // 更新相机信息
         UniformBuffer* cameraInfoBuffer = RenderSystem::getInstance()->getCameraInfoBuffer();
         glm::mat4 aaa = m_oCamera->getViewMatrix();
-        cameraInfoBuffer->setData("VIEW_MATRIX", aaa, true);
+        cameraInfoBuffer->setData("VIEW_MATRIX", aaa, false);
+        cameraInfoBuffer->updateGPUResourceImmediate();
         
 		// 渲染线程调用，加到释放队列中去，队列会在逻辑线程中刷新释放
 		AutoReleasePool::getInstance()->addReferenceFromRenderCore(m_oCamera);

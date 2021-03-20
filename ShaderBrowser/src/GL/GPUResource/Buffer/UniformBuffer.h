@@ -63,6 +63,9 @@ namespace customGL
 		// elementSize: 元素大小 (注意elementSize取决于自身对象类型以及下一个对象类型的对齐值)
 		// length: 数组长度
 		void addVariable(const string& varname, const size_t elementSize, const size_t length);
+        // 立即更新gpu资源 (渲染线程中使用)
+        // 注意: 该方法与updateGPUResource互斥。setData时，updateGpuData都应该传false。
+        void updateGPUResourceImmediate();
         // 设置数据 
 		// (tips: 矩阵类型的第一个数字表示列数，)
 		// aligned -> float
