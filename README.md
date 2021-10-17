@@ -1,5 +1,8 @@
 # ShaderBrowser
 
+## 2021.10.17 <br>
+给Entity添加Layer，并给相机添加CullingMask。<br>
+
 ## 2021.2.28 <br>
 加入UniformBuffer，还没有测试。另外发现之前骨骼TBO的数据赋值顺序存在问题(修改uniforms的数据应该放在MeshRenderCommand::init之前)，
 mac和pc的画面表现还有些不一致，RT中模型的位置有时也会错位，需要好好检查。 <br>

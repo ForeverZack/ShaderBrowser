@@ -178,6 +178,7 @@ namespace browser
         REGISTER_PROPERTY_CONSTREF_GET(std::vector<BaseComponent*>, m_vComponents, Components)
 		REGISTER_PROPERTY_GET_SET(Model*, m_oModel, Model)
 		REGISTER_PROPERTY_GET(BaseEntity*, m_oModelRootEntity, ModelRootEntity)
+		REGISTER_PROPERTY_GET_SET(unsigned int, m_uLayer, Layer)
         void setModelRootEntity(BaseEntity* root);
         void setBoneInfo(int boneId, const glm::mat4& bindpose); // 设置Transform的骨骼信息
         
@@ -234,7 +235,8 @@ namespace browser
         bool m_bIsAxisVisible;
         // 是否显示包围盒
         bool m_bIsBoundBoxVisible;
-        
+        // Layer (最大支持32层)
+		unsigned int m_uLayer;
 	};
 
 

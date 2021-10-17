@@ -53,6 +53,7 @@ namespace browser
         , m_oModel(nullptr)
         , m_oModelRootEntity(nullptr)
 		, m_bIsActive(true)
+		, m_uLayer(1)
 	{
 
 	}

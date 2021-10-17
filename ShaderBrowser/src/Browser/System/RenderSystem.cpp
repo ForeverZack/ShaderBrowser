@@ -517,7 +517,9 @@ namespace browser
             transform = entity->getComponent<Transform>();
             
             // 是否需要渲染
-            if (!entity->getIsVisible() || !entity->checkVisibility(camera, true))
+            if (!entity->getIsVisible() // 物体当前是否显示
+				|| (camera->getCullingMask()&entity->getLayer())==0 //当前相机是否需要渲染该层
+				|| !entity->checkVisibility(camera, true))	// 物体在相机内是否可见
             {
                 continue;
             }

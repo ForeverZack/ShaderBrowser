@@ -148,7 +148,8 @@ void testVal()
     // 设置相机
     RenderTexture* renderTex = RenderTexture::create(1024, 1024); //mac没显卡，RT设置太大掉帧严重
     rtCamera->setRenderTexture(renderTex);
-    rtCamera->setDepth(-1);
+	rtCamera->setDepth(-1);
+	rtCamera->setCullingMask(1);
     //=============================创建相机==================================
 
 	//=============================创建平行光==================================
@@ -226,6 +227,7 @@ void testVal()
 	browser::MeshFilter* meshFilter = MeshFilter::create();
 	meshFilter->addMesh(mesh);
 	entity->addComponent(meshFilter);
+	entity->setLayer(2);
 	//MaterialCache::getInstance()->addMaterialAsync("res/materials/Plane.material", [renderCom](Material* material) mutable->void
 	//{
 	//	renderCom->changeMaterial(0, material);

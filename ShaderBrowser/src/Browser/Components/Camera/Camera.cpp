@@ -34,6 +34,7 @@ namespace browser
 		, m_iDepth(0)
 		, m_oBackgroundColor(DEFAULT_GL_CLEAR_COLOR)
 		, m_bIsRenderable(true)
+		, m_uCullingMask((1<<32)-1)
 	{
 		// 组件所属系统
 		m_eBelongSystem = SystemType::Camera;
@@ -60,6 +61,7 @@ namespace browser
 		, m_iDepth(0)
 		, m_oBackgroundColor(DEFAULT_GL_CLEAR_COLOR)
 		, m_bIsRenderable(true)
+		, m_uCullingMask((1<<32)-1)
 	{
 		// 组件所属系统
 		m_eBelongSystem = SystemType::Camera;

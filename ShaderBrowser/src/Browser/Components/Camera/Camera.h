@@ -116,6 +116,7 @@ namespace browser
 		void setRenderTexture(RenderTexture* rt);
 		void setViewportSize(int width, int height);
 		REGISTER_PROPERTY_CONSTREF_GET(std::vector<glm::vec3>, m_vDisplayVertices, DisplayVertices)
+		REGISTER_PROPERTY_GET_SET(unsigned int, m_uCullingMask, CullingMask)
 
 	protected:
 		// view matrix 相关
@@ -154,6 +155,8 @@ namespace browser
 		glm::vec4 m_oBackgroundColor;
 		// 是否渲染 (用于特殊相机处理)
 		bool m_bIsRenderable;
+		// 渲染哪些Layer (最大支持32层)
+		unsigned int m_uCullingMask;
 
 
 		// 视锥绘制数组
