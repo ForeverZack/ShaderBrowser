@@ -1,5 +1,8 @@
 # ShaderBrowser
 
+## 效果截图：
+![img](https://github.com/ForeverZack/Unity-Gpu-Skinning-Tool/blob/master/manual/pic/modifyTransform.gif)
+
 ## 2021.10.17 <br>
 给Entity添加Layer，并给相机添加CullingMask。<br>
 
