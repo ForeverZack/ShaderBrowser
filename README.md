@@ -1,7 +1,10 @@
 # ShaderBrowser
 
 ## 效果截图：
-![img](https://github.com/ForeverZack/Unity-Gpu-Skinning-Tool/blob/master/manual/pic/modifyTransform.gif)
+![img](https://github.com/ForeverZack/ShaderBrowser/blob/master/Manual/Pictures/1.gif)
+![img](https://github.com/ForeverZack/ShaderBrowser/blob/master/Manual/Pictures/2.gif)
+![img](https://github.com/ForeverZack/ShaderBrowser/blob/master/Manual/Pictures/3.gif)
+![img](https://github.com/ForeverZack/ShaderBrowser/blob/master/Manual/Pictures/4.gif)
 
 ## 2021.10.17 <br>
 给Entity添加Layer，并给相机添加CullingMask。<br>
