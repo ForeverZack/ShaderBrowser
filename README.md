@@ -5,7 +5,7 @@
 ![img](https://github.com/ForeverZack/ShaderBrowser/blob/master/Manual/Pictures/2.gif)
 ![img](https://github.com/ForeverZack/ShaderBrowser/blob/master/Manual/Pictures/3.gif)
 ![img](https://github.com/ForeverZack/ShaderBrowser/blob/master/Manual/Pictures/4.gif)
-![img](https://github.com/ForeverZack/ShaderBrowser/blob/master/Manual/Boundbox.gif)
+![img](https://github.com/ForeverZack/ShaderBrowser/blob/master/Manual/Pictures/Boundbox.gif)
 ![img](https://github.com/ForeverZack/ShaderBrowser/blob/master/Manual/Pictures/5.jpg)
 
 ## 2021.10.17 <br>
